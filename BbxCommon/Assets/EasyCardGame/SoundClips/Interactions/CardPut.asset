@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fafa8a6146841549932b5d647b44a9b, type: 3}
+  m_Name: CardPut
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: a583d15ab53b9774dace134f0aef5d44, type: 3}
+  - {fileID: 8300000, guid: 2197ce2a1e3d47c46ab028fdb665dafd, type: 3}
+  - {fileID: 8300000, guid: 8dc0d336b7ca82a40b9bba15e9574c3d, type: 3}
+  - {fileID: 8300000, guid: 553635ea840f64041ba80309befa0e47, type: 3}
+  playOffset: 0.2
+  volume: 0.1

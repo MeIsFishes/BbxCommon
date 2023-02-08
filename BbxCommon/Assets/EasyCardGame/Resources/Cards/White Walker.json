@@ -1,0 +1,75 @@
+{
+    "Name": "White Walker",
+    "Desc": "Necromancy with an ice spell.",
+    "Avatar": "skeleton",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "FrostSword",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 0,
+    "DropRate": 35,
+    "_Health": 7,
+    "_Points": 6,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 1,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 0,
+    "_RangedEffectParticle": "Arrow",
+    "_RangedEffectRange": 0
+}

@@ -1,0 +1,75 @@
+{
+    "Name": "Warlock",
+    "Desc": "Magic & Swords combined on him.\r\nHe swings his sword for melee combat,\nuses his dark magic for ranged battles.",
+    "Avatar": "knight",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "SwordHit",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 0,
+    "DropRate": 35,
+    "_Health": 8,
+    "_Points": 12,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 6,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 2
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 2,
+    "_RangedEffectParticle": "Fireball",
+    "_RangedEffectRange": 1
+}

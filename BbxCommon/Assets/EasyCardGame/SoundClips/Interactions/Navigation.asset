@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fafa8a6146841549932b5d647b44a9b, type: 3}
+  m_Name: Navigation
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 295574666f51a64469e16386e8fbf006, type: 3}
+  - {fileID: 8300000, guid: 9b34aebce197e6141af3ab509b934ff6, type: 3}
+  - {fileID: 8300000, guid: 91ff1769aff13b34c9fa6c160035baeb, type: 3}
+  playOffset: 0.14
+  volume: 0.3

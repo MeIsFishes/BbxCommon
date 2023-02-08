@@ -1,0 +1,325 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 68719f811bc4dd44fb4dbb588346e0c2, type: 3}
+  m_Name: PlacementAnimationData
+  m_EditorClassIdentifier: 
+  PositionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.00038909912
+      value: 0.007446289
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.23363662
+      value: 0.5047053
+      inSlope: -0.01585858
+      outSlope: -0.01585858
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.19986288
+    - serializedVersion: 3
+      time: 0.7551306
+      value: 0.50575644
+      inSlope: -0.00094053446
+      outSlope: -0.00094053446
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24220593
+      outWeight: 0.3494966
+    - serializedVersion: 3
+      time: 1.0012226
+      value: 1.0005178
+      inSlope: 4.776467
+      outSlope: 4.776467
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11959225
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  RotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0.001964569
+      value: -0.004425049
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.29459363
+      value: 0.00701797
+      inSlope: 0.025595337
+      outSlope: 0.025595337
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.20361775
+    - serializedVersion: 3
+      time: 0.89162534
+      value: 0.07207233
+      inSlope: 0.30799577
+      outSlope: 0.30799577
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.24106802
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1.0078125
+      value: 1.0028381
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  HeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.0019646366
+      value: 0.012410166
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 136
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.17504579
+      value: 1.8948605
+      inSlope: 4.065185
+      outSlope: 4.065185
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.92902756
+    - serializedVersion: 3
+      time: 0.23695558
+      value: 2.015077
+      inSlope: 0.7237655
+      outSlope: 0.7237655
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.5247593
+    - serializedVersion: 3
+      time: 0.58741564
+      value: 2.0156417
+      inSlope: 0.554374
+      outSlope: 0.554374
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.29208118
+    - serializedVersion: 3
+      time: 0.90357846
+      value: 2.2973785
+      inSlope: 0.18694848
+      outSlope: 0.18694848
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.27637988
+    - serializedVersion: 3
+      time: 1.0041595
+      value: 0.0029096585
+      inSlope: -11.31748
+      outSlope: -11.31748
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.11370662
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  PositionUpdateSpeed: 1
+  RotationUpdateSpeed: 1
+  ShowCardPositionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ShowCardRotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  ShowCardPositionSpeed: 2
+  ShowCardRotationSpeed: 2
+  GraveyardCardDistance: 0.01
+  GraveyardPositionCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  GraveyardRotationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  GraveyardHeightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 3.7882032
+      outSlope: 3.7882032
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.076772675
+    - serializedVersion: 3
+      time: 0.5019291
+      value: 0.9956106
+      inSlope: 0.04206617
+      outSlope: 0.04206617
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0.0017411602
+      inSlope: -4.2702394
+      outSlope: -4.2702394
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.06357414
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  GraveyardPositionUpdateSpeed: 2
+  GraveyardRotationUpdateSpeed: 2
+  GraveyardResurrectGradient:
+    serializedVersion: 2
+    key0: {r: 0.495283, g: 0.68163764, b: 1, a: 0}
+    key1: {r: 0, g: 0.80185604, b: 1, a: 1}
+    key2: {r: 0, g: 0, b: 0, a: 0}
+    key3: {r: 0, g: 0, b: 0, a: 0}
+    key4: {r: 0, g: 0, b: 0, a: 0}
+    key5: {r: 0, g: 0, b: 0, a: 0}
+    key6: {r: 0, g: 0, b: 0, a: 0}
+    key7: {r: 0, g: 0, b: 0, a: 0}
+    ctime0: 0
+    ctime1: 65535
+    ctime2: 0
+    ctime3: 0
+    ctime4: 0
+    ctime5: 0
+    ctime6: 0
+    ctime7: 0
+    atime0: 0
+    atime1: 65535
+    atime2: 0
+    atime3: 0
+    atime4: 0
+    atime5: 0
+    atime6: 0
+    atime7: 0
+    m_Mode: 0
+    m_NumColorKeys: 2
+    m_NumAlphaKeys: 2
+  GraveyardResurrectUpdateSpeed: 0.5
+  GraveyardResurrectIntensity: 8

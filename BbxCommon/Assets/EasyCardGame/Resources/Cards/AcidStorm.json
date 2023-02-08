@@ -1,0 +1,44 @@
+{
+    "Name": "<color=\"#b7fa25\">AcidStorm</color>",
+    "Desc": "Poison the world, destroy the enemies.",
+    "Avatar": "Acid_Rain",
+    "RareColor": {
+        "x": 0.5513695478439331,
+        "y": 1.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "AcidStorm",
+    "CardInteractionType": 1,
+    "CardType": 0,
+    "EffectRange": 3,
+    "EffectBothRows": true,
+    "DropRate": 20,
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 4,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ]
+}

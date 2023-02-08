@@ -1,0 +1,75 @@
+{
+    "Name": "<color=magenta>Goblin</color>",
+    "Desc": "<color=#ffab11>It is a product of the evil.</color> \nScientist of the Groath worked on a lot, now he is able to walk, \nattack and defend itself.\n<i><color=\"#c6ff63>But beware, he is poisoned.</color></i>",
+    "Avatar": "Goblin",
+    "RareColor": {
+        "x": 0.4587993323802948,
+        "y": 0.0,
+        "z": 2.0,
+        "w": 0.0
+    },
+    "EffectParticle": "PoisonDagger",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 0,
+    "DropRate": 45,
+    "_Health": 5,
+    "_Points": 7,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 3,
+            "RangedPower": 1
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 2,
+    "_RangedEffectParticle": "Poison",
+    "_RangedEffectRange": 1
+}

@@ -1,0 +1,44 @@
+{
+    "Name": "<color=\"#ff482b\">Meteor</color>",
+    "Desc": "We still have days to live, but the opponent, no.",
+    "Avatar": "Meteor",
+    "RareColor": {
+        "x": 0.5660377740859985,
+        "y": 0.05759156122803688,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Meteor",
+    "CardInteractionType": 1,
+    "CardType": 0,
+    "EffectRange": 5,
+    "EffectBothRows": true,
+    "DropRate": 20,
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ]
+}

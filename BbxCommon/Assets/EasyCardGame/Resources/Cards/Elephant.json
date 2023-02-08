@@ -1,0 +1,75 @@
+{
+    "Name": "Alephantes",
+    "Desc": "Best choice for the forefront.",
+    "Avatar": "elephant",
+    "RareColor": {
+        "x": 0.9481956362724304,
+        "y": 0.7827086448669434,
+        "z": 0.8160141706466675,
+        "w": 0.0
+    },
+    "EffectParticle": "BigPhysicalHit",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 1,
+    "DropRate": 20,
+    "_Health": 16,
+    "_Points": 17,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 9,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 0,
+    "_RangedEffectParticle": "",
+    "_RangedEffectRange": 0
+}

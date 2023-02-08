@@ -1,0 +1,106 @@
+{
+    "Name": "Castle",
+    "Desc": "Attacks all of the enemies.\nCounters like a hell.",
+    "Avatar": "castle",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Arrow",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 5,
+    "EffectBothRows": true,
+    "DropRate": 15,
+    "_Health": 11,
+    "_Points": 13,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_CounterEnabled": true,
+    "_CounterEffectParticle": "Arrow",
+    "_CounterEffects": [
+        {
+            "EffectType": 0,
+            "Power": 4,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 4,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 1,
+    "_RangedEffectParticle": "AcidStorm",
+    "_RangedEffectRange": 0,
+    "_RangedEffectBothRows": false
+}

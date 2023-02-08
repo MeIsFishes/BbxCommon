@@ -6,8 +6,18 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerDownHandler, IPointerUpHandler
+    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
+        #region UnityTick
+        private void Update()
+        {
+            if (m_Dragging)
+            {
+                
+            }
+        }
+        #endregion
+
         #region DragData
         /// <summary>
         /// Stores on-drag related data to invoke callbacks.
@@ -78,27 +88,19 @@ namespace BbxCommon.Ui
             m_PointerIn = false;
         }
 
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            if (m_PointerIn)
-            {
-                m_Dragging = true;
-                m_PointerDownPos = eventData.position;
-                InitDragData(transform.position, BbxRawTimer.GameTime);
-                OnDragBegin(m_DragData);
-            }
+            
         }
 
-        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
-            if (m_Dragging)
-            {
-                m_Dragging = false;
-                UpdateDragData(transform.position, BbxRawTimer.GameTime);
-                m_DragData.EndPos = transform.position;
-                m_DragData.EndTime = BbxRawTimer.GameTime;
-                OnDragEnd(m_DragData);
-            }
+            
+        }
+
+        void IDragHandler.OnDrag(PointerEventData eventData)
+        {
+            transform.position = eventData.position;
         }
         #endregion
     }

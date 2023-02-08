@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fafa8a6146841549932b5d647b44a9b, type: 3}
+  m_Name: IceHit
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 3d1589f5acff5e94a8a447607b78df24, type: 3}
+  - {fileID: 8300000, guid: 94bdf2545b5f4124ea16a01bb09e3f5f, type: 3}
+  - {fileID: 8300000, guid: 1defb8e9e61a37b4d8a6e6c6e4b175dc, type: 3}
+  - {fileID: 8300000, guid: 32fec03f636ada94fb78a6849f4e9b9e, type: 3}
+  playOffset: 0.2
+  volume: 0.2

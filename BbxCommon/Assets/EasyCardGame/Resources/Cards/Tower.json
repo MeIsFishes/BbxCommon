@@ -1,0 +1,106 @@
+{
+    "Name": "Tower",
+    "Desc": "",
+    "Avatar": "CrumblingTower",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Arrow",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 1,
+    "EffectBothRows": true,
+    "DropRate": 1,
+    "_Health": 5,
+    "_Points": 22,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_CounterEnabled": false,
+    "_CounterEffectParticle": "Fireball",
+    "_CounterEffects": [
+        {
+            "EffectType": 0,
+            "Power": 12,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 9,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 4,
+            "RangedPower": 3
+        },
+        {
+            "EffectType": 1,
+            "Power": 5,
+            "RangedPower": 2
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 2,
+    "_RangedEffectParticle": "Arrow",
+    "_RangedEffectRange": 1,
+    "_RangedEffectBothRows": true
+}

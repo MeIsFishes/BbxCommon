@@ -1,0 +1,50 @@
+{
+    "Name": "WarHorn",
+    "Desc": "",
+    "Avatar": "Horn",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "WarHorn",
+    "CardInteractionType": 0,
+    "CardType": 1,
+    "EffectRange": 5,
+    "EffectBothRows": true,
+    "DropRate": 1,
+    "_Health": 3,
+    "_Points": 4,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_CounterEnabled": false,
+    "_CounterEffectParticle": "",
+    "_CounterEffects": [],
+    "_Heal": 3
+}

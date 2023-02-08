@@ -1,0 +1,75 @@
+{
+    "Name": "Dukoarth",
+    "Desc": "My armour is like tenfold shields, my teeth are swords, \nmy claws spears, the shock of my tail is a thunderbolt, \nmy wings a hurricane, and my breath death!",
+    "Avatar": "dragonb",
+    "RareColor": {
+        "x": 2.5190157890319826,
+        "y": 0.5671082139015198,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "DragonFire",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 2,
+    "DropRate": 15,
+    "_Health": 17,
+    "_Points": 21,
+    "_Resistances": [
+        {
+            "EffectType": 1,
+            "Power": 5,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 0,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 1,
+            "Power": 11,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 1,
+    "_RangedEffectParticle": "DragonFire",
+    "_RangedEffectRange": 0
+}

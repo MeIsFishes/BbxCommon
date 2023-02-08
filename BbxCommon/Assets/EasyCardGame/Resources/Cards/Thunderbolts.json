@@ -1,0 +1,44 @@
+{
+    "Name": "Thunder Bolt",
+    "Desc": "<i>Sky will respond your spell.</i>",
+    "Avatar": "Thunderbolt",
+    "RareColor": {
+        "x": 0.5209329128265381,
+        "y": 0.3537735939025879,
+        "z": 1.0,
+        "w": 0.0
+    },
+    "EffectParticle": "ThunderBolt",
+    "CardInteractionType": 1,
+    "CardType": 0,
+    "EffectRange": 2,
+    "EffectBothRows": true,
+    "DropRate": 20,
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 3,
+            "RangedPower": 0
+        }
+    ]
+}

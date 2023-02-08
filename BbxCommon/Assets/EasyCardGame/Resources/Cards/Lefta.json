@@ -1,0 +1,77 @@
+{
+    "Name": "Lefta",
+    "Desc": "She is a pit point archer. \nHunts the enemies from distance with her poisoned arrows.\r\n\n<i>Nay, time does not tarry ever, \nbut change and growth is not in all things and places alike. \nFor the Elves the world moves, \nand it moves both very swift and very slow.</i>",
+    "Avatar": "archer",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Arrow",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 2,
+    "EffectBothRows": false,
+    "DropRate": 40,
+    "_Health": 6,
+    "_Points": 6,
+    "_Resistances": [
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 1,
+    "_RangedEffectParticle": "",
+    "_RangedEffectRange": 0,
+    "_RangedEffectBothRows": false
+}

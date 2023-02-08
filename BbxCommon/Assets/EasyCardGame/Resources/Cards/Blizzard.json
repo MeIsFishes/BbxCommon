@@ -1,0 +1,44 @@
+{
+    "Name": "<color=\"#73f8ff\">Blizzard</color>",
+    "Desc": "Enemies will get cold today.",
+    "Avatar": "Blizzard",
+    "RareColor": {
+        "x": 3.7333333492279054,
+        "y": 5.333333492279053,
+        "z": 8.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Blizzard",
+    "CardInteractionType": 1,
+    "CardType": 0,
+    "EffectRange": 5,
+    "EffectBothRows": true,
+    "DropRate": 20,
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ]
+}

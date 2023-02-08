@@ -1,0 +1,75 @@
+{
+    "Name": "Rotting Corpse",
+    "Desc": "Spreads poison...",
+    "Avatar": "rottingcorpse",
+    "RareColor": {
+        "x": 0.47873279452323916,
+        "y": 1.0,
+        "z": 0.31603771448135378,
+        "w": 0.0
+    },
+    "EffectParticle": "PoisonDagger",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 0,
+    "DropRate": 30,
+    "_Health": 7,
+    "_Points": 8,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 1,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 2
+        },
+        {
+            "EffectType": 3,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 0,
+    "_RangedEffectParticle": "Fireball",
+    "_RangedEffectRange": 1
+}

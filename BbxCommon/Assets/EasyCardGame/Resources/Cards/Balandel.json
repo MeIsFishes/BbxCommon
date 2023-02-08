@@ -1,0 +1,17 @@
+{
+    "Name": "Balandel",
+    "Desc": "He is an ancient angel. \nHe uses ancient sorcery to heal many opponents.",
+    "Avatar": "healer2",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Heal",
+    "CardInteractionType": 1,
+    "CardType": 1,
+    "EffectRange": 3,
+    "DropRate": 30,
+    "_Heal": 3
+}

@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0fafa8a6146841549932b5d647b44a9b, type: 3}
+  m_Name: CardSelect
+  m_EditorClassIdentifier: 
+  clips:
+  - {fileID: 8300000, guid: 0def7c58a667c0248966b2fa427e63c9, type: 3}
+  - {fileID: 8300000, guid: b117686f46a700d48bb45cb35ea477fa, type: 3}
+  - {fileID: 8300000, guid: aff66bb77cee99c4e88276f2d6b2f232, type: 3}
+  - {fileID: 8300000, guid: 6aa5562ff185cdb45ba8984f1d15fec3, type: 3}
+  - {fileID: 8300000, guid: 4c99f90e65441394aa175f1e58928669, type: 3}
+  playOffset: 0.1
+  volume: 0.1

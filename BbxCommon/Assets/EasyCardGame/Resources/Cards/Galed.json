@@ -1,0 +1,46 @@
+{
+    "Name": "<color=\"52a832\"><b>Galed</b></color>",
+    "Desc": "She uses his holy magic to heal her opponents.\n<i>This is Nenya, the Ring of Adamant, \nand I am its keeper.</i>",
+    "Avatar": "healer",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Heal",
+    "CardInteractionType": 0,
+    "CardType": 1,
+    "EffectRange": 1,
+    "DropRate": 25,
+    "_Health": 6,
+    "_Points": 4,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 2,
+            "RangedPower": 0
+        }
+    ],
+    "_Heal": 3
+}

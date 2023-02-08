@@ -56,10 +56,23 @@
     <Analyzer Include="D:\Visual Studio 2022\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\BbxCommon\Editor\ValuePasser\ValuePasserEditorWindow.cs" />
-    <Compile Include="Assets\Scripts\BbxCommon\Editor\ValuePasser\ValuePasserEditorDatabase.cs" />
-    <Compile Include="Assets\Scripts\BbxCommon\Editor\TaskTimeline\TaskTimelineEditorWindow.cs" />
     <Compile Include="Assets\Scripts\BbxCommon\Editor\TaskTimeline\TaskTimelineEditorDatabase.cs" />
+    <Compile Include="Assets\Scripts\BbxCommon\Editor\ValuePasser\ValuePasserEditorWindow.cs" />
+    <Compile Include="Assets\Scripts\BbxCommon\Editor\TaskTimeline\TaskTimelineEditorWindow.cs" />
+    <Compile Include="Assets\Scripts\BbxCommon\Editor\ValuePasser\ValuePasserEditorDatabase.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\TestTools\CardDropperTesting.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\CardCreator.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\CardEditorUtilities.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\EasyCardEditor.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\CardEditorPreview.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\TestTools\CardGameDataTesting.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\TexturePostProcessor.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\Deck\DeckCreator.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\Deck\EasyDeckEditor.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\Images.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\Deck\DeckEditor.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\CardSelector.cs" />
+    <Compile Include="Assets\EasyCardGame\Scripts\Editor\ShowCardEditor.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

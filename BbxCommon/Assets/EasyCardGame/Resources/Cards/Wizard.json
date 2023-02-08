@@ -1,0 +1,77 @@
+{
+    "Name": "Baaland",
+    "Desc": "His knowledge was deep, his thought was subtle, \nand his hands marvelously skilled; \nand he had a power over the minds of others.",
+    "Avatar": "Mage",
+    "RareColor": {
+        "x": 0.0,
+        "y": 0.0,
+        "z": 0.0,
+        "w": 0.0
+    },
+    "EffectParticle": "Fireball",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 0,
+    "EffectBothRows": true,
+    "DropRate": 30,
+    "_Health": 8,
+    "_Points": 14,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 1,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 1,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 9,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 5
+        }
+    ],
+    "_AttackType": 2,
+    "_RangedEffectParticle": "Lightning",
+    "_RangedEffectRange": 1,
+    "_RangedEffectBothRows": true
+}

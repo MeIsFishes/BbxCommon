@@ -1,0 +1,75 @@
+{
+    "Name": "Lady Morgal",
+    "Desc": "<i>The night is dark and full of terrors,\nbut the lightning burns them all away.</i>",
+    "Avatar": "Morgal",
+    "RareColor": {
+        "x": 0.1960352063179016,
+        "y": 0.1453809291124344,
+        "z": 0.25471699237823489,
+        "w": 0.0
+    },
+    "EffectParticle": "LightningBall",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 1,
+    "DropRate": 25,
+    "_Health": 7,
+    "_Points": 9,
+    "_Resistances": [
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 4,
+            "Power": 4,
+            "RangedPower": 4
+        },
+        {
+            "EffectType": 3,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 1,
+    "_RangedEffectParticle": "LightningBall",
+    "_RangedEffectRange": 1
+}

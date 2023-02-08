@@ -1,0 +1,77 @@
+{
+    "Name": "Skeletal Dragon",
+    "Desc": "<i>Poison them all!</i>",
+    "Avatar": "skeletal",
+    "RareColor": {
+        "x": 0.5568627715110779,
+        "y": 2.0,
+        "z": 0.125490203499794,
+        "w": 0.0
+    },
+    "EffectParticle": "Poison",
+    "CardInteractionType": 0,
+    "CardType": 0,
+    "EffectRange": 5,
+    "EffectBothRows": true,
+    "DropRate": 15,
+    "_Health": 7,
+    "_Points": 16,
+    "_Resistances": [
+        {
+            "EffectType": 0,
+            "Power": 4,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 5,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 3,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 2,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 1,
+            "RangedPower": 0
+        }
+    ],
+    "_Attacks": [
+        {
+            "EffectType": 0,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 1,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 2,
+            "Power": 0,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 3,
+            "Power": 7,
+            "RangedPower": 0
+        },
+        {
+            "EffectType": 4,
+            "Power": 0,
+            "RangedPower": 0
+        }
+    ],
+    "_AttackType": 1,
+    "_RangedEffectParticle": "AcidStorm",
+    "_RangedEffectRange": 0,
+    "_RangedEffectBothRows": false
+}
