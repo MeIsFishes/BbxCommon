@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.EventSystems;
 
 namespace BbxCommon.Ui
@@ -6,102 +7,67 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
     {
-        #region UnityTick
-        private void Update()
+        // public settings
+        public bool AlwaysCentered = true;
+
+        // callbacks
+        public UnityAction<PointerEventData> OnPointerEnter;
+        public UnityAction<PointerEventData> OnPointerStay;
+        public UnityAction<PointerEventData> OnPointerExit;
+        public UnityAction<PointerEventData> OnBeginDrag;
+        public UnityAction<PointerEventData> OnDrag;
+        public UnityAction<PointerEventData> OnEndDrag;
+
+        // internal datas
+        private bool m_PointerIn = false;
+        private PointerEventData m_CurrentData;
+        private Vector3 m_DragOffset;
+
+        protected void Update()
         {
-            if (m_Dragging)
-            {
-                
-            }
+            if (m_PointerIn)
+                OnPointerStay?.Invoke(m_CurrentData);
         }
-        #endregion
-
-        #region DragData
-        /// <summary>
-        /// Stores on-drag related data to invoke callbacks.
-        /// Positions in data means GameObject position, but not pointer position.
-        /// </summary>
-        protected class DragData : PooledObject
-        {
-            public Vector3 StartPos;
-            public float StartTime;
-            public Vector3 CurrentPos;
-            public float CurrentTime;
-            public Vector3 EndPos;
-            public float EndTime;
-
-            public override void OnAllocate()
-            {
-                StartPos = new Vector3();
-                StartTime = 0;
-                CurrentPos = new Vector3();
-                CurrentTime = 0;
-                EndPos = new Vector3();
-                EndTime = 0;
-            }
-        }
-
-        protected DragData m_DragData;
-
-        protected void InitDragData(Vector3 startPos, float startTime)
-        {
-            m_DragData = ObjectPool.AllocIfNull(m_DragData);
-            m_DragData.StartPos = startPos;
-            m_DragData.StartTime = startTime;
-            m_DragData.CurrentPos = startPos;
-            m_DragData.CurrentTime = startTime;
-        }
-
-        protected void UpdateDragData(Vector3 currentPos, float currentTime)
-        {
-            m_DragData.CurrentPos = currentPos;
-            m_DragData.CurrentTime = currentTime;
-        }
-        #endregion
-
-        #region DragCallback
-        protected virtual void OnDragBegin(DragData data)
-        {
-            
-        }
-
-        protected virtual void OnDragEnd(DragData data)
-        {
-
-        }
-        #endregion
-
-        #region PointerEvent
-        protected bool m_PointerIn = false;
-        protected bool m_Dragging = false;
-        protected Vector3 m_PointerDownPos;
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
             m_PointerIn = true;
+            m_CurrentData = eventData;
+            OnPointerEnter?.Invoke(eventData);
+        }
+
+        void IPointerMoveHandler.OnPointerMove(PointerEventData eventData)
+        {
+            m_CurrentData = eventData;
         }
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
             m_PointerIn = false;
+            m_CurrentData = null;
+            OnPointerExit?.Invoke(eventData);
         }
 
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
-            
-        }
-
-        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
-        {
-            
+            m_DragOffset = transform.position - eventData.position.AsVector3XY();
+            OnBeginDrag?.Invoke(eventData);
         }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            transform.position = eventData.position;
+            if (AlwaysCentered)
+                transform.position = eventData.position;
+            else
+                transform.position = eventData.position.AsVector3XY() + m_DragOffset;
+            OnDrag?.Invoke(eventData);
         }
-        #endregion
+
+        void IEndDragHandler.OnEndDrag(PointerEventData eventData)
+        {
+            OnEndDrag?.Invoke(eventData);
+        }
     }
 }

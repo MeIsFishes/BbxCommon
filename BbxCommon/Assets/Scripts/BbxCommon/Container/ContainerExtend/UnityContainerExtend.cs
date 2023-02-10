@@ -5,6 +5,31 @@ namespace BbxCommon
     public static class UnityContainerExtend
     {
         #region Vector
+        public static Vector2 SetX(this Vector2 vector, float value)
+        {
+            return new Vector2(value, vector.y);
+        }
+
+        public static Vector2 SetY(this Vector2 vector, float value)
+        {
+            return new Vector2(vector.x, value);
+        }
+
+        public static Vector3 AsVector3XY(this Vector2 vector)
+        {
+            return new Vector3(vector.x, vector.y, 0);
+        }
+
+        public static Vector3 AsVector3XZ(this Vector2 vector)
+        {
+            return new Vector3(vector.x, 0, vector.y);
+        }
+
+        public static Vector3 AsVector3YZ(this Vector2 vector)
+        {
+            return new Vector3(0, vector.x, vector.y);
+        }
+
         public static Vector3 SetX(this Vector3 vector, float value)
         {
             return new Vector3(value, vector.y, vector.z);
