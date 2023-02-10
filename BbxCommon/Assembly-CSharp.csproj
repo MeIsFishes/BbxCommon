@@ -99,6 +99,7 @@
     <Compile Include="Assets\Scripts\BbxCommon\Gameplay\Misc\GameTimer.cs" />
     <Compile Include="Assets\Scripts\BbxCommon\Gameplay\Task\TaskOnceBase.cs" />
     <Compile Include="Assets\Scripts\BbxCommon\ValuePasser\ValuePasser.cs" />
+    <Compile Include="Assets\Scripts\BbxCommon\Container\ContainerExtend\ContainerExtend.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">

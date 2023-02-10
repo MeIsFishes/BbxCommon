@@ -59,6 +59,21 @@ namespace BbxCommon
         {
             return new Vector3(vector.x, y, z);
         }
+
+        public static Vector2 AsVector2XY(this Vector3 vector)
+        {
+            return new Vector2(vector.x, vector.y);
+        }
+
+        public static Vector2 AsVector2XZ(this Vector3 vector)
+        {
+            return new Vector2(vector.x, vector.z);
+        }
+
+        public static Vector2 AsVector2YZ(this Vector3 vector)
+        {
+            return new Vector2(vector.y, vector.z);
+        }
         #endregion
 
         #region Color

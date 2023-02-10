@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
@@ -21,7 +22,10 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnEndDrag;
 
         // internal datas
-        private bool m_PointerIn = false;
+        [NonSerialized]
+        public float DraggedTime;
+        private bool m_PointerIn;
+        private bool m_Dragging;
         private PointerEventData m_CurrentData;
         private Vector3 m_DragOffset;
 
@@ -29,6 +33,8 @@ namespace BbxCommon.Ui
         {
             if (m_PointerIn)
                 OnPointerStay?.Invoke(m_CurrentData);
+            if (m_Dragging)
+                DraggedTime += BbxRawTimer.DeltaTime;
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -53,6 +59,8 @@ namespace BbxCommon.Ui
         void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
         {
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
+            DraggedTime = 0;
+            m_Dragging = true;
             OnBeginDrag?.Invoke(eventData);
         }
 
@@ -67,6 +75,7 @@ namespace BbxCommon.Ui
 
         void IEndDragHandler.OnEndDrag(PointerEventData eventData)
         {
+            m_Dragging = false;
             OnEndDrag?.Invoke(eventData);
         }
     }

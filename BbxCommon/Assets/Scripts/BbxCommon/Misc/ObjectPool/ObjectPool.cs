@@ -98,24 +98,25 @@ namespace BbxCommon
 
     public struct PooledObjRef<T> where T : PooledObject
     {
-        public T Obj;
+        public T Obj => IsNull() ? null : m_Obj;
 
+        private T m_Obj;
         private uint m_InstanceID;
 
         public PooledObjRef(T obj)
         {
-            Obj = obj;
+            m_Obj = obj;
             m_InstanceID = obj.UniqueID;
         }
 
         public bool IsNull()
         {
-            return Obj == null || Obj.UniqueID != m_InstanceID;
+            return m_Obj == null || m_Obj.UniqueID != m_InstanceID;
         }
 
         public void Release()
         {
-            Obj = null;
+            m_Obj = null;
         }
     }
 }
