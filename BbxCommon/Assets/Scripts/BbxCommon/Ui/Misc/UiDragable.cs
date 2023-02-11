@@ -2,6 +2,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
@@ -12,6 +13,8 @@ namespace BbxCommon.Ui
     {
         // public settings
         public bool AlwaysCentered = true;
+        [ShowIf("AlwaysCentered")]
+        public bool CenterWhenDown = true;
 
         // callbacks
         public UnityAction<PointerEventData> OnPointerEnter;
