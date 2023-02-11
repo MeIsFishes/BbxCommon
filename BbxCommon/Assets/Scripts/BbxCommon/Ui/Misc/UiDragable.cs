@@ -9,7 +9,7 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IBeginDragHandler, IEndDragHandler
+    public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IEndDragHandler,IPointerDownHandler
     {
         // public settings
         public bool AlwaysCentered = true;
@@ -20,7 +20,7 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnPointerEnter;
         public UnityAction<PointerEventData> OnPointerStay;
         public UnityAction<PointerEventData> OnPointerExit;
-        public UnityAction<PointerEventData> OnBeginDrag;
+        public UnityAction<PointerEventData> OnPointerDown;
         public UnityAction<PointerEventData> OnDrag;
         public UnityAction<PointerEventData> OnEndDrag;
 
@@ -59,13 +59,6 @@ namespace BbxCommon.Ui
             OnPointerExit?.Invoke(eventData);
         }
 
-        void IBeginDragHandler.OnBeginDrag(PointerEventData eventData)
-        {
-            m_DragOffset = transform.position - eventData.position.AsVector3XY();
-            DraggedTime = 0;
-            m_Dragging = true;
-            OnBeginDrag?.Invoke(eventData);
-        }
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
@@ -80,6 +73,13 @@ namespace BbxCommon.Ui
         {
             m_Dragging = false;
             OnEndDrag?.Invoke(eventData);
+        }
+
+        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        {
+            m_Dragging = true;
+            m_DragOffset = transform.position - eventData.position.AsVector3XY();
+            OnPointerDown?.Invoke(eventData);
         }
     }
 }
