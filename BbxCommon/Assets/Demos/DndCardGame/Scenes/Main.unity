@@ -444,7 +444,7 @@ Canvas:
   m_OverrideSorting: 0
   m_OverridePixelPerfect: 0
   m_SortingBucketNormalizedSize: 0
-  m_AdditionalShaderChannelsFlag: 0
+  m_AdditionalShaderChannelsFlag: 25
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
@@ -546,11 +546,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4951077519277204317, guid: 1506ee9807a6ed844acc5fb59b3f518e, type: 3}
       propertyPath: m_AnchoredPosition.x
-      value: -2
+      value: 394
       objectReference: {fileID: 0}
     - target: {fileID: 4951077519277204317, guid: 1506ee9807a6ed844acc5fb59b3f518e, type: 3}
       propertyPath: m_AnchoredPosition.y
-      value: -5
+      value: -100
       objectReference: {fileID: 0}
     - target: {fileID: 4951077519277204317, guid: 1506ee9807a6ed844acc5fb59b3f518e, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
