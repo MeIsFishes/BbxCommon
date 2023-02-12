@@ -30,7 +30,7 @@ namespace BbxCommon.Ui
         [Tooltip("Objects to be activated when doesn't interact with mouse.")]
         public List<GameObject> InactiveItems;
         [FoldoutGroup("Objects in different state"), ShowIf("UseDiffWhenActive")]
-        [Tooltip("Objects to be activated when mouse stays in but nor drag.")]
+        [Tooltip("Objects to be activated when mouse stays in but not drag.")]
         public List<GameObject> StayItems;
         [FoldoutGroup("Objects in different state"), ShowIf("UseDiffWhenActive")]
         [Tooltip("Objects to be activated when dragging.")]
