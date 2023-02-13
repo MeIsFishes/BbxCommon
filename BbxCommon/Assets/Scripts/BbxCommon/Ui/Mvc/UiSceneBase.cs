@@ -40,6 +40,7 @@ namespace BbxCommon.Ui
         {
             var t = typeof(T);
             if (m_UiModels.ContainsKey(t))
+
                 model = (T)m_UiModels[t];
             else
                 model = null;
