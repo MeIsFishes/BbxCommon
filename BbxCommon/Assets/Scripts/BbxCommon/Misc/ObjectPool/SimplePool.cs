@@ -30,43 +30,4 @@ namespace BbxCommon
             m_s_Pool.Add(obj);
         }
     }
-
-    public static partial class ContainerExtend
-    {
-        public static void Collect<T>(this List<T> list)
-        {
-            list.Clear();
-            SimplePool<List<T>>.Collect(list);
-        }
-
-        public static void Collect<T>(this Queue<T> queue)
-        {
-            queue.Clear();
-            SimplePool<Queue<T>>.Collect(queue);
-        }
-
-        public static void Collect<T>(this Stack<T> stack)
-        {
-            stack.Clear();
-            SimplePool<Stack<T>>.Collect(stack);
-        }
-
-        public static void Collect<T>(this LinkedList<T> linkedList)
-        {
-            linkedList.Clear();
-            SimplePool<LinkedList<T>>.Collect(linkedList);
-        }
-
-        public static void Collect<TKey, TValue>(this Dictionary<TKey, TValue> dic)
-        {
-            dic.Clear();
-            SimplePool<Dictionary<TKey, TValue>>.Collect(dic);
-        }
-
-        public static void Collect<T>(this HashSet<T> hashSet)
-        {
-            hashSet.Clear();
-            SimplePool<HashSet<T>>.Collect(hashSet);
-        }
-    }
 }

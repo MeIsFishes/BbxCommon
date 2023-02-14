@@ -23,8 +23,10 @@ namespace BbxCommon.Ui
 
         public void SetUiGroup(params TGroupKey[] groups)
         {
-            var list = new List<TGroupKey>(groups);
+            var list = SimplePool<List<TGroupKey>>.Alloc();
+            list.AddArray(groups);
             SetUiGroup(list);
+            list.Collect();
         }
         #endregion
 
