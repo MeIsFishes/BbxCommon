@@ -16,7 +16,7 @@ namespace BbxCommon
         /// Add array's members to the List.
         /// </summary>
         /// <param name="clear"> If true, the List will be clear first. </param>
-        public static void AddArray<T>(this List<T> list, T[] array, bool clear = true)
+        public static void AddArray<T>(this List<T> list, T[] array, bool clear = false)
         {
             if (clear)
                 list.Clear();
@@ -84,7 +84,7 @@ namespace BbxCommon
         /// Add array's members to the List.
         /// </summary>
         /// <param name="clear"> If true, the HashSet will be clear first. </param>
-        public static void AddArray<T>(this HashSet<T> set, T[] array, bool clear = true)
+        public static void AddArray<T>(this HashSet<T> set, T[] array, bool clear = false)
         {
             if (clear)
                 set.Clear();
