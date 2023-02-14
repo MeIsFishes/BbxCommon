@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
-    public static class ContainerExtend
+    public static partial class ContainerExtend
     {
         #region List
         /// <summary>

@@ -19,14 +19,14 @@ namespace BbxCommon
     public class ObjectPool<T> : Singleton<ObjectPool<T>>, IObjectPoolHandler where T : PooledObject, new()
     {
         private static UniqueIdGenerator m_s_IDGenerator = new UniqueIdGenerator();
-        private List<T> m_ObjectSet = new List<T>();
+        private List<T> m_Pool = new List<T>();
 
         /// <summary>
         /// Allocate an object of given type from pool, and it will call OnAllocate().
         /// </summary>
         public static T Alloc()
         {
-            var objectSet = Instance.m_ObjectSet;
+            var objectSet = Instance.m_Pool;
             T res;
             if (objectSet.Count > 0)
             {
@@ -54,12 +54,12 @@ namespace BbxCommon
         /// </summary>
         public static void StaticCreatePool(uint size)
         {
-            if (Instance.m_ObjectSet.Count == 0)
+            if (Instance.m_Pool.Count == 0)
             {
                 for (int i = 0; i < size; i++)
                 {
                     var item = new T();
-                    Instance.m_ObjectSet.Add(item);
+                    Instance.m_Pool.Add(item);
                     item.ObjectPoolBelongs = Instance;
                     item.UniqueID = m_s_IDGenerator.GenerateID();
                 }
@@ -71,7 +71,7 @@ namespace BbxCommon
         /// </summary>
         public void Collect(T obj)
         {
-            m_ObjectSet.Add(obj);
+            m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
             obj.UniqueID = m_s_IDGenerator.GenerateID();
         }

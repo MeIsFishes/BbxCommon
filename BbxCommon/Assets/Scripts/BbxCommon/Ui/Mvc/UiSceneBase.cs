@@ -8,7 +8,7 @@ namespace BbxCommon.Ui
     {
         #region UiGroup
         [SerializeField]
-        protected Dictionary<TGroupKey, GameObject> m_UiGroups = new Dictionary<TGroupKey, GameObject>();
+        protected SerializableDic<TGroupKey, GameObject> m_UiGroups = new SerializableDic<TGroupKey, GameObject>();
 
         public void SetUiGroup(List<TGroupKey> groups)
         {
