@@ -6,7 +6,7 @@ namespace BbxCommon
     public static class ContainerExtend
     {
         #region List
-        public static void Collect<T>(this List<T> list)
+        public static void CollectToPool<T>(this List<T> list)
         {
             list.Clear();
             SimplePool<List<T>>.Collect(list);
@@ -39,10 +39,19 @@ namespace BbxCommon
                 list[index] = k;
             }
         }
+
+        /// <summary>
+        /// Remove an element of List, this will cause the List to be unordered.
+        /// </summary>
+        public static void UnorderedRemove<T>(this List<T> list, int index)
+        {
+            list[index] = list[list.Count - 1]; // save the value of last element, then remove the last one
+            list.RemoveAt(list.Count - 1);
+        }
         #endregion
 
         #region Queue
-        public static void Collect<T>(this Queue<T> queue)
+        public static void CollectToPool<T>(this Queue<T> queue)
         {
             queue.Clear();
             SimplePool<Queue<T>>.Collect(queue);
@@ -50,7 +59,7 @@ namespace BbxCommon
         #endregion
 
         #region Stack
-        public static void Collect<T>(this Stack<T> stack)
+        public static void CollectToPool<T>(this Stack<T> stack)
         {
             stack.Clear();
             SimplePool<Stack<T>>.Collect(stack);
@@ -58,7 +67,7 @@ namespace BbxCommon
         #endregion
 
         #region LinkedList
-        public static void Collect<T>(this LinkedList<T> linkedList)
+        public static void CollectToPool<T>(this LinkedList<T> linkedList)
         {
             linkedList.Clear();
             SimplePool<LinkedList<T>>.Collect(linkedList);
@@ -66,7 +75,7 @@ namespace BbxCommon
         #endregion
 
         #region Dictionary
-        public static void Collect<TKey, TValue>(this Dictionary<TKey, TValue> dic)
+        public static void CollectToPool<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
             dic.Clear();
             SimplePool<Dictionary<TKey, TValue>>.Collect(dic);
@@ -74,7 +83,7 @@ namespace BbxCommon
         #endregion
 
         #region HashSet
-        public static void Collect<T>(this HashSet<T> set)
+        public static void CollectToPool<T>(this HashSet<T> set)
         {
             set.Clear();
             SimplePool<HashSet<T>>.Collect(set);

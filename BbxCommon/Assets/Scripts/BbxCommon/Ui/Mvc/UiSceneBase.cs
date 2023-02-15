@@ -26,7 +26,7 @@ namespace BbxCommon.Ui
             var list = SimplePool<List<TGroupKey>>.Alloc();
             list.AddArray(groups);
             SetUiGroup(list);
-            list.Collect();
+            list.CollectToPool();
         }
         #endregion
 
