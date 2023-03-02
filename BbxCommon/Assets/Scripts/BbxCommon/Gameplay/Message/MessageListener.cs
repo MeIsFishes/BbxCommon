@@ -26,7 +26,7 @@ namespace BbxCommon
             MessageBroadcaster.Instance.RemoveListener(this);
         }
 
-        // Messages should be processed at once, either in MessageBroadcaster.
+        // Messages should be processed at once.
         public void RecieveMessage(Message message)
         {
             if (ProcessMessageFunc == null)

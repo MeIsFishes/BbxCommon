@@ -5,17 +5,21 @@ namespace BbxCommon.Ui
     public abstract class UiControllerBase : MonoBehaviour
     {
         #region InitAndOpen
-        protected void OnEnable()
+        private void Awake()
         {
-            if (!m_Inited)
-                OnUiInit();
+            OnUiInit();
+        }
+
+        private void OnEnable()
+        {
             OnUiOpen();
         }
-        private bool m_Inited;
+
         public void Open()
         {
             gameObject.SetActive(true);
         }
+
         /// <summary>
         /// Calls on first opens before call OnUiOpen().
         /// </summary>

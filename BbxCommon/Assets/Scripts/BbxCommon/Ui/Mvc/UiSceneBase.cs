@@ -4,11 +4,38 @@ using UnityEngine;
 
 namespace BbxCommon.Ui
 {
-    public class UiSceneBase<TGroupKey> : MonoBehaviour
+    public abstract class UiSceneBase<TGroupKey> : MonoBehaviour where TGroupKey : Enum
     {
+        #region Common
+        public GameObject RootProto;
+        #endregion
+
         #region UiGroup
-        [SerializeField]
-        protected SerializableDic<TGroupKey, GameObject> m_UiGroups = new SerializableDic<TGroupKey, GameObject>();
+        protected Dictionary<TGroupKey, GameObject> m_UiGroups = new Dictionary<TGroupKey, GameObject>();
+
+        public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "")
+        {
+            var root = Instantiate(RootProto);
+            if (name.IsNullOrEmpty())
+                root.name = uiGroup.ToString();
+            else
+                root.name = name;
+            root.transform.parent = this.transform;
+            m_UiGroups[uiGroup] = root;
+            return root;
+        }
+
+        public TController OpenUiWithController<TController>(string path, TGroupKey uiGroup, bool open = true) where TController : UiControllerBase
+        {
+            var uiGameObject = Resources.Load<GameObject>(path);
+            GameObject root;
+            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
+                CreateUiGroupRoot(uiGroup);
+            uiGameObject.transform.parent = root.transform;
+            if (uiGameObject.TryGetComponent<TController>(out var controller) == false)
+                Debug.LogError("There is not a" + typeof(TController).ToString() + "on prefab's root GameObject, that's unexpected!");
+            return controller;
+        }
 
         public void SetUiGroup(List<TGroupKey> groups)
         {

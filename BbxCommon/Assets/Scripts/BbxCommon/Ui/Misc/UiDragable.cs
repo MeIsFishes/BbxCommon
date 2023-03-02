@@ -12,6 +12,25 @@ namespace BbxCommon.Ui
     /// </summary>
     public class UiDragable : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
+        #region Wrapper
+        public struct UiDragableWrapper
+        {
+            private UiDragable m_Ref;
+
+            public UiDragableWrapper(UiDragable obj) { m_Ref = obj; }
+
+            public UnityAction<PointerEventData> OnPointerEnter { get { return m_Ref.OnPointerEnter; } set { m_Ref.OnPointerEnter = value;} }
+            public UnityAction<PointerEventData> OnPointerStay { get { return m_Ref.OnPointerStay; } set { m_Ref.OnPointerStay = value; } }
+            public UnityAction<PointerEventData> OnPointerExit { get { return m_Ref.OnPointerExit; } set { m_Ref.OnPointerExit = value; } }
+            public UnityAction<PointerEventData> OnDragStart { get { return m_Ref.OnDragStart; } set { m_Ref.OnDragStart = value; } }
+            public UnityAction<PointerEventData> OnDragEnd { get { return m_Ref.OnDragEnd; } set { m_Ref.OnDragEnd = value; } }
+            /// <summary>
+            /// Tick on every frame when dragging.
+            /// </summary>
+            public UnityAction<PointerEventData> OnDrag { get { return m_Ref.OnDrag; } set { m_Ref.OnDrag = value; } }
+        }
+        #endregion
+
         #region Variables
         // public settings
         public bool AlwaysCenter = true;
@@ -40,11 +59,8 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnPointerEnter;
         public UnityAction<PointerEventData> OnPointerStay;
         public UnityAction<PointerEventData> OnPointerExit;
-        public UnityAction<PointerEventData> OnPointerDown;
-        public UnityAction<PointerEventData> OnPointerUp;
-        /// <summary>
-        /// Tick on every frame when dragging.
-        /// </summary>
+        public UnityAction<PointerEventData> OnDragStart;
+        public UnityAction<PointerEventData> OnDragEnd;
         public UnityAction<PointerEventData> OnDrag;
 
         // internal datas
@@ -55,6 +71,9 @@ namespace BbxCommon.Ui
         private PointerEventData m_CurrentData;
         private Vector3 m_DragOffset;
         private Vector3 m_StartPos;
+
+        // wrapper
+        public UiDragableWrapper Wrapper;
         #endregion
 
         #region CallbacksAndTick
@@ -64,6 +83,7 @@ namespace BbxCommon.Ui
                 OnStateInactive();
 
             m_StartPos = transform.position;
+            Wrapper = new UiDragableWrapper(this);
         }
 
         protected void Update()
@@ -101,7 +121,6 @@ namespace BbxCommon.Ui
             m_CurrentData = null;
 
             OnPointerExit?.Invoke(eventData);
-            Debug.Log("ÍË³ö");
         }
 
 
@@ -126,7 +145,7 @@ namespace BbxCommon.Ui
             if (AlwaysCenter && CenterWhenDown)
                 transform.position = eventData.position.AsVector3XY();
 
-            OnPointerDown?.Invoke(eventData);
+            OnDragStart?.Invoke(eventData);
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
@@ -136,7 +155,7 @@ namespace BbxCommon.Ui
             if (TurnBackWhenUp)
                 transform.position = m_StartPos;
 
-            OnPointerUp?.Invoke(eventData);
+            OnDragEnd?.Invoke(eventData);
         }
         #endregion
 

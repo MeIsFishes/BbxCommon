@@ -26,6 +26,25 @@ namespace BbxCommon
             }
         }
 
+        public static HashSet<T> ToHashSet<T>(this List<T> list)
+        {
+            var set = new HashSet<T>();
+            foreach (var data in list)
+            {
+                set.Add(data);
+            }
+            return set;
+        }
+
+        public static void ToHashSet<T>(this List<T> list, HashSet<T> set)
+        {
+            set.Clear();
+            foreach (var data in list)
+            {
+                set.Add(data);
+            }
+        }
+
         /// <summary>
         /// Shuffle elements to random order.
         /// </summary>
@@ -90,7 +109,7 @@ namespace BbxCommon
         }
 
         /// <summary>
-        /// Add array's members to the List.
+        /// Add array's members to the HashSet.
         /// </summary>
         /// <param name="clear"> If true, the HashSet will be clear first. </param>
         public static void AddArray<T>(this HashSet<T> set, T[] array, bool clear = false)
@@ -101,6 +120,37 @@ namespace BbxCommon
             {
                 set.Add(m);
             }
+        }
+
+        public static List<T> ToList<T>(this HashSet<T> set)
+        {
+            var list = new List<T>();
+            foreach (var data in set)
+            {
+                list.Add(data);
+            }
+            return list;
+        }
+
+        public static void ToList<T>(this HashSet<T> set, List<T> list)
+        {
+            list.Clear();
+            foreach (var data in set)
+            {
+                list.Add(data);
+            }
+        }
+        #endregion
+
+        #region String
+        public static bool IsNullOrEmpty(this string str)
+        {
+            return str == null || str.Length == 0;
+        }
+
+        public static bool NotNullOrEmpty(this string str)
+        {
+            return str != null && str.Length > 0;
         }
         #endregion
     }
