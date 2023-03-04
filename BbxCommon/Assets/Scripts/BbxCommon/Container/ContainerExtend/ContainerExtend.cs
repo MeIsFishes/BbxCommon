@@ -26,6 +26,34 @@ namespace BbxCommon
             }
         }
 
+        /// <summary>
+        /// Add another List's members to current List.
+        /// </summary>
+        /// <param name="clear"> If true, the List will be clear first. </param>
+        public static void AddList<T>(this List<T> list, List<T> addList, bool clear = false)
+        {
+            if (clear)
+                list.Clear();
+            foreach (var m in addList)
+            {
+                list.Add(m);
+            }
+        }
+
+        /// <summary>
+        /// Add HashSet's members to current List.
+        /// </summary>
+        /// <param name="clear"> If true, the List will be clear first. </param>
+        public static void AddHashSet<T>(this List<T> list, HashSet<T> set, bool clear = false)
+        {
+            if (clear)
+                list.Clear();
+            foreach (var m in set)
+            {
+                list.Add(m);
+            }
+        }
+
         public static HashSet<T> ToHashSet<T>(this List<T> list)
         {
             var set = new HashSet<T>();

@@ -1,7 +1,7 @@
 using BbxCommon.Ui;
 using UnityEngine;
 
-namespace DCG
+namespace Dcg.Ui
 {
     public enum EUiSceneGroup
     {

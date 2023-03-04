@@ -4,7 +4,7 @@ using UnityEngine.Events;
 
 namespace BbxCommon
 {
-    public class Interactor : MonoBehaviour
+    public abstract class Interactor : MonoBehaviour
     {
         /// <summary>
         /// Set flags by calling SetInteractFlags(). Don't modify its value manually!
@@ -30,8 +30,41 @@ namespace BbxCommon
         {
             if (AddedToManager)
                 InteractorManager.Instance.RemoveInteractor(this);
-            InteractFlags.Clear();
-            InteractFlags.AddArray(flags);
+            InteractFlags.AddArray(flags, clear: true);
+            if (AddedToManager)
+                InteractorManager.Instance.AddInteractor(this);
+        }
+
+        public void SetInteractFlags(List<int> flags)
+        {
+            if (AddedToManager)
+                InteractorManager.Instance.RemoveInteractor(this);
+            InteractFlags.AddList(flags, clear: true);
+            if (AddedToManager)
+                InteractorManager.Instance.AddInteractor(this);
+        }
+
+
+        public void SetInteractFlags<TEnum>(params TEnum[] flags) where TEnum : System.Enum
+        {
+            if (AddedToManager)
+                InteractorManager.Instance.RemoveInteractor(this);
+            foreach (var flag in flags)
+            {
+                InteractFlags.Add(flag.GetHashCode());
+            }
+            if (AddedToManager)
+                InteractorManager.Instance.AddInteractor(this);
+        }
+
+        public void SetInteractFlags<TEnum>(List<TEnum> flags) where TEnum : System.Enum
+        {
+            if (AddedToManager)
+                InteractorManager.Instance.RemoveInteractor(this);
+            foreach (var flag in flags)
+            {
+                InteractFlags.Add(flag.GetHashCode());
+            }
             if (AddedToManager)
                 InteractorManager.Instance.AddInteractor(this);
         }

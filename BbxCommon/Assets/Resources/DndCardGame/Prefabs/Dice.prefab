@@ -87,8 +87,10 @@ GameObject:
   - component: {fileID: 4951077519277204317}
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7235780622827308433}
+  - component: {fileID: 7426779034860668871}
+  - component: {fileID: 4503878932744420213}
   m_Layer: 5
-  m_Name: Card
+  m_Name: Dice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -112,7 +114,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 0, y: -150}
   m_SizeDelta: {x: 100, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7537345267828701629
@@ -145,6 +147,34 @@ MonoBehaviour:
   - {fileID: 477790579056644274}
   DragItems:
   - {fileID: 477790579056644274}
+--- !u!114 &7426779034860668871
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372915186548853049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00b07092a9e9d004a9606b18c2e5ae23, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  InteractFlags: 
+  AutoInitUiDragable: 1
+  UiDragableRef: {fileID: 0}
+--- !u!114 &4503878932744420213
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372915186548853049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6367c7cd441bc5a47a07b678fe1744c5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Flags: 00000000
 --- !u!1 &4961330535644070900
 GameObject:
   m_ObjectHideFlags: 0
