@@ -81,9 +81,12 @@ namespace BbxCommon.Ui
         {
             if (UseDiffWhenActive)
                 OnStateInactive();
-
-            m_StartPos = transform.position;
             Wrapper = new UiDragableWrapper(this);
+        }
+
+        protected void OnEnable()
+        {
+            m_StartPos = transform.position;
         }
 
         protected void Update()

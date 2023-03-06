@@ -1,7 +1,9 @@
-﻿using UnityEngine;
+using UnityEngine;
+using UnityEditor;
 
 namespace BbxCommon
 {
+    #region RandomFunction
     public static class RandomFunction
     {
         /// <summary>
@@ -45,4 +47,23 @@ namespace BbxCommon
             return res;
         }
     }
+    #endregion
+
+    #region AssetFunction
+    public static class AssetFunction
+    {
+        public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<TAsset>(path);
+            if (asset != null)
+                return asset;
+            else
+            {
+                asset = ScriptableObject.CreateInstance<TAsset>();
+                AssetDatabase.CreateAsset(asset, path);
+                return asset;
+            }
+        }
+    }
+    #endregion
 }

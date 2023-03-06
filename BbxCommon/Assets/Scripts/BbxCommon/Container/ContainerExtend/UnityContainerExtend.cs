@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEditor;
 
 namespace BbxCommon
 {
@@ -117,6 +119,34 @@ namespace BbxCommon
         public static Quaternion SetW(this Quaternion quaternion, float value)
         {
             return new Quaternion(quaternion.x, quaternion.y, quaternion.z, value);
+        }
+        #endregion
+
+        #region GameObject
+        public static bool HasComponent<TComp>(this GameObject gameObject) where TComp : Component
+        {
+            return gameObject.GetComponent<TComp>() != null;
+        }
+
+        public static bool HasComponent(this GameObject gameObject, Type type)
+        {
+            return gameObject.GetComponent(type) != null;
+        }
+
+        public static TComp AddMissingComponent<TComp>(this GameObject gameObject) where TComp : Component
+        {
+            if (gameObject.TryGetComponent<TComp>(out var comp) == false)
+                return gameObject.AddComponent<TComp>();
+            else
+                return comp;
+        }
+
+        public static Component AddMissingComponent(this GameObject gameObject, Type type)
+        {
+            if (gameObject.TryGetComponent(type, out var comp) == false)
+                return gameObject.AddComponent(type);
+            else
+                return comp;
         }
         #endregion
     }

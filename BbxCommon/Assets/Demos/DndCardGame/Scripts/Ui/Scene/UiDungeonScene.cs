@@ -1,5 +1,4 @@
 using BbxCommon.Ui;
-using UnityEngine;
 
 namespace Dcg.Ui
 {
@@ -9,9 +8,9 @@ namespace Dcg.Ui
         SubMenu,
     }
 
-    public class UiScene : UiSceneBase<EUiSceneGroup>
+    public class UiDungeonScene : UiSceneBase<EUiSceneGroup>
     {
-        public void Awake()
+        protected override void OnSceneInit()
         {
             CreateUiGroupRoot(EUiSceneGroup.Info);
             CreateUiGroupRoot(EUiSceneGroup.SubMenu);

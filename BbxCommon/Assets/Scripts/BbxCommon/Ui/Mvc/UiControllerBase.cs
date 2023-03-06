@@ -2,8 +2,22 @@ using UnityEngine;
 
 namespace BbxCommon.Ui
 {
+    public abstract class UiControllerBase<TView> : UiControllerBase where TView : UiViewBase
+    {
+        protected TView m_View;
+
+        public override void SetView(UiViewBase view)
+        {
+            m_View = view as TView;
+        }
+    }
+
     public abstract class UiControllerBase : MonoBehaviour
     {
+        #region Common
+        public abstract void SetView(UiViewBase view);
+        #endregion
+
         #region InitAndOpen
         private void Awake()
         {

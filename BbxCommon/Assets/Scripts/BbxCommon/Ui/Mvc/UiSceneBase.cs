@@ -8,6 +8,75 @@ namespace BbxCommon.Ui
     {
         #region Common
         public GameObject RootProto;
+        [Tooltip("Export UiSceneAsset via UiSceneExporter and set to UiScene, then UiScene will create UI items stored in the asset when initializes.")]
+        public UiSceneAsset SceneAsset;
+
+        protected void Awake()
+        {
+            OnSceneInit();
+            CreateUiByAsset(SceneAsset);
+        }
+
+        protected virtual void OnSceneInit() { }
+
+        public UiControllerBase CreateUi(string path, TGroupKey uiGroup, bool defaultOpen = true)
+        {
+            var uiGameObject = Instantiate(Resources.Load<GameObject>(path));
+            // hangs UI to group
+            GameObject root;
+            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
+                CreateUiGroupRoot(uiGroup);
+            uiGameObject.transform.parent = root.transform;
+            // create controller and set view
+            var uiView = uiGameObject.GetComponent<UiViewBase>();
+            if (uiView == null)
+            {
+                Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
+                return null;
+            }
+            var uiController = uiGameObject.AddMissingComponent(uiView.GetControllerType()) as UiControllerBase;
+            uiController.SetView(uiView);
+            // process defaultOpen
+            if (defaultOpen)
+                uiController.Open();
+            else
+                uiController.Close();
+            // add to dictionary
+            if (m_UiControllers.TryAdd(uiView.GetControllerType(), uiController) == false)
+                Debug.LogError("You can't create a same UI twice! UI type: " + uiView.GetControllerType());
+            return uiController;
+        }
+
+        protected void CreateUiByAsset(UiSceneAsset asset)
+        {
+            if (asset == null)
+                return;
+            foreach (var data in asset.UiObjectDatas)
+            {
+                var controller = CreateUi(data.PrefabPath, (TGroupKey)(object)data.UiGroup, false);
+                (controller.transform as RectTransform).localPosition = data.Position;
+                (controller.transform as RectTransform).localScale = data.Scale;
+                (controller.transform as RectTransform).pivot = data.Pivot;
+                if (data.DefaultOpen)   // keep OnUiOpen() calls after setting data
+                    controller.Open();
+            }
+        }
+        #endregion
+
+        #region UiControllers
+        private Dictionary<Type, UiControllerBase> m_UiControllers = new Dictionary<Type, UiControllerBase>();
+
+        public TController GetUiController<TController>() where TController : UiControllerBase
+        {
+            m_UiControllers.TryGetValue(typeof(TController), out var uiController);
+            return uiController as TController;
+        }
+
+        public UiControllerBase GetUiController(Type type)
+        {
+            m_UiControllers.TryGetValue(type, out var uiController);
+            return uiController;
+        }
         #endregion
 
         #region UiGroup
@@ -23,18 +92,6 @@ namespace BbxCommon.Ui
             root.transform.parent = this.transform;
             m_UiGroups[uiGroup] = root;
             return root;
-        }
-
-        public TController OpenUiWithController<TController>(string path, TGroupKey uiGroup, bool open = true) where TController : UiControllerBase
-        {
-            var uiGameObject = Resources.Load<GameObject>(path);
-            GameObject root;
-            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
-                CreateUiGroupRoot(uiGroup);
-            uiGameObject.transform.parent = root.transform;
-            if (uiGameObject.TryGetComponent<TController>(out var controller) == false)
-                Debug.LogError("There is not a" + typeof(TController).ToString() + "on prefab's root GameObject, that's unexpected!");
-            return controller;
         }
 
         public void SetUiGroup(List<TGroupKey> groups)
