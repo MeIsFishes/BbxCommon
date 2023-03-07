@@ -18,15 +18,15 @@ namespace BbxCommon
 
     public class ObjectPool<T> : Singleton<ObjectPool<T>>, IObjectPoolHandler where T : PooledObject, new()
     {
-        private static UniqueIdGenerator m_s_IDGenerator = new UniqueIdGenerator();
-        private List<T> m_Pool = new List<T>();
+        private static UniqueIdGenerator m_IDGenerator = new UniqueIdGenerator();
+        private static List<T> m_Pool = new List<T>();
 
         /// <summary>
         /// Allocate an object of given type from pool, and it will call OnAllocate().
         /// </summary>
         public static T Alloc()
         {
-            var objectSet = Instance.m_Pool;
+            var objectSet = m_Pool;
             T res;
             if (objectSet.Count > 0)
             {
@@ -37,31 +37,31 @@ namespace BbxCommon
             }
             res = new T();
             res.OnAllocate();
-            res.UniqueID = m_s_IDGenerator.GenerateID();
+            res.UniqueID = m_IDGenerator.GenerateID();
             return res;
         }
 
         /// <summary>
         /// Create a large object pool.
         /// </summary>
-        public static void StaticCreatePool()
+        public static void CreatePool()
         {
-            StaticCreatePool(128);
+            CreatePool(128);
         }
 
         /// <summary>
         /// Create a object pool with given size.
         /// </summary>
-        public static void StaticCreatePool(uint size)
+        public static void CreatePool(uint size)
         {
-            if (Instance.m_Pool.Count == 0)
+            if (m_Pool.Count == 0)
             {
                 for (int i = 0; i < size; i++)
                 {
                     var item = new T();
-                    Instance.m_Pool.Add(item);
+                    m_Pool.Add(item);
                     item.ObjectPoolBelongs = Instance;
-                    item.UniqueID = m_s_IDGenerator.GenerateID();
+                    item.UniqueID = m_IDGenerator.GenerateID();
                 }
             }
         }
@@ -73,7 +73,7 @@ namespace BbxCommon
         {
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
-            obj.UniqueID = m_s_IDGenerator.GenerateID();
+            obj.UniqueID = m_IDGenerator.GenerateID();
         }
 
         void IObjectPoolHandler.Collect(IPooledObject obj)
@@ -83,10 +83,12 @@ namespace BbxCommon
         }
     }
 
+    // a syntactic sugar class
     public static class ObjectPool
     {
         /// <summary>
         /// Check the given reference, allocate and return a pooled object if it is null.
+        /// Example: obj = AllocIfNull(obj);
         /// </summary>
         public static Type AllocIfNull<Type>(Type reference) where Type : PooledObject, new()
         {
