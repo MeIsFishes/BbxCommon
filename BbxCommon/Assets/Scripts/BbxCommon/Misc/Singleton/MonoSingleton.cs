@@ -2,9 +2,9 @@
 
 namespace BbxCommon
 {
-    public class MonoSingleton<T> : MonoBehaviour, IDestroySingleton where T : MonoSingleton<T>
+    public class MonoSingleton<T> : MonoBehaviour, ISingleton where T : MonoSingleton<T>
     {
-        private static MonoSingleton<T> m_s_SingleInstance;
+        private static MonoSingleton<T> m_SingleInstance;
 
         protected void Awake()
         {
@@ -14,17 +14,17 @@ namespace BbxCommon
         // Remember to call InitSingleton() in child class.
         protected void InitSingleton()
         {
-            if (m_s_SingleInstance != null && m_s_SingleInstance != this)
+            if (m_SingleInstance != null && m_SingleInstance != this)
             {
                 Debug.LogWarning("Find the second instance of a singleton!");
                 Destroy(this.gameObject);
-                SingletonManager.Instance.AddSingleton(m_s_SingleInstance);
+                SingletonManager.Instance.AddSingleton(m_SingleInstance);
                 return;
             }
-            else if (m_s_SingleInstance == null)
+            else if (m_SingleInstance == null)
             {
-                m_s_SingleInstance = this;
-                SingletonManager.Instance.AddSingleton(m_s_SingleInstance);
+                m_SingleInstance = this;
+                SingletonManager.Instance.AddSingleton(m_SingleInstance);
             }
         }
 
@@ -32,26 +32,30 @@ namespace BbxCommon
         {
             get
             {
-                if (m_s_SingleInstance != null)
+                if (m_SingleInstance != null)
                 {
-                    return (T)m_s_SingleInstance;
+                    return (T)m_SingleInstance;
                 }
                 var go = new GameObject(typeof(T).Name);
-                m_s_SingleInstance = go.AddComponent<T>();
-                SingletonManager.Instance.AddSingleton(m_s_SingleInstance);
-                return (T)m_s_SingleInstance;
+                m_SingleInstance = go.AddComponent<T>();
+                SingletonManager.Instance.AddSingleton(m_SingleInstance);
+                return (T)m_SingleInstance;
             }
         }
 
-        void IDestroySingleton.DestroyStaticSingleton()
+        void ISingleton.InitSingleton()
+        {
+            OnSingletonInit();
+        }
+
+        protected virtual void OnSingletonInit() { }
+
+        void ISingleton.DestroySingleton()
         {
             OnSingletonDestroy();
-            m_s_SingleInstance = null;
+            m_SingleInstance = null;
         }
 
-        protected virtual void OnSingletonDestroy()
-        {
-
-        }
+        protected virtual void OnSingletonDestroy() { }
     }
 }

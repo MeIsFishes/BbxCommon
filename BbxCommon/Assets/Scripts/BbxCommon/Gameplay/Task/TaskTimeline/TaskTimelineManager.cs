@@ -25,7 +25,7 @@ namespace BbxCommon.TaskInternal
             foreach (var timeline in m_StoppedSet)
             {
                 m_TaskTimelineSet.Remove(timeline);
-                timeline.Collect();
+                timeline.CollectToPool();
             }
             m_StoppedSet.Clear();
         }

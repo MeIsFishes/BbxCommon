@@ -9,7 +9,7 @@ namespace BbxCommon
         /// <summary>
         /// Call OnCollect() and tell the object pool this object is ready to be reuse.
         /// </summary>
-        public void Collect()
+        public void CollectToPool()
         {
             if (ObjectPoolBelongs != null)
                 ObjectPoolBelongs.Collect(this);

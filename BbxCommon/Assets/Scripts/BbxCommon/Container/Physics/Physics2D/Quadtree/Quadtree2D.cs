@@ -52,7 +52,7 @@ namespace BbxCommon.Container
             var item = ObjectPool<ColliderItem2DCircle>.Alloc();
             item.Init(circle.Position, circle.Radius);
             var res = Root.CheckCollision(item);
-            item.Collect();
+            item.CollectToPool();
             return res;
         }
 

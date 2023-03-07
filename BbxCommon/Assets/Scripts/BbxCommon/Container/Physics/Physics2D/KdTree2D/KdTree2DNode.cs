@@ -88,13 +88,13 @@ namespace BbxCommon.Container
             if (IsLeaf)
             {
                 m_ColliderItemSet.Clear();
-                Collect();
+                CollectToPool();
             }
             else
             {
                 ChildLow.DestroyTree();
                 ChildHigh.DestroyTree();
-                Collect();
+                CollectToPool();
             }
         }
 
@@ -194,19 +194,19 @@ namespace BbxCommon.Container
             if (Parent == null)
             {
                 KdTreeInstance.Root = anotherNode;
-                Collect();
+                CollectToPool();
             }
             else
             {
                 if (Parent.ChildLow == this)
                 {
                     Parent.ChildLow = anotherNode;
-                    Collect();
+                    CollectToPool();
                 }
                 else
                 {
                     Parent.ChildHigh = anotherNode;
-                    Collect();
+                    CollectToPool();
                 }
             }
         }

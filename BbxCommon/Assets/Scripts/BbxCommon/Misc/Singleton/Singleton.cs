@@ -11,32 +11,36 @@ namespace BbxCommon
 
     // Warning!! If you are writing a singleton for a monobehavior, see MonoSingleton.
     
-    public class Singleton<T> : IDestroySingleton where T : Singleton<T>, new()
+    public class Singleton<T> : ISingleton where T : Singleton<T>, new()
     {
-        protected static T m_s_SingleInstance;
+        private static T m_SingleInstance;
 
         public static T Instance
         {
             get
             {
-                if (m_s_SingleInstance == null)
+                if (m_SingleInstance == null)
                 {
-                    m_s_SingleInstance = new T();
-                    SingletonManager.Instance.AddSingleton(m_s_SingleInstance);
+                    m_SingleInstance = new T();
+                    SingletonManager.Instance.AddSingleton(m_SingleInstance);
                 }
-                return m_s_SingleInstance;
+                return m_SingleInstance;
             }
         }
 
-        void IDestroySingleton.DestroyStaticSingleton()
+        public void InitSingleton()
+        {
+            OnSingletonInit();
+        }
+
+        protected virtual void OnSingletonInit() { }
+
+        void ISingleton.DestroySingleton()
         {
             OnSingletonDestroy();
-            m_s_SingleInstance = null;
+            m_SingleInstance = null;
         }
 
-        protected virtual void OnSingletonDestroy()
-        {
-
-        }
+        protected virtual void OnSingletonDestroy() { }
     }
 }

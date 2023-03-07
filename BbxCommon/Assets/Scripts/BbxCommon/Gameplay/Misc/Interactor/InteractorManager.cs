@@ -4,10 +4,14 @@ using UnityEngine;
 
 namespace BbxCommon
 {
+    /// <summary>
+    /// Register valid interacting requests to the manager, then it can solve those interacting request.
+    /// For example, it can announce or wake up those interactors which can response the current enabled interactor.
+    /// </summary>
     public class InteractorManager : Singleton<InteractorManager>
     {
         /// <summary>
-        /// Store target flags those key flag can interact with.
+        /// Stores flags in value which can response the key.
         /// </summary>
         private Dictionary<int, HashSet<int>> m_InteractingDatas = new Dictionary<int, HashSet<int>>();
         private Dictionary<int, HashSet<Interactor>> m_Interactors = new Dictionary<int, HashSet<Interactor>>();
@@ -55,6 +59,9 @@ namespace BbxCommon
                 Debug.LogWarning("There is no such a requestor existed. It is no need to unregister!");
         }
 
+        /// <summary>
+        /// Interactors should be added to manager, or it cannot response interacting events.
+        /// </summary>
         public void AddInteractor(params Interactor[] interactors)
         {
             foreach (var interactor in interactors)

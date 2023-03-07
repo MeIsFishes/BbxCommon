@@ -3,8 +3,8 @@ using UnityEditor;
 
 namespace BbxCommon
 {
-    #region RandomFunction
-    public static class RandomFunction
+    #region RandomFunc
+    public static class RandomFunc
     {
         /// <summary>
         /// Input a probability in [0, 1], return if it hits.
@@ -49,8 +49,8 @@ namespace BbxCommon
     }
     #endregion
 
-    #region AssetFunction
-    public static class AssetFunction
+    #region AssetFunc
+    public static class AssetFunc
     {
         public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
         {

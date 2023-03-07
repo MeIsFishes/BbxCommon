@@ -45,7 +45,7 @@ namespace BbxCommon
                 {
                     task.Exit();
                 }
-                task.Collect();
+                task.CollectToPool();
                 m_TaskSet.Remove(task);
             }
             m_FinishedSet.Clear();

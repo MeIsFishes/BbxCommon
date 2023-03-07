@@ -138,7 +138,7 @@ namespace BbxCommon
             StopTasks = true;
             if (AutoCollectContext)
             {
-                Context.Collect();
+                Context.CollectToPool();
             }
             AutoCollectContext = true;
             Context = null;

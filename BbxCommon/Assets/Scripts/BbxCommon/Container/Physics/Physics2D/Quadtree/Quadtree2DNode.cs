@@ -91,7 +91,7 @@ namespace BbxCommon.Container
         {
             if (IsLeaf)
             {
-                Collect();
+                CollectToPool();
             }
             else
             {
@@ -99,7 +99,7 @@ namespace BbxCommon.Container
                 {
                     Children[i].DestroyTree();
                 }
-                Collect();
+                CollectToPool();
             }
         }
 
@@ -165,7 +165,7 @@ namespace BbxCommon.Container
                 for (int i = 0; i < 4; i++)
                 {
                     Children[i].MergeTo(this);
-                    Children[i].Collect();
+                    Children[i].CollectToPool();
                 }
             }
         }
