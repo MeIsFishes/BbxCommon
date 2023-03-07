@@ -5,6 +5,9 @@ namespace Dcg.Ui
 {
     public class UiDiceView : UiViewBase
     {
+        public UiDragable UiDragable;
+        public UiInteractor UiInteractor;
+
         public override string GetResourcePath()
         {
             return "DndCardGame/Prefabs/Ui/Dice";

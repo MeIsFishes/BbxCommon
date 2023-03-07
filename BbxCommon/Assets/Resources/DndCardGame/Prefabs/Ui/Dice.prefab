@@ -87,9 +87,6 @@ GameObject:
   - component: {fileID: 4951077519277204317}
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7220269692404147734}
-  - component: {fileID: 7235780622827308433}
-  - component: {fileID: 7426779034860668871}
-  - component: {fileID: 4503878932744420213}
   m_Layer: 5
   m_Name: Dice
   m_TagString: Untagged
@@ -109,7 +106,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 6529690283084362109}
+  - {fileID: 1392860749174005850}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -139,13 +136,55 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultOpen: 0
---- !u!114 &7235780622827308433
+  UiDragable: {fileID: 3682755452414818849}
+  UiInteractor: {fileID: 2358620174404244115}
+--- !u!1 &2362882392947419803
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1392860749174005850}
+  - component: {fileID: 3682755452414818849}
+  - component: {fileID: 2358620174404244115}
+  - component: {fileID: 8426660223054728468}
+  m_Layer: 5
+  m_Name: Root
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1392860749174005850
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2362882392947419803}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 6529690283084362109}
+  m_Father: {fileID: 4951077519277204317}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 160, y: 30}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &3682755452414818849
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1372915186548853049}
+  m_GameObject: {fileID: 2362882392947419803}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 898a15a10c7d64345a9cb3b147a16cd8, type: 3}
@@ -161,13 +200,13 @@ MonoBehaviour:
   - {fileID: 477790579056644274}
   DragItems:
   - {fileID: 477790579056644274}
---- !u!114 &7426779034860668871
+--- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1372915186548853049}
+  m_GameObject: {fileID: 2362882392947419803}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 00b07092a9e9d004a9606b18c2e5ae23, type: 3}
@@ -176,13 +215,13 @@ MonoBehaviour:
   InteractFlags: 
   AutoInitUiDragable: 1
   UiDragableRef: {fileID: 0}
---- !u!114 &4503878932744420213
+--- !u!114 &8426660223054728468
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1372915186548853049}
+  m_GameObject: {fileID: 2362882392947419803}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6367c7cd441bc5a47a07b678fe1744c5, type: 3}
@@ -364,7 +403,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5755807715805180135}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -373,7 +412,7 @@ RectTransform:
   - {fileID: 7946756624100490363}
   - {fileID: 4958284052399543040}
   - {fileID: 8141433820299403370}
-  m_Father: {fileID: 4951077519277204317}
+  m_Father: {fileID: 1392860749174005850}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
