@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,7 +7,7 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public class UiInteractor : Interactor
+    public class UiInteractor : Interactor, IExtendUiItem
     {
         #region Wrapper
         public struct UiInteractorWrapper
@@ -38,10 +39,18 @@ namespace BbxCommon.Ui
 
         public UiInteractorWrapper Wrapper;
 
+        [NonSerialized]
+        public UiControllerBase UiController;
+
         private void Awake()
         {
             Wrapper = new UiInteractorWrapper(this);
             InitUiDragable();
+        }
+
+        void IExtendUiItem.Init(UiControllerBase uiController)
+        {
+            UiController = uiController;
         }
         #endregion
 

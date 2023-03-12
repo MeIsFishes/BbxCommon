@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace BbxCommon.Ui
@@ -31,6 +32,14 @@ namespace BbxCommon.Ui
 
         public void Init()
         {
+            var uiItems = SimplePool<List<IExtendUiItem>>.Alloc();
+            GetComponentsInChildren(uiItems);
+            foreach (var item in uiItems)
+            {
+                item.Init(this);
+            }
+            uiItems.CollectToPool();
+
             OnUiInit();
         }
 

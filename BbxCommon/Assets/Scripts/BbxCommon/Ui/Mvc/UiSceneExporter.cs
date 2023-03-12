@@ -31,6 +31,8 @@ namespace BbxCommon.Ui
                 data.Pivot = (uiView.transform as RectTransform).pivot;
                 asset.UiObjectDatas.Add(data);
             }
+            EditorUtility.SetDirty(asset);
+            AssetDatabase.SaveAssets();
             Debug.Log("Exported UiSceneAsset to " + path + ".");
         }
     }

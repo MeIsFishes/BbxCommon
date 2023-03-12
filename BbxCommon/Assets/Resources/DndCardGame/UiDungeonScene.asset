@@ -12,4 +12,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5f0e18b2d261e954b91f2bc9c06f1a8b, type: 3}
   m_Name: UiDungeonScene
   m_EditorClassIdentifier: 
-  UiObjectDatas: []
+  UiObjectDatas:
+  - PrefabPath: DndCardGame/Prefabs/Ui/Dice
+    UiGroup: 1
+    DefaultOpen: 1
+    Position: {x: 0, y: -250, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: DndCardGame/Prefabs/Ui/DiceFrame
+    UiGroup: 1
+    DefaultOpen: 1
+    Position: {x: 0, y: 193, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
