@@ -36,6 +36,7 @@ namespace BbxCommon.Ui
             }
             var uiController = uiGameObject.AddMissingComponent(uiView.GetControllerType()) as UiControllerBase;
             uiController.SetView(uiView);
+            uiController.Init();
             // process defaultOpen
             if (defaultOpen)
                 uiController.Open();

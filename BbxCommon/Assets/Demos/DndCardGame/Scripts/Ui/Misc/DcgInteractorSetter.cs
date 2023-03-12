@@ -1,6 +1,6 @@
 using BbxCommon;
 
-namespace Dcg.Ui
+namespace Dcg
 {
     public enum EInteractorFlag
     {

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -13,12 +14,12 @@ namespace BbxCommon
         public bool AddedToManager { get; protected set; }
 
         public UnityAction<Interactor> OnInteractorAwake;
-        public UnityAction<Interactor> OnInteractWith;
+        public UnityAction<Interactor, Interactor> OnInteract;
         public UnityAction OnInteractorSleep;
 
         public void InteractAwake(Interactor awaker) { OnInteractorAwake?.Invoke(awaker); }
 
-        public void InteractWith(Interactor item) { OnInteractWith?.Invoke(item); }
+        public void Interact(Interactor requester, Interactor responser) { OnInteract?.Invoke(requester, responser); }
 
         public void InteractSleep() { OnInteractorSleep?.Invoke(); }
 
@@ -45,7 +46,7 @@ namespace BbxCommon
         }
 
 
-        public void SetInteractFlags<TEnum>(params TEnum[] flags) where TEnum : System.Enum
+        public void SetInteractFlags<TEnum>(params TEnum[] flags) where TEnum : Enum
         {
             if (AddedToManager)
                 InteractorManager.Instance.RemoveInteractor(this);
@@ -57,7 +58,7 @@ namespace BbxCommon
                 InteractorManager.Instance.AddInteractor(this);
         }
 
-        public void SetInteractFlags<TEnum>(List<TEnum> flags) where TEnum : System.Enum
+        public void SetInteractFlags<TEnum>(List<TEnum> flags) where TEnum : Enum
         {
             if (AddedToManager)
                 InteractorManager.Instance.RemoveInteractor(this);
@@ -67,6 +68,16 @@ namespace BbxCommon
             }
             if (AddedToManager)
                 InteractorManager.Instance.AddInteractor(this);
+        }
+
+        public bool HasFlag(int flag)
+        {
+            return InteractFlags.Contains(flag);
+        }
+
+        public bool HasFlag<TEnum>(TEnum flag) where TEnum : Enum
+        {
+            return InteractFlags.Contains(flag.GetHashCode());
         }
     }
 }

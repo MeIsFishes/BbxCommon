@@ -65,12 +65,15 @@ namespace BbxCommon.Ui
 
         // internal datas
         [NonSerialized]
+        public UiControllerBase UiController;
+        [NonSerialized]
         public float DraggedTime;
         private bool m_PointerIn;
         private bool m_Dragging;
         private PointerEventData m_CurrentData;
         private Vector3 m_DragOffset;
         private Vector3 m_StartPos;
+        private int m_OriginalSiblingIndex;
 
         // wrapper
         public UiDragableWrapper Wrapper;
@@ -100,6 +103,11 @@ namespace BbxCommon.Ui
 
             if (m_Dragging)
                 DraggedTime += BbxRawTimer.DeltaTime;
+        }
+
+        public void Init(UiControllerBase uiController)
+        {
+            UiController = uiController;
         }
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
@@ -148,6 +156,9 @@ namespace BbxCommon.Ui
             if (AlwaysCenter && CenterWhenDown)
                 transform.position = eventData.position.AsVector3XY();
 
+            m_OriginalSiblingIndex = UiController.transform.GetSiblingIndex();
+            UiController.transform.SetAsLastSibling();
+
             OnDragStart?.Invoke(eventData);
         }
 
@@ -157,6 +168,8 @@ namespace BbxCommon.Ui
 
             if (TurnBackWhenUp)
                 transform.position = m_StartPos;
+
+            UiController.transform.SetSiblingIndex(m_OriginalSiblingIndex);
 
             OnDragEnd?.Invoke(eventData);
         }

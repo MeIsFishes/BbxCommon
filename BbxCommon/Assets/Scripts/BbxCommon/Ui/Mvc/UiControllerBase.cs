@@ -19,11 +19,6 @@ namespace BbxCommon.Ui
         #endregion
 
         #region InitAndOpen
-        private void Awake()
-        {
-            OnUiInit();
-        }
-
         private void OnEnable()
         {
             OnUiOpen();
@@ -32,6 +27,11 @@ namespace BbxCommon.Ui
         public void Open()
         {
             gameObject.SetActive(true);
+        }
+
+        public void Init()
+        {
+            OnUiInit();
         }
 
         /// <summary>

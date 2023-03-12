@@ -24,7 +24,7 @@ namespace BbxCommon.Ui
             /// </summary>
             public UnityAction<Interactor> OnInteractorTouchEnd { get { return m_Ref.OnInteractorTouchEnd; } set { m_Ref.OnInteractorTouchEnd = value; } }
             public UnityAction<Interactor> OnInteractorAwake { get { return m_Ref.OnInteractorAwake; } set { m_Ref.OnInteractorAwake = value; } }
-            public UnityAction<Interactor> OnInteractWith { get { return m_Ref.OnInteractWith; } set { m_Ref.OnInteractWith = value; } }
+            public UnityAction<Interactor, Interactor> OnInteract { get { return m_Ref.OnInteract; } set { m_Ref.OnInteract = value; } }
             public UnityAction OnInteractorSleep { get { return m_Ref.OnInteractorSleep; } set { m_Ref.OnInteractorSleep = value; } }
         }
         #endregion
@@ -95,16 +95,14 @@ namespace BbxCommon.Ui
         {
             var results = SimplePool<List<RaycastResult>>.Alloc();
             EventSystem.current.RaycastAll(eventData, results);
-            foreach (var result in results)
-            {
-                if (result.gameObject == this.gameObject)   // search for the first other interactor
-                    continue;
-                if (result.gameObject.TryGetComponent<UiInteractor>(out var uiInteractor))
-                {
-                    InteractWith(uiInteractor);
-                    break;
-                }
-            }
+            var result = results[0];
+            // search for the first other interactor
+            if (result.gameObject == this.gameObject && results.Count > 1)
+                result = results[1];
+            var responser = result.gameObject.GetComponentInParent<UiInteractor>();
+            // invoke both interactors
+            this.Interact(this, responser);
+            responser.Interact(this, responser);
             results.CollectToPool();
         }
         #endregion
