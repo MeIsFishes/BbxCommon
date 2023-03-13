@@ -136,6 +136,12 @@ namespace BbxCommon
             SimplePool<HashSet<T>>.Collect(set);
         }
 
+        public static void TryAdd<T>(this HashSet<T> set, T element)
+        {
+            if (set.Contains(element) == false)
+                set.Add(element);
+        }
+
         /// <summary>
         /// Add array's members to the HashSet.
         /// </summary>

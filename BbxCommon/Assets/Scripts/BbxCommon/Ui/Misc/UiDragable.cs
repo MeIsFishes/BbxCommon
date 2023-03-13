@@ -32,12 +32,17 @@ namespace BbxCommon.Ui
 
         #region Variables
         // public settings
-        public bool AlwaysCenter = true;
-        [ShowIf("AlwaysCenter")]
-        [Tooltip("If true, the object move to mouse's position when it is down.")]
-        public bool CenterWhenDown = true;
         [Tooltip("If true, the object will turn back to its start position when dragging ends.")]
         public bool TurnBackWhenDragEnd;
+
+        [FoldoutGroup("RelativeOffset")]
+        [Tooltip("If true, item will be moved to a relative position with pointer when dragging.")]
+        public bool AlwaysRelativeOffset = true;
+        [FoldoutGroup("RelativeOffset"), ShowIf("AlwaysRelativeOffset")]
+        public Vector2 RelativeOffset;
+        [FoldoutGroup("RelativeOffset"), ShowIf("AlwaysRelativeOffset")]
+        [Tooltip("If true, the object move to relative position with pointer when it is pressed down.")]
+        public bool SetWhenDown = true;
 
         // callbacks
         public UnityAction<PointerEventData> OnPointerEnter;
@@ -90,10 +95,10 @@ namespace BbxCommon.Ui
 
         void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
         {
+            OnPointerEnter?.Invoke(eventData);
+
             m_PointerIn = true;
             m_CurrentData = eventData;
-
-            OnPointerEnter?.Invoke(eventData);
         }
 
         void IPointerMoveHandler.OnPointerMove(PointerEventData eventData)
@@ -103,47 +108,47 @@ namespace BbxCommon.Ui
 
         void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
         {
+            OnPointerExit?.Invoke(eventData);
+
             m_PointerIn = false;
             m_CurrentData = null;
-
-            OnPointerExit?.Invoke(eventData);
         }
 
 
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
-            if (AlwaysCenter)
-                transform.position = eventData.position;
+            OnDrag?.Invoke(eventData);
+
+            if (AlwaysRelativeOffset)
+                transform.position = eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y);
             else
                 transform.position = eventData.position.AsVector3XY() + m_DragOffset;
-
-            OnDrag?.Invoke(eventData);
         }
 
         void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
         {
+            OnBeginDrag?.Invoke(eventData);
+
             m_Dragging = true;
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
 
-            if (AlwaysCenter && CenterWhenDown)
-                transform.position = eventData.position.AsVector3XY();
+            if (AlwaysRelativeOffset && SetWhenDown)
+                transform.position = (eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY();
 
             m_OriginalSiblingIndex = UiController.transform.GetSiblingIndex();
             UiController.transform.SetAsLastSibling();
-
-            OnBeginDrag?.Invoke(eventData);
         }
 
         void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
         {
+            OnEndDrag?.Invoke(eventData);
+
             m_Dragging = false;
 
             if (TurnBackWhenDragEnd)
                 transform.position = m_StartPos;
 
             UiController.transform.SetSiblingIndex(m_OriginalSiblingIndex);
-
-            OnEndDrag?.Invoke(eventData);
         }
         #endregion
     }

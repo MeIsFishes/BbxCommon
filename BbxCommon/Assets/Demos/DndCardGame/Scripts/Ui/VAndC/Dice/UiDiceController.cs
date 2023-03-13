@@ -18,13 +18,13 @@ namespace Dcg.Ui
         private void OnBeginDrag(PointerEventData eventData)
         {
             m_View.OnDragGroup.Wrapper.SetActive();
-            transform.localScale = new Vector3(m_View.OnDragScale, m_View.OnDragScale, m_View.OnDragScale);
+            m_View.UiDragable.transform.localScale = new Vector3(m_View.OnDragScale, m_View.OnDragScale, m_View.OnDragScale);
         }
 
         private void OnEndDrag(PointerEventData eventData)
         {
             m_View.OnDragGroup.Wrapper.SetInactive();
-            transform.localScale = Vector3.one;
+            m_View.UiDragable.transform.localScale = Vector3.one;
         }
 
         private void OnPointerEnter(PointerEventData eventData)

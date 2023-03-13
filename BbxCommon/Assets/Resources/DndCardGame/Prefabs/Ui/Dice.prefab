@@ -196,9 +196,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 898a15a10c7d64345a9cb3b147a16cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AlwaysCenter: 1
-  CenterWhenDown: 1
   TurnBackWhenDragEnd: 1
+  AlwaysRelativeOffset: 1
+  RelativeOffset: {x: -40, y: 90}
+  SetWhenDown: 1
 --- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0

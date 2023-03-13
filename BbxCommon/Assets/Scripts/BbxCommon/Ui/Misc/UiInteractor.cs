@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
 using Sirenix.OdinInspector;
@@ -39,13 +40,30 @@ namespace BbxCommon.Ui
 
         public UiInteractorWrapper Wrapper;
 
+        // internal datas
         [NonSerialized]
         public UiControllerBase UiController;
+        /// <summary>
+        /// Raycast targets under the interactor's root. When searching interacting target, GameObjects in the set will be ignored.
+        /// </summary>
+        private HashSet<GameObject> m_RaycastTargets = new HashSet<GameObject>();
 
         private void Awake()
         {
             Wrapper = new UiInteractorWrapper(this);
+            SearchAllRaycastTargets();
             InitUiDragable();
+        }
+
+        private void SearchAllRaycastTargets()
+        {
+            var graphics = SimplePool<List<Graphic>>.Alloc();
+            GetComponentsInChildren(graphics);
+            foreach (var graphic in graphics)
+            {
+                m_RaycastTargets.TryAdd(graphic.gameObject);
+            }
+            graphics.CollectToPool();
         }
 
         void IExtendUiItem.Init(UiControllerBase uiController)
@@ -104,16 +122,21 @@ namespace BbxCommon.Ui
         {
             var results = SimplePool<List<RaycastResult>>.Alloc();
             EventSystem.current.RaycastAll(eventData, results);
-            if (results.Count > 0)
+            foreach (var result in results)
             {
-                // search for the first other interactor
-                var result = results[0];
-                if (result.gameObject == this.gameObject && results.Count > 1)
-                    result = results[1];
-                var responser = result.gameObject.GetComponentInParent<UiInteractor>();
-                // invoke both interactors
-                this.Interact(this, responser);
-                responser.Interact(this, responser);
+                if (m_RaycastTargets.Contains(result.gameObject))
+                    continue;
+                else
+                {
+                    var responser = result.gameObject.GetComponentInParent<UiInteractor>();
+                    // invoke both interactors
+                    if (responser != null)
+                    {
+                        this.Interact(this, responser);
+                        responser.Interact(this, responser);
+                    }
+                    break;
+                }
             }
             results.CollectToPool();
         }

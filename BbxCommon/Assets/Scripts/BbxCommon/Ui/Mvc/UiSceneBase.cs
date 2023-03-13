@@ -26,7 +26,7 @@ namespace BbxCommon.Ui
             GameObject root;
             if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
                 CreateUiGroupRoot(uiGroup);
-            uiGameObject.transform.parent = root.transform;
+            uiGameObject.transform.SetParent(root.transform);
             // create controller and set view
             var uiView = uiGameObject.GetComponent<UiViewBase>();
             if (uiView == null)
@@ -90,7 +90,7 @@ namespace BbxCommon.Ui
                 root.name = uiGroup.ToString();
             else
                 root.name = name;
-            root.transform.parent = this.transform;
+            root.transform.SetParent(this.transform);
             m_UiGroups[uiGroup] = root;
             return root;
         }
