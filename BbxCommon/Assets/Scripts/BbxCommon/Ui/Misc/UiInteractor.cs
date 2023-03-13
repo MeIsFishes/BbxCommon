@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public class UiInteractor : Interactor, IExtendUiItem
+    public class UiInteractor : Interactor, IBbxUiItem
     {
         #region Wrapper
         public struct UiInteractorWrapper
@@ -66,7 +66,7 @@ namespace BbxCommon.Ui
             graphics.CollectToPool();
         }
 
-        void IExtendUiItem.Init(UiControllerBase uiController)
+        void IBbxUiItem.Init(UiControllerBase uiController)
         {
             UiController = uiController;
         }

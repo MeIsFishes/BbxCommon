@@ -9,7 +9,7 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IExtendUiItem, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class UiDragable : MonoBehaviour, IBbxUiItem, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
     {
         #region Wrapper
         public struct UiDragableWrapper
@@ -88,7 +88,7 @@ namespace BbxCommon.Ui
                 DraggedTime += BbxRawTimer.DeltaTime;
         }
 
-        void IExtendUiItem.Init(UiControllerBase uiController)
+        void IBbxUiItem.Init(UiControllerBase uiController)
         {
             UiController = uiController;
         }

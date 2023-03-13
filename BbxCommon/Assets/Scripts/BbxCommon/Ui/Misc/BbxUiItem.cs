@@ -1,7 +1,7 @@
 
 namespace BbxCommon.Ui
 {
-    internal interface IExtendUiItem
+    internal interface IBbxUiItem
     {
         void Init(UiControllerBase uiController);
     }
