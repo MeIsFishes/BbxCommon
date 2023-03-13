@@ -62,7 +62,7 @@ namespace BbxCommon.Ui
         private bool m_Dragging;
         private PointerEventData m_CurrentData;
         private Vector3 m_DragOffset;
-        private Vector3 m_StartPos;
+        private Vector3 m_OriginalPos;
         private int m_OriginalSiblingIndex;
 
         // wrapper
@@ -73,11 +73,6 @@ namespace BbxCommon.Ui
         protected void Awake()
         {
             Wrapper = new UiDragableWrapper(this);
-        }
-
-        protected void OnEnable()
-        {
-            m_StartPos = transform.position;
         }
 
         protected void Update()
@@ -130,6 +125,8 @@ namespace BbxCommon.Ui
         {
             OnBeginDrag?.Invoke(eventData);
 
+            m_OriginalPos = transform.position;
+
             m_Dragging = true;
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
 
@@ -147,7 +144,7 @@ namespace BbxCommon.Ui
             m_Dragging = false;
 
             if (TurnBackWhenDragEnd)
-                transform.position = m_StartPos;
+                transform.position = m_OriginalPos;
 
             UiController.transform.SetSiblingIndex(m_OriginalSiblingIndex);
         }
