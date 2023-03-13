@@ -1,5 +1,7 @@
-using BbxCommon.Ui;
 using System;
+using UnityEngine;
+using BbxCommon;
+using BbxCommon.Ui;
 
 namespace Dcg.Ui
 {
@@ -7,6 +9,10 @@ namespace Dcg.Ui
     {
         public UiDragable UiDragable;
         public UiInteractor UiInteractor;
+        [Tooltip("GameObjects in the group will be shown when dragging, and be hidden otherwise.")]
+        public GameObjectGroup OnDragGroup;
+        [Tooltip("The value of local scale of the whole UI item when dragging.")]
+        public float OnDragScale;
 
         public override string GetResourcePath()
         {

@@ -16,7 +16,7 @@ namespace Dcg.Ui
         {
             if (requester.HasFlag(EInteractorFlag.Dice))
             {
-                m_View.DiceFilledGroup.SetActive();
+                m_View.DiceFilledGroup.Wrapper.SetActive();
             }
         }
     }

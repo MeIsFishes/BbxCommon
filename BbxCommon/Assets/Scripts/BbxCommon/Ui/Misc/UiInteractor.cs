@@ -75,7 +75,7 @@ namespace BbxCommon.Ui
             }
             // init
             UiDragableRef.Wrapper.OnDrag += OnDrag;
-            UiDragableRef.Wrapper.OnDragEnd += OnDragEnd;
+            UiDragableRef.Wrapper.OnEndDrag += OnDragEnd;
         }
 
         private void OnDrag(PointerEventData eventData)
@@ -104,14 +104,17 @@ namespace BbxCommon.Ui
         {
             var results = SimplePool<List<RaycastResult>>.Alloc();
             EventSystem.current.RaycastAll(eventData, results);
-            var result = results[0];
-            // search for the first other interactor
-            if (result.gameObject == this.gameObject && results.Count > 1)
-                result = results[1];
-            var responser = result.gameObject.GetComponentInParent<UiInteractor>();
-            // invoke both interactors
-            this.Interact(this, responser);
-            responser.Interact(this, responser);
+            if (results.Count > 0)
+            {
+                // search for the first other interactor
+                var result = results[0];
+                if (result.gameObject == this.gameObject && results.Count > 1)
+                    result = results[1];
+                var responser = result.gameObject.GetComponentInParent<UiInteractor>();
+                // invoke both interactors
+                this.Interact(this, responser);
+                responser.Interact(this, responser);
+            }
             results.CollectToPool();
         }
         #endregion
