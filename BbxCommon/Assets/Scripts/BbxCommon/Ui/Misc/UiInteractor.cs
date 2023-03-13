@@ -17,6 +17,7 @@ namespace BbxCommon.Ui
 
             public UiInteractorWrapper(UiInteractor obj) { m_Ref = obj; }
 
+            public UiControllerBase UiController => m_Ref.UiController;
             /// <summary>
             /// Calls when dragging another interactor and touches.
             /// </summary>

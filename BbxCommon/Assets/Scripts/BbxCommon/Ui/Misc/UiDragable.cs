@@ -18,6 +18,7 @@ namespace BbxCommon.Ui
 
             public UiDragableWrapper(UiDragable obj) { m_Ref = obj; }
 
+            public UiControllerBase UiController => m_Ref.UiController;
             public UnityAction<PointerEventData> OnPointerEnter { get { return m_Ref.OnPointerEnter; } set { m_Ref.OnPointerEnter = value;} }
             public UnityAction<PointerEventData> OnPointerStay { get { return m_Ref.OnPointerStay; } set { m_Ref.OnPointerStay = value; } }
             public UnityAction<PointerEventData> OnPointerExit { get { return m_Ref.OnPointerExit; } set { m_Ref.OnPointerExit = value; } }
