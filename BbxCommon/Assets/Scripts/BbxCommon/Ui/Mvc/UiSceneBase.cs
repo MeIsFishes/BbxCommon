@@ -23,7 +23,7 @@ namespace BbxCommon.Ui
         {
             var uiGameObject = Instantiate(Resources.Load<GameObject>(path));
             // hangs UI to group
-            GameObject root;
+            Canvas root;
             if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
                 CreateUiGroupRoot(uiGroup);
             uiGameObject.transform.SetParent(root.transform);
@@ -70,7 +70,7 @@ namespace BbxCommon.Ui
         public TController GetUiController<TController>() where TController : UiControllerBase
         {
             m_UiControllers.TryGetValue(typeof(TController), out var uiController);
-            return uiController as TController;
+            return uiController == null ? null : uiController as TController;
         }
 
         public UiControllerBase GetUiController(Type type)
@@ -81,7 +81,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region UiGroup
-        protected Dictionary<TGroupKey, GameObject> m_UiGroups = new Dictionary<TGroupKey, GameObject>();
+        protected Dictionary<TGroupKey, Canvas> m_UiGroups = new Dictionary<TGroupKey, Canvas>();
 
         public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "")
         {
@@ -91,7 +91,7 @@ namespace BbxCommon.Ui
             else
                 root.name = name;
             root.transform.SetParent(this.transform);
-            m_UiGroups[uiGroup] = root;
+            m_UiGroups[uiGroup] = root.GetComponent<Canvas>();
             return root;
         }
 
@@ -99,10 +99,11 @@ namespace BbxCommon.Ui
         {
             foreach (var pair in m_UiGroups)
             {
+                // set Canvas enable instead of setting GameObject to avoid destroying batched and rendered data
                 if (groups.Contains(pair.Key))
-                    pair.Value.SetActive(true);
+                    pair.Value.enabled = true;
                 else
-                    pair.Value.SetActive(false);
+                    pair.Value.enabled = false;
             }
         }
 
