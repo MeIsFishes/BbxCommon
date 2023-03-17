@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using BbxCommon.GameEngine;
 
 namespace BbxCommon
 {
@@ -30,8 +31,18 @@ namespace BbxCommon
         }
     }
 
-    public abstract class InteractingDataAsset : ScriptableObject
+    public abstract class InteractingDataAsset : ScriptableObject, IEngineLoad
     {
         public abstract void ApplyInteractingData();
+
+        public void Load()
+        {
+            ApplyInteractingData();
+        }
+
+        public void Unload()
+        {
+
+        }
     }
 }
