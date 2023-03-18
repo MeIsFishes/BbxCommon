@@ -1,7 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
 
-namespace BbxCommon.GameEngine
+namespace BbxCommon.Framework
 {
     public interface IEngineLoad
     {
@@ -16,23 +15,16 @@ namespace BbxCommon.GameEngine
         void OnDestroy();
     }
 
-    public interface IEngineFixedUpdate
-    {
-        void OnCreate();
-        void OnFixedUpdate();
-        void OnDestroy();
-    }
-
     public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
-        public EngineLoadingWrapper LoadingWrapper;
-        public EngineTickingWrapper TickingWrapper;
+        public EngineLoadingWrapper LoadWrapper;
+        public EngineTickingWrapper TickWrapper;
 
         private void InitWrapper()
         {
-            LoadingWrapper = new EngineLoadingWrapper(this);
-            TickingWrapper = new EngineTickingWrapper(this);
+            LoadWrapper = new EngineLoadingWrapper(this);
+            TickWrapper = new EngineTickingWrapper(this);
         }
 
         public struct EngineLoadingWrapper
@@ -41,7 +33,7 @@ namespace BbxCommon.GameEngine
 
             public EngineLoadingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
-            public void AddGlobalLoadingItem(IEngineLoad item) => m_Ref.AddGlobalLoadingItem(item);
+            public void AddGlobalLoadItem(IEngineLoad item) => m_Ref.AddGlobalLoadItem(item);
         }
 
         public struct EngineTickingWrapper
@@ -51,7 +43,9 @@ namespace BbxCommon.GameEngine
             public EngineTickingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
             public void AddGlobalUpdateItem(IEngineUpdate item) => m_Ref.AddGlobalUpdateItem(item);
-            public void AddGlobalFixedUpdateItem(IEngineFixedUpdate item) => m_Ref.AddGlobalFixedUpdateItem(item);
+            public void AddGlobalUpdateItem<T>() where T : IEngineUpdate, new() => m_Ref.AddGlobalUpdateItem<T>();
+            public void AddGlobalFixedUpdateItem(IEngineUpdate item) => m_Ref.AddGlobalFixedUpdateItem(item);
+            public void AddGlobalFixedUpdateItem<T>() where T : IEngineUpdate, new() => m_Ref.AddGlobalFixedUpdateItem<T>();
         }
         #endregion
 
@@ -91,28 +85,28 @@ namespace BbxCommon.GameEngine
         #endregion
 
         #region EngineLoad
-        private List<IEngineLoad> m_GlobalLoadingItems = new List<IEngineLoad>();
+        private List<IEngineLoad> m_GlobalLoadItems = new List<IEngineLoad>();
 
         /// <summary>
         /// <para>
         /// Override and implement this function to set loading items those should be loaded when game starts.
         /// </para><para>
-        /// Consider adding items via the function <see cref="AddGlobalLoadingItem(IEngineLoad)"/>.
+        /// Consider adding items via the function <see cref="AddGlobalLoadItem(IEngineLoad)"/>.
         /// </para><para>
         /// For more functions about loading items, look into <see cref="EngineLoadingWrapper"/>.
         /// </para>
         /// </summary>
-        protected abstract void SetGlobalLoadingItems();
+        protected abstract void SetGlobalLoadItems();
 
-        public void AddGlobalLoadingItem(IEngineLoad item)
+        public void AddGlobalLoadItem(IEngineLoad item)
         {
-            m_GlobalLoadingItems.Add(item);
+            m_GlobalLoadItems.Add(item);
         }
 
         private void OnAwakeEngineLoad()
         {
-            SetGlobalLoadingItems();
-            foreach (var item in m_GlobalLoadingItems)
+            SetGlobalLoadItems();
+            foreach (var item in m_GlobalLoadItems)
             {
                 item.Load();
             }
@@ -120,7 +114,7 @@ namespace BbxCommon.GameEngine
 
         private void OnDestroyEngineLoad()
         {
-            foreach (var item in m_GlobalLoadingItems)
+            foreach (var item in m_GlobalLoadItems)
             {
                 item.Unload();
             }
@@ -129,34 +123,44 @@ namespace BbxCommon.GameEngine
 
         #region EngineTick
         private List<IEngineUpdate> m_GlobalUpdateItems = new List<IEngineUpdate>();
-        private List<IEngineFixedUpdate> m_GlobalFixedUpdateItems = new List<IEngineFixedUpdate>();
+        private List<IEngineUpdate> m_GlobalFixedUpdateItems = new List<IEngineUpdate>();
 
         /// <summary>
         /// <para>
         /// Override and implement this function to set tickable items which run throughout the whole game.
         /// </para><para>
-        /// For different call timings, use <see cref="AddGlobalUpdateItem(IEngineUpdate)"/> or <see cref="AddGlobalFixedUpdateItem(IEngineFixedUpdate)"/>.
+        /// For different call timings, use <see cref="AddGlobalUpdateItem(IEngineUpdate)"/> or <see cref="AddGlobalFixedUpdateItem(IEngineUpdate)"/>.
         /// </para><para>
         /// Recommends implementing tickable items by inheriting <see cref="EcsSystemBase"/> and its derived classes.
         /// </para><para>
         /// For more functions about ticking items, look into <see cref="EngineTickingWrapper"/>.
         /// </para>
         /// </summary>
-        protected abstract void SetGlobalTickingItems();
+        protected abstract void SetGlobalTickItems();
 
         public void AddGlobalUpdateItem(IEngineUpdate item)
         {
             m_GlobalUpdateItems.Add(item);
         }
 
-        public void AddGlobalFixedUpdateItem(IEngineFixedUpdate item)
+        public void AddGlobalUpdateItem<T>() where T : IEngineUpdate, new()
+        {
+            AddGlobalUpdateItem(new T());
+        }
+
+        public void AddGlobalFixedUpdateItem(IEngineUpdate item)
         {
             m_GlobalFixedUpdateItems.Add(item);
         }
 
+        public void AddGlobalFixedUpdateItem<T>() where T :IEngineUpdate, new()
+        {
+            AddGlobalFixedUpdateItem(new T());
+        }
+
         private void OnAwakeEngineTick()
         {
-            SetGlobalTickingItems();
+            SetGlobalTickItems();
         }
 
         private void OnStartEngineTick()
@@ -183,7 +187,7 @@ namespace BbxCommon.GameEngine
         {
             foreach (var item in m_GlobalFixedUpdateItems)
             {
-                item.OnFixedUpdate();
+                item.OnUpdate();
             }
         }
 

@@ -1,18 +1,18 @@
 using System.Collections.Generic;
 using UnityEngine;
 using BbxCommon;
-using BbxCommon.GameEngine;
+using BbxCommon.Framework;
 
 namespace Dcg
 {
     public class DcgGameEngine : GameEngineBase<DcgGameEngine>
     {
-        protected override void SetGlobalLoadingItems()
+        protected override void SetGlobalLoadItems()
         {
-            LoadingWrapper.AddGlobalLoadingItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
+            LoadWrapper.AddGlobalLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
         }
 
-        protected override void SetGlobalTickingItems()
+        protected override void SetGlobalTickItems()
         {
             
         }

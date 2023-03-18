@@ -1,9 +1,12 @@
 using Unity.Entities;
 
-namespace BbxCommon.GameEngine
+namespace BbxCommon.Framework
 {
+    /// <summary>
+    /// High-performance system, which is almost identical to Unity DOTS system.
+    /// </summary>
     [DisableAutoCreation]
-    public abstract partial class EcsSystemBase : SystemBase, IEngineUpdate
+    public abstract partial class EcsHpSystemBase : SystemBase, IEngineUpdate
     {
         void IEngineUpdate.OnCreate()
         {

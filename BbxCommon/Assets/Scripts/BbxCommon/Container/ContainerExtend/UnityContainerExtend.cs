@@ -1,11 +1,12 @@
 using System;
 using UnityEngine;
-using UnityEditor;
+using Unity.Mathematics;
 
 namespace BbxCommon
 {
     public static class UnityContainerExtend
     {
+        #region UnityEngine
         #region Vector
         public static Vector2 SetX(this Vector2 vector, float value)
         {
@@ -120,6 +121,11 @@ namespace BbxCommon
         {
             return new Quaternion(quaternion.x, quaternion.y, quaternion.z, value);
         }
+
+        public static float4 AsFloat4(this Quaternion quaternion)
+        {
+            return new float4(quaternion.x, quaternion.y, quaternion.z, quaternion.w);
+        }
         #endregion
 
         #region GameObject
@@ -148,6 +154,41 @@ namespace BbxCommon
             else
                 return comp;
         }
+        #endregion
+        #endregion
+
+        #region DOTS
+        #region float3
+        public static float3 SetX(this float3 target, float value)
+        {
+            return new float3(value, target.y, target.z);
+        }
+
+        public static float3 SetY(this float3 target, float value)
+        {
+            return new float3(target.x, value, target.z);
+        }
+
+        public static float3 SetZ(this float3 target, float value)
+        {
+            return new float3(target.x, target.y, value);
+        }
+
+        public static float3 AddX(this float3 target, float value)
+        {
+            return new float3(target.x + value, target.y, target.z);
+        }
+
+        public static float3 AddY(this float3 target, float value)
+        {
+            return new float3(target.x, target.y + value, target.z);
+        }
+
+        public static float3 AddZ(this float3 target, float value)
+        {
+            return new float3(target.x, target.y, target.z + value);
+        }
+        #endregion
         #endregion
     }
 }
