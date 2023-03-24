@@ -1,30 +1,42 @@
 using System.Collections.Generic;
+using Unity.Entities;
 
 namespace BbxCommon.Framework
 {
+    #region SystemGroup
+    public class UpdateSystemGroup : ComponentSystemGroup { }
+    #endregion
+
+    #region Interfaces
     public interface IEngineLoad
     {
         void Load();
         void Unload();
     }
-
-    public interface IEngineUpdate
-    {
-        void OnCreate();
-        void OnUpdate();
-        void OnDestroy();
-    }
+    #endregion
 
     public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
+        public EngineEcsWrapper EcsWrapper;
         public EngineLoadingWrapper LoadWrapper;
         public EngineTickingWrapper TickWrapper;
 
         private void InitWrapper()
         {
+            EcsWrapper = new EngineEcsWrapper(this);
             LoadWrapper = new EngineLoadingWrapper(this);
             TickWrapper = new EngineTickingWrapper(this);
+        }
+
+        public struct EngineEcsWrapper
+        {
+            private GameEngineBase<TEngine> m_Ref;
+
+            public EngineEcsWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+            public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new() => m_Ref.AddSingletonRawComponent<T>();
+            public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
         }
 
         public struct EngineLoadingWrapper
@@ -42,15 +54,13 @@ namespace BbxCommon.Framework
 
             public EngineTickingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
-            public void AddGlobalUpdateItem(IEngineUpdate item) => m_Ref.AddGlobalUpdateItem(item);
-            public void AddGlobalUpdateItem<T>() where T : IEngineUpdate, new() => m_Ref.AddGlobalUpdateItem<T>();
-            public void AddGlobalFixedUpdateItem(IEngineUpdate item) => m_Ref.AddGlobalFixedUpdateItem(item);
-            public void AddGlobalFixedUpdateItem<T>() where T : IEngineUpdate, new() => m_Ref.AddGlobalFixedUpdateItem<T>();
+            public void AddGlobalUpdateItem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalUpdateItem<T>();
+            public void AddGlobalFixedUpdateItem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalFixedUpdateItem<T>();
         }
         #endregion
 
         #region UnityCallbacks
-        private void Awake()
+        protected override void Awake()
         {
             base.Awake();
 
@@ -58,29 +68,40 @@ namespace BbxCommon.Framework
             
             InitWrapper();
 
+            OnAwakeWorld();
             OnAwakeEngineLoad();
             OnAwakeEngineTick();
-        }
-
-        private void Start()
-        {
-            OnStartEngineTick();
-        }
-
-        private void Update()
-        {
-            OnUpdateEngineTick();
-        }
-
-        private void FixedUpdate()
-        {
-            OnFixedUpdateEngineTick();
         }
 
         private void OnDestroy()
         {
             OnDestroyEngineLoad();
             OnDestroyEngineTick();
+        }
+        #endregion
+
+        #region Create World
+        private World m_EcsWorld;
+        private Entity m_SingletonEntity;
+
+        public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
+        {
+            return m_SingletonEntity.AddRawComponent<T>();
+        }
+
+        public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        {
+            return m_SingletonEntity.GetRawComponent<T>();
+        }
+
+        protected abstract void InitSingletonComponents();
+
+        private void OnAwakeWorld()
+        {
+            m_EcsWorld = World.DefaultGameObjectInjectionWorld;
+            m_EcsWorld.CreateSystem<UpdateSystemGroup>();
+            m_SingletonEntity = EcsApi.CreateEntity();
+            InitSingletonComponents();
         }
         #endregion
 
@@ -122,40 +143,29 @@ namespace BbxCommon.Framework
         #endregion
 
         #region EngineTick
-        private List<IEngineUpdate> m_GlobalUpdateItems = new List<IEngineUpdate>();
-        private List<IEngineUpdate> m_GlobalFixedUpdateItems = new List<IEngineUpdate>();
-
         /// <summary>
         /// <para>
         /// Override and implement this function to set tickable items which run throughout the whole game.
         /// </para><para>
-        /// For different call timings, use <see cref="AddGlobalUpdateItem(IEngineUpdate)"/> or <see cref="AddGlobalFixedUpdateItem(IEngineUpdate)"/>.
+        /// For different call timings, use <see cref="AddGlobalUpdateItem()"/> or <see cref="AddGlobalFixedUpdateItem()"/>.
         /// </para><para>
-        /// Recommends implementing tickable items by inheriting <see cref="EcsSystemBase"/> and its derived classes.
+        /// Recommends implementing tickable items by inheriting <see cref="EcsHpSystemBase"/> and its derived classes.
         /// </para><para>
         /// For more functions about ticking items, look into <see cref="EngineTickingWrapper"/>.
         /// </para>
         /// </summary>
         protected abstract void SetGlobalTickItems();
 
-        public void AddGlobalUpdateItem(IEngineUpdate item)
+        public void AddGlobalUpdateItem<T>() where T : EcsHpSystemBase, new()
         {
-            m_GlobalUpdateItems.Add(item);
+            var systemGroup = m_EcsWorld.GetExistingSystemManaged<UpdateSystemGroup>();
+            var system = m_EcsWorld.CreateSystemManaged<T>();
+            systemGroup.AddSystemToUpdateList(system);
         }
 
-        public void AddGlobalUpdateItem<T>() where T : IEngineUpdate, new()
+        public void AddGlobalFixedUpdateItem<T>() where T :EcsHpSystemBase, new()
         {
-            AddGlobalUpdateItem(new T());
-        }
-
-        public void AddGlobalFixedUpdateItem(IEngineUpdate item)
-        {
-            m_GlobalFixedUpdateItems.Add(item);
-        }
-
-        public void AddGlobalFixedUpdateItem<T>() where T :IEngineUpdate, new()
-        {
-            AddGlobalFixedUpdateItem(new T());
+            m_EcsWorld.GetOrCreateSystemManaged<FixedStepSimulationSystemGroup>().AddSystemToUpdateList(World.DefaultGameObjectInjectionWorld.CreateSystemManaged<T>());
         }
 
         private void OnAwakeEngineTick()
@@ -163,44 +173,10 @@ namespace BbxCommon.Framework
             SetGlobalTickItems();
         }
 
-        private void OnStartEngineTick()
-        {
-            foreach (var item in m_GlobalUpdateItems)
-            {
-                item.OnCreate();
-            }
-            foreach (var item in m_GlobalFixedUpdateItems)
-            {
-                item.OnCreate();
-            }
-        }
-
-        private void OnUpdateEngineTick()
-        {
-            foreach (var item in m_GlobalUpdateItems)
-            {
-                item.OnUpdate();
-            }
-        }
-
-        private void OnFixedUpdateEngineTick()
-        {
-            foreach (var item in m_GlobalFixedUpdateItems)
-            {
-                item.OnUpdate();
-            }
-        }
 
         private void OnDestroyEngineTick()
         {
-            foreach (var item in m_GlobalUpdateItems)
-            {
-                item.OnDestroy();
-            }
-            foreach (var item in m_GlobalFixedUpdateItems)
-            {
-                item.OnDestroy();
-            }
+            
         }
         #endregion
     }

@@ -1,0 +1,66 @@
+using Unity.Entities;
+
+namespace BbxCommon.Framework
+{
+    public static class EcsApi
+    {
+        #region Common
+        public static Entity CreateEntity()
+        {
+            var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
+            var rawComponentGroup = ObjectPool<RawComponentGroup>.Alloc();
+            rawComponentGroup.Init(entity);
+            RawComponentManager.EntityRawComponentGroup[entity] = rawComponentGroup;
+            return entity;
+        }
+
+        public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        {
+            return RawComponentManager.GetSingletonRawComponent<T>();
+        }
+        #endregion
+
+        #region Entity Extend
+        public static void AddComponent<T>(this Entity entity) where T : unmanaged, IComponentData
+        {
+            World.DefaultGameObjectInjectionWorld.EntityManager.AddComponent<T>(entity);
+        }
+
+        public static void AddComponent<T>(this Entity entity, T componentData) where T : unmanaged, IComponentData
+        {
+            World.DefaultGameObjectInjectionWorld.EntityManager.AddComponent<T>(entity);
+            World.DefaultGameObjectInjectionWorld.EntityManager.SetComponentData(entity, componentData);
+        }
+
+        public static bool HasComponent<T>(this Entity entity) where T : unmanaged, IComponentData
+        {
+            return World.DefaultGameObjectInjectionWorld.EntityManager.HasComponent<T>(entity);
+        }
+
+        public static void RemoveComponent<T>(this Entity entity) where T : unmanaged, IComponentData
+        {
+            World.DefaultGameObjectInjectionWorld.EntityManager.RemoveComponent<T>(entity);
+        }
+
+        public static T AddRawComponent<T>(this Entity entity) where T : EcsRawComponent, new()
+        {
+            return RawComponentManager.AddRawComponent<T>(entity);
+        }
+
+        public static bool HasRawComponent<T>(this Entity entity) where T : EcsRawComponent
+        {
+            return RawComponentManager.HasRawComponent<T>(entity);
+        }
+
+        public static T GetRawComponent<T>(this Entity entity) where T : EcsRawComponent
+        {
+            return RawComponentManager.GetRawComponent<T>(entity);
+        }
+
+        public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
+        {
+            RawComponentManager.RemoveRawComponent<T>(entity);
+        }
+        #endregion
+    }
+}

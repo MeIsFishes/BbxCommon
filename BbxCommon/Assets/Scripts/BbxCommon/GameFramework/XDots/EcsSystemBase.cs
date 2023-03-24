@@ -1,3 +1,4 @@
+using UnityEngine.Events;
 using Unity.Entities;
 
 namespace BbxCommon.Framework
@@ -5,22 +6,24 @@ namespace BbxCommon.Framework
     /// <summary>
     /// High-performance system, which is almost identical to Unity DOTS system.
     /// </summary>
-    [DisableAutoCreation]
-    public abstract partial class EcsHpSystemBase : SystemBase, IEngineUpdate
+    public abstract partial class EcsHpSystemBase : SystemBase
     {
-        void IEngineUpdate.OnCreate()
+        
+    }
+
+    /// <summary>
+    /// Mixed system, support using <see cref="EcsRawComponent"/> related functions.
+    /// </summary>
+    public abstract partial class EcsMixSystemBase : EcsHpSystemBase
+    {
+        protected void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
         {
-            OnCreate();
+            RawComponentManager.ForeachRawComponent(action);
         }
 
-        void IEngineUpdate.OnUpdate()
+        protected T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            OnUpdate();
-        }
-
-        void IEngineUpdate.OnDestroy()
-        {
-            OnDestroy();
+            return RawComponentManager.GetSingletonRawComponent<T>();
         }
     }
 }

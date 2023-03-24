@@ -1,18 +1,24 @@
+using UnityEngine;
 using Unity.Entities;
-using Unity.Transforms;
+using Unity.Mathematics;
 using BbxCommon.Framework;
 
 namespace Nnp
 {
-    public partial class CameraSystem : EcsHpSystemBase
+    [DisableAutoCreation]
+    public partial class CameraSystem : EcsMixSystemBase
     {
         protected override void OnUpdate()
         {
-            Entities.WithAll<CameraComponent>().ForEach(
-                (Entity entity, TransformAspect transform) =>
+            var localPlayerComp = GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
+            var localPlayerTranform = localPlayerComp.Entity.GetRawComponent<GameObjectRawComponent>().GameObject.transform;
+            ForeachRawComponent<CameraRawComponent>(
+                (CameraRawComponent cameraComp) =>
                 {
-                    
-                }).Schedule();
+                    var transform = cameraComp.Entity.GetRawComponent<GameObjectRawComponent>().GameObject.transform;
+                    transform.position = new Vector3(0, 10, -8) + localPlayerTranform.position;
+                    transform.LookAt(localPlayerTranform.position);
+                });
         }
     }
 }

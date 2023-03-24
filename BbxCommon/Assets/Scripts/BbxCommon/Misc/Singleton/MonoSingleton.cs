@@ -6,7 +6,7 @@ namespace BbxCommon
     {
         private static MonoSingleton<T> m_SingleInstance;
 
-        protected void Awake()
+        protected virtual void Awake()
         {
             InitSingleton();
         }
