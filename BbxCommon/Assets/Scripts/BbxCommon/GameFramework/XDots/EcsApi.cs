@@ -1,3 +1,4 @@
+using UnityEngine;
 using Unity.Entities;
 
 namespace BbxCommon.Framework
@@ -60,6 +61,14 @@ namespace BbxCommon.Framework
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
             RawComponentManager.RemoveRawComponent<T>(entity);
+        }
+
+        public static GameObject GetGameObject(this Entity entity)
+        {
+            var goComp = entity.GetRawComponent<GameObjectRawComponent>();
+            if (goComp == null)
+                return null;
+            return goComp.GameObject;
         }
         #endregion
     }

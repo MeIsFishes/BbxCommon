@@ -9,7 +9,7 @@ namespace BbxCommon.Framework
     /// <summary>
     /// <see cref="EcsRawComponent"/>s of <see cref="Entity"/>s are all stored here.
     /// </summary>
-    public static class RawComponentManager
+    internal static class RawComponentManager
     {
         /// <summary>
         /// <see cref="Entity"/>s with <see cref="EcsRawComponent"/>s added to it.

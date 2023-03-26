@@ -54,8 +54,8 @@ namespace BbxCommon.Framework
 
             public EngineTickingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
-            public void AddGlobalUpdateItem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalUpdateItem<T>();
-            public void AddGlobalFixedUpdateItem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalFixedUpdateItem<T>();
+            public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalUpdateSystem<T>();
+            public void AddGlobalFixedUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalFixedUpdateSystem<T>();
         }
         #endregion
 
@@ -147,7 +147,7 @@ namespace BbxCommon.Framework
         /// <para>
         /// Override and implement this function to set tickable items which run throughout the whole game.
         /// </para><para>
-        /// For different call timings, use <see cref="AddGlobalUpdateItem()"/> or <see cref="AddGlobalFixedUpdateItem()"/>.
+        /// For different call timings, use <see cref="AddGlobalUpdateSystem()"/> or <see cref="AddGlobalFixedUpdateSystem()"/>.
         /// </para><para>
         /// Recommends implementing tickable items by inheriting <see cref="EcsHpSystemBase"/> and its derived classes.
         /// </para><para>
@@ -156,14 +156,14 @@ namespace BbxCommon.Framework
         /// </summary>
         protected abstract void SetGlobalTickItems();
 
-        public void AddGlobalUpdateItem<T>() where T : EcsHpSystemBase, new()
+        public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new()
         {
             var systemGroup = m_EcsWorld.GetExistingSystemManaged<UpdateSystemGroup>();
             var system = m_EcsWorld.CreateSystemManaged<T>();
             systemGroup.AddSystemToUpdateList(system);
         }
 
-        public void AddGlobalFixedUpdateItem<T>() where T :EcsHpSystemBase, new()
+        public void AddGlobalFixedUpdateSystem<T>() where T :EcsHpSystemBase, new()
         {
             m_EcsWorld.GetOrCreateSystemManaged<FixedStepSimulationSystemGroup>().AddSystemToUpdateList(World.DefaultGameObjectInjectionWorld.CreateSystemManaged<T>());
         }

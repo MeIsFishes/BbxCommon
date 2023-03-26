@@ -9,10 +9,16 @@ namespace Nnp
     {
         protected override void OnUpdate()
         {
-            var inputComp = GetSingletonRawComponent<InputSingletonRawComponent>();
-            var localPlayerComp = GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-            var gameObject = localPlayerComp.Entity.GetRawComponent<GameObjectRawComponent>().GameObject;
-            gameObject.GetComponent<CharacterController>().SimpleMove((inputComp.MovementDirection + Vector3.down) * 5);
+            ForeachRawAspect<LocalPlayerMovementRawAspect>(
+                (LocalPlayerMovementRawAspect aspect) =>
+                {
+                    aspect.CharacterController.SimpleMove(aspect.DesiredDirection * aspect.WalkSpeed);
+                    if (aspect.DesiredDirection.magnitude > 1e-4)
+                        aspect.CurrentState = PlayerRawComponent.EPlayerState.Walk;
+                    else
+                        aspect.CurrentState = PlayerRawComponent.EPlayerState.Idle;
+                    aspect.Forward = aspect.DesiredDirection == Vector3.zero ? aspect.Forward : aspect.DesiredDirection;
+                });
         }
     }
 }

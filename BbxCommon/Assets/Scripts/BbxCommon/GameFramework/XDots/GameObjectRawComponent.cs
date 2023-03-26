@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BbxCommon.Framework
 {
-    public class GameObjectRawComponent : EcsRawComponent
+    internal class GameObjectRawComponent : EcsRawComponent
     {
         public GameObject GameObject;
     }

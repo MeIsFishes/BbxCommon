@@ -11,11 +11,11 @@ namespace Nnp
         protected override void OnUpdate()
         {
             var localPlayerComp = GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-            var localPlayerTranform = localPlayerComp.Entity.GetRawComponent<GameObjectRawComponent>().GameObject.transform;
+            var localPlayerTranform = localPlayerComp.Entity.GetGameObject().transform;
             ForeachRawComponent<CameraRawComponent>(
                 (CameraRawComponent cameraComp) =>
                 {
-                    var transform = cameraComp.Entity.GetRawComponent<GameObjectRawComponent>().GameObject.transform;
+                    var transform = cameraComp.Entity.GetGameObject().transform;
                     transform.position = new Vector3(0, 10, -8) + localPlayerTranform.position;
                     transform.LookAt(localPlayerTranform.position);
                 });

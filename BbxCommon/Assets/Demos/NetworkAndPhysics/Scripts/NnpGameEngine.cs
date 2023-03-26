@@ -16,9 +16,10 @@ namespace Nnp
 
         protected override void SetGlobalTickItems()
         {
-            TickWrapper.AddGlobalUpdateItem<InputSystem>();
-            TickWrapper.AddGlobalUpdateItem<LocalPlayerMovementSystem>();
-            TickWrapper.AddGlobalUpdateItem<CameraSystem>();
+            TickWrapper.AddGlobalUpdateSystem<InputSystem>();
+            TickWrapper.AddGlobalUpdateSystem<LocalPlayerMovementSystem>();
+            TickWrapper.AddGlobalUpdateSystem<PlayerAnimationSystem>();
+            TickWrapper.AddGlobalUpdateSystem<CameraSystem>();
         }
     }
 }

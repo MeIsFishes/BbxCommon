@@ -12,7 +12,7 @@ namespace BbxCommon.Framework
     }
 
     /// <summary>
-    /// Mixed system, support using <see cref="EcsRawComponent"/> related functions.
+    /// Mixed system, supports using <see cref="EcsRawComponent"/> related functions.
     /// </summary>
     public abstract partial class EcsMixSystemBase : EcsHpSystemBase
     {
@@ -24,6 +24,11 @@ namespace BbxCommon.Framework
         protected T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return RawComponentManager.GetSingletonRawComponent<T>();
+        }
+
+        protected void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
+        {
+            RawComponentManager.ForeachRawComponent(action);
         }
     }
 }
