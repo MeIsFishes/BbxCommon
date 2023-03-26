@@ -14,10 +14,12 @@ namespace Nnp
                 {
                     aspect.CharacterController.SimpleMove(aspect.DesiredDirection * aspect.WalkSpeed);
                     if (aspect.DesiredDirection.magnitude > 1e-4)
+                    {
                         aspect.CurrentState = PlayerRawComponent.EPlayerState.Walk;
+                        aspect.Forward = aspect.DesiredDirection;
+                    }
                     else
                         aspect.CurrentState = PlayerRawComponent.EPlayerState.Idle;
-                    aspect.Forward = aspect.DesiredDirection == Vector3.zero ? aspect.Forward : aspect.DesiredDirection;
                 });
         }
     }
