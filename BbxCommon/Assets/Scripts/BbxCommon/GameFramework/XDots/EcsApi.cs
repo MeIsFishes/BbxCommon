@@ -15,6 +15,12 @@ namespace BbxCommon.Framework
             return entity;
         }
 
+        public static void DestroyEntity(Entity entity)
+        {
+            RawComponentManager.DestroyEntity(entity);
+            World.DefaultGameObjectInjectionWorld.EntityManager.DestroyEntity(entity);
+        }
+
         public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return RawComponentManager.GetSingletonRawComponent<T>();
@@ -69,6 +75,11 @@ namespace BbxCommon.Framework
             if (goComp == null)
                 return null;
             return goComp.GameObject;
+        }
+
+        public static void Destroy(this Entity entity)
+        {
+            DestroyEntity(entity);
         }
         #endregion
     }

@@ -7,7 +7,14 @@ using Unity.Entities;
 namespace BbxCommon.Framework
 {
     /// <summary>
-    /// <see cref="EcsRawComponent"/>s of <see cref="Entity"/>s are all stored here.
+    /// <para>
+    /// <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/> of <see cref="Entity"/>s are all stored here. For <see cref="Entity"/> is just a
+    /// struct data which cannot be directly extended, we create a <see cref="Dictionary{TKey, TValue}"/> to  manage its <see cref="EcsRawComponent"/>
+    /// and <see cref="EcsRawAspect"/> datas.
+    /// </para><para>
+    /// However, <see cref="RawComponentManager"/> only operates <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of the <see cref="Entity"/>s,
+    /// to interact with DOTS <see cref="World"/>, see <see cref="EcsApi"/> functions.
+    /// </para>
     /// </summary>
     internal static class RawComponentManager
     {
@@ -16,7 +23,7 @@ namespace BbxCommon.Framework
         /// </summary>
         internal static Dictionary<Entity, RawComponentGroup> EntityRawComponentGroup = new Dictionary<Entity, RawComponentGroup>();
         /// <summary>
-        /// Store <see cref="EcsRawComponent"/>s separately in List, to improve iterator performance.
+        /// Store <see cref="EcsRawComponent"/>s separately in List to improve iterator performance.
         /// For example using in <see cref="ForeachRawComponent{T}(UnityAction{T})"/>.
         /// </summary>
         internal static Dictionary<Type, List<EcsRawComponent>> RawComponentLists = new Dictionary<Type, List<EcsRawComponent>>();
@@ -78,6 +85,16 @@ namespace BbxCommon.Framework
             }
         }
 
+        public static void DestroyEntity(Entity entity)
+        {
+            var group = GetGroupAndRefreshHot(entity);
+            foreach (var compPair in group.RawComponents)
+            {
+                RemoveRawComponentFromList(compPair.Key, compPair.Value);
+            }
+            group.CollectToPool();
+        }
+
         internal static void RemoveRawComponentFromList<T>(T comp) where T : EcsRawComponent
         {
             var list = RawComponentLists[typeof(T)];
@@ -85,7 +102,14 @@ namespace BbxCommon.Framework
             list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
         }
 
-        // Generally, user may operate a single entity several times. If so, store a hot data can reduce one time hash calculation.
+        internal static void RemoveRawComponentFromList(Type type, EcsRawComponent comp)
+        {
+            var list = RawComponentLists[type];
+            list.UnorderedRemove(comp.Index);
+            list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
+        }
+
+        // Generally, user may operate a single entity several times. If so, storing a hot data can reduce one time hash calculation.
         private static RawComponentGroup m_HotGroup = new RawComponentGroup();
         internal static RawComponentGroup GetGroupAndRefreshHot(Entity entity)
         {

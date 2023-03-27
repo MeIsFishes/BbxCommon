@@ -32,7 +32,7 @@ namespace BbxCommon.Framework
     internal class RawComponentGroup : PooledObject
     {
         public Entity Entity { get; private set; }
-        private Dictionary<Type, EcsRawComponent> m_RawComponents = new Dictionary<Type, EcsRawComponent>();
+        internal Dictionary<Type, EcsRawComponent> RawComponents = new Dictionary<Type, EcsRawComponent>();
 
         public void Init(Entity entity)
         {
@@ -41,24 +41,24 @@ namespace BbxCommon.Framework
 
         public T AddRawComponent<T>(T comp) where T : EcsRawComponent, new()
         {
-            m_RawComponents.Add(typeof(T), comp);
+            RawComponents.Add(typeof(T), comp);
             return comp;
         }
 
         public T GetRawComponent<T>() where T : EcsRawComponent
         {
-            m_RawComponents.TryGetValue(typeof(T), out var comp);
+            RawComponents.TryGetValue(typeof(T), out var comp);
             return (T)comp;
         }
 
         public bool HasRawComponent<T>() where T : EcsRawComponent
         {
-            return m_RawComponents.ContainsKey(typeof(T));
+            return RawComponents.ContainsKey(typeof(T));
         }
 
         public void RemoveRawComponent<T>(out T comp) where T : EcsRawComponent
         {
-            m_RawComponents.Remove(typeof(T), out var removed);
+            RawComponents.Remove(typeof(T), out var removed);
             comp = (T)removed;
         }
 
@@ -66,7 +66,7 @@ namespace BbxCommon.Framework
         {
             base.OnCollect();
             Entity = Entity.Null;
-            m_RawComponents.Clear();
+            RawComponents.Clear();
         }
     }
 }
