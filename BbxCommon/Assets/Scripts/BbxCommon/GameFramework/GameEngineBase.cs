@@ -8,24 +8,16 @@ namespace BbxCommon.Framework
     public class UpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
-    #region Interfaces
-    public interface IEngineLoad
-    {
-        void Load();
-        void Unload();
-    }
-    #endregion
-
     public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
         public EngineEcsWrapper EcsWrapper;
-        public EngineGlobalStageWrapper GlobalStageWrapper;
+        public EngineStageWrapper StageWrapper;
 
         private void InitWrapper()
         {
             EcsWrapper = new EngineEcsWrapper(this);
-            GlobalStageWrapper = new EngineGlobalStageWrapper(this);
+            StageWrapper = new EngineStageWrapper(this);
         }
 
         public struct EngineEcsWrapper
@@ -38,21 +30,18 @@ namespace BbxCommon.Framework
             public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
         }
 
-        public struct EngineGlobalStageWrapper
+        public struct EngineStageWrapper
         {
             private GameEngineBase<TEngine> m_Ref;
 
-            public EngineGlobalStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+            public EngineStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
-            public void AddGlobalLoadItem(IEngineLoad item) => m_Ref.m_GlobalStage.AddLoadItem(item);
-            public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.m_GlobalStage.AddUpdateSystem<T>();
-            public void AddGlobalFixedUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.m_GlobalStage.AddFixedUpdateSystem<T>();
-            public void AddGlobalScene(params string[] scenes) => m_Ref.m_GlobalStage.AddScene(scenes);
+            public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
         }
         #endregion
 
         #region UnityCallbacks
-        protected override void Awake()
+        protected sealed override void Awake()
         {
             base.Awake();
 
@@ -61,8 +50,11 @@ namespace BbxCommon.Framework
             InitWrapper();
 
             OnAwakeWorld();
-            OnAwakeGlobalStage();
+
+            OnAwake();
         }
+
+        protected virtual void OnAwake() { }
 
         private void OnDestroy()
         {
@@ -99,51 +91,10 @@ namespace BbxCommon.Framework
         }
         #endregion
 
-        #region GloblaStage
-        protected GameStage m_GlobalStage;
-
-        /// <summary>
-        /// <para>
-        /// Override and implement this function to set loading items those should be loaded when game starts.
-        /// </para><para>
-        /// Consider adding items via the function <see cref="EngineGlobalStageWrapper.AddGlobalLoadItem(IEngineLoad)"/>.
-        /// </para>
-        /// </summary>
-        protected abstract void SetGlobalLoadItems();
-
-        /// <summary>
-        /// <para>
-        /// Override and implement this function to set tickable items which run throughout the whole game.
-        /// </para><para>
-        /// For different call timings, use <see cref="EngineGlobalStageWrapper.AddGlobalUpdateSystem()"/> or <see cref="EngineGlobalStageWrapper.AddGlobalFixedUpdateSystem()"/>.
-        /// </para><para>
-        /// Recommends implementing tickable items by inheriting <see cref="EcsHpSystemBase"/> and its derived classes.
-        /// </para>
-        /// </summary>
-        protected abstract void SetGlobalTickItems();
-
-        /// <summary>
-        /// It's strongly recommended to put <see cref="GameEngineBase{TEngine}"/> in a separate scene, that ensures the <see cref="GameEngineBase{TEngine}"/> initializes before all other objects.
-        /// </summary>
-        protected abstract string GetGameMainScene();
-
-        /// <summary>
-        /// <para>
-        /// Override and implement this function to add global game scene.
-        /// </para><para>
-        /// Consider adding scenes via the function <see cref="EngineGlobalStageWrapper.AddGlobalScene(string[])"/>.
-        /// </para>
-        /// </summary>
-        protected virtual void SetGlobalScenes() { }
-
-        private void OnAwakeGlobalStage()
+        #region Stage
+        public GameStage CreateStage(string stageName)
         {
-            m_GlobalStage = new GameStage("GlobalStage", m_EcsWorld);
-            SetGlobalLoadItems();
-            SetGlobalTickItems();
-            m_GlobalStage.AddScene(GetGameMainScene());
-            SetGlobalScenes();
-            m_GlobalStage.LoadStage();
+            return new GameStage(stageName, m_EcsWorld);
         }
         #endregion
     }

@@ -6,6 +6,12 @@ using BbxCommon.Ui;
 
 namespace BbxCommon.Framework
 {
+    public interface IStageLoad
+    {
+        void Load();
+        void Unload();
+    }
+
     public class GameStage
     {
         #region Common
@@ -100,9 +106,9 @@ namespace BbxCommon.Framework
         #endregion
 
         #region StageLoad
-        protected List<IEngineLoad> m_StageLoadItems = new List<IEngineLoad>();
+        protected List<IStageLoad> m_StageLoadItems = new List<IStageLoad>();
 
-        public void AddLoadItem(IEngineLoad item)
+        public void AddLoadItem(IStageLoad item)
         {
             m_StageLoadItems.Add(item);
         }

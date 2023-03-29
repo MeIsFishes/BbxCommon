@@ -31,7 +31,7 @@ namespace BbxCommon
         }
     }
 
-    public abstract class InteractingDataAsset : ScriptableObject, IEngineLoad
+    public abstract class InteractingDataAsset : ScriptableObject, IStageLoad
     {
         public abstract void ApplyInteractingData();
 

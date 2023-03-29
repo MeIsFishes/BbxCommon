@@ -7,24 +7,16 @@ namespace Dcg
 {
     public class DcgGameEngine : GameEngineBase<DcgGameEngine>
     {
-        protected override string GetGameMainScene()
-        {
-            return null;
-        }
-
         protected override void InitSingletonComponents()
         {
             
         }
 
-        protected override void SetGlobalLoadItems()
+        protected override void OnAwake()
         {
-            GlobalStageWrapper.AddGlobalLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
-        }
-
-        protected override void SetGlobalTickItems()
-        {
-            
+            var globalStage = StageWrapper.CreateStage("Global Stage");
+            globalStage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
+            globalStage.LoadStage();
         }
     }
 }
