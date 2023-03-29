@@ -8,7 +8,7 @@ namespace Nnp
     {
         protected override void OnUpdate()
         {
-            ForeachRawAspect<LocalPlayerMovementRawAspect>(
+            ForeachRawAspect(
                 (LocalPlayerMovementRawAspect aspect) =>
                 {
                     aspect.CharacterController.SimpleMove(aspect.DesiredDirection * aspect.WalkSpeed);

@@ -4,6 +4,11 @@ namespace Nnp
 {
     public class NnpGameEngine : GameEngineBase<NnpGameEngine>
     {
+        protected override string GetGameMainScene()
+        {
+            return "NnpMain";
+        }
+
         protected override void InitSingletonComponents()
         {
             EcsWrapper.AddSingletonRawComponent<InputSingletonRawComponent>();
@@ -16,10 +21,10 @@ namespace Nnp
 
         protected override void SetGlobalTickItems()
         {
-            TickWrapper.AddGlobalUpdateSystem<InputSystem>();
-            TickWrapper.AddGlobalUpdateSystem<LocalPlayerMovementSystem>();
-            TickWrapper.AddGlobalUpdateSystem<PlayerAnimationSystem>();
-            TickWrapper.AddGlobalUpdateSystem<CameraSystem>();
+            GlobalStageWrapper.AddGlobalUpdateSystem<InputSystem>();
+            GlobalStageWrapper.AddGlobalUpdateSystem<LocalPlayerMovementSystem>();
+            GlobalStageWrapper.AddGlobalUpdateSystem<PlayerAnimationSystem>();
+            GlobalStageWrapper.AddGlobalUpdateSystem<CameraSystem>();
         }
     }
 }

@@ -79,9 +79,12 @@ namespace BbxCommon.Framework
 
         public static void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
         {
-            foreach (var component in RawComponentLists[typeof(T)])
+            if (RawComponentLists.TryGetValue(typeof(T), out var list))
             {
-                action((T)component);
+                foreach (var component in list)
+                {
+                    action((T)component);
+                }
             }
         }
 

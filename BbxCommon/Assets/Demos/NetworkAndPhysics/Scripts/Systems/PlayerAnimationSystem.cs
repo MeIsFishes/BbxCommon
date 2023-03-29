@@ -8,7 +8,7 @@ namespace Nnp
     {
         protected override void OnUpdate()
         {
-            ForeachRawAspect<PlayerAnimationRawAspect>(
+            ForeachRawAspect(
                 (PlayerAnimationRawAspect aspect) =>
                 {
                     switch (aspect.CurrentState)

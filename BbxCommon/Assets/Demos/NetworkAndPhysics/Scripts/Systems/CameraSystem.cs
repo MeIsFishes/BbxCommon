@@ -1,6 +1,5 @@
 using UnityEngine;
 using Unity.Entities;
-using Unity.Mathematics;
 using BbxCommon.Framework;
 
 namespace Nnp
@@ -11,8 +10,10 @@ namespace Nnp
         protected override void OnUpdate()
         {
             var localPlayerComp = GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
+            if (localPlayerComp == null)
+                return;
             var localPlayerTranform = localPlayerComp.GetEntity().GetGameObject().transform;
-            ForeachRawComponent<CameraRawComponent>(
+            ForeachRawComponent(
                 (CameraRawComponent cameraComp) =>
                 {
                     var transform = cameraComp.GetEntity().GetGameObject().transform;

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 using Unity.Entities;
 
 namespace BbxCommon.Framework
@@ -19,14 +20,12 @@ namespace BbxCommon.Framework
     {
         #region Wrappers
         public EngineEcsWrapper EcsWrapper;
-        public EngineLoadingWrapper LoadWrapper;
-        public EngineTickingWrapper TickWrapper;
+        public EngineGlobalStageWrapper GlobalStageWrapper;
 
         private void InitWrapper()
         {
             EcsWrapper = new EngineEcsWrapper(this);
-            LoadWrapper = new EngineLoadingWrapper(this);
-            TickWrapper = new EngineTickingWrapper(this);
+            GlobalStageWrapper = new EngineGlobalStageWrapper(this);
         }
 
         public struct EngineEcsWrapper
@@ -39,23 +38,16 @@ namespace BbxCommon.Framework
             public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
         }
 
-        public struct EngineLoadingWrapper
+        public struct EngineGlobalStageWrapper
         {
             private GameEngineBase<TEngine> m_Ref;
 
-            public EngineLoadingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+            public EngineGlobalStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
-            public void AddGlobalLoadItem(IEngineLoad item) => m_Ref.AddGlobalLoadItem(item);
-        }
-
-        public struct EngineTickingWrapper
-        {
-            private GameEngineBase<TEngine> m_Ref;
-
-            public EngineTickingWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-            public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalUpdateSystem<T>();
-            public void AddGlobalFixedUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.AddGlobalFixedUpdateSystem<T>();
+            public void AddGlobalLoadItem(IEngineLoad item) => m_Ref.m_GlobalStage.AddLoadItem(item);
+            public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.m_GlobalStage.AddUpdateSystem<T>();
+            public void AddGlobalFixedUpdateSystem<T>() where T : EcsHpSystemBase, new() => m_Ref.m_GlobalStage.AddFixedUpdateSystem<T>();
+            public void AddGlobalScene(params string[] scenes) => m_Ref.m_GlobalStage.AddScene(scenes);
         }
         #endregion
 
@@ -69,18 +61,20 @@ namespace BbxCommon.Framework
             InitWrapper();
 
             OnAwakeWorld();
-            OnAwakeEngineLoad();
-            OnAwakeEngineTick();
+            OnAwakeGlobalStage();
         }
 
         private void OnDestroy()
         {
-            OnDestroyEngineLoad();
-            OnDestroyEngineTick();
+
         }
         #endregion
 
-        #region Create World
+        #region UiScene
+        public GameObject UiCanvasProto;
+        #endregion
+
+        #region EcsWorld
         private World m_EcsWorld;
         private Entity m_SingletonEntity;
 
@@ -105,78 +99,51 @@ namespace BbxCommon.Framework
         }
         #endregion
 
-        #region EngineLoad
-        private List<IEngineLoad> m_GlobalLoadItems = new List<IEngineLoad>();
+        #region GloblaStage
+        protected GameStage m_GlobalStage;
 
         /// <summary>
         /// <para>
         /// Override and implement this function to set loading items those should be loaded when game starts.
         /// </para><para>
-        /// Consider adding items via the function <see cref="AddGlobalLoadItem(IEngineLoad)"/>.
-        /// </para><para>
-        /// For more functions about loading items, look into <see cref="EngineLoadingWrapper"/>.
+        /// Consider adding items via the function <see cref="EngineGlobalStageWrapper.AddGlobalLoadItem(IEngineLoad)"/>.
         /// </para>
         /// </summary>
         protected abstract void SetGlobalLoadItems();
 
-        public void AddGlobalLoadItem(IEngineLoad item)
-        {
-            m_GlobalLoadItems.Add(item);
-        }
-
-        private void OnAwakeEngineLoad()
-        {
-            SetGlobalLoadItems();
-            foreach (var item in m_GlobalLoadItems)
-            {
-                item.Load();
-            }
-        }
-
-        private void OnDestroyEngineLoad()
-        {
-            foreach (var item in m_GlobalLoadItems)
-            {
-                item.Unload();
-            }
-        }
-        #endregion
-
-        #region EngineTick
         /// <summary>
         /// <para>
         /// Override and implement this function to set tickable items which run throughout the whole game.
         /// </para><para>
-        /// For different call timings, use <see cref="AddGlobalUpdateSystem()"/> or <see cref="AddGlobalFixedUpdateSystem()"/>.
+        /// For different call timings, use <see cref="EngineGlobalStageWrapper.AddGlobalUpdateSystem()"/> or <see cref="EngineGlobalStageWrapper.AddGlobalFixedUpdateSystem()"/>.
         /// </para><para>
         /// Recommends implementing tickable items by inheriting <see cref="EcsHpSystemBase"/> and its derived classes.
-        /// </para><para>
-        /// For more functions about ticking items, look into <see cref="EngineTickingWrapper"/>.
         /// </para>
         /// </summary>
         protected abstract void SetGlobalTickItems();
 
-        public void AddGlobalUpdateSystem<T>() where T : EcsHpSystemBase, new()
-        {
-            var systemGroup = m_EcsWorld.GetExistingSystemManaged<UpdateSystemGroup>();
-            var system = m_EcsWorld.CreateSystemManaged<T>();
-            systemGroup.AddSystemToUpdateList(system);
-        }
+        /// <summary>
+        /// It's strongly recommended to put <see cref="GameEngineBase{TEngine}"/> in a separate scene, that ensures the <see cref="GameEngineBase{TEngine}"/> initializes before all other objects.
+        /// </summary>
+        protected abstract string GetGameMainScene();
 
-        public void AddGlobalFixedUpdateSystem<T>() where T :EcsHpSystemBase, new()
-        {
-            m_EcsWorld.GetOrCreateSystemManaged<FixedStepSimulationSystemGroup>().AddSystemToUpdateList(World.DefaultGameObjectInjectionWorld.CreateSystemManaged<T>());
-        }
+        /// <summary>
+        /// <para>
+        /// Override and implement this function to add global game scene.
+        /// </para><para>
+        /// Consider adding scenes via the function <see cref="EngineGlobalStageWrapper.AddGlobalScene(string[])"/>.
+        /// </para>
+        /// </summary>
+        protected virtual void SetGlobalScenes() { }
 
-        private void OnAwakeEngineTick()
+        private void OnAwakeGlobalStage()
         {
+            m_GlobalStage = new GameStage("GlobalStage", m_EcsWorld);
+            SetGlobalLoadItems();
             SetGlobalTickItems();
-        }
-
-
-        private void OnDestroyEngineTick()
-        {
-            
+            m_GlobalStage.AddScene(GetGameMainScene());
+            SetGlobalScenes();
+            m_GlobalStage.LoadStage();
         }
         #endregion
     }

@@ -7,11 +7,13 @@ namespace BbxCommon.Framework
     public class EcsBaker : MonoBehaviour
     {
         public Entity Entity;
+        [Tooltip("If true, EcsBaker will destroy the entity when itself is destroyed.")]
+        public bool DestroyEntity = true;
 
         // ensure creating aspects after components
         private List<EcsRawAspect> m_Aspects;
 
-        private void Start()
+        private void Awake()
         {
             Entity = EcsApi.CreateEntity();
             m_Aspects = SimplePool<List<EcsRawAspect>>.Alloc();
@@ -20,12 +22,17 @@ namespace BbxCommon.Framework
             m_Aspects.CollectToPool();
         }
 
+        private void OnDestroy()
+        {
+            if (DestroyEntity)
+                Entity.Destroy();
+        }
+
         protected virtual void Bake() { }
 
         private void InternalBake()
         {
-            var goComp = AddRawComponent<GameObjectRawComponent>();
-            goComp.GameObject = gameObject;
+            Entity.AttachToGameObject(gameObject);
             Bake();
         }
 

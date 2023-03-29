@@ -7,6 +7,11 @@ namespace Dcg
 {
     public class DcgGameEngine : GameEngineBase<DcgGameEngine>
     {
+        protected override string GetGameMainScene()
+        {
+            return null;
+        }
+
         protected override void InitSingletonComponents()
         {
             
@@ -14,7 +19,7 @@ namespace Dcg
 
         protected override void SetGlobalLoadItems()
         {
-            LoadWrapper.AddGlobalLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
+            GlobalStageWrapper.AddGlobalLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
         }
 
         protected override void SetGlobalTickItems()

@@ -21,6 +21,12 @@ namespace BbxCommon.Framework
             World.DefaultGameObjectInjectionWorld.EntityManager.DestroyEntity(entity);
         }
 
+        public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
+        {
+            var goComp = RawComponentManager.AddRawComponent<GameObjectRawComponent>(entity);
+            goComp.GameObject = gameObject;
+        }
+
         public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return RawComponentManager.GetSingletonRawComponent<T>();
@@ -67,6 +73,11 @@ namespace BbxCommon.Framework
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
             RawComponentManager.RemoveRawComponent<T>(entity);
+        }
+
+        public static void AttachToGameObject(this Entity entity, GameObject gameObject)
+        {
+            AttachEntityToGameObject(entity, gameObject);
         }
 
         public static GameObject GetGameObject(this Entity entity)

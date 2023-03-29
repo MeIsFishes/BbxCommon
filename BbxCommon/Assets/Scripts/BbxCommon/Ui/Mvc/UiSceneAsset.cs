@@ -10,6 +10,7 @@ namespace BbxCommon.Ui
         public class UiObjectData
         {
             public string PrefabPath;
+            public Type UiControllerType;
             public int UiGroup;
             public bool DefaultOpen;
             public Vector3 Position;

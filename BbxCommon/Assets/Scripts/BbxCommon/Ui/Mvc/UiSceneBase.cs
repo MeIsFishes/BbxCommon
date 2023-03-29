@@ -4,15 +4,24 @@ using UnityEngine;
 
 namespace BbxCommon.Ui
 {
-    public abstract class UiSceneBase<TGroupKey> : MonoBehaviour where TGroupKey : Enum
+    public abstract class UiSceneBase : MonoBehaviour
+    {
+        public GameObject CanvasProto;
+
+        public abstract void InitUiScene(GameObject canvasProto);
+        public abstract void CreateUiByAsset(UiSceneAsset asset);
+        public abstract void DestroyUiByAsset(UiSceneAsset asset);
+    }
+
+    public abstract class UiSceneBase<TGroupKey> : UiSceneBase where TGroupKey : Enum
     {
         #region Common
-        public GameObject RootProto;
         [Tooltip("Export UiSceneAsset via UiSceneExporter and set to UiScene, then UiScene will create UI items stored in the asset when initializes.")]
         public UiSceneAsset SceneAsset;
 
-        protected void Awake()
+        public override void InitUiScene(GameObject canvasProto)
         {
+            CanvasProto = canvasProto;
             OnSceneInit();
             CreateUiByAsset(SceneAsset);
         }
@@ -48,7 +57,7 @@ namespace BbxCommon.Ui
             return uiController;
         }
 
-        protected void CreateUiByAsset(UiSceneAsset asset)
+        public override void CreateUiByAsset(UiSceneAsset asset)
         {
             if (asset == null)
                 return;
@@ -60,6 +69,17 @@ namespace BbxCommon.Ui
                 (controller.transform as RectTransform).pivot = data.Pivot;
                 if (data.DefaultOpen)   // keep OnUiOpen() calls after setting data
                     controller.Open();
+            }
+        }
+
+        public override void DestroyUiByAsset(UiSceneAsset asset)
+        {
+            if (asset == null)
+                return;
+            foreach (var data in asset.UiObjectDatas)
+            {
+                var controller = GetUiController(data.UiControllerType);
+                Destroy(controller);
             }
         }
         #endregion
@@ -85,7 +105,7 @@ namespace BbxCommon.Ui
 
         public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "")
         {
-            var root = Instantiate(RootProto);
+            var root = Instantiate(CanvasProto);
             if (name.IsNullOrEmpty())
                 root.name = uiGroup.ToString();
             else

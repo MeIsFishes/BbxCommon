@@ -6,6 +6,11 @@ namespace Nnp
     [CreateAssetMenu(fileName = "PlayerSettingAsset", menuName = "Demos/Nnp/PlayerSettingAsset")]
     public class PlayerSettingAsset : ScriptableObject
     {
+        [FoldoutGroup("Bullet")]
+        public GameObject BulletPrefab;
+        [FoldoutGroup("Bullet")]
+        public float BulletSpeed;
+
         [FoldoutGroup("Attributes")]
         public int MaxHp;
         [FoldoutGroup("Attributes")]
