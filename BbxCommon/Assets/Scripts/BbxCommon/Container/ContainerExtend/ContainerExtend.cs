@@ -122,6 +122,12 @@ namespace BbxCommon
         #endregion
 
         #region Dictionary
+        public static void TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
+        {
+            if (dic.ContainsKey(key))
+                dic.Remove(key);
+        }
+
         public static void CollectToPool<TKey, TValue>(this Dictionary<TKey, TValue> dic)
         {
             dic.Clear();

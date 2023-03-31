@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 using Unity.Entities;
 using BbxCommon.Ui;
@@ -21,9 +22,14 @@ namespace BbxCommon.Framework
         protected bool m_Loaded;
         internal bool Loaded => m_Loaded;
 
+        public UnityAction PreLoadStage;
+        public UnityAction PostLoadStage;
+        public UnityAction PreUnloadStage;
+        public UnityAction PostUnloadStage;
+
         private World m_EcsWorld;
 
-        public GameStage(string stageName, World ecsWorld)
+        internal GameStage(string stageName, World ecsWorld)
         {
             StageName = stageName;
             m_EcsWorld = ecsWorld;
@@ -31,20 +37,82 @@ namespace BbxCommon.Framework
 
         public virtual void LoadStage()
         {
+            if (m_Loaded)
+                return;
+            if (AllParentsLoaded() == false)
+                return;
+
+            PreLoadStage?.Invoke();
             OnLoadStageScene();
             OnLoadStageUiScene();
             OnLoadStageLoad();
             OnLoadStageTick();
             m_Loaded = true;
+            PostLoadStage?.Invoke();
         }
 
         public virtual void UnloadStage()
         {
+            if (m_Loaded == false)
+                return;
+
+            PreUnloadStage?.Invoke();
             OnUnloadStageScene();
             OnUnloadStageUiScene();
             OnUnloadStageLoad();
             OnUnloadStageTick();
             m_Loaded = false;
+            OnUnloadStageChildStage();
+            PostUnloadStage?.Invoke();
+        }
+        #endregion
+
+        #region ChildStage
+        public GameStage Parent;
+        private Dictionary<string, GameStage> m_ChildStages = new Dictionary<string, GameStage>();
+
+        public void AddChildStage(GameStage stage)
+        {
+            m_ChildStages.TryAdd(stage.StageName, stage);
+        }
+
+        public void RemoveChildStage(GameStage stage)
+        {
+            m_ChildStages.TryRemove(stage.StageName);
+        }
+
+        public void RemoveChildStage(string stageName)
+        {
+            m_ChildStages.TryRemove(stageName);
+        }
+
+        public GameStage GetChildStage(string stageName)
+        {
+            m_ChildStages.TryGetValue(stageName, out var stage);
+            return stage;
+        }
+
+        public bool AllParentsLoaded()
+        {
+            var stage = this;
+            while (stage.Parent != null)
+            {
+                if (stage.Parent.Loaded == false)
+                {
+                    Debug.LogWarning("You are requiring the GameStage " + StageName + " to load while its parent " + stage.StageName + " has not been loaded!");
+                    return false;
+                }
+                stage = stage.Parent;
+            }
+            return true;
+        }
+
+        public void OnUnloadStageChildStage()
+        {
+            foreach (var pair in m_ChildStages)
+            {
+                pair.Value.UnloadStage();
+            }
         }
         #endregion
 

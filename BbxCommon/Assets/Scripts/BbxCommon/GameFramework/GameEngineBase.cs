@@ -1,6 +1,8 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
+using BbxCommon.Ui;
 
 namespace BbxCommon.Framework
 {
@@ -50,7 +52,9 @@ namespace BbxCommon.Framework
             InitWrapper();
 
             OnAwakeWorld();
+            OnAwakeUiScene();
 
+            // call overridable OnAwake() after all datas are initialized
             OnAwake();
         }
 
@@ -64,6 +68,47 @@ namespace BbxCommon.Framework
 
         #region UiScene
         public GameObject UiCanvasProto;
+
+        private GameObject m_UiSceneRoot;
+        private Dictionary<Type, UiSceneBase> m_UiScenes = new Dictionary<Type, UiSceneBase>();
+
+        public T CreateUiScene<T>() where T : UiSceneBase
+        {
+            var type = typeof(T);
+            var uiSceneName = type.Name;
+            var uiSceneGameObject = new GameObject(uiSceneName);
+            uiSceneGameObject.transform.SetParent(m_UiSceneRoot.transform);
+            var uiScene = uiSceneGameObject.AddComponent<T>();
+            uiScene.InitUiScene(UiCanvasProto);
+            m_UiScenes.Add(type, uiScene);
+            return uiScene;
+        }
+
+        public T GetUiScene<T>() where T : UiSceneBase
+        {
+            m_UiScenes.TryGetValue(typeof(T), out var uiScene);
+            return (T)uiScene;
+        }
+
+        public T GetOrCreateUiScene<T>() where T : UiSceneBase
+        {
+            if (m_UiScenes.TryGetValue(typeof(T), out var uiScene))
+                return (T)uiScene;
+            else
+                return CreateUiScene<T>();
+        }
+
+        private void OnAwakeUiScene()
+        {
+            if (UiCanvasProto == null)
+                return;
+            m_UiSceneRoot = new GameObject("UiSceneRoot");
+            m_UiSceneRoot.transform.SetParent(this.transform);
+            var customUiSceneRoot = new GameObject("CustomUiScenes");
+            customUiSceneRoot.transform.SetParent(m_UiSceneRoot.transform);
+            CreateUiScene<UiGameEngineScene>();
+            m_UiSceneRoot = customUiSceneRoot;  // keep custom UiScenes hang on a separate root to ensure GameEngine can show its UI items above other all
+        }
         #endregion
 
         #region EcsWorld

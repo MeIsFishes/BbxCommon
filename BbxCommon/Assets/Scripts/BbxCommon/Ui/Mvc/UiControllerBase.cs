@@ -19,7 +19,7 @@ namespace BbxCommon.Ui
         public abstract void SetView(UiViewBase view);
         #endregion
 
-        #region InitAndOpen
+        #region Init and Open
         private void OnEnable()
         {
             OnUiOpen();
@@ -66,6 +66,28 @@ namespace BbxCommon.Ui
         /// Calls when the GameObject is disabled.
         /// </summary>
         protected virtual void OnUiClose() { }
+        #endregion
+
+        #region ChildController
+        // TODO: Maybe call OnUiOpen, OnUiClose and other functions follow the parent's state.(?)
+        private UiControllerBase m_Parent;
+        public UiControllerBase ParentController => m_Parent;
+        private List<UiControllerBase> m_ChildControllers = new List<UiControllerBase>();
+
+        protected T CreateChildController<T>(GameObject uiGameObject) where T : UiControllerBase
+        {
+            var controller = UiSceneBase.CreateUiController<T>(uiGameObject);
+            controller.m_Parent = this;
+            m_ChildControllers.Add(controller);
+            return controller;
+        }
+
+        protected void DestroyChildController(UiControllerBase controller)
+        {
+            controller.Close();
+            m_ChildControllers.Remove(controller);
+            Destroy(controller.gameObject);
+        }
         #endregion
     }
 }

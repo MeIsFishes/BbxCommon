@@ -11,31 +11,12 @@ namespace BbxCommon.Ui
         public abstract void InitUiScene(GameObject canvasProto);
         public abstract void CreateUiByAsset(UiSceneAsset asset);
         public abstract void DestroyUiByAsset(UiSceneAsset asset);
-    }
 
-    public abstract class UiSceneBase<TGroupKey> : UiSceneBase where TGroupKey : Enum
-    {
-        #region Common
-        [Tooltip("Export UiSceneAsset via UiSceneExporter and set to UiScene, then UiScene will create UI items stored in the asset when initializes.")]
-        public UiSceneAsset SceneAsset;
-
-        public override void InitUiScene(GameObject canvasProto)
+        /// <summary>
+        /// Static function to create a <see cref="UiControllerBase"/> from the <see cref="GameObject"/>.
+        /// </summary>
+        public static T CreateUiController<T>(GameObject uiGameObject) where T : UiControllerBase
         {
-            CanvasProto = canvasProto;
-            OnSceneInit();
-            CreateUiByAsset(SceneAsset);
-        }
-
-        protected virtual void OnSceneInit() { }
-
-        public UiControllerBase CreateUi(string path, TGroupKey uiGroup, bool defaultOpen = true)
-        {
-            var uiGameObject = Instantiate(Resources.Load<GameObject>(path));
-            // hangs UI to group
-            Canvas root;
-            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
-                CreateUiGroupRoot(uiGroup);
-            uiGameObject.transform.SetParent(root.transform);
             // create controller and set view
             var uiView = uiGameObject.GetComponent<UiViewBase>();
             if (uiView == null)
@@ -46,6 +27,33 @@ namespace BbxCommon.Ui
             var uiController = uiGameObject.AddMissingComponent(uiView.GetControllerType()) as UiControllerBase;
             uiController.SetView(uiView);
             uiController.Init();
+            return (T)uiController;
+        }
+    }
+
+    public abstract class UiSceneBase<TGroupKey> : UiSceneBase where TGroupKey : Enum
+    {
+        #region Common
+        public override void InitUiScene(GameObject canvasProto)
+        {
+            CanvasProto = canvasProto;
+            OnSceneInit();
+        }
+
+        protected virtual void OnSceneInit() { }
+
+        public UiControllerBase CreateUi(string path, TGroupKey uiGroup, bool defaultOpen = true)
+        {
+            var uiGameObject = Instantiate(Resources.Load<GameObject>(path));
+            // hangs UI to the group
+            Canvas root;
+            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
+                CreateUiGroupRoot(uiGroup);
+            uiGameObject.transform.SetParent(root.transform);
+
+            var uiView = uiGameObject.GetComponent<UiViewBase>();
+            var uiController = CreateUiController<UiControllerBase>(uiGameObject);
+
             // process defaultOpen
             if (defaultOpen)
                 uiController.Open();
