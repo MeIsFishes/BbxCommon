@@ -10,35 +10,50 @@ namespace BbxCommon.Framework
     public class UpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
+    #region EngineWrapper
+    public struct EngineUiSceneWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
+    {
+        private GameEngineBase<TEngine> m_Ref;
+
+        public EngineUiSceneWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+        public T CreateUiScene<T>() where T : UiSceneBase => m_Ref.CreateUiScene<T>();
+        public T GetUiScene<T>() where T : UiSceneBase => m_Ref.GetUiScene<T>();
+        public T GetOrCreateUiScene<T>() where T : UiSceneBase => m_Ref.GetOrCreateUiScene<T>();
+    }
+
+    public struct EngineEcsWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
+    {
+        private GameEngineBase<TEngine> m_Ref;
+
+        public EngineEcsWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+        public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new() => m_Ref.AddSingletonRawComponent<T>();
+        public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
+    }
+
+    public struct EngineStageWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
+    {
+        private GameEngineBase<TEngine> m_Ref;
+
+        public EngineStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+        public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
+    }
+    #endregion
+
     public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
-        public EngineEcsWrapper EcsWrapper;
-        public EngineStageWrapper StageWrapper;
+        public EngineUiSceneWrapper<TEngine> UiSceneWrapper;
+        public EngineEcsWrapper<TEngine> EcsWrapper;
+        public EngineStageWrapper<TEngine> StageWrapper;
 
         private void InitWrapper()
         {
-            EcsWrapper = new EngineEcsWrapper(this);
-            StageWrapper = new EngineStageWrapper(this);
-        }
-
-        public struct EngineEcsWrapper
-        {
-            private GameEngineBase<TEngine> m_Ref;
-
-            public EngineEcsWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-            public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new() => m_Ref.AddSingletonRawComponent<T>();
-            public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
-        }
-
-        public struct EngineStageWrapper
-        {
-            private GameEngineBase<TEngine> m_Ref;
-
-            public EngineStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-            public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
+            UiSceneWrapper = new EngineUiSceneWrapper<TEngine>(this);
+            EcsWrapper = new EngineEcsWrapper<TEngine>(this);
+            StageWrapper = new EngineStageWrapper<TEngine>(this);
         }
         #endregion
 

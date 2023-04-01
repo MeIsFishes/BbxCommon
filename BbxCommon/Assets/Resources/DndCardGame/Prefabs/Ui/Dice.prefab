@@ -87,6 +87,7 @@ GameObject:
   - component: {fileID: 4951077519277204317}
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7220269692404147734}
+  - component: {fileID: 1153564080249549915}
   m_Layer: 5
   m_Name: Dice
   m_TagString: Untagged
@@ -109,7 +110,7 @@ RectTransform:
   - {fileID: 5258213657112994931}
   - {fileID: 1392860749174005850}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -141,6 +142,18 @@ MonoBehaviour:
   UiInteractor: {fileID: 2358620174404244115}
   OnDragGroup: {fileID: 4595174208597290224}
   OnDragScale: 1.5
+--- !u!114 &1153564080249549915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372915186548853049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9ecf60e366a2681429ea8dde277a537d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2362882392947419803
 GameObject:
   m_ObjectHideFlags: 0
@@ -200,6 +213,9 @@ MonoBehaviour:
   AlwaysRelativeOffset: 1
   RelativeOffset: {x: -40, y: 90}
   SetWhenDown: 1
+  EventListener: {fileID: 1153564080249549915}
+  EventBeginDrag: 0
+  EventEndDrag: 1
 --- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,7 +230,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   InteractFlags: 
   AutoInitUiDragable: 1
-  UiDragableRef: {fileID: 0}
+  UiDragableRef: {fileID: 3682755452414818849}
 --- !u!114 &8426660223054728468
 MonoBehaviour:
   m_ObjectHideFlags: 0

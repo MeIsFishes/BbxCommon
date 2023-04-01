@@ -9,7 +9,7 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IBbxUiItem, IPointerEnterHandler, IPointerExitHandler, IPointerMoveHandler, IDragHandler, IPointerDownHandler, IPointerUpHandler
+    public class UiDragable : MonoBehaviour, IBbxUiItem
     {
         #region Wrapper
         public struct UiDragableWrapper
@@ -18,7 +18,6 @@ namespace BbxCommon.Ui
 
             public UiDragableWrapper(UiDragable obj) { m_Ref = obj; }
 
-            public UiControllerBase UiController => m_Ref.UiController;
             public UnityAction<PointerEventData> OnPointerEnter { get { return m_Ref.OnPointerEnter; } set { m_Ref.OnPointerEnter = value;} }
             public UnityAction<PointerEventData> OnPointerStay { get { return m_Ref.OnPointerStay; } set { m_Ref.OnPointerStay = value; } }
             public UnityAction<PointerEventData> OnPointerExit { get { return m_Ref.OnPointerExit; } set { m_Ref.OnPointerExit = value; } }
@@ -45,6 +44,13 @@ namespace BbxCommon.Ui
         [Tooltip("If true, the object move to relative position with pointer when it is pressed down.")]
         public bool SetWhenDown = true;
 
+        [FoldoutGroup("EventListener")]
+        public UiEventListener EventListener;
+        [FoldoutGroup("EventListener"), Tooltip("The event triggers beginning drag.")]
+        public EUiEvent EventBeginDrag = EUiEvent.PointerDown;
+        [FoldoutGroup("EventListener"), Tooltip("The event triggers ending drag.")]
+        public EUiEvent EventEndDrag = EUiEvent.PointerUp;
+
         // callbacks
         public UnityAction<PointerEventData> OnPointerEnter;
         public UnityAction<PointerEventData> OnPointerStay;
@@ -54,8 +60,6 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnDrag;
 
         // internal datas
-        [NonSerialized]
-        public UiControllerBase UiController;
         [NonSerialized]
         public float DraggedTime;
         private bool m_PointerIn;
@@ -73,6 +77,7 @@ namespace BbxCommon.Ui
         protected void Awake()
         {
             Wrapper = new UiDragableWrapper(this);
+            AddCallbacks();
         }
 
         protected void Update()
@@ -84,12 +89,37 @@ namespace BbxCommon.Ui
                 DraggedTime += BbxRawTimer.DeltaTime;
         }
 
-        void IBbxUiItem.Init(UiControllerBase uiController)
+        private void OnDestroy()
         {
-            UiController = uiController;
+            RemoveCallbacks();
         }
 
-        void IPointerEnterHandler.OnPointerEnter(PointerEventData eventData)
+        void IBbxUiItem.Init(UiControllerBase uiController)
+        {
+            
+        }
+
+        private void AddCallbacks()
+        {
+            EventListener.AddCallback(EUiEvent.PointerEnter, OnPointerEnterCallback);
+            EventListener.AddCallback(EUiEvent.PointerExit, OnPointerExitCallback);
+            EventListener.AddCallback(EUiEvent.PointerMove, OnPointerMoveCallback);
+            EventListener.AddCallback(EUiEvent.Drag, OnDragCallback);
+            EventListener.AddCallback(EventBeginDrag, OnBeginDragCallback);
+            EventListener.AddCallback(EventEndDrag, OnEndDragCallback);
+        }
+
+        private void RemoveCallbacks()
+        {
+            EventListener.RemoveCallback(EUiEvent.PointerEnter, OnPointerEnterCallback);
+            EventListener.RemoveCallback(EUiEvent.PointerExit, OnPointerExitCallback);
+            EventListener.RemoveCallback(EUiEvent.PointerMove, OnPointerMoveCallback);
+            EventListener.RemoveCallback(EUiEvent.Drag, OnDragCallback);
+            EventListener.RemoveCallback(EventBeginDrag, OnBeginDragCallback);
+            EventListener.RemoveCallback(EventEndDrag, OnEndDragCallback);
+        }
+
+        private void OnPointerEnterCallback(PointerEventData eventData)
         {
             OnPointerEnter?.Invoke(eventData);
 
@@ -97,12 +127,12 @@ namespace BbxCommon.Ui
             m_CurrentData = eventData;
         }
 
-        void IPointerMoveHandler.OnPointerMove(PointerEventData eventData)
+        private void OnPointerMoveCallback(PointerEventData eventData)
         {
             m_CurrentData = eventData;
         }
 
-        void IPointerExitHandler.OnPointerExit(PointerEventData eventData)
+        private void OnPointerExitCallback(PointerEventData eventData)
         {
             OnPointerExit?.Invoke(eventData);
 
@@ -111,7 +141,7 @@ namespace BbxCommon.Ui
         }
 
 
-        void IDragHandler.OnDrag(PointerEventData eventData)
+        private void OnDragCallback(PointerEventData eventData)
         {
             OnDrag?.Invoke(eventData);
 
@@ -121,7 +151,7 @@ namespace BbxCommon.Ui
                 transform.position = eventData.position.AsVector3XY() + m_DragOffset;
         }
 
-        void IPointerDownHandler.OnPointerDown(PointerEventData eventData)
+        private void OnBeginDragCallback(PointerEventData eventData)
         {
             OnBeginDrag?.Invoke(eventData);
 
@@ -133,11 +163,11 @@ namespace BbxCommon.Ui
             if (AlwaysRelativeOffset && SetWhenDown)
                 transform.position = (eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY();
 
-            m_OriginalSiblingIndex = UiController.transform.GetSiblingIndex();
-            UiController.transform.SetAsLastSibling();
+            m_OriginalSiblingIndex = EventListener.transform.GetSiblingIndex();
+            EventListener.transform.SetAsLastSibling();
         }
 
-        void IPointerUpHandler.OnPointerUp(PointerEventData eventData)
+        private void OnEndDragCallback(PointerEventData eventData)
         {
             OnEndDrag?.Invoke(eventData);
 
@@ -146,7 +176,7 @@ namespace BbxCommon.Ui
             if (TurnBackWhenDragEnd)
                 transform.position = m_OriginalPos;
 
-            UiController.transform.SetSiblingIndex(m_OriginalSiblingIndex);
+            EventListener.transform.SetSiblingIndex(m_OriginalSiblingIndex);
         }
         #endregion
     }
