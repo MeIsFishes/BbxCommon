@@ -12,8 +12,10 @@ namespace BbxCommon.Ui
     public class UiDragable : MonoBehaviour, IBbxUiItem
     {
         #region Wrapper
+        [Serializable]
         public struct UiDragableWrapper
         {
+            [SerializeField]
             private UiDragable m_Ref;
 
             public UiDragableWrapper(UiDragable obj) { m_Ref = obj; }
@@ -70,13 +72,13 @@ namespace BbxCommon.Ui
         private int m_OriginalSiblingIndex;
 
         // wrapper
+        [HideInEditorMode]
         public UiDragableWrapper Wrapper;
         #endregion
 
         #region CallbacksAndTick
         protected void Awake()
         {
-            Wrapper = new UiDragableWrapper(this);
             AddCallbacks();
         }
 
@@ -94,9 +96,9 @@ namespace BbxCommon.Ui
             RemoveCallbacks();
         }
 
-        void IBbxUiItem.Init(UiControllerBase uiController)
+        void IBbxUiItem.PreInit(UiViewBase uiView)
         {
-            
+            Wrapper = new UiDragableWrapper(this);
         }
 
         private void AddCallbacks()

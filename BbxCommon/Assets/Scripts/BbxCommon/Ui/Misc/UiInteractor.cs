@@ -11,13 +11,14 @@ namespace BbxCommon.Ui
     public class UiInteractor : Interactor, IBbxUiItem
     {
         #region Wrapper
+        [Serializable]
         public struct UiInteractorWrapper
         {
+            [SerializeField]
             private UiInteractor m_Ref;
 
             public UiInteractorWrapper(UiInteractor obj) { m_Ref = obj; }
 
-            public UiControllerBase UiController => m_Ref.UiController;
             /// <summary>
             /// Calls when dragging another interactor and touches.
             /// </summary>
@@ -39,11 +40,9 @@ namespace BbxCommon.Ui
         public UnityAction<Interactor> OnInteractorTouch;
         public UnityAction<Interactor> OnInteractorTouchEnd;
 
+        [HideInEditorMode]
         public UiInteractorWrapper Wrapper;
 
-        // internal datas
-        [NonSerialized]
-        public UiControllerBase UiController;
         /// <summary>
         /// Raycast targets under the interactor's root. When searching interacting target, GameObjects in the set will be ignored.
         /// </summary>
@@ -51,7 +50,6 @@ namespace BbxCommon.Ui
 
         private void Awake()
         {
-            Wrapper = new UiInteractorWrapper(this);
             SearchAllRaycastTargets();
             InitUiDragable();
         }
@@ -67,9 +65,9 @@ namespace BbxCommon.Ui
             graphics.CollectToPool();
         }
 
-        void IBbxUiItem.Init(UiControllerBase uiController)
+        void IBbxUiItem.PreInit(UiViewBase uiView)
         {
-            UiController = uiController;
+            Wrapper = new UiInteractorWrapper(this);
         }
         #endregion
 

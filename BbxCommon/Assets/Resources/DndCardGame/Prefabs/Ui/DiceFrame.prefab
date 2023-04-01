@@ -236,7 +236,7 @@ RectTransform:
   - {fileID: 1319475357518012574}
   - {fileID: 4412263078016736298}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -327,6 +327,8 @@ MonoBehaviour:
   InteractFlags: 
   AutoInitUiDragable: 0
   UiDragableRef: {fileID: 0}
+  Wrapper:
+    m_Ref: {fileID: 3867593555159398160}
 --- !u!1 &5617028313530685165
 GameObject:
   m_ObjectHideFlags: 0

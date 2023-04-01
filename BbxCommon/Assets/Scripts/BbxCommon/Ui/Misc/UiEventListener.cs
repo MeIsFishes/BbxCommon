@@ -117,9 +117,9 @@ namespace BbxCommon.Ui
             OnDrag?.Invoke(eventData);
         }
 
-        void IBbxUiItem.Init(UiControllerBase uiController)
+        void IBbxUiItem.PreInit(UiViewBase uiView)
         {
-            
+
         }
     }
 }

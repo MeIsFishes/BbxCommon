@@ -216,6 +216,8 @@ MonoBehaviour:
   EventListener: {fileID: 1153564080249549915}
   EventBeginDrag: 0
   EventEndDrag: 1
+  Wrapper:
+    m_Ref: {fileID: 3682755452414818849}
 --- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -231,6 +233,8 @@ MonoBehaviour:
   InteractFlags: 
   AutoInitUiDragable: 1
   UiDragableRef: {fileID: 3682755452414818849}
+  Wrapper:
+    m_Ref: {fileID: 2358620174404244115}
 --- !u!114 &8426660223054728468
 MonoBehaviour:
   m_ObjectHideFlags: 0

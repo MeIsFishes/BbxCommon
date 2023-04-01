@@ -32,14 +32,6 @@ namespace BbxCommon.Ui
 
         public void Init()
         {
-            var uiItems = SimplePool<List<IBbxUiItem>>.Alloc();
-            GetComponentsInChildren(uiItems);
-            foreach (var item in uiItems)
-            {
-                item.Init(this);
-            }
-            uiItems.CollectToPool();
-
             OnUiInit();
         }
 
