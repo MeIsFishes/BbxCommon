@@ -12,8 +12,8 @@ namespace Dcg.Ui
     {
         protected override void OnSceneInit()
         {
-            CreateUiGroupRoot(EUiSceneGroup.Info);
-            CreateUiGroupRoot(EUiSceneGroup.SubMenu);
+            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.Info);
+            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.SubMenu);
         }
     }
 }

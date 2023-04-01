@@ -20,6 +20,8 @@ namespace BbxCommon.Framework
         public T CreateUiScene<T>() where T : UiSceneBase => m_Ref.CreateUiScene<T>();
         public T GetUiScene<T>() where T : UiSceneBase => m_Ref.GetUiScene<T>();
         public T GetOrCreateUiScene<T>() where T : UiSceneBase => m_Ref.GetOrCreateUiScene<T>();
+        public void SetUiTop(GameObject uiGameObject) => m_Ref.SetUiTop(uiGameObject);
+        public void SetTopUiBack(GameObject uiGameObject) => m_Ref.SetTopUiBack(uiGameObject);
     }
 
     public struct EngineEcsWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
@@ -113,6 +115,16 @@ namespace BbxCommon.Framework
                 return CreateUiScene<T>();
         }
 
+        public void SetUiTop(GameObject uiGameObject)
+        {
+            BbxUiApi.GetUiGameEngineScene().SetUiTop(uiGameObject);
+        }
+
+        public void SetTopUiBack(GameObject uiGameObject)
+        {
+            BbxUiApi.GetUiGameEngineScene().SetTopUiBack(uiGameObject);
+        }
+
         private void OnAwakeUiScene()
         {
             if (UiCanvasProto == null)
@@ -121,7 +133,8 @@ namespace BbxCommon.Framework
             m_UiSceneRoot.transform.SetParent(this.transform);
             var customUiSceneRoot = new GameObject("CustomUiScenes");
             customUiSceneRoot.transform.SetParent(m_UiSceneRoot.transform);
-            CreateUiScene<UiGameEngineScene>();
+            var uiGameEngineScene = CreateUiScene<UiGameEngineScene>();
+            BbxUiApi.SetUiGameEngineScene(uiGameEngineScene);
             m_UiSceneRoot = customUiSceneRoot;  // keep custom UiScenes hang on a separate root to ensure GameEngine can show its UI items above other all
         }
         #endregion

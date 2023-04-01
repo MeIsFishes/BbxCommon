@@ -15,7 +15,7 @@ namespace BbxCommon.Ui
         /// <summary>
         /// Static function to create a <see cref="UiControllerBase"/> from the <see cref="GameObject"/>.
         /// </summary>
-        public static T CreateUiController<T>(GameObject uiGameObject) where T : UiControllerBase
+        internal static T CreateUiController<T>(GameObject uiGameObject) where T : UiControllerBase
         {
             // create controller and set view
             var uiView = uiGameObject.GetComponent<UiViewBase>();
@@ -33,9 +33,52 @@ namespace BbxCommon.Ui
 
     public abstract class UiSceneBase<TGroupKey> : UiSceneBase where TGroupKey : Enum
     {
+        #region Wrappers
+        public UiControllerWrapperData UiControllerWrapper;
+        public UiGroupWrapperData UiGroupWrapper;
+        public UiModelWrapperData UiModelWrapper;
+
+        public struct UiControllerWrapperData
+        {
+            private UiSceneBase<TGroupKey> m_Ref;
+
+            public UiControllerWrapperData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
+
+            public TController GetUiController<TController>() where TController : UiControllerBase => m_Ref.GetUiController<TController>();
+            public UiControllerBase GetUiController(Type type) => m_Ref.GetUiController(type);
+        }
+
+        public struct UiGroupWrapperData
+        {
+            private UiSceneBase<TGroupKey> m_Ref;
+
+            public UiGroupWrapperData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
+
+            public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "") => m_Ref.CreateUiGroupRoot(uiGroup, name);
+            public void SetUiGroup(List<TGroupKey> groups) => m_Ref.SetUiGroup(groups);
+            public void SetUiGroup(params TGroupKey[] groups) => m_Ref.SetUiGroup(groups);
+            public Canvas GetUiGroupCanvas(TGroupKey group) => m_Ref.GetUiGroupCanvas(group);
+        }
+
+        public struct UiModelWrapperData
+        {
+            private UiSceneBase<TGroupKey> m_Ref;
+
+            public UiModelWrapperData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
+
+            public void AddUiModel<T>(T model) where T : UiModelBase => m_Ref.AddUiModel(model);
+            public void TryGetUiModel<T>(out T model) where T : UiModelBase => m_Ref.TryGetUiModel(out model);
+            public T TryGetUiModel<T>() where T : UiModelBase => m_Ref.TryGetUiModel<T>();
+        }
+        #endregion
+
         #region Common
         public override void InitUiScene(GameObject canvasProto)
         {
+            UiControllerWrapper = new UiControllerWrapperData(this);
+            UiGroupWrapper = new UiGroupWrapperData(this);
+            UiModelWrapper = new UiModelWrapperData(this);
+
             CanvasProto = canvasProto;
             OnSceneInit();
         }
@@ -141,6 +184,11 @@ namespace BbxCommon.Ui
             list.AddArray(groups);
             SetUiGroup(list);
             list.CollectToPool();
+        }
+
+        public Canvas GetUiGroupCanvas(TGroupKey group)
+        {
+            return m_UiGroups[group];
         }
         #endregion
 

@@ -1,6 +1,8 @@
+using System.Collections.Generic;
 using UnityEngine;
+using BbxCommon.Ui;
 
-namespace BbxCommon.Ui
+namespace BbxCommon.Framework
 {
     internal enum EUiGameEngine
     {
@@ -12,8 +14,28 @@ namespace BbxCommon.Ui
     {
         protected override void OnSceneInit()
         {
-            CreateUiGroupRoot(EUiGameEngine.Loading);
-            CreateUiGroupRoot(EUiGameEngine.Top);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGameEngine.Loading);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGameEngine.Top);
         }
+
+        #region Set UI top
+        private Dictionary<GameObject, Transform> m_OriginalParent = new Dictionary<GameObject, Transform>();
+
+        internal void SetUiTop(GameObject uiGameObject)
+        {
+            m_OriginalParent.Add(uiGameObject, uiGameObject.transform.parent);
+            var topTransform = GetUiGroupCanvas(EUiGameEngine.Top).transform;
+            uiGameObject.transform.SetParent(topTransform);
+        }
+
+        internal void SetTopUiBack(GameObject uiGameObject)
+        {
+            if (m_OriginalParent.TryGetValue(uiGameObject, out var originalParent))
+            {
+                uiGameObject.transform.SetParent(originalParent);
+                m_OriginalParent.Remove(uiGameObject);
+            }
+        }
+        #endregion
     }
 }
