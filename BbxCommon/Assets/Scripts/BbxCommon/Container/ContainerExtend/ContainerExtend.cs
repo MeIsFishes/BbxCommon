@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BbxCommon
 {
@@ -71,6 +71,21 @@ namespace BbxCommon
             {
                 set.Add(data);
             }
+        }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectAndClearElements<T>(this List<T> list, bool collectSelf = false) where T : PooledObject
+        {
+            foreach (var element in list)
+            {
+                element.CollectToPool();
+            }
+            list.Clear();
+            if (collectSelf)
+                list.CollectToPool();
         }
 
         /// <summary>

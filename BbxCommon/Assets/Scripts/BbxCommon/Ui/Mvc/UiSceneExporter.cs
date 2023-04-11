@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using Sirenix.OdinInspector;
 
+#if UNITY_EDITOR
 namespace BbxCommon.Ui
 {
     /// <summary>
@@ -38,3 +39,4 @@ namespace BbxCommon.Ui
         }
     }
 }
+#endif

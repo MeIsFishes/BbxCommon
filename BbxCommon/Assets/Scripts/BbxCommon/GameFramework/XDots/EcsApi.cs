@@ -18,7 +18,7 @@ namespace BbxCommon.Framework
         public static void DestroyEntity(Entity entity)
         {
             RawComponentManager.DestroyEntity(entity);
-            World.DefaultGameObjectInjectionWorld.EntityManager.DestroyEntity(entity);
+            World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
 
         public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
@@ -27,9 +27,19 @@ namespace BbxCommon.Framework
             goComp.GameObject = gameObject;
         }
 
+        public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
+        {
+            return RawComponentManager.AddSingletonRawComponent<T>();
+        }
+
         public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return RawComponentManager.GetSingletonRawComponent<T>();
+        }
+
+        public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        {
+            RawComponentManager.RemoveSingletonRawComponent<T>();
         }
         #endregion
 
@@ -73,6 +83,16 @@ namespace BbxCommon.Framework
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
             RawComponentManager.RemoveRawComponent<T>(entity);
+        }
+
+        public static T CreateRawAspect<T>(this Entity entity) where T : EcsRawAspect, new()
+        {
+            return RawComponentManager.CreateRawAspect<T>(entity);
+        }
+
+        public static void RemoveRawAspect<T>(this Entity entity) where T : EcsRawAspect
+        {
+            RawComponentManager.RemoveRawAspect<T>(entity);
         }
 
         public static void AttachToGameObject(this Entity entity, GameObject gameObject)

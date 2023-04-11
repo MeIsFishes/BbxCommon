@@ -9,8 +9,8 @@ namespace BbxCommon.Framework
 {
     public interface IStageLoad
     {
-        void Load();
-        void Unload();
+        void Load(GameStage stage);
+        void Unload(GameStage stage);
     }
 
     public class GameStage
@@ -27,7 +27,7 @@ namespace BbxCommon.Framework
         public UnityAction PreUnloadStage;
         public UnityAction PostUnloadStage;
 
-        private World m_EcsWorld;
+        protected World m_EcsWorld;
 
         internal GameStage(string stageName, World ecsWorld)
         {
@@ -35,7 +35,16 @@ namespace BbxCommon.Framework
             m_EcsWorld = ecsWorld;
         }
 
-        public virtual void LoadStage()
+        internal void Init(string stageName, World ecsWorld)
+        {
+            StageName = stageName;
+            m_EcsWorld = ecsWorld;
+        }
+
+        // 2023.4.8:
+        // Keep core functions to be inernal instead of public virtual. That is for loading stage in GameEngine via Update().
+        // Also worrying about that is GameStage enough for development without extension?
+        internal void LoadStage()
         {
             if (m_Loaded)
                 return;
@@ -43,24 +52,26 @@ namespace BbxCommon.Framework
                 return;
 
             PreLoadStage?.Invoke();
+            OnLoadStageLoad();
             OnLoadStageScene();
             OnLoadStageUiScene();
-            OnLoadStageLoad();
             OnLoadStageTick();
+            OnLoadStageLateLoad();
             m_Loaded = true;
             PostLoadStage?.Invoke();
         }
 
-        public virtual void UnloadStage()
+        internal void UnloadStage()
         {
             if (m_Loaded == false)
                 return;
 
             PreUnloadStage?.Invoke();
-            OnUnloadStageScene();
-            OnUnloadStageUiScene();
-            OnUnloadStageLoad();
+            OnLoadStageLateLoad();
             OnUnloadStageTick();
+            OnUnloadStageUiScene();
+            OnUnloadStageScene();
+            OnUnloadStageLoad();
             m_Loaded = false;
             OnUnloadStageChildStage();
             PostUnloadStage?.Invoke();
@@ -113,6 +124,24 @@ namespace BbxCommon.Framework
             {
                 pair.Value.UnloadStage();
             }
+        }
+        #endregion
+
+        #region StageData
+        // store datas in the stage to offer to load stage
+        protected Dictionary<string, object> m_StageDatas = new Dictionary<string, object>();
+
+        public void SetStageData(string key, object value, bool collectToPool = false)
+        {
+            if (collectToPool && m_StageDatas.TryGetValue(key, out var origin))
+                ((PooledObject)origin)?.CollectToPool();
+            m_StageDatas[key] = value;
+        }
+
+        public object GetStageData(string key)
+        {
+            m_StageDatas.TryGetValue(key, out var value);
+            return value;
         }
         #endregion
 
@@ -175,6 +204,7 @@ namespace BbxCommon.Framework
 
         #region StageLoad
         protected List<IStageLoad> m_StageLoadItems = new List<IStageLoad>();
+        protected List<IStageLoad> m_StageLateLoadItems = new List<IStageLoad>();
 
         public void AddLoadItem(IStageLoad item)
         {
@@ -185,15 +215,36 @@ namespace BbxCommon.Framework
         {
             foreach (var item in m_StageLoadItems)
             {
-                item.Load();
+                item.Load(this);
             }
         }
 
         protected void OnUnloadStageLoad()
         {
-            foreach (var item in m_StageLoadItems)
+            for (int i = m_StageLoadItems.Count - 1; i >= 0; i--)
             {
-                item.Unload();
+                m_StageLoadItems[i].Unload(this);
+            }
+        }
+
+        public void AddLateLoadItem(IStageLoad item)
+        {
+            m_StageLateLoadItems.Add(item);
+        }
+
+        protected void OnLoadStageLateLoad()
+        {
+            foreach (var item in m_StageLateLoadItems)
+            {
+                item.Load(this);
+            }
+        }
+
+        protected void OnUnloadStageLateLoad()
+        {
+            for (int i = m_StageLateLoadItems.Count - 1; i >= 0; i--)
+            {
+                m_StageLateLoadItems[i].Unload(this);
             }
         }
         #endregion

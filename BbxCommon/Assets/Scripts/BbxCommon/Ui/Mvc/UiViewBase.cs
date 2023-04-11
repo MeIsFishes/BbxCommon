@@ -8,10 +8,14 @@ namespace BbxCommon.Ui
 {
     public abstract class UiViewBase : MonoBehaviour
     {
-        public bool DefaultOpen;
+        public bool DefaultOpen = true;
+
+        [NonSerialized]
+        public UiControllerBase UiController;
         [SerializeField]
         internal List<IBbxUiItem> UiItems = new List<IBbxUiItem>();
 
+#if UNITY_EDITOR
         [Button("Pre-UiInit")]
         private void PreUiInit()
         {
@@ -24,6 +28,7 @@ namespace BbxCommon.Ui
             }
             EditorUtility.SetDirty(this);
         }
+#endif
 
         public abstract string GetResourcePath();
 

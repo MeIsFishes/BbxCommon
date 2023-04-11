@@ -20,14 +20,15 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Init and Open
-        private void OnEnable()
-        {
-            OnUiOpen();
-        }
+        private bool m_Opened;
 
         public void Open()
         {
+            if (m_Opened)
+                return;
             gameObject.SetActive(true);
+            OnUiOpen();
+            m_Opened = true;
         }
 
         public void Init()
@@ -45,19 +46,32 @@ namespace BbxCommon.Ui
         protected virtual void OnUiOpen() { }
         #endregion
 
-        #region Close
-        private void OnDisable()
+        #region Close and Destroy
+        private void OnDestroy()
         {
-            OnUiClose();
+            OnUiDestroy();
         }
+
         public void Close()
         {
+            if (m_Opened == false)
+                return;
             gameObject.SetActive(false);
+            OnUiClose();
+            m_Opened = false;
         }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
         /// <summary>
         /// Calls when the GameObject is disabled.
         /// </summary>
         protected virtual void OnUiClose() { }
+
+        protected virtual void OnUiDestroy() { }
         #endregion
 
         #region ChildController

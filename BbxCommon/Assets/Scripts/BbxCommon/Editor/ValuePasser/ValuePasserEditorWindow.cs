@@ -2,6 +2,7 @@
 using System.Text;
 using UnityEditor;
 
+#if UNITY_EDITOR
 namespace BbxCommon.ValuePasserInternal
 {
     public class ValuePasserEditorWindow : EditorWindow
@@ -55,3 +56,4 @@ namespace BbxCommon.ValuePasserInternal
         }
     }
 }
+#endif

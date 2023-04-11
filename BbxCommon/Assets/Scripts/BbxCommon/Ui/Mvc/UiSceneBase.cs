@@ -25,6 +25,7 @@ namespace BbxCommon.Ui
                 return null;
             }
             var uiController = uiGameObject.AddMissingComponent(uiView.GetControllerType()) as UiControllerBase;
+            uiView.UiController = uiController;
             uiController.SetView(uiView);
             uiController.Init();
             return (T)uiController;
@@ -73,7 +74,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Common
-        public override void InitUiScene(GameObject canvasProto)
+        public sealed override void InitUiScene(GameObject canvasProto)
         {
             UiControllerWrapper = new UiControllerWrapperData(this);
             UiGroupWrapper = new UiGroupWrapperData(this);
@@ -103,8 +104,9 @@ namespace BbxCommon.Ui
             else
                 uiController.Close();
             // add to dictionary
-            if (m_UiControllers.TryAdd(uiView.GetControllerType(), uiController) == false)
-                Debug.LogError("You can't create a same UI twice! UI type: " + uiView.GetControllerType());
+            if (m_UiControllers.ContainsKey(uiView.GetControllerType()) == false)
+                m_UiControllers[uiView.GetControllerType()] = SimplePool<List<UiControllerBase>>.Alloc();
+            m_UiControllers[uiView.GetControllerType()].Add(uiController);
             return uiController;
         }
 
@@ -115,6 +117,8 @@ namespace BbxCommon.Ui
             foreach (var data in asset.UiObjectDatas)
             {
                 var controller = CreateUi(data.PrefabPath, (TGroupKey)(object)data.UiGroup, false);
+                data.CreatedController = controller;
+                data.UiControllerType = controller.GetType();   // type can't be serialized
                 (controller.transform as RectTransform).localPosition = data.Position;
                 (controller.transform as RectTransform).localScale = data.Scale;
                 (controller.transform as RectTransform).pivot = data.Pivot;
@@ -129,25 +133,53 @@ namespace BbxCommon.Ui
                 return;
             foreach (var data in asset.UiObjectDatas)
             {
-                var controller = GetUiController(data.UiControllerType);
-                Destroy(controller);
+                var uiList = m_UiControllers[data.UiControllerType];
+                uiList.Remove(data.CreatedController);
+                if (uiList.Count == 0)
+                    m_UiControllers.Remove(data.UiControllerType);
+                data.CreatedController.Destroy();
             }
         }
         #endregion
 
         #region UiControllers
-        private Dictionary<Type, UiControllerBase> m_UiControllers = new Dictionary<Type, UiControllerBase>();
+        /// <summary>
+        /// If there is only 1 <see cref="UiControllerBase"/> in the list, you can get it via <see cref="GetUiController{TController}"/>.
+        /// </summary>
+        private Dictionary<Type, List<UiControllerBase>> m_UiControllers = new Dictionary<Type, List<UiControllerBase>>();
 
         public TController GetUiController<TController>() where TController : UiControllerBase
         {
-            m_UiControllers.TryGetValue(typeof(TController), out var uiController);
-            return uiController == null ? null : uiController as TController;
+            return (TController)GetUiController(typeof(TController));
         }
 
         public UiControllerBase GetUiController(Type type)
         {
-            m_UiControllers.TryGetValue(type, out var uiController);
-            return uiController;
+            m_UiControllers.TryGetValue(type, out var uiControllerList);
+            if (uiControllerList.Count > 1)
+            {
+                Debug.LogError("There are more than 1 " + type.Name + " in the UiScene. In that case you cannot get the UiController in this way!");
+                return null;
+            }
+            return uiControllerList[0];
+        }
+
+        public void ClearUiController(Type type)
+        {
+            if (m_UiControllers.TryGetValue(type, out var uiList))
+            {
+                foreach (var uiController in uiList)
+                {
+                    uiController.Destroy();
+                }
+                uiList.CollectToPool();
+                m_UiControllers.Remove(type);
+            }
+        }
+
+        public void ClearUiController<TController>() where TController : UiControllerBase
+        {
+            ClearUiController(typeof(TController));
         }
         #endregion
 

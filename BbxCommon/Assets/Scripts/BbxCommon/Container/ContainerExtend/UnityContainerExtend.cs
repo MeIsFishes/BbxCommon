@@ -18,6 +18,16 @@ namespace BbxCommon
             return new Vector2(vector.x, value);
         }
 
+        public static Vector2 AddX(this Vector2 vector, float value)
+        {
+            return new Vector2(vector.x + value, vector.y);
+        }
+
+        public static Vector2 AddY(this Vector2 vector, float value)
+        {
+            return new Vector2(vector.x, vector.y + value);
+        }
+
         public static Vector3 AsVector3XY(this Vector2 vector)
         {
             return new Vector3(vector.x, vector.y, 0);
@@ -61,6 +71,21 @@ namespace BbxCommon
         public static Vector3 SetYZ(this Vector3 vector, float y, float z)
         {
             return new Vector3(vector.x, y, z);
+        }
+
+        public static Vector3 AddX(this Vector3 vector, float value)
+        {
+            return new Vector3(vector.x + value, vector.y, vector.z);
+        }
+
+        public static Vector3 AddY(this Vector3 vector, float value)
+        {
+            return new Vector3(vector.x, vector.y + value, vector.z);
+        }
+
+        public static Vector3 AddZ(this Vector3 vector, float value)
+        {
+            return new Vector3(vector.x, vector.y, vector.z + value);
         }
 
         public static Vector2 AsVector2XY(this Vector3 vector)

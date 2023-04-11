@@ -24,7 +24,8 @@ namespace Dcg
             globalStage.AddScene("DcgMain");
             globalStage.SetUiScene(UiGameScene, Resources.Load<UiSceneAsset>("DndCardGame/Configs/UiDungeonScene"));
             globalStage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Configs/DcgInteractingDataAsset"));
-            globalStage.LoadStage();
+
+            StageWrapper.LoadStage(globalStage);
         }
     }
 }

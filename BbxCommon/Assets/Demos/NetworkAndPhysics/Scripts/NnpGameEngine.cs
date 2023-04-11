@@ -20,7 +20,7 @@ namespace Nnp
             globalStage.AddUpdateSystem<PlayerAnimationSystem>();
             globalStage.AddUpdateSystem<CameraSystem>();
 
-            globalStage.LoadStage();
+            StageWrapper.LoadStage(globalStage);
         }
     }
 }

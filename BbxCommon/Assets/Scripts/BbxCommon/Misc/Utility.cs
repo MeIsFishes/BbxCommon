@@ -50,6 +50,7 @@ namespace BbxCommon
     #endregion
 
     #region AssetFunc
+#if UNITY_EDITOR
     public static class AssetFunc
     {
         public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
@@ -65,5 +66,6 @@ namespace BbxCommon
             }
         }
     }
+#endif
     #endregion
 }

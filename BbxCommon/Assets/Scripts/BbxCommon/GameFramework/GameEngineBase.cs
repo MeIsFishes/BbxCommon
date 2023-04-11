@@ -7,7 +7,7 @@ using BbxCommon.Ui;
 namespace BbxCommon.Framework
 {
     #region SystemGroup
-    public class UpdateSystemGroup : ComponentSystemGroup { }
+    public partial class UpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
     #region EngineWrapper
@@ -32,6 +32,7 @@ namespace BbxCommon.Framework
 
         public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new() => m_Ref.AddSingletonRawComponent<T>();
         public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
+        public void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.RemoveSingleRawComponent<T>();
     }
 
     public struct EngineStageWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
@@ -41,6 +42,9 @@ namespace BbxCommon.Framework
         public EngineStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
 
         public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
+        public GameStage CreateStage<T>(string stageName) where T : GameStage, new() => m_Ref.CreateStage<T>(stageName);
+        public void LoadStage(GameStage stage) => m_Ref.LoadStage(stage);
+        public void UnloadStage(GameStage stage) => m_Ref.UnloadStage(stage);
     }
     #endregion
 
@@ -68,7 +72,7 @@ namespace BbxCommon.Framework
             
             InitWrapper();
 
-            OnAwakeWorld();
+            OnAwakeEcsWorld();
             OnAwakeUiScene();
 
             // call overridable OnAwake() after all datas are initialized
@@ -76,6 +80,11 @@ namespace BbxCommon.Framework
         }
 
         protected virtual void OnAwake() { }
+
+        private void Update()
+        {
+            OnUpdateStage();
+        }
 
         private void OnDestroy()
         {
@@ -153,21 +162,81 @@ namespace BbxCommon.Framework
             return m_SingletonEntity.GetRawComponent<T>();
         }
 
+        public void RemoveSingleRawComponent<T>() where T : EcsSingletonRawComponent
+        {
+            m_SingletonEntity.RemoveRawComponent<T>();
+        }
+
         protected abstract void InitSingletonComponents();
 
-        private void OnAwakeWorld()
+        private void OnAwakeEcsWorld()
         {
             m_EcsWorld = World.DefaultGameObjectInjectionWorld;
             m_EcsWorld.CreateSystem<UpdateSystemGroup>();
             m_SingletonEntity = EcsApi.CreateEntity();
+            RawComponentManager.SetSingletonRawComponentEntity(m_SingletonEntity);
             InitSingletonComponents();
         }
         #endregion
 
         #region Stage
+        private enum EOperateStage
+        {
+            Load,
+            Unload,
+        }
+
+        private struct OperateStage
+        {
+            public GameStage Stage;
+            public EOperateStage OperateType;
+
+            public OperateStage(GameStage stage, EOperateStage operateType)
+            {
+                Stage = stage;
+                OperateType = operateType;
+            }
+        }
+
+        private List<OperateStage> m_OperateStages = new List<OperateStage>();
+
         public GameStage CreateStage(string stageName)
         {
             return new GameStage(stageName, m_EcsWorld);
+        }
+
+        public T CreateStage<T>(string stageName) where T : GameStage, new()
+        {
+            var stage = new T();
+            stage.Init(stageName, m_EcsWorld);
+            return stage;
+        }
+
+        public void LoadStage(GameStage stage)
+        {
+            m_OperateStages.Add(new OperateStage(stage, EOperateStage.Load));
+        }
+
+        public void UnloadStage(GameStage stage)
+        {
+            m_OperateStages.Add(new OperateStage(stage, EOperateStage.Unload));
+        }
+
+        private void OnUpdateStage()
+        {
+            foreach (var operate in m_OperateStages)
+            {
+                switch (operate.OperateType)
+                {
+                    case EOperateStage.Load:
+                        operate.Stage.LoadStage();
+                        break;
+                    case EOperateStage.Unload:
+                        operate.Stage.UnloadStage();
+                        break;
+                }
+            }
+            m_OperateStages.Clear();
         }
         #endregion
     }

@@ -9,6 +9,8 @@ namespace BbxCommon.Ui
         [Serializable]
         public class UiObjectData
         {
+            [NonSerialized]
+            public UiControllerBase CreatedController;
             public string PrefabPath;
             public Type UiControllerType;
             public int UiGroup;

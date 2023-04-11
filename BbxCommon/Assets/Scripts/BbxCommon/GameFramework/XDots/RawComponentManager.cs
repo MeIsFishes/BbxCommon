@@ -18,6 +18,7 @@ namespace BbxCommon.Framework
     /// </summary>
     internal static class RawComponentManager
     {
+        #region Common
         /// <summary>
         /// <see cref="Entity"/>s with <see cref="EcsRawComponent"/>s added to it.
         /// </summary>
@@ -28,6 +29,20 @@ namespace BbxCommon.Framework
         /// </summary>
         internal static Dictionary<Type, List<EcsRawComponent>> RawComponentLists = new Dictionary<Type, List<EcsRawComponent>>();
 
+        private static Entity m_SingletonRawComponentEntity;
+
+        public static void DestroyEntity(Entity entity)
+        {
+            var group = GetGroupAndRefreshHot(entity);
+            foreach (var compPair in group.RawComponents)
+            {
+                RemoveRawComponentFromList(compPair.Key, compPair.Value);
+            }
+            group.CollectToPool();
+        }
+        #endregion
+
+        #region RawComponent
         public static T AddRawComponent<T>(Entity entity) where T : EcsRawComponent, new()
         {
             var type = typeof(T);
@@ -56,13 +71,6 @@ namespace BbxCommon.Framework
             return group.GetRawComponent<T>();
         }
 
-        public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
-        {
-            if (RawComponentLists.TryGetValue(typeof(T), out var list) && list.Count > 0)
-                return (T)list[0];
-            return null;
-        }
-
         public static bool HasRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
             var group = GetGroupAndRefreshHot(entity);
@@ -87,39 +95,79 @@ namespace BbxCommon.Framework
                 }
             }
         }
+        #endregion
 
-        public static void DestroyEntity(Entity entity)
+        #region SingletonRawComponent
+        public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            var group = GetGroupAndRefreshHot(entity);
-            foreach (var compPair in group.RawComponents)
-            {
-                RemoveRawComponentFromList(compPair.Key, compPair.Value);
-            }
-            group.CollectToPool();
+            if (RawComponentLists.TryGetValue(typeof(T), out var list) && list.Count > 0)
+                return (T)list[0];
+            return null;
         }
 
-        internal static void RemoveRawComponentFromList<T>(T comp) where T : EcsRawComponent
+        public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
+        {
+            return AddRawComponent<T>(m_SingletonRawComponentEntity);
+        }
+
+        public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        {
+            var list = RawComponentLists[typeof(T)];
+            if (list.Count > 0)
+            {
+                var comp = list[0];
+                RemoveRawComponent<T>(comp.GetEntity());
+            }
+        }
+
+        internal static void SetSingletonRawComponentEntity(Entity entity)
+        {
+            if (m_SingletonRawComponentEntity == Entity.Null)
+                m_SingletonRawComponentEntity = entity;
+            else
+                Debug.LogError("SingletonRawComponentEntity can be only set once!");
+        }
+        #endregion
+
+        #region RawAspect
+        public static T CreateRawAspect<T>(Entity entity) where T : EcsRawAspect, new()
+        {
+            var aspect = AddRawComponent<T>(entity);
+            aspect.Create();
+            return aspect;
+        }
+
+        public static void RemoveRawAspect<T>(Entity entity) where T : EcsRawAspect
+        {
+            RemoveRawComponent<T>(entity);
+        }
+        #endregion
+
+        #region private
+        private static void RemoveRawComponentFromList<T>(T comp) where T : EcsRawComponent
         {
             var list = RawComponentLists[typeof(T)];
             list.UnorderedRemove(comp.Index);
-            list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
+            if (list.Count > 0)
+                list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
         }
 
-        internal static void RemoveRawComponentFromList(Type type, EcsRawComponent comp)
+        private static void RemoveRawComponentFromList(Type type, EcsRawComponent comp)
         {
             var list = RawComponentLists[type];
             list.UnorderedRemove(comp.Index);
-            list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
+            if (list.Count > 1)
+                list[comp.Index].Index = comp.Index;    // swap removing, then set its index as new
         }
 
         // Generally, user may operate a single entity several times. If so, storing a hot data can reduce one time hash calculation.
         private static RawComponentGroup m_HotGroup = new RawComponentGroup();
-        internal static RawComponentGroup GetGroupAndRefreshHot(Entity entity)
+        private static RawComponentGroup GetGroupAndRefreshHot(Entity entity)
         {
             if (m_HotGroup.Entity != entity)
                 m_HotGroup = EntityRawComponentGroup[entity];
             return m_HotGroup;
         }
-
+        #endregion
     }
 }

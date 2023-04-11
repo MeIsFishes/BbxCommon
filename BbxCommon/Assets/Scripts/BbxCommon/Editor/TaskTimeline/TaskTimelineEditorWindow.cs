@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEditor;
 
+#if UNITY_EDITOR
 namespace BbxCommon.TaskInternal
 {
     public class TaskTimelineEditorWindow : EditorWindow
@@ -50,3 +51,4 @@ namespace BbxCommon.TaskInternal
         }
     }
 }
+#endif
