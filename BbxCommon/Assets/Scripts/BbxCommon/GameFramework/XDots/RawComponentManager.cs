@@ -12,8 +12,8 @@ namespace BbxCommon.Framework
     /// struct data which cannot be directly extended, we create a <see cref="Dictionary{TKey, TValue}"/> to  manage its <see cref="EcsRawComponent"/>
     /// and <see cref="EcsRawAspect"/> datas.
     /// </para><para>
-    /// However, <see cref="RawComponentManager"/> only operates <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of the <see cref="Entity"/>s,
-    /// to interact with DOTS <see cref="World"/>, see <see cref="EcsApi"/> functions.
+    /// However, <see cref="RawComponentManager"/> only operates <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of the <see cref="Entity"/>s.
+    /// To interact with DOTS <see cref="World"/>, see <see cref="EcsApi"/> functions.
     /// </para>
     /// </summary>
     internal static class RawComponentManager

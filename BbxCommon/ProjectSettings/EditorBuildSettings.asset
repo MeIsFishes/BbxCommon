@@ -5,16 +5,19 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Demos/NetworkAndPhysics/Scenes/NnpLauncher.unity
     guid: d0c00f4dbfa9a3047aa115cf18fa86c5
-  - enabled: 1
+  - enabled: 0
     path: Assets/Demos/NetworkAndPhysics/Scenes/NnpMain.unity
     guid: 07efeab616a51bf44abe94484f1b492f
-  - enabled: 1
+  - enabled: 0
     path: Assets/Demos/DndCardGame/Scenes/DcgMain.unity
     guid: 402b177a0ce90464dbafd1ec8d0e7984
-  - enabled: 1
+  - enabled: 0
     path: Assets/Demos/DndCardGame/Scenes/DcgLauncher.unity
     guid: 72dff67e1e2f094419c2a8d2dede061d
+  - enabled: 1
+    path: Assets/Demos/OoXDots/Scenes/OxdLauncher.unity
+    guid: 72fe96fd7000be64185508c4a337a5c3
   m_configObjects: {}

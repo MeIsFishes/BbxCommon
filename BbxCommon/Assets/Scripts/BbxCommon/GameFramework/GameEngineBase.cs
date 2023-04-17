@@ -10,56 +10,41 @@ namespace BbxCommon.Framework
     public partial class UpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
-    #region EngineWrapper
-    public struct EngineUiSceneWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
-    {
-        private GameEngineBase<TEngine> m_Ref;
-
-        public EngineUiSceneWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-        public T CreateUiScene<T>() where T : UiSceneBase => m_Ref.CreateUiScene<T>();
-        public T GetUiScene<T>() where T : UiSceneBase => m_Ref.GetUiScene<T>();
-        public T GetOrCreateUiScene<T>() where T : UiSceneBase => m_Ref.GetOrCreateUiScene<T>();
-        public void SetUiTop(GameObject uiGameObject) => m_Ref.SetUiTop(uiGameObject);
-        public void SetTopUiBack(GameObject uiGameObject) => m_Ref.SetTopUiBack(uiGameObject);
-    }
-
-    public struct EngineEcsWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
-    {
-        private GameEngineBase<TEngine> m_Ref;
-
-        public EngineEcsWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-        public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new() => m_Ref.AddSingletonRawComponent<T>();
-        public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.GetSingletonRawComponent<T>();
-        public void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent => m_Ref.RemoveSingleRawComponent<T>();
-    }
-
-    public struct EngineStageWrapper<TEngine> where TEngine : GameEngineBase<TEngine>
-    {
-        private GameEngineBase<TEngine> m_Ref;
-
-        public EngineStageWrapper(GameEngineBase<TEngine> engine) { m_Ref = engine; }
-
-        public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
-        public GameStage CreateStage<T>(string stageName) where T : GameStage, new() => m_Ref.CreateStage<T>(stageName);
-        public void LoadStage(GameStage stage) => m_Ref.LoadStage(stage);
-        public void UnloadStage(GameStage stage) => m_Ref.UnloadStage(stage);
-    }
-    #endregion
-
     public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
-        public EngineUiSceneWrapper<TEngine> UiSceneWrapper;
-        public EngineEcsWrapper<TEngine> EcsWrapper;
-        public EngineStageWrapper<TEngine> StageWrapper;
+        public EngineUiSceneWp UiSceneWrapper;
+        public EngineStageWp StageWrapper;
 
         private void InitWrapper()
         {
-            UiSceneWrapper = new EngineUiSceneWrapper<TEngine>(this);
-            EcsWrapper = new EngineEcsWrapper<TEngine>(this);
-            StageWrapper = new EngineStageWrapper<TEngine>(this);
+            UiSceneWrapper = new EngineUiSceneWp(this);
+            StageWrapper = new EngineStageWp(this);
+        }
+
+        public struct EngineUiSceneWp
+        {
+            private GameEngineBase<TEngine> m_Ref;
+
+            public EngineUiSceneWp(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+            public T CreateUiScene<T>() where T : UiSceneBase => m_Ref.CreateUiScene<T>();
+            public T GetUiScene<T>() where T : UiSceneBase => m_Ref.GetUiScene<T>();
+            public T GetOrCreateUiScene<T>() where T : UiSceneBase => m_Ref.GetOrCreateUiScene<T>();
+            public void SetUiTop(GameObject uiGameObject) => m_Ref.SetUiTop(uiGameObject);
+            public void SetTopUiBack(GameObject uiGameObject) => m_Ref.SetTopUiBack(uiGameObject);
+        }
+
+        public struct EngineStageWp
+        {
+            private GameEngineBase<TEngine> m_Ref;
+
+            public EngineStageWp(GameEngineBase<TEngine> engine) { m_Ref = engine; }
+
+            public GameStage CreateStage(string stageName) => m_Ref.CreateStage(stageName);
+            public GameStage CreateStage<T>(string stageName) where T : GameStage, new() => m_Ref.CreateStage<T>(stageName);
+            public void LoadStage(GameStage stage) => m_Ref.LoadStage(stage);
+            public void UnloadStage(GameStage stage) => m_Ref.UnloadStage(stage);
         }
         #endregion
 
@@ -151,21 +136,6 @@ namespace BbxCommon.Framework
         #region EcsWorld
         private World m_EcsWorld;
         private Entity m_SingletonEntity;
-
-        public T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
-        {
-            return m_SingletonEntity.AddRawComponent<T>();
-        }
-
-        public T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
-        {
-            return m_SingletonEntity.GetRawComponent<T>();
-        }
-
-        public void RemoveSingleRawComponent<T>() where T : EcsSingletonRawComponent
-        {
-            m_SingletonEntity.RemoveRawComponent<T>();
-        }
 
         protected abstract void InitSingletonComponents();
 

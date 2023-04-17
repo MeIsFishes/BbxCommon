@@ -1,0 +1,18 @@
+{
+    "name": "BbxCommon.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:cc1c485fd10a74e48a637d86f3c6df19"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

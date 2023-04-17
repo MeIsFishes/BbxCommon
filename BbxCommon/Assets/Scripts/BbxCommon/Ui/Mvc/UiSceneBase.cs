@@ -6,6 +6,7 @@ namespace BbxCommon.Ui
 {
     public abstract class UiSceneBase : MonoBehaviour
     {
+        #region Common
         public GameObject CanvasProto;
 
         public abstract void InitUiScene(GameObject canvasProto);
@@ -30,6 +31,7 @@ namespace BbxCommon.Ui
             uiController.Init();
             return (T)uiController;
         }
+        #endregion
     }
 
     public abstract class UiSceneBase<TGroupKey> : UiSceneBase where TGroupKey : Enum

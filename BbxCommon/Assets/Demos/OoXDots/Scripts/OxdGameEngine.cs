@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+using BbxCommon.Framework;
 
-public class OxdGameEngine : MonoBehaviour
+namespace Oxd
 {
-    // Start is called before the first frame update
-    void Start()
+    public class OxdGameEngine : GameEngineBase<OxdGameEngine>
     {
-        
-    }
+        protected override void InitSingletonComponents()
+        {
+            
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        protected override void OnAwake()
+        {
+            var stage = StageWrapper.CreateStage("Main Stage");
+
+            stage.AddUpdateSystem<GetComponentTSyetem>();
+            stage.AddUpdateSystem<EmptySystem>();
+            stage.AddUpdateSystem<GetComponentSystem>();
+            stage.AddUpdateSystem<GetAndCastSystem>();
+
+            StageWrapper.LoadStage(stage);
+        }
     }
 }

@@ -6,7 +6,7 @@ namespace Nnp
     {
         protected override void InitSingletonComponents()
         {
-            EcsWrapper.AddSingletonRawComponent<InputSingletonRawComponent>();
+            EcsApi.AddSingletonRawComponent<InputSingletonRawComponent>();
         }
 
         protected override void OnAwake()
