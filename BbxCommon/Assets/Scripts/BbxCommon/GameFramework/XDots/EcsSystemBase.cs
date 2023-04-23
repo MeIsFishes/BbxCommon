@@ -28,7 +28,7 @@ namespace BbxCommon
 
         protected void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
         {
-            EcsDataManager.ForeachRawComponent(action);
+            EcsDataManager.ForeachRawAspect(action);
         }
     }
 }

@@ -23,7 +23,7 @@ namespace BbxCommon
 
         public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
         {
-            var goComp = EcsDataManager.AddRawComponent<GameObjectRawComponent>(entity);
+            var goComp = EcsDataManager.AddEcsData<GameObjectRawComponent>(entity);
             goComp.GameObject = gameObject;
         }
 
@@ -65,24 +65,29 @@ namespace BbxCommon
             World.DefaultGameObjectInjectionWorld.EntityManager.RemoveComponent<T>(entity);
         }
 
+        internal static T AddEcsData<T>(this Entity entity) where T : EcsData, new()
+        {
+            return EcsDataManager.AddEcsData<T>(entity);
+        }
+
         public static T AddRawComponent<T>(this Entity entity) where T : EcsRawComponent, new()
         {
-            return EcsDataManager.AddRawComponent<T>(entity);
+            return EcsDataManager.AddEcsData<T>(entity);
         }
 
         public static bool HasRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return EcsDataManager.HasRawComponent<T>(entity);
+            return EcsDataManager.HasEcsData<T>(entity);
         }
 
         public static T GetRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return EcsDataManager.GetRawComponent<T>(entity);
+            return EcsDataManager.GetEcsData<T>(entity);
         }
 
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            EcsDataManager.RemoveRawComponent<T>(entity);
+            EcsDataManager.RemoveEcsData<T>(entity);
         }
 
         public static T CreateRawAspect<T>(this Entity entity) where T : EcsRawAspect, new()

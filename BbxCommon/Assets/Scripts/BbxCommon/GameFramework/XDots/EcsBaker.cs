@@ -53,7 +53,7 @@ namespace BbxCommon
 
         protected void CreateRawAspect<T>() where T : EcsRawAspect, new()
         {
-            var aspect = AddRawComponent<T>();
+            var aspect = Entity.AddEcsData<T>();
             m_Aspects.Add(aspect);
         }
 

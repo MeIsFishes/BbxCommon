@@ -37,33 +37,33 @@ namespace BbxCommon
         #endregion
 
         #region RawComponent
-        public static T AddRawComponent<T>(Entity entity) where T : EcsRawComponent, new()
+        public static T AddEcsData<T>(Entity entity) where T : EcsData, new()
         {
             var comp = ObjectPool<T>.Alloc();
             var group = GetGroupAndRefreshHot(entity);
 
-            group.AddRawComponent(comp);
+            group.AddEcsData(comp);
             comp.Entity = entity;
             EcsDataList<T>.AddEcsData(comp);
             return comp;
         }
 
-        public static T GetRawComponent<T>(Entity entity) where T : EcsRawComponent
+        public static T GetEcsData<T>(Entity entity) where T : EcsData
         {
             var group = GetGroupAndRefreshHot(entity);
-            return group.GetRawComponent<T>();
+            return group.GetEcsData<T>();
         }
 
-        public static bool HasRawComponent<T>(Entity entity) where T : EcsRawComponent
+        public static bool HasEcsData<T>(Entity entity) where T : EcsData
         {
             var group = GetGroupAndRefreshHot(entity);
-            return group.HasRawComponent<T>();
+            return group.HasEcsData<T>();
         }
 
-        public static void RemoveRawComponent<T>(Entity entity) where T : EcsRawComponent
+        public static void RemoveEcsData<T>(Entity entity) where T : EcsData
         {
             var group = GetGroupAndRefreshHot(entity);
-            group.RemoveRawComponent<T>(out var comp);
+            group.RemoveEcsData<T>(out var comp);
             EcsDataList<T>.RemoveEcsData(comp);
             comp.CollectToPool();
         }
@@ -82,13 +82,13 @@ namespace BbxCommon
 
         public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
         {
-            return AddRawComponent<T>(m_SingletonRawComponentEntity);
+            return AddEcsData<T>(m_SingletonRawComponentEntity);
         }
 
         public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             var comp = EcsDataList<T>.GetSingletonEcsData<T>();
-            RemoveRawComponent<T>(comp.GetEntity());
+            RemoveEcsData<T>(comp.GetEntity());
         }
 
         internal static void SetSingletonRawComponentEntity(Entity entity)
@@ -103,14 +103,19 @@ namespace BbxCommon
         #region RawAspect
         public static T CreateRawAspect<T>(Entity entity) where T : EcsRawAspect, new()
         {
-            var aspect = AddRawComponent<T>(entity);
+            var aspect = AddEcsData<T>(entity);
             aspect.Create();
             return aspect;
         }
 
         public static void RemoveRawAspect<T>(Entity entity) where T : EcsRawAspect
         {
-            RemoveRawComponent<T>(entity);
+            RemoveEcsData<T>(entity);
+        }
+
+        public static void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
+        {
+            EcsDataList<T>.ForeachEcsData(action);
         }
         #endregion
 
@@ -181,7 +186,7 @@ namespace BbxCommon
         /// <para>
         /// The full steps of removing a <see cref="EcsData"/> are as follow:
         /// </para><para>
-        /// 1. Sign a <see cref="EcsData"/> as deleted via either <see cref="EcsDataManager.RemoveRawComponent{T}(Entity)"/> or <see cref="EcsDataManager.DestroyEntity(Entity)"/>.
+        /// 1. Sign a <see cref="EcsData"/> as deleted via either <see cref="EcsDataManager.RemoveEcsData{T}(Entity)"/> or <see cref="EcsDataManager.DestroyEntity(Entity)"/>.
         /// </para><para>
         /// 2. The <see cref="EcsData"/> then has been removed in <see cref="EcsDataGroup"/>, and its reference, <see cref="EcsData.Entity"/> has been set as <see cref="Entity.Null"/>.
         /// </para><para>

@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace BbxCommon
 {
-    public abstract class EcsRawAspect : EcsRawComponent
+    public abstract class EcsRawAspect : EcsData
     {
         private GameObject m_GameObject;
 
