@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using BbxCommon.Ui;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     internal enum EUiGameEngine
     {

@@ -1,12 +1,12 @@
 using UnityEngine.Events;
 using Unity.Entities;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     /// <summary>
-    /// High-performance system, which is almost identical to Unity DOTS system.
+    /// Base system, which is almost identical to Unity DOTS system.
     /// </summary>
-    public abstract partial class EcsHpSystemBase : SystemBase
+    public abstract partial class EcsSystemBase : SystemBase
     {
         
     }
@@ -14,21 +14,21 @@ namespace BbxCommon.Framework
     /// <summary>
     /// Mixed system, supports using <see cref="EcsRawComponent"/> related functions.
     /// </summary>
-    public abstract partial class EcsMixSystemBase : EcsHpSystemBase
+    public abstract partial class EcsMixSystemBase : EcsSystemBase
     {
         protected void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
         {
-            RawComponentManager.ForeachRawComponent(action);
+            EcsDataManager.ForeachRawComponent(action);
         }
 
         protected T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            return RawComponentManager.GetSingletonRawComponent<T>();
+            return EcsDataManager.GetSingletonRawComponent<T>();
         }
 
         protected void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
         {
-            RawComponentManager.ForeachRawComponent(action);
+            EcsDataManager.ForeachRawComponent(action);
         }
     }
 }

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     public class EcsBaker : MonoBehaviour
     {

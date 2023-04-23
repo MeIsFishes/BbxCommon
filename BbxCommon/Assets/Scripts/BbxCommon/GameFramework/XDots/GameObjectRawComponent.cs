@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     internal class GameObjectRawComponent : EcsRawComponent
     {

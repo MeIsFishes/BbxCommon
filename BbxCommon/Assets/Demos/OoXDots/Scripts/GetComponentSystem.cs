@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.Profiling;
 using Unity.Entities;
-using BbxCommon.Framework;
+using BbxCommon;
 
 namespace Oxd
 {

@@ -1,5 +1,4 @@
-using UnityEngine;
-using BbxCommon.Framework;
+using BbxCommon;
 
 namespace Nnp
 {

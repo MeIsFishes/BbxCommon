@@ -164,7 +164,7 @@ namespace BbxCommon.Ui
             if (AlwaysRelativeOffset && SetWhenDown)
                 transform.position = (eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY();
 
-            BbxUiApi.GetUiGameEngineScene().SetUiTop(EventListener.gameObject);
+            UiApi.GetUiGameEngineScene().SetUiTop(EventListener.gameObject);
         }
 
         private void OnEndDragCallback(PointerEventData eventData)
@@ -176,7 +176,7 @@ namespace BbxCommon.Ui
             if (TurnBackWhenDragEnd)
                 transform.position = m_OriginalPos;
 
-            BbxUiApi.GetUiGameEngineScene().SetTopUiBack(EventListener.gameObject);
+            UiApi.GetUiGameEngineScene().SetTopUiBack(EventListener.gameObject);
         }
         #endregion
     }

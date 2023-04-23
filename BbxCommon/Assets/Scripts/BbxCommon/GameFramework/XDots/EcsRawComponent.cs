@@ -2,21 +2,15 @@ using System;
 using System.Collections.Generic;
 using Unity.Entities;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
-    public abstract class EcsRawComponent : PooledObject
+    public abstract class EcsData : PooledObject
     {
         internal Entity Entity;
         /// <summary>
-        /// Index of current component in the <see cref="EcsWorld.RawComponentLists"/>.
+        /// Index of current component in the <see cref="EcsDataList{T}"/>.
         /// </summary>
         internal int Index;
-
-        internal void InitRawComponent(Entity entity, int index)
-        {
-            Entity = entity;
-            Index = index;
-        }
 
         public Entity GetEntity()
         {
@@ -24,15 +18,22 @@ namespace BbxCommon.Framework
         }
     }
 
-    public abstract class EcsSingletonRawComponent : EcsRawComponent
+    internal interface IEcsSingletonData { }
+
+    public abstract class EcsRawComponent : EcsData
     {
         
     }
 
-    internal class RawComponentGroup : PooledObject
+    public abstract class EcsSingletonRawComponent : EcsRawComponent, IEcsSingletonData
+    {
+        
+    }
+
+    internal class EcsDataGroup : PooledObject
     {
         public Entity Entity { get; private set; }
-        internal Dictionary<Type, EcsRawComponent> RawComponents = new Dictionary<Type, EcsRawComponent>();
+        internal Dictionary<Type, EcsData> EcsDatas = new Dictionary<Type, EcsData>();
 
         public void Init(Entity entity)
         {
@@ -41,24 +42,24 @@ namespace BbxCommon.Framework
 
         public T AddRawComponent<T>(T comp) where T : EcsRawComponent, new()
         {
-            RawComponents.Add(typeof(T), comp);
+            EcsDatas.Add(typeof(T), comp);
             return comp;
         }
 
         public T GetRawComponent<T>() where T : EcsRawComponent
         {
-            RawComponents.TryGetValue(typeof(T), out var comp);
+            EcsDatas.TryGetValue(typeof(T), out var comp);
             return (T)comp;
         }
 
         public bool HasRawComponent<T>() where T : EcsRawComponent
         {
-            return RawComponents.ContainsKey(typeof(T));
+            return EcsDatas.ContainsKey(typeof(T));
         }
 
         public void RemoveRawComponent<T>(out T comp) where T : EcsRawComponent
         {
-            RawComponents.Remove(typeof(T), out var removed);
+            EcsDatas.Remove(typeof(T), out var removed);
             comp = (T)removed;
         }
 
@@ -66,7 +67,7 @@ namespace BbxCommon.Framework
         {
             base.OnCollect();
             Entity = Entity.Null;
-            RawComponents.Clear();
+            EcsDatas.Clear();
         }
     }
 }

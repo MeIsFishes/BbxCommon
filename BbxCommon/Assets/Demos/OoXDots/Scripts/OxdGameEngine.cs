@@ -1,4 +1,4 @@
-using BbxCommon.Framework;
+using BbxCommon;
 
 namespace Oxd
 {

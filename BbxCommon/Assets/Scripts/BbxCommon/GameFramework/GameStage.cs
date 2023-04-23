@@ -5,7 +5,7 @@ using UnityEngine.SceneManagement;
 using Unity.Entities;
 using BbxCommon.Ui;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     public interface IStageLoad
     {
@@ -250,16 +250,16 @@ namespace BbxCommon.Framework
         #endregion
 
         #region StageTick
-        protected List<EcsHpSystemBase> m_UpdateSystems = new List<EcsHpSystemBase>();
-        protected List<EcsHpSystemBase> m_FixedUpdateSystems = new List<EcsHpSystemBase>();
+        protected List<EcsSystemBase> m_UpdateSystems = new List<EcsSystemBase>();
+        protected List<EcsSystemBase> m_FixedUpdateSystems = new List<EcsSystemBase>();
 
-        public void AddUpdateSystem<T>() where T : EcsHpSystemBase, new()
+        public void AddUpdateSystem<T>() where T : EcsSystemBase, new()
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_UpdateSystems.Add(system);
         }
 
-        public void AddFixedUpdateSystem<T>() where T : EcsHpSystemBase, new()
+        public void AddFixedUpdateSystem<T>() where T : EcsSystemBase, new()
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_FixedUpdateSystems.Add(system);

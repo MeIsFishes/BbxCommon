@@ -1,5 +1,5 @@
 using Unity.Entities;
-using BbxCommon.Framework;
+using BbxCommon;
 
 namespace Nnp
 {

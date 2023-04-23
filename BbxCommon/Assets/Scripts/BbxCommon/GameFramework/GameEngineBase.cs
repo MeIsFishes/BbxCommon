@@ -4,7 +4,7 @@ using UnityEngine;
 using Unity.Entities;
 using BbxCommon.Ui;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     #region SystemGroup
     public partial class UpdateSystemGroup : ComponentSystemGroup { }
@@ -111,12 +111,12 @@ namespace BbxCommon.Framework
 
         public void SetUiTop(GameObject uiGameObject)
         {
-            BbxUiApi.GetUiGameEngineScene().SetUiTop(uiGameObject);
+            UiApi.GetUiGameEngineScene().SetUiTop(uiGameObject);
         }
 
         public void SetTopUiBack(GameObject uiGameObject)
         {
-            BbxUiApi.GetUiGameEngineScene().SetTopUiBack(uiGameObject);
+            UiApi.GetUiGameEngineScene().SetTopUiBack(uiGameObject);
         }
 
         private void OnAwakeUiScene()
@@ -128,7 +128,7 @@ namespace BbxCommon.Framework
             var customUiSceneRoot = new GameObject("CustomUiScenes");
             customUiSceneRoot.transform.SetParent(m_UiSceneRoot.transform);
             var uiGameEngineScene = CreateUiScene<UiGameEngineScene>();
-            BbxUiApi.SetUiGameEngineScene(uiGameEngineScene);
+            UiApi.SetUiGameEngineScene(uiGameEngineScene);
             m_UiSceneRoot = customUiSceneRoot;  // keep custom UiScenes hang on a separate root to ensure GameEngine can show its UI items above other all
         }
         #endregion
@@ -144,7 +144,7 @@ namespace BbxCommon.Framework
             m_EcsWorld = World.DefaultGameObjectInjectionWorld;
             m_EcsWorld.CreateSystem<UpdateSystemGroup>();
             m_SingletonEntity = EcsApi.CreateEntity();
-            RawComponentManager.SetSingletonRawComponentEntity(m_SingletonEntity);
+            EcsDataManager.SetSingletonRawComponentEntity(m_SingletonEntity);
             InitSingletonComponents();
         }
         #endregion

@@ -1,7 +1,7 @@
 using System;
 using UnityEngine;
+using BbxCommon;
 using BbxCommon.Ui;
-using BbxCommon.Framework;
 using Dcg.Ui;
 
 namespace Dcg

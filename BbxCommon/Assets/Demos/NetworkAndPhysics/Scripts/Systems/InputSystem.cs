@@ -1,7 +1,6 @@
 using UnityEngine;
 using Unity.Entities;
-using Unity.Mathematics;
-using BbxCommon.Framework;
+using BbxCommon;
 
 namespace Nnp
 {

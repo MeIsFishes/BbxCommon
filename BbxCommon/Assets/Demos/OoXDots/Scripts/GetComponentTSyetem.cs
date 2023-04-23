@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using Unity.Entities;
-using BbxCommon.Framework;
+using BbxCommon;
 using UnityEngine.Profiling;
 
 namespace Oxd

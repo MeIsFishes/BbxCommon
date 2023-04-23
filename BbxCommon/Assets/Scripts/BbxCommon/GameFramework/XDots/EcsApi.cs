@@ -1,7 +1,7 @@
 using UnityEngine;
 using Unity.Entities;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     public static class EcsApi
     {
@@ -9,37 +9,37 @@ namespace BbxCommon.Framework
         public static Entity CreateEntity()
         {
             var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            var rawComponentGroup = ObjectPool<RawComponentGroup>.Alloc();
+            var rawComponentGroup = ObjectPool<EcsDataGroup>.Alloc();
             rawComponentGroup.Init(entity);
-            RawComponentManager.EntityRawComponentGroup[entity] = rawComponentGroup;
+            EcsDataManager.EntityRawComponentGroup[entity] = rawComponentGroup;
             return entity;
         }
 
         public static void DestroyEntity(Entity entity)
         {
-            RawComponentManager.DestroyEntity(entity);
+            EcsDataManager.DestroyEntity(entity);
             World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
 
         public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
         {
-            var goComp = RawComponentManager.AddRawComponent<GameObjectRawComponent>(entity);
+            var goComp = EcsDataManager.AddRawComponent<GameObjectRawComponent>(entity);
             goComp.GameObject = gameObject;
         }
 
         public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
         {
-            return RawComponentManager.AddSingletonRawComponent<T>();
+            return EcsDataManager.AddSingletonRawComponent<T>();
         }
 
         public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            return RawComponentManager.GetSingletonRawComponent<T>();
+            return EcsDataManager.GetSingletonRawComponent<T>();
         }
 
         public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            RawComponentManager.RemoveSingletonRawComponent<T>();
+            EcsDataManager.RemoveSingletonRawComponent<T>();
         }
         #endregion
 
@@ -67,32 +67,32 @@ namespace BbxCommon.Framework
 
         public static T AddRawComponent<T>(this Entity entity) where T : EcsRawComponent, new()
         {
-            return RawComponentManager.AddRawComponent<T>(entity);
+            return EcsDataManager.AddRawComponent<T>(entity);
         }
 
         public static bool HasRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return RawComponentManager.HasRawComponent<T>(entity);
+            return EcsDataManager.HasRawComponent<T>(entity);
         }
 
         public static T GetRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return RawComponentManager.GetRawComponent<T>(entity);
+            return EcsDataManager.GetRawComponent<T>(entity);
         }
 
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            RawComponentManager.RemoveRawComponent<T>(entity);
+            EcsDataManager.RemoveRawComponent<T>(entity);
         }
 
         public static T CreateRawAspect<T>(this Entity entity) where T : EcsRawAspect, new()
         {
-            return RawComponentManager.CreateRawAspect<T>(entity);
+            return EcsDataManager.CreateRawAspect<T>(entity);
         }
 
         public static void RemoveRawAspect<T>(this Entity entity) where T : EcsRawAspect
         {
-            RawComponentManager.RemoveRawAspect<T>(entity);
+            EcsDataManager.RemoveRawAspect<T>(entity);
         }
 
         public static void AttachToGameObject(this Entity entity, GameObject gameObject)

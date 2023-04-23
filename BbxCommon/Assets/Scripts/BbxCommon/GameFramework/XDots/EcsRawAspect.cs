@@ -1,6 +1,6 @@
 using UnityEngine;
 
-namespace BbxCommon.Framework
+namespace BbxCommon
 {
     public abstract class EcsRawAspect : EcsRawComponent
     {
@@ -21,7 +21,7 @@ namespace BbxCommon.Framework
 
         protected T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
-            return RawComponentManager.GetSingletonRawComponent<T>();
+            return EcsDataManager.GetSingletonRawComponent<T>();
         }
 
         protected T GetGameObjectComponent<T>() where T : Component

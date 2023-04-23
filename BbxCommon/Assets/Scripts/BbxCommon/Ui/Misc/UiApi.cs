@@ -1,8 +1,7 @@
-using BbxCommon.Framework;
 
 namespace BbxCommon.Ui
 {
-    internal static class BbxUiApi
+    public static class UiApi
     {
         private static UiGameEngineScene m_UiGameEngineScene;
 
