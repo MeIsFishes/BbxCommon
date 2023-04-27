@@ -149,16 +149,25 @@ namespace BbxCommon
         #endregion
 
         #region Dictionary
-        public static void TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
+        public static bool TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
         {
             if (dic.ContainsKey(key))
+            {
                 dic.Remove(key);
+                return true;
+            }
+            return false;
         }
 
-        public static void TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
+        public static bool TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
         {
             if (dic.ContainsKey(key))
+            {
                 dic.Remove(key, out value);
+                return true;
+            }
+            value = default(TValue);
+            return false;
         }
 
         public static void CollectToPool<TKey, TValue>(this Dictionary<TKey, TValue> dic)

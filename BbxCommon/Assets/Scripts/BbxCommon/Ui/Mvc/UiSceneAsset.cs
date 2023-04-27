@@ -14,7 +14,7 @@ namespace BbxCommon.Ui
             public string PrefabPath;
             public Type UiControllerType;
             public int UiGroup;
-            public bool DefaultOpen;
+            public bool DefaultShow;
             public Vector3 Position;
             public Vector3 Scale;
             public Vector2 Pivot;

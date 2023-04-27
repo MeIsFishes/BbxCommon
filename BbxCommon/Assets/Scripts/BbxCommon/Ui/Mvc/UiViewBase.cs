@@ -8,7 +8,7 @@ namespace BbxCommon.Ui
 {
     public abstract class UiViewBase : MonoBehaviour
     {
-        public bool DefaultOpen = true;
+        public bool DefaultShow = true;
 
         [NonSerialized]
         public UiControllerBase UiController;

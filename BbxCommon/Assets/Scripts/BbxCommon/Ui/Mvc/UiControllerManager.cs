@@ -1,7 +1,8 @@
+using System.Collections.Generic;
 
 namespace BbxCommon.Ui
 {
-    public static class UiApi
+    internal static class UiControllerManager
     {
         private static UiGameEngineScene m_UiGameEngineScene;
 
@@ -14,5 +15,11 @@ namespace BbxCommon.Ui
         {
             return m_UiGameEngineScene;
         }
+    }
+
+    internal static class UiCollection<T> where T : UiControllerBase
+    {
+        private static List<T> m_UiControllers = new();
+        private static List<T> m_PooledControllers = new();
     }
 }

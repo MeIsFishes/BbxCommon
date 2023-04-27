@@ -124,7 +124,7 @@ namespace BbxCommon.Ui
                 (controller.transform as RectTransform).localPosition = data.Position;
                 (controller.transform as RectTransform).localScale = data.Scale;
                 (controller.transform as RectTransform).pivot = data.Pivot;
-                if (data.DefaultOpen)   // keep OnUiOpen() calls after setting data
+                if (data.DefaultShow)   // keep OnUiOpen() calls after setting data
                     controller.Open();
             }
         }

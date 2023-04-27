@@ -27,7 +27,7 @@ namespace BbxCommon.Ui
                 data.PrefabPath = uiView.GetResourcePath();
                 data.UiControllerType = uiView.GetControllerType();
                 data.UiGroup = uiView.GetUiGroup();
-                data.DefaultOpen = uiView.DefaultOpen;
+                data.DefaultShow = uiView.DefaultShow;
                 data.Position = (uiView.transform as RectTransform).localPosition;
                 data.Scale = (uiView.transform as RectTransform).localScale;
                 data.Pivot = (uiView.transform as RectTransform).pivot;
