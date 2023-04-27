@@ -1,5 +1,4 @@
-﻿using UnityEngine;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace BbxCommon
 {
@@ -27,18 +26,18 @@ namespace BbxCommon
         public static T Alloc()
         {
             var objectSet = m_Pool;
-            T res;
+            T obj;
             if (objectSet.Count > 0)
             {
-                res = objectSet[objectSet.Count - 1];
+                obj = objectSet[objectSet.Count - 1];
                 objectSet.RemoveAt(objectSet.Count - 1);
-                res.OnAllocate();
-                return res;
+                obj.OnAllocate();
+                return obj;
             }
-            res = new T();
-            res.OnAllocate();
-            res.UniqueID = m_IDGenerator.GenerateID();
-            return res;
+            obj = new T();
+            obj.OnAllocate();
+            obj.UniqueID = m_IDGenerator.GenerateID();
+            return obj;
         }
 
         /// <summary>
@@ -95,30 +94,6 @@ namespace BbxCommon
             if (reference == null)
                 return ObjectPool<Type>.Alloc();
             return reference;
-        }
-    }
-
-    public struct PooledObjRef<T> where T : PooledObject
-    {
-        public T Obj => IsNull() ? null : m_Obj;
-
-        private T m_Obj;
-        private uint m_InstanceID;
-
-        public PooledObjRef(T obj)
-        {
-            m_Obj = obj;
-            m_InstanceID = obj.UniqueID;
-        }
-
-        public bool IsNull()
-        {
-            return m_Obj == null || m_Obj.UniqueID != m_InstanceID;
-        }
-
-        public void Release()
-        {
-            m_Obj = null;
         }
     }
 }

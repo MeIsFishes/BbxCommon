@@ -10,16 +10,10 @@ namespace BbxCommon
         [Tooltip("If true, EcsBaker will destroy the entity when itself is destroyed.")]
         public bool DestroyEntity = true;
 
-        // ensure creating aspects after components
-        private List<EcsRawAspect> m_Aspects;
-
         private void Awake()
         {
             Entity = EcsApi.CreateEntity();
-            m_Aspects = SimplePool<List<EcsRawAspect>>.Alloc();
             InternalBake();
-            InternalCreateAspect();
-            m_Aspects.CollectToPool();
         }
 
         private void OnDestroy()
@@ -53,16 +47,7 @@ namespace BbxCommon
 
         protected void CreateRawAspect<T>() where T : EcsRawAspect, new()
         {
-            var aspect = Entity.AddEcsData<T>();
-            m_Aspects.Add(aspect);
-        }
-
-        private void InternalCreateAspect()
-        {
-            foreach (var aspect in m_Aspects)
-            {
-                aspect.Create();
-            }
+            Entity.CreateRawAspect<T>();
         }
     }
 }

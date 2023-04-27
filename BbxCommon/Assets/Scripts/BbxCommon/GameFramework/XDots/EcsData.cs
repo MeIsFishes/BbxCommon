@@ -22,42 +22,103 @@ namespace BbxCommon
 
     internal class EcsDataGroup : PooledObject
     {
-        public Entity Entity { get; private set; }
-        internal Dictionary<Type, EcsData> EcsDatas = new Dictionary<Type, EcsData>();
+        #region Common
+        internal Entity Entity { get; private set; }
+        internal List<EcsRawComponent> RawComponents = new List<EcsRawComponent>(8);
+        internal List<EcsRawAspect> RawAspects = new();
 
-        public void Init(Entity entity)
+        internal void Init(Entity entity)
         {
             Entity = entity;
-        }
-
-        public T AddEcsData<T>(T comp) where T : EcsData, new()
-        {
-            EcsDatas.Add(typeof(T), comp);
-            return comp;
-        }
-
-        public T GetEcsData<T>() where T : EcsData
-        {
-            EcsDatas.TryGetValue(typeof(T), out var comp);
-            return (T)comp;
-        }
-
-        public bool HasEcsData<T>() where T : EcsData
-        {
-            return EcsDatas.ContainsKey(typeof(T));
-        }
-
-        public void RemoveEcsData<T>(out T comp) where T : EcsData
-        {
-            EcsDatas.Remove(typeof(T), out var removed);
-            comp = (T)removed;
         }
 
         public override void OnCollect()
         {
             base.OnCollect();
             Entity = Entity.Null;
-            EcsDatas.Clear();
+            RawComponents.Clear();
+            RawAspects.Clear();
         }
+        #endregion
+
+        #region RawComponent
+        internal T AddRawComponent<T>(T comp) where T : EcsRawComponent, new()
+        {
+            RefreshCapacity();
+            RawComponents[EcsRawComponentId<T>.Id] = comp;
+            return comp;
+        }
+
+        internal T GetRawComponent<T>() where T : EcsRawComponent
+        {
+            RefreshCapacity();
+            return (T)RawComponents[EcsRawComponentId<T>.Id];
+        }
+
+        internal bool HasRawComponent<T>() where T : EcsRawComponent
+        {
+            RefreshCapacity();
+            return RawComponents[EcsRawComponentId<T>.Id] != null;
+        }
+
+        internal void RemoveRawComponent<T>(out T comp) where T : EcsRawComponent
+        {
+            RefreshCapacity();
+            var removed = RawComponents[EcsRawComponentId<T>.Id];
+            RawComponents[EcsRawComponentId<T>.Id] = null;
+            comp = (T)removed;
+        }
+
+        private void RefreshCapacity()
+        {
+            if (RawComponents.Count > EcsRawComponentId.CurId)
+                return;
+            RawComponents.Capacity = EcsRawComponentId.CurId + 1;
+            for (int i = RawComponents.Count; i < RawComponents.Capacity; i++)
+                RawComponents.Add(null);
+        }
+        #endregion
+
+        #region RawAspect
+        internal T AddRawAspect<T>(T aspect) where T : EcsRawAspect, new()
+        {
+            RawAspects.Add(aspect);
+            return aspect;
+        }
+
+        internal T GetRawAspect<T>() where T : EcsRawAspect
+        {
+            foreach (var element in RawAspects)
+            {
+                if (element is T)
+                    return (T)element;
+            }
+            return null;
+        }
+
+        internal bool HasRawAspect<T>() where T : EcsRawAspect
+        {
+            foreach (var element in RawAspects)
+            {
+                if (element is T)
+                    return true;
+            }
+            return false;
+        }
+
+        internal void RemoveRawAspect<T>(out T aspect) where T : EcsRawAspect
+        {
+            for (int i = 0; i < RawAspects.Count; i++)
+            {
+                if (RawAspects[i] is T)
+                {
+                    aspect = (T)RawAspects[i];
+                    RawAspects.UnorderedRemove(i);
+                    return;
+                }
+            }
+            aspect = null;
+        }
+        #endregion
     }
 }

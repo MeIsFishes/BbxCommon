@@ -9,9 +9,9 @@ namespace BbxCommon
         public static Entity CreateEntity()
         {
             var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            var rawComponentGroup = ObjectPool<EcsDataGroup>.Alloc();
-            rawComponentGroup.Init(entity);
-            EcsDataManager.EntityRawComponentGroup[entity] = rawComponentGroup;
+            var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
+            ecsDataGroup.Init(entity);
+            EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
             return entity;
         }
 
@@ -23,7 +23,7 @@ namespace BbxCommon
 
         public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
         {
-            var goComp = EcsDataManager.AddEcsData<GameObjectRawComponent>(entity);
+            var goComp = EcsDataManager.AddRawComponent<GameObjectRawComponent>(entity);
             goComp.GameObject = gameObject;
         }
 
@@ -65,29 +65,24 @@ namespace BbxCommon
             World.DefaultGameObjectInjectionWorld.EntityManager.RemoveComponent<T>(entity);
         }
 
-        internal static T AddEcsData<T>(this Entity entity) where T : EcsData, new()
-        {
-            return EcsDataManager.AddEcsData<T>(entity);
-        }
-
         public static T AddRawComponent<T>(this Entity entity) where T : EcsRawComponent, new()
         {
-            return EcsDataManager.AddEcsData<T>(entity);
+            return EcsDataManager.AddRawComponent<T>(entity);
         }
 
         public static bool HasRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return EcsDataManager.HasEcsData<T>(entity);
+            return EcsDataManager.HasRawComponent<T>(entity);
         }
 
         public static T GetRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            return EcsDataManager.GetEcsData<T>(entity);
+            return EcsDataManager.GetRawComponent<T>(entity);
         }
 
         public static void RemoveRawComponent<T>(this Entity entity) where T : EcsRawComponent
         {
-            EcsDataManager.RemoveEcsData<T>(entity);
+            EcsDataManager.RemoveRawComponent<T>(entity);
         }
 
         public static T CreateRawAspect<T>(this Entity entity) where T : EcsRawAspect, new()

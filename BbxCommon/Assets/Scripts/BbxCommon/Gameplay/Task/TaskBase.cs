@@ -21,11 +21,11 @@ namespace BbxCommon
         /// <summary>
         /// Store the TaskTimeline which the task belongs to. It will be set when created by a TaskTimeline.
         /// </summary>
-        protected PooledObjRef<TaskTimeline> m_TaskTimelineBelongs;
+        protected ObjRef<TaskTimeline> m_TaskTimelineBelongs;
 
         public void SetTaskTimelineBelongs(TaskTimeline taskTimeline)
         {
-            m_TaskTimelineBelongs = new PooledObjRef<TaskTimeline>(taskTimeline);
+            m_TaskTimelineBelongs = new ObjRef<TaskTimeline>(taskTimeline);
         }
 
         public void Enter()

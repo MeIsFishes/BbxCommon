@@ -21,74 +21,83 @@ namespace BbxCommon
         /// <summary>
         /// <see cref="Entity"/>s with <see cref="EcsRawComponent"/>s added to it.
         /// </summary>
-        internal static Dictionary<Entity, EcsDataGroup> EntityRawComponentGroup = new();
-
+        private static List<EcsDataGroup> m_EcsDataGroups = new List<EcsDataGroup>(8);
         private static Entity m_SingletonRawComponentEntity;
 
-        public static void DestroyEntity(Entity entity)
+        internal static void CreateEcsDataGroup(Entity entity, EcsDataGroup dataGroup)
         {
-            var group = GetGroupAndRefreshHot(entity);
-            foreach (var compPair in group.EcsDatas)
+            GetAndRefreshGroup(entity);
+            m_EcsDataGroups[entity.Index] = dataGroup;
+        }
+
+        internal static void DestroyEntity(Entity entity)
+        {
+            var group = GetAndRefreshGroup(entity);
+            foreach (var comp in group.RawComponents)
             {
-                compPair.Value.Entity = Entity.Null;
+                comp.CollectToPool();
+            }
+            foreach (var aspect in group.RawAspects)
+            {
+                aspect.CollectToPool();
             }
             group.CollectToPool();
+            m_EcsDataGroups[entity.Index] = null;
         }
         #endregion
 
         #region RawComponent
-        public static T AddEcsData<T>(Entity entity) where T : EcsData, new()
+        internal static T AddRawComponent<T>(Entity entity) where T : EcsRawComponent, new()
         {
             var comp = ObjectPool<T>.Alloc();
-            var group = GetGroupAndRefreshHot(entity);
+            var group = GetAndRefreshGroup(entity);
 
-            group.AddEcsData(comp);
+            group.AddRawComponent(comp);
             comp.Entity = entity;
             EcsDataList<T>.AddEcsData(comp);
             return comp;
         }
 
-        public static T GetEcsData<T>(Entity entity) where T : EcsData
+        internal static T GetRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
-            var group = GetGroupAndRefreshHot(entity);
-            return group.GetEcsData<T>();
+            var group = GetAndRefreshGroup(entity);
+            return group.GetRawComponent<T>();
         }
 
-        public static bool HasEcsData<T>(Entity entity) where T : EcsData
+        internal static bool HasRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
-            var group = GetGroupAndRefreshHot(entity);
-            return group.HasEcsData<T>();
+            var group = GetAndRefreshGroup(entity);
+            return group.HasRawComponent<T>();
         }
 
-        public static void RemoveEcsData<T>(Entity entity) where T : EcsData
+        internal static void RemoveRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
-            var group = GetGroupAndRefreshHot(entity);
-            group.RemoveEcsData<T>(out var comp);
-            EcsDataList<T>.RemoveEcsData(comp);
+            var group = GetAndRefreshGroup(entity);
+            group.RemoveRawComponent<T>(out var comp);
             comp.CollectToPool();
         }
 
-        public static void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
+        internal static void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
         {
             EcsDataList<T>.ForeachEcsData(action);
         }
         #endregion
 
         #region SingletonRawComponent
-        public static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        internal static T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return EcsDataList<T>.GetSingletonEcsData<T>();
         }
 
-        public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
+        internal static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
         {
-            return AddEcsData<T>(m_SingletonRawComponentEntity);
+            return AddRawComponent<T>(m_SingletonRawComponentEntity);
         }
 
-        public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
+        internal static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             var comp = EcsDataList<T>.GetSingletonEcsData<T>();
-            RemoveEcsData<T>(comp.GetEntity());
+            RemoveRawComponent<T>(comp.GetEntity());
         }
 
         internal static void SetSingletonRawComponentEntity(Entity entity)
@@ -101,32 +110,43 @@ namespace BbxCommon
         #endregion
 
         #region RawAspect
-        public static T CreateRawAspect<T>(Entity entity) where T : EcsRawAspect, new()
+        internal static T CreateRawAspect<T>(Entity entity) where T : EcsRawAspect, new()
         {
-            var aspect = AddEcsData<T>(entity);
+            var group = GetAndRefreshGroup(entity);
+            var aspect = ObjectPool<T>.Alloc();
+            aspect.Entity = entity;
+            group.AddRawAspect(aspect);
             aspect.Create();
+            EcsDataList<T>.AddEcsData(aspect);
             return aspect;
         }
 
-        public static void RemoveRawAspect<T>(Entity entity) where T : EcsRawAspect
+        internal static void RemoveRawAspect<T>(Entity entity) where T : EcsRawAspect
         {
-            RemoveEcsData<T>(entity);
+            var group = GetAndRefreshGroup(entity);
+            group.RemoveRawAspect<T>(out var aspect);
+            aspect.CollectToPool();
         }
 
-        public static void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
+        internal static void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
         {
             EcsDataList<T>.ForeachEcsData(action);
         }
         #endregion
 
         #region private
-        // Generally, user may operate a single entity several times. If so, storing a hot data can reduce one time hash calculation.
-        private static EcsDataGroup m_HotGroup = new EcsDataGroup();
-        private static EcsDataGroup GetGroupAndRefreshHot(Entity entity)
+        private static EcsDataGroup GetAndRefreshGroup(Entity entity)
         {
-            if (m_HotGroup.Entity != entity)
-                m_HotGroup = EntityRawComponentGroup[entity];
-            return m_HotGroup;
+            if (m_EcsDataGroups.Count > entity.Index)  // there is some overhead when branch prediction fails
+                return m_EcsDataGroups[entity.Index];
+            else
+            {
+                while (m_EcsDataGroups.Capacity <= entity.Index)
+                    m_EcsDataGroups.Capacity = (int)(m_EcsDataGroups.Capacity * 1.5f);
+                for (int i = m_EcsDataGroups.Count; i < m_EcsDataGroups.Capacity; i++)
+                    m_EcsDataGroups.Add(null);
+                return m_EcsDataGroups[entity.Index];
+            }
         }
         #endregion
     }
@@ -142,8 +162,8 @@ namespace BbxCommon
     internal static class EcsDataList<T> where T : EcsData
     {
         #region Common
-        private static List<EcsData> m_EcsDatas = new();
-        private static List<EcsData> m_DeletedDatas = new();
+        private static List<ObjRef<T>> m_EcsDatas = new();
+        private static List<int> m_DeletedDatas = new();    // data's index
 
         internal static void AddEcsData(T data)
         {
@@ -152,54 +172,56 @@ namespace BbxCommon
                 Debug.LogError("You are creating a duplicated EcsSingletonRawComponent " + typeof(T).FullName + "! The operation is invalid!");
                 return;
             }
-            m_EcsDatas.Add(data);
+            m_EcsDatas.Add(data.AsObjRef());
             data.Index = m_EcsDatas.Count - 1;
-        }
-
-        internal static void RemoveEcsData(T data)
-        {
-            m_EcsDatas.UnorderedRemove(data.Index);
-            if (m_EcsDatas.Count > 0)
-                m_EcsDatas[data.Index].Index = data.Index;     // swap the last one to the removed slot, then set its index as new
         }
 
         internal static TSingleton GetSingletonEcsData<TSingleton>() where TSingleton : EcsData, IEcsSingletonData
         {
-            return (TSingleton)m_EcsDatas[0];
+            if (m_EcsDatas.Count > 0)
+                return m_EcsDatas[0].Obj as TSingleton;
+            return null;
         }
 
         internal static void ForeachEcsData(UnityAction<T> action)
         {
-            foreach (var data in m_EcsDatas)
+            for (int i = 0; i < m_EcsDatas.Count; i++)
             {
-                if (data.Entity != Entity.Null)
-                    action((T)data);
+                var data = m_EcsDatas[i];
+                if (data.Obj != null)
+                    action(data.Obj);
                 else
-                    m_DeletedDatas.Add(data);
+                    m_DeletedDatas.Add(i);
             }
             RemoveDeletedDatas();
         }
         #endregion
 
         #region private
+        private static void RemoveEcsData(int index)
+        {
+            m_EcsDatas.UnorderedRemove(index);
+            if (m_EcsDatas.Count > 0 && index < m_EcsDatas.Count)
+                m_EcsDatas[index].Obj.Index = index;     // swap the last one to the removed slot, then set its index as new
+        }
+
         /// <summary>
         /// <para>
         /// The full steps of removing a <see cref="EcsData"/> are as follow:
         /// </para><para>
-        /// 1. Sign a <see cref="EcsData"/> as deleted via either <see cref="EcsDataManager.RemoveEcsData{T}(Entity)"/> or <see cref="EcsDataManager.DestroyEntity(Entity)"/>.
+        /// 1. Sign a <see cref="EcsData"/> as deleted via either <see cref="EcsDataManager.RemoveRawComponent{T}(Entity)"/> or <see cref="EcsDataManager.DestroyEntity(Entity)"/>.
         /// </para><para>
-        /// 2. The <see cref="EcsData"/> then has been removed in <see cref="EcsDataGroup"/>, and its reference, <see cref="EcsData.Entity"/> has been set as <see cref="Entity.Null"/>.
+        /// 2. The <see cref="EcsData"/> then will be removed in <see cref="EcsDataGroup"/>, and be collected to <see cref="ObjectPool{T}"/>.
         /// </para><para>
-        /// 3. Those <see cref="EcsData"/>s has been signed as deleted will be found out when you call <see cref="ForeachEcsData(UnityAction{T})"/>, then references of them in
-        /// <see cref="EcsDataList{T}"/> will be released, and they will be collected by <see cref="ObjectPool{T}"/> at last.
+        /// 3. For <see cref="EcsDataList{T}"/> holds <see cref="ObjRef{T}"/>, once it detects null reference, it removes it from the list.
         /// </para>
         /// </summary>
         private static void RemoveDeletedDatas()
         {
-            foreach (var data in m_DeletedDatas)
+            m_DeletedDatas.Sort();
+            for (int i = m_DeletedDatas.Count - 1; i >= 0; i--)
             {
-                RemoveEcsData((T)data);
-                data.CollectToPool();
+                RemoveEcsData(i);
             }
             m_DeletedDatas.Clear();
         }
