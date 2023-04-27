@@ -1,4 +1,5 @@
-using System;
+//#define ASPECT_DUPLICATE_CHECK
+
 using System.Collections.Generic;
 using Unity.Entities;
 
@@ -20,12 +21,15 @@ namespace BbxCommon
 
     internal interface IEcsSingletonData { }
 
+    /// <summary>
+    /// A collection to store <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of an <see cref="Unity.Entities.Entity"/>.
+    /// </summary>
     internal class EcsDataGroup : PooledObject
     {
         #region Common
         internal Entity Entity { get; private set; }
         internal List<EcsRawComponent> RawComponents = new List<EcsRawComponent>(8);
-        internal List<EcsRawAspect> RawAspects = new();
+        internal List<EcsRawAspect> RawAspects = new(); // generally, aspects are less to be added, removed and got
 
         internal void Init(Entity entity)
         {
@@ -82,6 +86,13 @@ namespace BbxCommon
         #region RawAspect
         internal T AddRawAspect<T>(T aspect) where T : EcsRawAspect, new()
         {
+#if ASPECT_DUPLICATE_CHECK
+            if (HasRawAspect<T>())
+            {
+                UnityEngine.Debug.LogWarning("There has been a duplicate EcsRawAspect " + typeof(T).FullName + " in Entity " + Entity + "!");
+                return aspect;
+            }
+#endif
             RawAspects.Add(aspect);
             return aspect;
         }

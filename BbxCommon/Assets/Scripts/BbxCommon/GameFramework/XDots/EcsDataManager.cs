@@ -7,9 +7,12 @@ namespace BbxCommon
 {
     /// <summary>
     /// <para>
-    /// <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/> of <see cref="Entity"/>s are all stored here. For <see cref="Entity"/> is just a
-    /// struct data which cannot be directly extended, we create a <see cref="Dictionary{TKey, TValue}"/> to  manage its <see cref="EcsRawComponent"/>
-    /// and <see cref="EcsRawAspect"/> datas.
+    /// Internal interfaces of operating <see cref="Entity"/>. Other public classes call functions in <see cref="EcsDataManager"/> but doesn't implement
+    /// them directly, to ensure interfaces' name and parameters remain unchanged.
+    /// </para><para>
+    /// <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of <see cref="Entity"/>s are all stored here. For <see cref="Entity"/> is just a
+    /// struct data which cannot be derrived and directly extended, we create a <see cref="List{T}"/> to  manage its <see cref="EcsRawComponent"/> and
+    /// <see cref="EcsRawAspect"/> datas through <see cref="EcsDataGroup"/>.
     /// </para><para>
     /// However, <see cref="EcsDataManager"/> only operates <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of the <see cref="Entity"/>s.
     /// To interact with DOTS <see cref="World"/>, see <see cref="EcsApi"/> functions.
@@ -137,7 +140,7 @@ namespace BbxCommon
         #region private
         private static EcsDataGroup GetAndRefreshGroup(Entity entity)
         {
-            if (m_EcsDataGroups.Count > entity.Index)  // there is some overhead when branch prediction fails
+            if (m_EcsDataGroups.Count > entity.Index)  // there is some overhead when branch prediction misses
                 return m_EcsDataGroups[entity.Index];
             else
             {
