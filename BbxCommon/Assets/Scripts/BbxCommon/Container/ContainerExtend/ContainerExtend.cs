@@ -110,6 +110,18 @@ namespace BbxCommon
             list[index] = list[list.Count - 1]; // save the value of last element, then remove the last one
             list.RemoveAt(list.Count - 1);
         }
+
+        /// <summary>
+        /// Modify the List's capacity and count to fit the given count, and fullfill all the new-created elements.
+        /// </summary>
+        public static void ModifyCount<T>(this List<T> list, int count, float factor = 1.5f)
+        {
+            var fill = default(T);
+            while (list.Capacity <= count)
+                list.Capacity = (int)(list.Capacity * factor);
+            for (int i = list.Count; i < list.Capacity; i++)
+                list.Add(fill);
+        }
         #endregion
 
         #region Queue
@@ -141,6 +153,12 @@ namespace BbxCommon
         {
             if (dic.ContainsKey(key))
                 dic.Remove(key);
+        }
+
+        public static void TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
+        {
+            if (dic.ContainsKey(key))
+                dic.Remove(key, out value);
         }
 
         public static void CollectToPool<TKey, TValue>(this Dictionary<TKey, TValue> dic)

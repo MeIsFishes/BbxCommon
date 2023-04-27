@@ -144,10 +144,7 @@ namespace BbxCommon
                 return m_EcsDataGroups[entity.Index];
             else
             {
-                while (m_EcsDataGroups.Capacity <= entity.Index)
-                    m_EcsDataGroups.Capacity = (int)(m_EcsDataGroups.Capacity * 1.5f);
-                for (int i = m_EcsDataGroups.Count; i < m_EcsDataGroups.Capacity; i++)
-                    m_EcsDataGroups.Add(null);
+                m_EcsDataGroups.ModifyCount(entity.Index);
                 return m_EcsDataGroups[entity.Index];
             }
         }
