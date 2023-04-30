@@ -49,26 +49,26 @@ namespace BbxCommon.Ui
 
         #region ControllerTypeId
         private static bool m_ControllerTypeIdInited;
-        internal static int ControllerTypeId;
+        internal static int m_ControllerTypeId;
 
         internal int GetControllerTypeId()
         {
             if (m_ControllerTypeIdInited)
-                return ControllerTypeId;
+                return m_ControllerTypeId;
             else
             {
                 // register type id via reflection
                 var method = typeof(ControllerTypeId<>).MakeGenericType(this.GetType()).GetMethod("GetId", BindingFlags.Static);
                 SetControllerTypeId((int)method.Invoke(null, null));
-                return ControllerTypeId;
+                return m_ControllerTypeId;
             }
         }
 
-        internal void SetControllerTypeId(int id)
+        private void SetControllerTypeId(int id)
         {
             if (m_ControllerTypeIdInited == false)
             {
-                ControllerTypeId = id;
+                m_ControllerTypeId = id;
                 m_ControllerTypeIdInited = true;
             }
         }
@@ -99,13 +99,17 @@ namespace BbxCommon.Ui
         }
 
         /// <summary>
-        /// Calls on first opens before call OnUiOpen().
+        /// Calls only once when the UI object is created, before <see cref="OnUiOpen"/>.
+        /// Notice that <see cref="OnUiInit"/> will not be called when the object is got out from pool.
         /// </summary>
         protected virtual void OnUiInit() { }
         /// <summary>
-        /// Calls when the GameObject is enabled.
+        /// Calls when the UI object is enabled.
         /// </summary>
         protected virtual void OnUiOpen() { }
+        /// <summary>
+        /// Calls when the UI object is set as visible.
+        /// </summary>
         protected virtual void OnUiShow() { }
         #endregion
 
@@ -129,11 +133,18 @@ namespace BbxCommon.Ui
             Destroy(gameObject);
         }
 
+        /// <summary>
+        /// Calls when the UI object is set as unvisible.
+        /// </summary>
         protected virtual void OnUiHide() { }
         /// <summary>
-        /// Calls when the GameObject is disabled.
+        /// Calls when the UI object is close. The closed object will be collected to pool if you don't ask for destroying.
         /// </summary>
         protected virtual void OnUiClose() { }
+        /// <summary>
+        /// Calls when the UI object is destroyed. In most cases, the object will be collected to pool instead of being destroyed,
+        /// unless you declare a destroying request.
+        /// </summary>
         protected virtual void OnUiDestroy() { }
         #endregion
 

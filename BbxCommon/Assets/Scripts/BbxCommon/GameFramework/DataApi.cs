@@ -17,6 +17,11 @@ namespace BbxCommon
 
     public static class DataApi
     {
+        public static void SetData<T>(T data)
+        {
+            DataManager<T>.SetData(data);
+        }
+
         public static void SetData<T>(string key, T data)
         {
             DataManager<T>.SetData(key, data);
@@ -25,6 +30,11 @@ namespace BbxCommon
         public static void SetData<T>(int key, T data)
         {
             DataManager<T>.SetData(key, data);
+        }
+
+        public static T GetData<T>()
+        {
+            return DataManager<T>.GetData();
         }
 
         public static T GetData<T>(string key)
@@ -37,7 +47,7 @@ namespace BbxCommon
             return DataManager<T>.GetData(key);
         }
 
-        /// <param name="tryCollectToPool"> If true, the data released will call <see cref="PooledObject.CollectToPool"/> if it is a <see cref="PooledObject"/>. </param>
+        /// <param name="tryCollectToPool"> If true and if the data is a <see cref="PooledObject"/>, it will call <see cref="PooledObject.CollectToPool"/>. </param>
         public static void ReleaseData<T>(string key, bool tryCollectToPool = true)
         {
             DataManager<T>.ReleaseData(key, tryCollectToPool);
@@ -57,6 +67,7 @@ namespace BbxCommon
     internal static class DataManager<T>
     {
         private static EDataDistribution m_Distribution = EDataDistribution.Discrete;
+        private static T m_Data;
         private static List<T> m_DataList = new();
         private static Dictionary<string, T> m_StringDic = new();
         private static Dictionary<int, T> m_IntDic = new();
@@ -69,6 +80,11 @@ namespace BbxCommon
                 return;
             }
             m_Distribution = distribution;
+        }
+
+        internal static void SetData(T data)
+        {
+            m_Data = data;
         }
 
         internal static void SetData(string key, T data)
@@ -93,6 +109,11 @@ namespace BbxCommon
                     m_IntDic[key] = data;
                     break;
             }
+        }
+
+        internal static T GetData()
+        {
+            return m_Data;
         }
 
         internal static T GetData(string key)

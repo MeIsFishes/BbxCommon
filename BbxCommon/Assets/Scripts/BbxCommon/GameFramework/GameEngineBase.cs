@@ -31,8 +31,6 @@ namespace BbxCommon
             public T CreateUiScene<T>() where T : UiSceneBase => m_Ref.CreateUiScene<T>();
             public T GetUiScene<T>() where T : UiSceneBase => m_Ref.GetUiScene<T>();
             public T GetOrCreateUiScene<T>() where T : UiSceneBase => m_Ref.GetOrCreateUiScene<T>();
-            public void SetUiTop(GameObject uiGameObject) => m_Ref.SetUiTop(uiGameObject);
-            public void SetTopUiBack(GameObject uiGameObject) => m_Ref.SetTopUiBack(uiGameObject);
         }
 
         public struct EngineStageWp
@@ -107,16 +105,6 @@ namespace BbxCommon
                 return (T)uiScene;
             else
                 return CreateUiScene<T>();
-        }
-
-        public void SetUiTop(GameObject uiGameObject)
-        {
-            UiApi.GetUiGameEngineScene().SetUiTop(uiGameObject);
-        }
-
-        public void SetTopUiBack(GameObject uiGameObject)
-        {
-            UiApi.GetUiGameEngineScene().SetTopUiBack(uiGameObject);
         }
 
         private void OnAwakeUiScene()

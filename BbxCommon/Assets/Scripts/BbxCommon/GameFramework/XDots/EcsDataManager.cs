@@ -7,8 +7,7 @@ namespace BbxCommon
 {
     /// <summary>
     /// <para>
-    /// Internal interfaces of operating <see cref="Entity"/>. Other public classes call functions in <see cref="EcsDataManager"/> but doesn't implement
-    /// them directly, to ensure interfaces' name and parameters remain unchanged.
+    /// Offering internal interfaces of operating <see cref="Entity"/> but doesn't implement them directly, keeping interfaces clear and unchanged.
     /// </para><para>
     /// <see cref="EcsRawComponent"/>s and <see cref="EcsRawAspect"/>s of <see cref="Entity"/>s are all stored here. For <see cref="Entity"/> is just a
     /// struct data which cannot be derrived and directly extended, we create a <see cref="List{T}"/> to  manage its <see cref="EcsRawComponent"/> and
