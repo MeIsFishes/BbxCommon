@@ -55,7 +55,7 @@ namespace BbxCommon.Ui
         internal static T GetUiController<T>() where T : UiControllerBase
         {
             var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
-            return (T)uiCollection.GetUiController();
+            return (T)uiCollection.GetUiController<T>();
         }
 
         internal static void CollectUiController<T>(T uiController) where T : UiControllerBase
@@ -82,7 +82,7 @@ namespace BbxCommon.Ui
         private List<UiControllerBase> m_UiControllers = new();
         private List<UiControllerBase> m_PooledControllers = new();
 
-        internal UiControllerBase GetUiController()
+        internal UiControllerBase GetUiController<T>()
         {
             if (m_UiControllers.Count > 1)
             {

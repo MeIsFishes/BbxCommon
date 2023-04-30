@@ -41,7 +41,7 @@ namespace BbxCommon.Ui
     }
     #endregion
 
-    public abstract class UiControllerBase<TView> : UiControllerBase where TView : UiViewBase, IUiControllerTypeId
+    public abstract class UiControllerBase<TView> : UiControllerBase, IUiControllerTypeId where TView : UiViewBase
     {
         #region Common
         protected TView m_View;
@@ -56,7 +56,7 @@ namespace BbxCommon.Ui
         private static bool m_ControllerTypeIdInited;
         internal static int m_ControllerTypeId;
 
-        internal int GetControllerTypeId()
+        int IUiControllerTypeId.GetControllerTypeId()
         {
             if (m_ControllerTypeIdInited)
                 return m_ControllerTypeId;
