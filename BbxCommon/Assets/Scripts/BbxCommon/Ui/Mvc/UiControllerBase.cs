@@ -172,10 +172,12 @@ namespace BbxCommon.Ui
                     gameObject.SetActive(false);
                     OnUiHide();
                     OnUiClose();
+                    UiControllerManager.CollectUiController(this);
                     m_State = EControllerState.Closed;
                     break;
                 case EControllerState.Invisible:
                     OnUiClose();
+                    UiControllerManager.CollectUiController(this);
                     m_State = EControllerState.Closed;
                     break;
                 default:
