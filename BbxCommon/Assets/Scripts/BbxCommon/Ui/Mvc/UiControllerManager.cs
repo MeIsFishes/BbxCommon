@@ -8,6 +8,7 @@ namespace BbxCommon.Ui
     /// </summary>
     internal static class UiControllerManager
     {
+        #region UiGameEngineScene
         private static UiGameEngineScene m_UiGameEngineScene;
 
         internal static void SetUiGameEngineScene(UiGameEngineScene scene)
@@ -35,33 +36,53 @@ namespace BbxCommon.Ui
             m_UiGameEngineScene.SetTopUiBack(uiGameObject);
         }
 
-        internal static T GetUiController<T>() where T : UiControllerBase
-        {
-            return UiCollection<T>.GetUiController();
-        } 
-
         internal static void SetTopUiBack(UiControllerBase uiController)
         {
             m_UiGameEngineScene.SetTopUiBack(uiController.gameObject);
         }
+        #endregion
+
+        #region UiCollection
+        private static List<UiCollection> m_UiCollections = new();
+
+        private static UiCollection GetUiCollection(int typeId)
+        {
+            if (m_UiCollections.Count <= typeId)
+                m_UiCollections.ModifyCount(typeId);
+            return m_UiCollections[typeId];
+        }
+
+        internal static T GetUiController<T>() where T : UiControllerBase
+        {
+            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            return (T)uiCollection.GetUiController();
+        }
 
         internal static void CollectUiController<T>(T uiController) where T : UiControllerBase
         {
-            UiCollection<T>.CollectUiController(uiController);
+            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            uiCollection.CollectUiController(uiController);
+        }
+
+        internal static void CollectUiController(UiControllerBase uiController)
+        {
+            var uiCollection = GetUiCollection(((IUiControllerTypeId)uiController).GetControllerTypeId());
+            uiCollection.CollectUiController(uiController);
         }
 
         internal static T GetPooledUiController<T>() where T : UiControllerBase
         {
-            return UiCollection<T>.GetPooledUiController();
+            return (T)GetUiCollection(UiControllerTypeId<T>.Id).GetPooledUiController();
         }
+        #endregion
     }
 
-    internal static class UiCollection<T> where T : UiControllerBase
+    internal class UiCollection
     {
-        private static List<T> m_UiControllers = new();
-        private static List<T> m_PooledControllers = new();
+        private List<UiControllerBase> m_UiControllers = new();
+        private List<UiControllerBase> m_PooledControllers = new();
 
-        internal static T GetUiController()
+        internal UiControllerBase GetUiController()
         {
             if (m_UiControllers.Count > 1)
             {
@@ -71,17 +92,19 @@ namespace BbxCommon.Ui
             return m_UiControllers[0];
         }
 
-        internal static void CollectUiController(T uiController)
+        internal void CollectUiController(UiControllerBase uiController)
         {
             m_PooledControllers.Add(uiController);
+            uiController.ControllerInPool = true;
         }
 
-        internal static T GetPooledUiController()
+        internal UiControllerBase GetPooledUiController()
         {
             if (m_PooledControllers.Count > 0)
             {
                 var res = m_PooledControllers[m_PooledControllers.Count - 1];
                 m_PooledControllers.RemoveAt(m_PooledControllers.Count - 1);
+                res.ControllerInPool = false;
                 return res;
             }
             return null;

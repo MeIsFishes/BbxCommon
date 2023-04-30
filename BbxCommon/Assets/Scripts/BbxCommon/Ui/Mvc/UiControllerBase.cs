@@ -5,12 +5,12 @@ using UnityEngine;
 namespace BbxCommon.Ui
 {
     #region ControllerTypeId
-    internal static class ControllerTypeId
+    internal static class UiControllerTypeId
     {
         internal static int CurIndex;
     }
 
-    internal static class ControllerTypeId<T> where T : UiControllerBase
+    internal static class UiControllerTypeId<T> where T : UiControllerBase
     {
         private static bool Inited;
         private static int m_Id;
@@ -22,7 +22,7 @@ namespace BbxCommon.Ui
                     return m_Id;
                 else
                 {
-                    m_Id = ControllerTypeId.CurIndex++;
+                    m_Id = UiControllerTypeId.CurIndex++;
                     Inited = true;
                     return m_Id;
                 }
@@ -34,9 +34,14 @@ namespace BbxCommon.Ui
             return Id;
         }
     }
+
+    public interface IUiControllerTypeId
+    {
+        internal int GetControllerTypeId();
+    }
     #endregion
 
-    public abstract class UiControllerBase<TView> : UiControllerBase where TView : UiViewBase
+    public abstract class UiControllerBase<TView> : UiControllerBase where TView : UiViewBase, IUiControllerTypeId
     {
         #region Common
         protected TView m_View;
@@ -58,7 +63,7 @@ namespace BbxCommon.Ui
             else
             {
                 // register type id via reflection
-                var method = typeof(ControllerTypeId<>).MakeGenericType(this.GetType()).GetMethod("GetId", BindingFlags.Static);
+                var method = typeof(UiControllerTypeId<>).MakeGenericType(this.GetType()).GetMethod("GetId", BindingFlags.Static);
                 SetControllerTypeId((int)method.Invoke(null, null));
                 return m_ControllerTypeId;
             }
@@ -81,21 +86,114 @@ namespace BbxCommon.Ui
         public abstract void SetView(UiViewBase view);
         #endregion
 
-        #region Init, Open, Show
-        private bool m_Opened;
-
-        public void Open()
+        #region Lifecycle
+        internal enum EControllerState
         {
-            if (m_Opened)
-                return;
-            gameObject.SetActive(true);
-            OnUiOpen();
-            m_Opened = true;
+            None,
+            Inited,
+            Opened,
+            Visible,
+            Invisible,
+            Closed,
         }
+
+        internal bool ControllerInPool;
+
+        private EControllerState m_State;
 
         public void Init()
         {
-            OnUiInit();
+            switch (m_State)
+            {
+                case EControllerState.None:
+                    OnUiInit();
+                    m_State = EControllerState.Inited;
+                    break;
+                default:
+                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
+                    break;
+            }
+        }
+
+        public void Open()
+        {
+            switch (m_State)
+            {
+                case EControllerState.Inited:
+                case EControllerState.Closed:
+                    OnUiOpen();
+                    m_State = EControllerState.Inited;
+                    break;
+                default:
+                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
+                    break;
+            }
+        }
+
+        public void Show()
+        {
+            switch (m_State)
+            {
+                case EControllerState.Opened:
+                    gameObject.SetActive(true);
+                    OnUiShow();
+                    m_State = EControllerState.Visible;
+                    break;
+                case EControllerState.Visible:
+                    break;
+                default:
+                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
+                    break;
+            }
+        }
+
+        public void Hide()
+        {
+            switch (m_State)
+            {
+                case EControllerState.Visible:
+                    gameObject.SetActive(false);
+                    OnUiHide();
+                    m_State = EControllerState.Invisible;
+                    break;
+                case EControllerState.Invisible:
+                    break;
+                default:
+                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
+                    break;
+            }
+        }
+
+        public void Close()
+        {
+            switch (m_State)
+            {
+                case EControllerState.Visible:
+                    gameObject.SetActive(false);
+                    OnUiHide();
+                    OnUiClose();
+                    m_State = EControllerState.Closed;
+                    break;
+                case EControllerState.Invisible:
+                    OnUiClose();
+                    m_State = EControllerState.Closed;
+                    break;
+                default:
+                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
+                    break;
+            }
+        }
+
+        public void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
+        private void OnDestroy()
+        {
+            OnUiHide();
+            OnUiClose();
+            OnUiDestroy();
         }
 
         /// <summary>
@@ -111,27 +209,6 @@ namespace BbxCommon.Ui
         /// Calls when the UI object is set as visible.
         /// </summary>
         protected virtual void OnUiShow() { }
-        #endregion
-
-        #region Hide, Close, Destroy
-        private void OnDestroy()
-        {
-            OnUiDestroy();
-        }
-
-        public void Close()
-        {
-            if (m_Opened == false)
-                return;
-            gameObject.SetActive(false);
-            OnUiClose();
-            m_Opened = false;
-        }
-
-        public void Destroy()
-        {
-            Destroy(gameObject);
-        }
 
         /// <summary>
         /// Calls when the UI object is set as unvisible.
