@@ -10,9 +10,17 @@ namespace BbxCommon.Ui
         public class UiObjectData
         {
             [NonSerialized]
+            public UiViewBase UiView;
+            [NonSerialized]
             public UiControllerBase CreatedController;
+            [NonSerialized]
+            public Type ControllerType;
+            [NonSerialized]
+            public int ControllerTypeId;
+            [NonSerialized]
+            public GameObject PrefabGameObject;
+
             public string PrefabPath;
-            public Type UiControllerType;
             public int UiGroup;
             public bool DefaultShow;
             public Vector3 Position;

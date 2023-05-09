@@ -25,7 +25,6 @@ namespace BbxCommon.Ui
             {
                 UiSceneAsset.UiObjectData data = new UiSceneAsset.UiObjectData();
                 data.PrefabPath = uiView.GetResourcePath();
-                data.UiControllerType = uiView.GetControllerType();
                 data.UiGroup = uiView.GetUiGroup();
                 data.DefaultShow = uiView.DefaultShow;
                 data.Position = (uiView.transform as RectTransform).localPosition;

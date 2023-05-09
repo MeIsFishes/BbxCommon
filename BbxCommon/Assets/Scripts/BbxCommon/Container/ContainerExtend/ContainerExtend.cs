@@ -118,7 +118,7 @@ namespace BbxCommon
         {
             var fill = default(T);
             while (list.Capacity <= count)
-                list.Capacity = (int)(list.Capacity * factor);
+                list.Capacity = Mathf.Max((int)(list.Capacity * factor), 8);    // default capacity is 0
             for (int i = list.Count; i < list.Capacity; i++)
                 list.Add(fill);
         }

@@ -18,18 +18,24 @@ namespace BbxCommon.Ui
         /// </summary>
         internal static T CreateUiController<T>(GameObject uiGameObject) where T : UiControllerBase
         {
-            // create controller and set view
-            var uiView = uiGameObject.GetComponent<UiViewBase>();
-            if (uiView == null)
+            // try getting an exist UiController from pool
+            var uiController = UiControllerManager.GetPooledUiController<T>();
+            // else create controller and set view
+            if (uiController == null)
             {
-                Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
-                return null;
+                var uiView = uiGameObject.GetComponent<UiViewBase>();
+                if (uiView == null)
+                {
+                    Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
+                    return null;
+                }
+                uiController = (T)uiGameObject.AddMissingComponent(uiView.GetControllerType());
+                uiView.UiController = uiController;
+                uiController.SetView(uiView);
+                uiController.Init();
             }
-            var uiController = uiGameObject.AddMissingComponent(uiView.GetControllerType()) as UiControllerBase;
-            uiView.UiController = uiController;
-            uiController.SetView(uiView);
-            uiController.Init();
-            return (T)uiController;
+            uiController.Open();
+            return uiController;
         }
         #endregion
     }
@@ -47,8 +53,6 @@ namespace BbxCommon.Ui
 
             public UiControllerWpData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
 
-            public TController GetUiController<TController>() where TController : UiControllerBase => m_Ref.GetUiController<TController>();
-            public UiControllerBase GetUiController(Type type) => m_Ref.GetUiController(type);
             public void SetUiToGroup(GameObject uiGameObject, TGroupKey group) => m_Ref.SetUiToGroup(uiGameObject, group);
             public void SetUiToGroup(UiControllerBase uiController, TGroupKey group) => m_Ref.SetUiToGroup(uiController.gameObject, group);
         }
@@ -59,7 +63,7 @@ namespace BbxCommon.Ui
 
             public UiGroupWpData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
 
-            public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "") => m_Ref.CreateUiGroupRoot(uiGroup, name);
+            public Canvas CreateUiGroupRoot(TGroupKey uiGroup, string name = "") => m_Ref.CreateUiGroupRoot(uiGroup, name);
             public void SetUiGroup(List<TGroupKey> groups) => m_Ref.SetUiGroup(groups);
             public void SetUiGroup(params TGroupKey[] groups) => m_Ref.SetUiGroup(groups);
             public Canvas GetUiGroupCanvas(TGroupKey group) => m_Ref.GetUiGroupCanvas(group);
@@ -92,44 +96,27 @@ namespace BbxCommon.Ui
 
         protected virtual void OnSceneInit() { }
 
-        public UiControllerBase CreateUi(string path, TGroupKey uiGroup, bool defaultOpen = true)
-        {
-            var uiGameObject = Instantiate(Resources.Load<GameObject>(path));
-            // hangs UI to the group
-            Canvas root;
-            if (m_UiGroups.TryGetValue(uiGroup, out root) == false)
-                CreateUiGroupRoot(uiGroup);
-            uiGameObject.transform.SetParent(root.transform);
-
-            var uiView = uiGameObject.GetComponent<UiViewBase>();
-            var uiController = CreateUiController<UiControllerBase>(uiGameObject);
-
-            // process defaultOpen
-            if (defaultOpen)
-                uiController.Open();
-            else
-                uiController.Close();
-            // add to dictionary
-            if (m_UiControllers.ContainsKey(uiView.GetControllerType()) == false)
-                m_UiControllers[uiView.GetControllerType()] = SimplePool<List<UiControllerBase>>.Alloc();
-            m_UiControllers[uiView.GetControllerType()].Add(uiController);
-            return uiController;
-        }
-
         public override void CreateUiByAsset(UiSceneAsset asset)
         {
             if (asset == null)
                 return;
             foreach (var data in asset.UiObjectDatas)
             {
-                var controller = CreateUi(data.PrefabPath, (TGroupKey)(object)data.UiGroup, false);
+                // if this is the first time of opening
+                if (data.PrefabGameObject == null)
+                {
+                    data.PrefabGameObject = Resources.Load<GameObject>(data.PrefabPath);
+                    data.UiView = data.PrefabGameObject.GetComponent<UiViewBase>();
+                    data.ControllerType = data.UiView.GetControllerType();
+                    data.ControllerTypeId = UiApi.GetUiControllerTypeId(data.UiView);
+                }    
+                var controller = UiApi.OpenUiController(data.UiView, data.ControllerTypeId, m_UiGroups[(TGroupKey)(object)data.UiGroup].transform);
                 data.CreatedController = controller;
-                data.UiControllerType = controller.GetType();   // type can't be serialized
                 (controller.transform as RectTransform).localPosition = data.Position;
                 (controller.transform as RectTransform).localScale = data.Scale;
                 (controller.transform as RectTransform).pivot = data.Pivot;
-                if (data.DefaultShow)   // keep OnUiOpen() calls after setting data
-                    controller.Open();
+                if (data.DefaultShow)   // keep OnUiShow() calls after setting data
+                    controller.Show();
             }
         }
 
@@ -139,60 +126,15 @@ namespace BbxCommon.Ui
                 return;
             foreach (var data in asset.UiObjectDatas)
             {
-                var uiList = m_UiControllers[data.UiControllerType];
-                uiList.Remove(data.CreatedController);
-                if (uiList.Count == 0)
-                    m_UiControllers.Remove(data.UiControllerType);
-                data.CreatedController.Destroy();
+                data.CreatedController.Close();
             }
-        }
-        #endregion
-
-        #region UiControllers
-        /// <summary>
-        /// If there is only 1 <see cref="UiControllerBase"/> in the list, you can get it via <see cref="GetUiController{TController}"/>.
-        /// </summary>
-        private Dictionary<Type, List<UiControllerBase>> m_UiControllers = new Dictionary<Type, List<UiControllerBase>>();
-
-        public TController GetUiController<TController>() where TController : UiControllerBase
-        {
-            return (TController)GetUiController(typeof(TController));
-        }
-
-        public UiControllerBase GetUiController(Type type)
-        {
-            m_UiControllers.TryGetValue(type, out var uiControllerList);
-            if (uiControllerList.Count > 1)
-            {
-                Debug.LogError("There are more than 1 " + type.Name + " in the UiScene. In that case you cannot get the UiController in this way!");
-                return null;
-            }
-            return uiControllerList[0];
-        }
-
-        public void ClearUiController(Type type)
-        {
-            if (m_UiControllers.TryGetValue(type, out var uiList))
-            {
-                foreach (var uiController in uiList)
-                {
-                    uiController.Destroy();
-                }
-                uiList.CollectToPool();
-                m_UiControllers.Remove(type);
-            }
-        }
-
-        public void ClearUiController<TController>() where TController : UiControllerBase
-        {
-            ClearUiController(typeof(TController));
         }
         #endregion
 
         #region UiGroup
         protected Dictionary<TGroupKey, Canvas> m_UiGroups = new Dictionary<TGroupKey, Canvas>();
 
-        public GameObject CreateUiGroupRoot(TGroupKey uiGroup, string name = "")
+        public Canvas CreateUiGroupRoot(TGroupKey uiGroup, string name = "")
         {
             var root = Instantiate(CanvasProto);
             if (name.IsNullOrEmpty())
@@ -200,8 +142,9 @@ namespace BbxCommon.Ui
             else
                 root.name = name;
             root.transform.SetParent(this.transform);
-            m_UiGroups[uiGroup] = root.GetComponent<Canvas>();
-            return root;
+            var rootCanvas = root.GetComponent<Canvas>();
+            m_UiGroups[uiGroup] = rootCanvas;
+            return rootCanvas;
         }
 
         public void SetUiGroup(List<TGroupKey> groups)

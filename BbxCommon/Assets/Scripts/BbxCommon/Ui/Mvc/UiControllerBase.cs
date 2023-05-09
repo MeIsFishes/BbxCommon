@@ -35,7 +35,7 @@ namespace BbxCommon.Ui
         }
     }
 
-    public interface IUiControllerTypeId
+    internal interface IUiControllerTypeId
     {
         internal int GetControllerTypeId();
     }
@@ -56,17 +56,23 @@ namespace BbxCommon.Ui
         private static bool m_ControllerTypeIdInited;
         internal static int m_ControllerTypeId;
 
-        int IUiControllerTypeId.GetControllerTypeId()
+        public override int GetControllerTypeId()
         {
             if (m_ControllerTypeIdInited)
                 return m_ControllerTypeId;
             else
             {
                 // register type id via reflection
-                var method = typeof(UiControllerTypeId<>).MakeGenericType(this.GetType()).GetMethod("GetId", BindingFlags.Static);
+                var type = typeof(UiControllerTypeId<>).MakeGenericType(this.GetType());
+                var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic);
                 SetControllerTypeId((int)method.Invoke(null, null));
                 return m_ControllerTypeId;
             }
+        }
+
+        int IUiControllerTypeId.GetControllerTypeId()
+        {
+            return GetControllerTypeId();
         }
 
         private void SetControllerTypeId(int id)
@@ -84,105 +90,62 @@ namespace BbxCommon.Ui
     {
         #region Common
         public abstract void SetView(UiViewBase view);
+
+        public abstract int GetControllerTypeId();
         #endregion
 
         #region Lifecycle
-        internal enum EControllerState
+        private bool m_Inited = false;
+        private bool m_Opened = false;
+        private bool m_Visible = false;
+
+        internal void Init()
         {
-            None,
-            Inited,
-            Opened,
-            Visible,
-            Invisible,
-            Closed,
-        }
-
-        internal bool ControllerInPool;
-
-        private EControllerState m_State;
-
-        public void Init()
-        {
-            switch (m_State)
+            if (m_Inited == false)
             {
-                case EControllerState.None:
-                    OnUiInit();
-                    m_State = EControllerState.Inited;
-                    break;
-                default:
-                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
-                    break;
+                OnUiInit();
+                m_Inited = true;
             }
         }
 
-        public void Open()
+        internal void Open()
         {
-            switch (m_State)
+            if (m_Opened == false)
             {
-                case EControllerState.Inited:
-                case EControllerState.Closed:
-                    OnUiOpen();
-                    m_State = EControllerState.Inited;
-                    break;
-                default:
-                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
-                    break;
+                OnUiOpen();
+                m_Opened = true;
             }
         }
 
         public void Show()
         {
-            switch (m_State)
+            if (m_Visible == false)
             {
-                case EControllerState.Opened:
-                    gameObject.SetActive(true);
-                    OnUiShow();
-                    m_State = EControllerState.Visible;
-                    break;
-                case EControllerState.Visible:
-                    break;
-                default:
-                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
-                    break;
+                gameObject.SetActive(true);
+                OnUiShow();
+                m_Visible = true;
             }
         }
 
         public void Hide()
         {
-            switch (m_State)
+            if (m_Visible)
             {
-                case EControllerState.Visible:
-                    gameObject.SetActive(false);
-                    OnUiHide();
-                    m_State = EControllerState.Invisible;
-                    break;
-                case EControllerState.Invisible:
-                    break;
-                default:
-                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
-                    break;
+                gameObject.SetActive(false);
+                OnUiHide();
+                m_Visible = false;
             }
         }
 
         public void Close()
         {
-            switch (m_State)
+            if (m_Opened)
             {
-                case EControllerState.Visible:
-                    gameObject.SetActive(false);
-                    OnUiHide();
-                    OnUiClose();
-                    UiControllerManager.CollectUiController(this);
-                    m_State = EControllerState.Closed;
-                    break;
-                case EControllerState.Invisible:
-                    OnUiClose();
-                    UiControllerManager.CollectUiController(this);
-                    m_State = EControllerState.Closed;
-                    break;
-                default:
-                    Debug.LogWarning("The controller's current state is " + m_State + ". There should be a bug!");
-                    break;
+                gameObject.SetActive(false);
+                Hide();
+                OnUiClose();
+                UiControllerManager.CollectUiController(this);
+                m_Opened = false;
             }
         }
 
@@ -193,8 +156,10 @@ namespace BbxCommon.Ui
 
         private void OnDestroy()
         {
-            OnUiHide();
-            OnUiClose();
+            if (m_Visible)
+                OnUiHide();
+            if (m_Opened)
+                OnUiClose();
             OnUiDestroy();
         }
 
@@ -204,7 +169,8 @@ namespace BbxCommon.Ui
         /// </summary>
         protected virtual void OnUiInit() { }
         /// <summary>
-        /// Calls when the UI object is enabled.
+        /// Calls when the UI object is got out from pool or created as new.
+        /// Notice that the object's position data has not been set while <see cref="Open"/>, but been set while <see cref="Show"/>.
         /// </summary>
         protected virtual void OnUiOpen() { }
         /// <summary>
