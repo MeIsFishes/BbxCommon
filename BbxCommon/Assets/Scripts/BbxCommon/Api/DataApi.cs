@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace BbxCommon
 {
@@ -17,6 +18,7 @@ namespace BbxCommon
 
     public static class DataApi
     {
+        #region Store Global Data
         public static void SetData<T>(T data)
         {
             DataManager<T>.SetData(data);
@@ -58,6 +60,24 @@ namespace BbxCommon
         {
             DataManager<T>.ReleaseData(key, tryCollectToPool);
         }
+        #endregion
+
+        #region Asset
+#if UNITY_EDITOR
+        public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<TAsset>(path);
+            if (asset != null)
+                return asset;
+            else
+            {
+                asset = ScriptableObject.CreateInstance<TAsset>();
+                AssetDatabase.CreateAsset(asset, path);
+                return asset;
+            }
+        }
+#endif
+        #endregion
     }
 
     /// <summary>
@@ -66,6 +86,7 @@ namespace BbxCommon
     /// </summary>
     internal static class DataManager<T>
     {
+        #region Common
         private static EDataDistribution m_Distribution = EDataDistribution.Discrete;
         private static T m_Data;
         private static List<T> m_DataList = new();
@@ -162,5 +183,6 @@ namespace BbxCommon
             if (tryCollectToPool && released is PooledObject pooled)
                 pooled.CollectToPool();
         }
+        #endregion
     }
 }

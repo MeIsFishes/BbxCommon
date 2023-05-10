@@ -22,8 +22,7 @@ namespace BbxCommon
         // There are 2 ways to create a UniqueIDGenerator:
         // 1. Instantiate and manage an instance yourself.
         // 2. Create an instance by static function, then hold and visit the instance through the key.
-        // Visiting generators through keys in type uint and string are both available, but notice those ones with keys in different type are managed separately.
-
+        // Visiting generators through keys in type uint and string are both available, but notice those ones with keys in different types are managed separately.
 
         // -------------------- Generators with uint keys --------------------
 
@@ -37,10 +36,10 @@ namespace BbxCommon
         {
             if (m_s_KeyGenerator == null)
                 m_s_KeyGenerator = new UniqueIdGenerator();
-            uint newID = m_s_KeyGenerator.GenerateID();
+            uint newId = m_s_KeyGenerator.GenerateID();
             var generator = ObjectPool<UniqueIdGenerator>.Alloc();
-            m_s_GeneratorUint.Add(newID, generator);
-            key = newID;
+            m_s_GeneratorUint.Add(newId, generator);
+            key = newId;
             return generator;
         }
 

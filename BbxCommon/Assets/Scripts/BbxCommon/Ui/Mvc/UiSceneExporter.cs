@@ -18,7 +18,7 @@ namespace BbxCommon.Ui
         public void Export()
         {
             var path = ExportPath + "/" + SceneManager.GetActiveScene().name + ".asset";
-            var asset = AssetFunc.LoadOrCreateAsset<UiSceneAsset>(path);
+            var asset = DataApi.LoadOrCreateAsset<UiSceneAsset>(path);
             var uiViews = GetComponentsInChildren<UiViewBase>();
             asset.UiObjectDatas.Clear();
             foreach (var uiView in uiViews)

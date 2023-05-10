@@ -4,9 +4,9 @@ namespace BbxCommon
 {
     /* Use ObjectPool<T> like this:
      * 
-     * var a = ObjectPool<A>.StaticAllocAnObject();
+     * var a = ObjectPool<A>.Alloc();
      * a.DoSomething();
-     * a.Collect();
+     * a.CollectToPool();
      *
      * Remember to manage objects' life cycle yourself. */
     internal interface IObjectPoolHandler
@@ -17,7 +17,7 @@ namespace BbxCommon
 
     public class ObjectPool<T> : Singleton<ObjectPool<T>>, IObjectPoolHandler where T : PooledObject, new()
     {
-        private static UniqueIdGenerator m_IDGenerator = new UniqueIdGenerator();
+        private static UniqueIdGenerator m_IdGenerator = new UniqueIdGenerator();
         private static List<T> m_Pool = new List<T>();
 
         /// <summary>
@@ -36,7 +36,7 @@ namespace BbxCommon
             }
             obj = new T();
             obj.OnAllocate();
-            obj.UniqueID = m_IDGenerator.GenerateID();
+            obj.UniqueID = m_IdGenerator.GenerateID();
             return obj;
         }
 
@@ -60,7 +60,7 @@ namespace BbxCommon
                     var item = new T();
                     m_Pool.Add(item);
                     item.ObjectPoolBelongs = Instance;
-                    item.UniqueID = m_IDGenerator.GenerateID();
+                    item.UniqueID = m_IdGenerator.GenerateID();
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace BbxCommon
         {
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
-            obj.UniqueID = m_IDGenerator.GenerateID();
+            obj.UniqueID = m_IdGenerator.GenerateID();
         }
 
         void IObjectPoolHandler.Collect(IPooledObject obj)

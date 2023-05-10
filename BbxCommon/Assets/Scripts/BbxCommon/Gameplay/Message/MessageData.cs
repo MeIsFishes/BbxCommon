@@ -4,11 +4,11 @@ namespace BbxCommon
     public abstract class MessageData : PooledObject
     {
         /// <summary>
-        /// Broadcast the message to <see cref="GlobalMessageBroadcaster"/>.
+        /// Broadcast the message to global registered listeners in <see cref="MessageApi"/>.
         /// </summary>
         public void QuickBroadcast(int messageKey)
         {
-            GlobalMessageBroadcaster.Instance.Broadcast(messageKey, this);
+            MessageApi.BroadcastMessage(messageKey, this);
         }
     }
 }
