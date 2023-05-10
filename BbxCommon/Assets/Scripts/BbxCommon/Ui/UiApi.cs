@@ -38,7 +38,8 @@ namespace BbxCommon.Ui
         /// show on the screen, call <see cref="UiControllerBase.Show"/>.
         /// </summary>
         /// <param name="sourceView"> A <see cref="UiViewBase"/> hangs on an exist UI proto <see cref="GameObject"/> or a prefab. </param>
-        /// <param name="uiControllerTypeId"></param>
+        /// <param name="uiControllerTypeId"> For getting which type of <see cref="UiControllerBase{TView}"/> will be opened. Getting value
+        /// via <see cref="GetUiControllerTypeId(UiViewBase)"/> or <see cref="GetUiControllerTypeId{T}"/>, and it is recommended to cache it. </param>
         public static UiControllerBase OpenUiController(UiViewBase sourceView, int uiControllerTypeId, Transform parent)
         {
             // try getting controller from pool

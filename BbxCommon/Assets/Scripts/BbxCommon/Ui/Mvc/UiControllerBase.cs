@@ -95,6 +95,21 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Lifecycle
+        private void Update()
+        {
+            OnUpdate();
+        }
+
+        protected virtual void OnUpdate() { }
+
+        // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
+        // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), Show() and Hide().
+        // 3. Show() and Hide() can be skipped.
+        // 4. By default, UI items will be collected to the pool, which means they call Close() instead of Destroy(), and they call Init()
+        //    only once when being created, not every time getting from the pool.
+        // 5. When calling Close() or Destroy(), previous functions will be called. For example, it will call Hide() if it is shown, and
+        //    call Close() if it is opened.
+
         private bool m_Inited = false;
         private bool m_Opened = false;
         private bool m_Visible = false;

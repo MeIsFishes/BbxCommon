@@ -44,6 +44,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region UiCollection
+        // indexed by type id
         private static List<UiCollection> m_UiCollections = new();
 
         private static UiCollection GetUiCollection(int typeId)
