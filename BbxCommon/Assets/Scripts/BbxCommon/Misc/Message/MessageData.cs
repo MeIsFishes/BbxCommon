@@ -8,7 +8,7 @@ namespace BbxCommon
         /// </summary>
         public void QuickBroadcast(int messageKey)
         {
-            MessageApi.BroadcastMessage(messageKey, this);
+            MessageApi.GlobalMessageDispatcher.Dispatch(messageKey, this);
         }
     }
 }

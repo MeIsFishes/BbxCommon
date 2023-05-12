@@ -17,7 +17,7 @@ namespace BbxCommon
     public class MessageHandler<TMessageKey> : PooledObject
     {
         private Dictionary<TMessageKey, UnityAction<MessageData>> m_Callbacks = new();
-        internal Dictionary<TMessageKey, List<MessageQueueHandler<TMessageKey>>> MessageQueues = new();
+        internal Dictionary<TMessageKey, HashSet<MessageQueueHandler<TMessageKey>>> MessageQueues = new();
 
         public void RegisterListener(TMessageKey messageKey, UnityAction<MessageData> callback)
         {
@@ -34,6 +34,13 @@ namespace BbxCommon
             if (m_Callbacks.TryGetValue(messageKey, out var callback))
             {
                 callback?.Invoke(messageData);
+            }
+            if (MessageQueues.TryGetValue(messageKey, out var set))
+            {
+                foreach (var messageQueue in set)
+                {
+                    messageQueue.Dispatch(messageKey, messageData);
+                }
             }
         }
 
