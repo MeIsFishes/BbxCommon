@@ -7,7 +7,7 @@ namespace BbxCommon
         /// <summary>
         /// A global broadcaster which simply dispatch int key messages.
         /// </summary>
-        private static MessageDispatcher<int> m_GlobalMessageDispatcher = new();
+        private static MessageHandler<int> m_GlobalMessageDispatcher = new();
 
         public static void RegisterGlobalListener(int messageKey, UnityAction<MessageData> callback)
         {
