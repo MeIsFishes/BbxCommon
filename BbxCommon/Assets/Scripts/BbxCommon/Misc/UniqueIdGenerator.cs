@@ -7,9 +7,9 @@ namespace BbxCommon
     /// </summary>
     public class UniqueIdGenerator : PooledObject
     {
-        private uint m_Id = 0;
+        private ulong m_Id = 0;
 
-        public uint GenerateID()
+        public ulong GenerateID()
         {
             return m_Id++;
         }
@@ -26,17 +26,17 @@ namespace BbxCommon
 
         // -------------------- Generators with uint keys --------------------
 
-        private static Dictionary<uint, UniqueIdGenerator> m_s_GeneratorUint = new Dictionary<uint, UniqueIdGenerator>();
+        private static Dictionary<ulong, UniqueIdGenerator> m_s_GeneratorUint = new();
         private static UniqueIdGenerator m_s_KeyGenerator;
 
         /// <summary>
         /// Create an UniqueIDGenerator instance and it will pass out the key.
         /// </summary>
-        public static UniqueIdGenerator CreateGenerator(out uint key)
+        public static UniqueIdGenerator CreateGenerator(out ulong key)
         {
             if (m_s_KeyGenerator == null)
                 m_s_KeyGenerator = new UniqueIdGenerator();
-            uint newId = m_s_KeyGenerator.GenerateID();
+            ulong newId = m_s_KeyGenerator.GenerateID();
             var generator = ObjectPool<UniqueIdGenerator>.Alloc();
             m_s_GeneratorUint.Add(newId, generator);
             key = newId;

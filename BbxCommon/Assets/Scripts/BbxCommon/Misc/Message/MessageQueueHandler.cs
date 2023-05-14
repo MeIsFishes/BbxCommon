@@ -5,7 +5,7 @@ namespace BbxCommon
     /// <summary>
     /// <para>
     /// In <see cref="MessageQueueHandler{TMessageKey}"/>, messages will be push into a queue when getting from the dispatcher, instead of
-    /// responding and destroying the message data at once.
+    /// responding and discarding the message data at once.
     /// </para><para>
     /// <see cref="MessageQueueHandler{TMessageKey}"/> may help you to build up a buffer, and additionally, avoid delegate closure passing.
     /// Notice that messages in queue will never be removed until you call <see cref="TryDequeue(out MessageQueueHandler{TMessageKey}.Message)"/>.

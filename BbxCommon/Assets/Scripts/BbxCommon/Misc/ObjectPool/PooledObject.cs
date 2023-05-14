@@ -5,7 +5,7 @@ namespace BbxCommon
     public class PooledObject : IPooledObject
     {
         internal IObjectPoolHandler ObjectPoolBelongs;
-        internal uint UniqueID;
+        internal ulong UniqueId;
 
         /// <summary>
         /// Call OnCollect() and tell the object pool this object is ready to be reuse.
@@ -36,32 +36,22 @@ namespace BbxCommon
         public T Obj => IsNull() ? null : m_Obj;
 
         private T m_Obj;
-        private uint m_InstanceID;
+        private ulong m_InstanceId;
 
         public ObjRef(T obj)
         {
             m_Obj = obj;
-            m_InstanceID = obj.UniqueID;
+            m_InstanceId = obj.UniqueId;
         }
 
         public bool IsNull()
         {
-            return m_Obj == null || m_Obj.UniqueID != m_InstanceID;
+            return m_Obj == null || m_Obj.UniqueId != m_InstanceId;
         }
 
         public void Release()
         {
             m_Obj = null;
-        }
-
-        public static bool operator ==(ObjRef<T> a, ObjRef<T> b)
-        {
-            return a.Obj == b.Obj;
-        }
-
-        public static bool operator !=(ObjRef<T> a, ObjRef<T> b)
-        {
-            return a.Obj != b.Obj;
         }
     }
     #endregion

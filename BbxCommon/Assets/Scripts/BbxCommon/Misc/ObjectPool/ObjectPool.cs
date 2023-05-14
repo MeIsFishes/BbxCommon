@@ -36,7 +36,7 @@ namespace BbxCommon
             }
             obj = new T();
             obj.OnAllocate();
-            obj.UniqueID = m_IdGenerator.GenerateID();
+            obj.UniqueId = m_IdGenerator.GenerateID();
             return obj;
         }
 
@@ -60,7 +60,7 @@ namespace BbxCommon
                     var item = new T();
                     m_Pool.Add(item);
                     item.ObjectPoolBelongs = Instance;
-                    item.UniqueID = m_IdGenerator.GenerateID();
+                    item.UniqueId = m_IdGenerator.GenerateID();
                 }
             }
         }
@@ -72,7 +72,7 @@ namespace BbxCommon
         {
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
-            obj.UniqueID = m_IdGenerator.GenerateID();
+            obj.UniqueId = m_IdGenerator.GenerateID();
         }
 
         void IObjectPoolHandler.Collect(IPooledObject obj)

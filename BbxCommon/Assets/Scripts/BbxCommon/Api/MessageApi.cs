@@ -1,5 +1,4 @@
-﻿using UnityEngine.Events;
-
+﻿
 namespace BbxCommon
 {
     public static class MessageApi
