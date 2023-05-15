@@ -6,6 +6,11 @@ namespace Dcg.Ui
 {
     public class UiDiceController : UiControllerBase<UiDiceView>
     {
+        public void Bind(Dice dice)
+        {
+            m_View.DiceTittle.text = dice.GetDiceTittle();
+        }
+
         protected override void OnUiInit()
         {
             base.OnUiInit();

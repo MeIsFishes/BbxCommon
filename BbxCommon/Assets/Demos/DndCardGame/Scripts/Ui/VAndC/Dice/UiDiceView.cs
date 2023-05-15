@@ -1,5 +1,6 @@
 using System;
 using UnityEngine;
+using TMPro;
 using BbxCommon;
 using BbxCommon.Ui;
 
@@ -7,6 +8,7 @@ namespace Dcg.Ui
 {
     public class UiDiceView : UiViewBase
     {
+        public TMP_Text DiceTittle;
         public UiDragable UiDragable;
         public UiInteractor UiInteractor;
         [Tooltip("GameObjects in the group will be shown when dragging, and be hidden otherwise.")]

@@ -122,6 +122,55 @@ namespace BbxCommon
             for (int i = list.Count; i < list.Capacity; i++)
                 list.Add(fill);
         }
+
+        /// <summary>
+        /// Add the item in the front of the list.
+        /// </summary>
+        public static void AddFront<T>(this List<T> list, T item)
+        {
+            list.Insert(0, item);
+        }
+
+        /// <summary>
+        /// Add items in the front of the list.
+        /// </summary>
+        public static void AddFront<T>(this List<T> list, List<T> items)
+        {
+            var originalCount = list.Count;
+            list.ModifyCount(list.Count + items.Count);
+            for (int i = originalCount; i >= 0; i--)
+            {
+                list[i + items.Count] = list[i];
+            }
+            for (int i = 0; i < items.Count; i++)
+            {
+                list[i] = items[i];
+            }
+        }
+
+        /// <summary>
+        /// Add items in the front of the list.
+        /// </summary>
+        public static void AddFront<T>(this List<T> list, HashSet<T> items)
+        {
+            var originalCount = list.Count;
+            list.ModifyCount(list.Count + items.Count);
+            for (int i = originalCount; i >= 0; i--)
+            {
+                list[i + items.Count] = list[i];
+            }
+            var index = 0;
+            foreach (var item in items)
+            {
+                list[index] = item;
+                index++;
+            }
+        }
+
+        public static void RemoveBack<T>(this List<T> list)
+        {
+            list.RemoveAt(list.Count - 1);
+        }
         #endregion
 
         #region Queue

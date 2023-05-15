@@ -7,9 +7,9 @@ namespace Dcg
     {
         public List<Dice> Dices = new();
 
-        public uint GetRollingRes()
+        public int GetRollingRes()
         {
-            uint res = 0;
+            int res = 0;
             foreach (var dice in Dices)
             {
                 res += dice.RollOnce();

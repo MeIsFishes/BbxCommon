@@ -29,6 +29,7 @@ namespace BbxCommon.Ui
             /// Tick on every frame when dragging.
             /// </summary>
             public UnityAction<PointerEventData> OnDrag { get { return m_Ref.OnDrag; } set { m_Ref.OnDrag = value; } }
+            public UnityAction<PointerEventData> OnBackFromTop { get { return m_Ref.OnBackFromTop; } set { m_Ref.OnBackFromTop = value; } }
         }
         #endregion
 
@@ -60,6 +61,7 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnBeginDrag;
         public UnityAction<PointerEventData> OnEndDrag;
         public UnityAction<PointerEventData> OnDrag;
+        public UnityAction<PointerEventData> OnBackFromTop;
 
         // internal datas
         [NonSerialized]
@@ -177,6 +179,7 @@ namespace BbxCommon.Ui
                 transform.position = m_OriginalPos;
 
             UiApi.SetTopUiBack(EventListener.gameObject);
+            OnBackFromTop?.Invoke(eventData);
         }
         #endregion
     }
