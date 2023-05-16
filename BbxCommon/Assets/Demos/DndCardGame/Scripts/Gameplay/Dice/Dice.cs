@@ -19,6 +19,13 @@ namespace Dcg
         public EDiceType DiceType;
         public List<DiceAffixBase> Affixes = new();
 
+        public static Dice Create(EDiceType diceType)
+        {
+            var dice = ObjectPool<Dice>.Alloc();
+            dice.DiceType = diceType;
+            return dice;
+        }
+
         public int RollOnce()
         {
             int rollRes = 1;

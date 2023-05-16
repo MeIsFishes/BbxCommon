@@ -3,55 +3,81 @@ using BbxCommon;
 
 namespace Dcg
 {
-    public class AttributesRawComponent : EcsRawComponent
+    public enum EAttribute
     {
         /// <summary>
         /// 力量
         /// </summary>
-        public int Strength;
-        /// <summary>
-        /// 体质
-        /// </summary>
-        public int Constitution;
+        Strength,
         /// <summary>
         /// 敏捷
         /// </summary>
-        public int Dexterity;
+        Dexterity,
+        /// <summary>
+        /// 体质
+        /// </summary>
+        Consititution,
         /// <summary>
         /// 智力
         /// </summary>
-        public int Intelligence;
+        Intelligence,
         /// <summary>
         /// 感知
         /// </summary>
+        Wisdom,
+    }
+
+    public class AttributesRawComponent : EcsRawComponent
+    {
+        public int Strength;
+        public int Dexterity;
+        public int Constitution;
+        public int Intelligence;
         public int Wisdom;
 
-        public void GetModifierDice(int attributeValue, List<Dice> res)
+        public void GetModifierDice(EAttribute attribute, List<Dice> res)
         {
+            int attributeValue = 0;
+            switch (attribute)
+            {
+                case EAttribute.Strength:
+                    attributeValue = Strength;
+                    break;
+                case EAttribute.Dexterity:
+                    attributeValue = Dexterity;
+                    break;
+                case EAttribute.Consititution:
+                    attributeValue = Constitution;
+                    break;
+                case EAttribute.Intelligence:
+                    attributeValue = Intelligence;
+                    break;
+                case EAttribute.Wisdom:
+                    attributeValue = Wisdom;
+                    break;
+            }
             while (attributeValue > 0)
             {
                 var value = (attributeValue - 1) % 5 + 1;
                 attributeValue -= 5;
-                var dice = ObjectPool<Dice>.Alloc();
                 switch (value)
                 {
                     case 1:
-                        dice.DiceType = EDiceType.D4;
+                        res.Add(Dice.Create(EDiceType.D4));
                         break;
                     case 2:
-                        dice.DiceType = EDiceType.D6;
+                        res.Add(Dice.Create(EDiceType.D6));
                         break;
                     case 3:
-                        dice.DiceType = EDiceType.D8;
+                        res.Add(Dice.Create(EDiceType.D8));
                         break;
                     case 4:
-                        dice.DiceType = EDiceType.D10;
+                        res.Add(Dice.Create(EDiceType.D10));
                         break;
                     case 5:
-                        dice.DiceType = EDiceType.D12;
+                        res.Add(Dice.Create(EDiceType.D12));
                         break;
                 }
-                res.Add(dice);
             }
         }
     }
