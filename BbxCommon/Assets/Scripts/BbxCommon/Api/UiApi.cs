@@ -62,7 +62,7 @@ namespace BbxCommon.Ui
         /// <summary>
         /// Create a <see cref="UiControllerBase"/> from the proto <see cref="GameObject"/> or prefab.
         /// </summary>
-        internal static TController CreateUiControllerOnGameObject<TController>(GameObject uiGameObject) where TController : UiControllerBase
+        private static TController CreateUiControllerOnGameObject<TController>(GameObject uiGameObject) where TController : UiControllerBase
         {
             var uiView = uiGameObject.GetComponent<UiViewBase>();
             if (uiView == null)
@@ -74,7 +74,7 @@ namespace BbxCommon.Ui
             uiView.UiController = uiController;
             uiController.SetView(uiView);
             uiController.Init();
-            uiController.Open();    // TODO: get controllers only by calling OpenUiController, and keep this function private
+            uiController.Open();
             return uiController;
         }
         #endregion

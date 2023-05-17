@@ -28,6 +28,9 @@ namespace BbxCommon.Ui
             /// </summary>
             public UnityAction<Interactor> OnInteractorTouchEnd { get { return m_Ref.OnInteractorTouchEnd; } set { m_Ref.OnInteractorTouchEnd = value; } }
             public UnityAction<Interactor> OnInteractorAwake { get { return m_Ref.OnInteractorAwake; } set { m_Ref.OnInteractorAwake = value; } }
+            /// <summary>
+            /// Call OnIteract(requester, responder).
+            /// </summary>
             public UnityAction<Interactor, Interactor> OnInteract { get { return m_Ref.OnInteract; } set { m_Ref.OnInteract = value; } }
             public UnityAction OnInteractorSleep { get { return m_Ref.OnInteractorSleep; } set { m_Ref.OnInteractorSleep = value; } }
         }
@@ -48,11 +51,23 @@ namespace BbxCommon.Ui
         /// </summary>
         private HashSet<GameObject> m_RaycastTargets = new HashSet<GameObject>();
 
-        private void Awake()
+        void IBbxUiItem.OnUiInit(UiControllerBase uiController)
         {
             SearchAllRaycastTargets();
             InitUiDragable();
         }
+
+        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
 
         private void SearchAllRaycastTargets()
         {
@@ -127,12 +142,12 @@ namespace BbxCommon.Ui
                     continue;
                 else
                 {
-                    var responser = result.gameObject.GetComponentInParent<UiInteractor>();
+                    var responder = result.gameObject.GetComponentInParent<UiInteractor>();
                     // invoke both interactors
-                    if (responser != null)
+                    if (responder != null)
                     {
-                        this.Interact(this, responser);
-                        responser.Interact(this, responser);
+                        this.Interact(this, responder);
+                        responder.Interact(this, responder);
                     }
                     break;
                 }

@@ -26,8 +26,8 @@ namespace BbxCommon.Ui
             Vertical,
         }
 
-        [Tooltip("Proto to create items of the list. The proto must be with a UiView.")]
-        public GameObject ItemProto;
+        [Tooltip("Proto view to create items of the list.")]
+        public UiViewBase ItemProto;
         [InfoBox("ConstantSlot: Giving numbers of a single line and padding space, set each item to the calculated slot." +
             "\nAreaFit: Giving a area space, spread items evenly on it.")]
         public EArrangement ArragementType;
@@ -36,7 +36,23 @@ namespace BbxCommon.Ui
         [ShowIf("@ArragementType == EArrangement.AreaFit")]
         public float AreaLength;
 
+        private bool m_TypeIdInited;
+        private int m_ItemTypeId;
         private List<IUiListItem> m_UiItems = new List<IUiListItem>();
+
+        void IBbxUiItem.OnUiInit(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
 
         private void Refresh()
         {
@@ -74,9 +90,13 @@ namespace BbxCommon.Ui
         /// </summary>
         public UiControllerBase CreateItem()
         {
-            var protoGameObject = Instantiate(ItemProto);
-            var uiController = UiSceneBase.CreateUiController<UiControllerBase>(protoGameObject);
-            protoGameObject.transform.SetParent(transform);
+            if (m_TypeIdInited == false)
+            {
+                m_ItemTypeId = UiApi.GetUiControllerTypeId(ItemProto);
+                m_TypeIdInited = true;
+            }
+            var uiController = UiApi.OpenUiController(ItemProto, m_ItemTypeId, this.transform);
+            uiController.transform.SetParent(transform);
             m_UiItems.Add((IUiListItem)uiController);
             m_UiItems[m_UiItems.Count - 1].OnIndexChanged(m_UiItems.Count - 1);
             Refresh();
@@ -85,7 +105,7 @@ namespace BbxCommon.Ui
 
         public void RemoveItem(int index)
         {
-            ((UiControllerBase)m_UiItems[index]).Destroy();
+            ((UiControllerBase)m_UiItems[index]).Close();
             m_UiItems.RemoveAt(index);
             for (int i = index; i < m_UiItems.Count - 1; i++)
             {
@@ -103,7 +123,7 @@ namespace BbxCommon.Ui
         {
             foreach (var item in m_UiItems)
             {
-                ((UiControllerBase)item).Destroy();
+                ((UiControllerBase)item).Close();
             }
             m_UiItems.Clear();
         }

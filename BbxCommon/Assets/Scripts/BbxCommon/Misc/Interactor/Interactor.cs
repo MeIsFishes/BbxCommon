@@ -19,7 +19,7 @@ namespace BbxCommon
 
         public void InteractAwake(Interactor awaker) { OnInteractorAwake?.Invoke(awaker); }
 
-        public void Interact(Interactor requester, Interactor responser) { OnInteract?.Invoke(requester, responser); }
+        public void Interact(Interactor requester, Interactor responder) { OnInteract?.Invoke(requester, responder); }
 
         public void InteractSleep() { OnInteractorSleep?.Invoke(); }
 

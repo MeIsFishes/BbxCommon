@@ -12,31 +12,6 @@ namespace BbxCommon.Ui
         public abstract void InitUiScene(GameObject canvasProto);
         public abstract void CreateUiByAsset(UiSceneAsset asset);
         public abstract void DestroyUiByAsset(UiSceneAsset asset);
-
-        /// <summary>
-        /// Static function to create a <see cref="UiControllerBase"/> from the <see cref="GameObject"/>.
-        /// </summary>
-        internal static T CreateUiController<T>(GameObject uiGameObject) where T : UiControllerBase
-        {
-            // try getting an exist UiController from pool
-            var uiController = UiControllerManager.GetPooledUiController<T>();
-            // else create controller and set view
-            if (uiController == null)
-            {
-                var uiView = uiGameObject.GetComponent<UiViewBase>();
-                if (uiView == null)
-                {
-                    Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
-                    return null;
-                }
-                uiController = (T)uiGameObject.AddMissingComponent(uiView.GetControllerType());
-                uiView.UiController = uiController;
-                uiController.SetView(uiView);
-                uiController.Init();
-            }
-            uiController.Open();
-            return uiController;
-        }
         #endregion
     }
 

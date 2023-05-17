@@ -78,28 +78,36 @@ namespace BbxCommon.Ui
         #endregion
 
         #region CallbacksAndTick
-        protected void Awake()
+        void IBbxUiItem.PreInit(UiViewBase uiView)
+        {
+            Wrapper = new UiDragableWrapper(this);
+        }
+
+        void IBbxUiItem.OnUiInit(UiControllerBase uiController)
         {
             AddCallbacks();
         }
 
-        protected void Update()
+        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController)
+        {
+            RemoveCallbacks();
+        }
+
+        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController)
         {
             if (m_PointerIn && !m_Dragging)
                 OnPointerStay?.Invoke(m_CurrentData);
 
             if (m_Dragging)
                 DraggedTime += BbxRawTimer.DeltaTime;
-        }
-
-        private void OnDestroy()
-        {
-            RemoveCallbacks();
-        }
-
-        void IBbxUiItem.PreInit(UiViewBase uiView)
-        {
-            Wrapper = new UiDragableWrapper(this);
         }
 
         private void AddCallbacks()

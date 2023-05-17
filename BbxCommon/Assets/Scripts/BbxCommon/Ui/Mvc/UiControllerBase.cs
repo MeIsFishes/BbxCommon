@@ -52,6 +52,119 @@ namespace BbxCommon.Ui
         }
         #endregion
 
+        #region Lifecycle
+        protected override sealed void Update()
+        {
+            OnUpdate();
+            foreach (var uiItem in m_View.UiItems)
+            {
+                uiItem.OnUiUpdate(this);
+            }
+        }
+
+        protected virtual void OnUpdate() { }
+
+        // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
+        // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), Show() and Hide().
+        // 3. Show() and Hide() can be skipped.
+        // 4. By default, UI items will be collected to the pool, which means they call Close() instead of Destroy(), and they call Init()
+        //    only once when being created, not every time getting from the pool.
+        // 5. When calling Close() or Destroy(), previous functions will be called. For example, it will call Hide() if it is shown, and
+        //    call Close() if it is opened.
+
+        private bool m_Inited = false;
+        private bool m_Opened = false;
+        private bool m_Visible = false;
+
+        internal override sealed void Init()
+        {
+            if (m_Inited == false)
+            {
+                OnUiInit();
+                foreach (var uiItem in m_View.UiItems)
+                {
+                    uiItem.OnUiInit(this);
+                }
+                m_Inited = true;
+            }
+        }
+
+        internal override sealed void Open()
+        {
+            if (m_Opened == false)
+            {
+                OnUiOpen();
+                foreach (var uiItem in m_View.UiItems)
+                {
+                    uiItem.OnUiOpen(this);
+                }
+                m_Opened = true;
+            }
+        }
+
+        public override sealed void Show()
+        {
+            if (m_Visible == false)
+            {
+                gameObject.SetActive(true);
+                OnUiShow();
+                foreach (var uiItem in m_View.UiItems)
+                {
+                    uiItem.OnUiShow(this);
+                }
+                m_Visible = true;
+            }
+        }
+
+        public override sealed void Hide()
+        {
+            if (m_Visible)
+            {
+                gameObject.SetActive(false);
+                OnUiHide();
+                foreach (var uiItem in m_View.UiItems)
+                {
+                    uiItem.OnUiHide(this);
+                }
+                m_Visible = false;
+            }
+        }
+
+        public override sealed void Close()
+        {
+            if (m_Opened)
+            {
+                gameObject.SetActive(false);
+                Hide();
+                OnUiClose();
+                foreach (var uiItem in m_View.UiItems)
+                {
+                    uiItem.OnUiClose(this);
+                }
+                UiControllerManager.CollectUiController(this);
+                m_Opened = false;
+            }
+        }
+
+        public override sealed void Destroy()
+        {
+            Destroy(gameObject);
+        }
+
+        protected override sealed void OnDestroy()
+        {
+            if (m_Visible)
+                OnUiHide();
+            if (m_Opened)
+                OnUiClose();
+            OnUiDestroy();
+            foreach (var uiItem in m_View.UiItems)
+            {
+                uiItem.OnUiDestroy(this);
+            }
+        }
+        #endregion
+
         #region ControllerTypeId
         private static bool m_ControllerTypeIdInited;
         internal static int m_ControllerTypeId;
@@ -95,88 +208,15 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Lifecycle
-        private void Update()
-        {
-            OnUpdate();
-        }
+        protected abstract void Update();
+        protected abstract void OnDestroy();
+        internal abstract void Init();
+        internal abstract void Open();
+        public abstract void Show();
+        public abstract void Hide();
+        public abstract void Close();
+        public abstract void Destroy();
 
-        protected virtual void OnUpdate() { }
-
-        // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
-        // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), Show() and Hide().
-        // 3. Show() and Hide() can be skipped.
-        // 4. By default, UI items will be collected to the pool, which means they call Close() instead of Destroy(), and they call Init()
-        //    only once when being created, not every time getting from the pool.
-        // 5. When calling Close() or Destroy(), previous functions will be called. For example, it will call Hide() if it is shown, and
-        //    call Close() if it is opened.
-
-        private bool m_Inited = false;
-        private bool m_Opened = false;
-        private bool m_Visible = false;
-
-        internal void Init()
-        {
-            if (m_Inited == false)
-            {
-                OnUiInit();
-                m_Inited = true;
-            }
-        }
-
-        internal void Open()
-        {
-            if (m_Opened == false)
-            {
-                OnUiOpen();
-                m_Opened = true;
-            }
-        }
-
-        public void Show()
-        {
-            if (m_Visible == false)
-            {
-                gameObject.SetActive(true);
-                OnUiShow();
-                m_Visible = true;
-            }
-        }
-
-        public void Hide()
-        {
-            if (m_Visible)
-            {
-                gameObject.SetActive(false);
-                OnUiHide();
-                m_Visible = false;
-            }
-        }
-
-        public void Close()
-        {
-            if (m_Opened)
-            {
-                gameObject.SetActive(false);
-                Hide();
-                OnUiClose();
-                UiControllerManager.CollectUiController(this);
-                m_Opened = false;
-            }
-        }
-
-        public void Destroy()
-        {
-            Destroy(gameObject);
-        }
-
-        private void OnDestroy()
-        {
-            if (m_Visible)
-                OnUiHide();
-            if (m_Opened)
-                OnUiClose();
-            OnUiDestroy();
-        }
 
         /// <summary>
         /// Calls only once when the UI object is created, before <see cref="OnUiOpen"/>.
@@ -206,28 +246,6 @@ namespace BbxCommon.Ui
         /// unless you declare a destroying request.
         /// </summary>
         protected virtual void OnUiDestroy() { }
-        #endregion
-
-        #region ChildController
-        // TODO: Maybe call OnUiOpen, OnUiClose and other functions follow the parent's state.(?)
-        private UiControllerBase m_Parent;
-        public UiControllerBase ParentController => m_Parent;
-        private List<UiControllerBase> m_ChildControllers = new List<UiControllerBase>();
-
-        protected T CreateChildController<T>(GameObject uiGameObject) where T : UiControllerBase
-        {
-            var controller = UiSceneBase.CreateUiController<T>(uiGameObject);
-            controller.m_Parent = this;
-            m_ChildControllers.Add(controller);
-            return controller;
-        }
-
-        protected void DestroyChildController(UiControllerBase controller)
-        {
-            controller.Close();
-            m_ChildControllers.Remove(controller);
-            Destroy(controller.gameObject);
-        }
         #endregion
     }
 }

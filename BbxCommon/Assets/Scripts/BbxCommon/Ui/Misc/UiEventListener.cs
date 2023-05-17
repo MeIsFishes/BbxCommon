@@ -26,6 +26,20 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnPointerMove;
         public UnityAction<PointerEventData> OnDrag;
 
+        void IBbxUiItem.OnUiInit(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { }
+
+        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
+
         public void AddCallback(EUiEvent uiEvent, UnityAction<PointerEventData> callback)
         {
             switch (uiEvent)
