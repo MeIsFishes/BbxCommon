@@ -6,6 +6,7 @@ namespace Dcg.Ui
     {
         Info,
         SubMenu,
+        Normal,
     }
 
     public class UiDungeonScene : UiSceneBase<EUiSceneGroup>
@@ -14,6 +15,7 @@ namespace Dcg.Ui
         {
             UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.Info);
             UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.SubMenu);
+            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.Normal);
         }
     }
 }

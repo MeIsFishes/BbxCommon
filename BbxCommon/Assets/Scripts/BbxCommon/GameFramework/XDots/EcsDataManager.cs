@@ -32,12 +32,17 @@ namespace BbxCommon
             m_EcsDataGroups[entity.Index] = dataGroup;
         }
 
+        /// <summary>
+        /// Destroy <see cref="Entity"/> and remove its <see cref="EcsData"/>s.
+        /// For how to remove <see cref="EcsData"/>s, see <see cref="EcsDataList{T}.RemoveDeletedDatas"/>.
+        /// </summary>
         internal static void DestroyEntity(Entity entity)
         {
             var group = GetAndRefreshGroup(entity);
             foreach (var comp in group.RawComponents)
             {
-                comp.CollectToPool();
+                if (comp != null)
+                    comp.CollectToPool();
             }
             foreach (var aspect in group.RawAspects)
             {

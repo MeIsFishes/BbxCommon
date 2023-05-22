@@ -3,7 +3,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    public class PlayerDeckRawComponent : EcsRawComponent
+    public class CharacterDeckRawComponent : EcsRawComponent
     {
         public List<Dice> Dices = new();
     }

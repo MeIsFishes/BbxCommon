@@ -135,7 +135,7 @@ namespace BbxCommon.Ui
     }
 
     /// <summary>
-    /// Inherit this interface by a <see cref="UiControllerBase{TView}"/> to use <see cref="UiList"/>.
+    /// Inherit this interface by a <see cref="UiControllerBase{TView}"/> to become <see cref="UiList"/>'s member item.
     /// </summary>
     public interface IUiListItem
     {

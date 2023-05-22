@@ -4,8 +4,13 @@ using BbxCommon.Ui;
 
 namespace Dcg.Ui
 {
-    public class UiDiceController : UiControllerBase<UiDiceView>
+    public class UiDiceController : UiControllerBase<UiDiceView>, IUiListItem
     {
+        UiList IUiListItem.ParentUiList { get; set; }
+        int IUiListItem.IndexInList { get; set; }
+        void IUiListItem.OnIndexChanged(int newIndex) {  }
+        void IUiListItem.OnListRefresh() { }
+
         public void Bind(Dice dice)
         {
             m_View.DiceTittle.text = dice.GetDiceTittle();
