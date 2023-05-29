@@ -3,13 +3,13 @@ using System;
 
 namespace Dcg.Ui
 {
-    public class DicesInHandView : UiViewBase
+    public class UiDicesInHandView : UiViewBase
     {
         public UiList DicesList;
 
         public override Type GetControllerType()
         {
-            return typeof(DicesInHandController);
+            return typeof(UiDicesInHandController);
         }
 
         public override string GetResourcePath()

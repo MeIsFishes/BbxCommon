@@ -1,4 +1,5 @@
-﻿
+﻿using System;
+
 namespace BbxCommon
 {
     #region PooledObject
@@ -31,7 +32,8 @@ namespace BbxCommon
         }
     }
 
-    public struct ObjRef<T> where T : PooledObject
+    public struct ObjRef<T> : IEquatable<ObjRef<T>>
+        where T : PooledObject
     {
         public T Obj => IsNull() ? null : m_Obj;
 
@@ -52,6 +54,18 @@ namespace BbxCommon
         public void Release()
         {
             m_Obj = null;
+        }
+
+        bool IEquatable<ObjRef<T>>.Equals(ObjRef<T> other)
+        {
+            if (m_Obj != other.m_Obj || m_InstanceId != other.m_InstanceId)
+                return false;
+            return true;
+        }
+
+        public override int GetHashCode()
+        {
+            return m_InstanceId.GetHashCode();
         }
     }
     #endregion

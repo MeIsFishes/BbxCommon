@@ -31,7 +31,8 @@ namespace BbxCommon
         {
             if (AddedToManager)
                 InteractorManager.Instance.RemoveInteractor(this);
-            InteractFlags.AddArray(flags, clear: true);
+            InteractFlags.Clear();
+            InteractFlags.AddArray(flags);
             if (AddedToManager)
                 InteractorManager.Instance.AddInteractor(this);
         }
@@ -40,7 +41,8 @@ namespace BbxCommon
         {
             if (AddedToManager)
                 InteractorManager.Instance.RemoveInteractor(this);
-            InteractFlags.AddList(flags, clear: true);
+            InteractFlags.Clear();
+            InteractFlags.AddList(flags);
             if (AddedToManager)
                 InteractorManager.Instance.AddInteractor(this);
         }

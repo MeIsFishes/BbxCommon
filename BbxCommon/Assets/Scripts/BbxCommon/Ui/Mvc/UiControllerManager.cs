@@ -95,6 +95,18 @@ namespace BbxCommon.Ui
         {
             return (T)GetUiCollection(UiControllerTypeId<T>.Id).GetPooledUiController();
         }
+
+        internal static void OnUiOpen(UiControllerBase uiController)
+        {
+            var uiCollection = GetUiCollection(uiController.GetControllerTypeId());
+            uiCollection.OnUiOpen(uiController);
+        }
+
+        internal static void OnUiOpen<T>(UiControllerBase uiController) where T : UiControllerBase
+        {
+            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            uiCollection.OnUiOpen(uiController);
+        }
         #endregion
     }
 
@@ -105,18 +117,20 @@ namespace BbxCommon.Ui
 
         internal UiControllerBase GetUiController()
         {
-            if (m_UiControllers.Count > 1)
+            if (m_UiControllers.Count == 1)
+                return m_UiControllers[0];
+            else if (m_UiControllers.Count > 1)
             {
                 Debug.LogError("There are more than 1 " + m_UiControllers[0].GetType().Name + " in the UiScene. In that case you cannot get the UiController in this way!");
                 return null;
             }
-            return m_UiControllers[0];
+            return null;
         }
 
         internal void CollectUiController(UiControllerBase uiController)
         {
             var index = m_UiControllers.IndexOf(uiController);
-            m_UiControllers.UnorderedRemove(index);
+            m_UiControllers.UnorderedRemoveAt(index);
             m_PooledControllers.Add(uiController);
         }
 
@@ -129,6 +143,11 @@ namespace BbxCommon.Ui
                 return res;
             }
             return null;
+        }
+
+        internal void OnUiOpen(UiControllerBase uiController)
+        {
+            m_UiControllers.Add(uiController);
         }
     }
 }

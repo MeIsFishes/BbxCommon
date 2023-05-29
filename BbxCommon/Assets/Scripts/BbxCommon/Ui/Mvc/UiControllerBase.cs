@@ -99,6 +99,7 @@ namespace BbxCommon.Ui
                     uiItem.OnUiOpen(this);
                 }
                 m_Opened = true;
+                UiControllerManager.OnUiOpen(this);
             }
         }
 

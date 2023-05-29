@@ -3,7 +3,10 @@ using BbxCommon;
 
 namespace Dcg
 {
-    public enum EAttribute
+    /// <summary>
+    /// 任务基础属性，DND把力量敏捷这种属性叫做ability
+    /// </summary>
+    public enum EAbility
     {
         /// <summary>
         /// 力量
@@ -35,24 +38,24 @@ namespace Dcg
         public int Intelligence;
         public int Wisdom;
 
-        public void GetModifierDice(EAttribute attribute, List<Dice> res)
+        public void GetModifierDice(EAbility attribute, List<Dice> res)
         {
             int attributeValue = 0;
             switch (attribute)
             {
-                case EAttribute.Strength:
+                case EAbility.Strength:
                     attributeValue = Strength;
                     break;
-                case EAttribute.Dexterity:
+                case EAbility.Dexterity:
                     attributeValue = Dexterity;
                     break;
-                case EAttribute.Consititution:
+                case EAbility.Consititution:
                     attributeValue = Constitution;
                     break;
-                case EAttribute.Intelligence:
+                case EAbility.Intelligence:
                     attributeValue = Intelligence;
                     break;
-                case EAttribute.Wisdom:
+                case EAbility.Wisdom:
                     attributeValue = Wisdom;
                     break;
             }

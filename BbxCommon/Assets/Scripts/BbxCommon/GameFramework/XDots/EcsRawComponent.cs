@@ -20,7 +20,6 @@ namespace BbxCommon
                 {
                     m_Id = EcsRawComponentId.CurId++;
                     Inited = true;
-                    UnityEngine.Debug.Log(typeof(T).FullName + " id: " + m_Id);
                     return m_Id;
                 }
             }

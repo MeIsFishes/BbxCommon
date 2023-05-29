@@ -20,7 +20,8 @@ namespace BbxCommon.Ui
         private void PreUiInit()
         {
             var uiItems = GetComponentsInChildren<IBbxUiItem>();
-            UiItems.AddArray(uiItems, clear: true);
+            UiItems.Clear();
+            UiItems.AddArray(uiItems);
             foreach (var item in UiItems)
             {
                 item.PreInit(this);

@@ -15,11 +15,8 @@ namespace BbxCommon
         /// <summary>
         /// Add array's members to the List.
         /// </summary>
-        /// <param name="clear"> If true, the List will be clear first. </param>
-        public static void AddArray<T>(this List<T> list, T[] array, bool clear = false)
+        public static void AddArray<T>(this List<T> list, T[] array)
         {
-            if (clear)
-                list.Clear();
             foreach (var m in array)
             {
                 list.Add(m);
@@ -29,11 +26,8 @@ namespace BbxCommon
         /// <summary>
         /// Add another List's members to current List.
         /// </summary>
-        /// <param name="clear"> If true, the List will be clear first. </param>
-        public static void AddList<T>(this List<T> list, List<T> addList, bool clear = false)
+        public static void AddList<T>(this List<T> list, List<T> addList)
         {
-            if (clear)
-                list.Clear();
             foreach (var m in addList)
             {
                 list.Add(m);
@@ -43,11 +37,8 @@ namespace BbxCommon
         /// <summary>
         /// Add HashSet's members to current List.
         /// </summary>
-        /// <param name="clear"> If true, the List will be clear first. </param>
-        public static void AddHashSet<T>(this List<T> list, HashSet<T> set, bool clear = false)
+        public static void AddHashSet<T>(this List<T> list, HashSet<T> set)
         {
-            if (clear)
-                list.Clear();
             foreach (var m in set)
             {
                 list.Add(m);
@@ -105,14 +96,14 @@ namespace BbxCommon
         /// <summary>
         /// Remove an element of List, this will cause the List to be unordered.
         /// </summary>
-        public static void UnorderedRemove<T>(this List<T> list, int index)
+        public static void UnorderedRemoveAt<T>(this List<T> list, int index)
         {
             list[index] = list[list.Count - 1]; // save the value of last element, then remove the last one
             list.RemoveAt(list.Count - 1);
         }
 
         /// <summary>
-        /// Modify the List's capacity and count to fit the given count, and fullfill all the new-created elements.
+        /// Modify the List's capacity and count to fit the given count, and fill up all the new-created elements.
         /// </summary>
         public static void ModifyCount<T>(this List<T> list, int count, float factor = 1.5f)
         {
@@ -242,12 +233,31 @@ namespace BbxCommon
         /// <summary>
         /// Add array's members to the HashSet.
         /// </summary>
-        /// <param name="clear"> If true, the HashSet will be clear first. </param>
-        public static void AddArray<T>(this HashSet<T> set, T[] array, bool clear = false)
+        public static void AddArray<T>(this HashSet<T> set, T[] array)
         {
-            if (clear)
-                set.Clear();
             foreach (var m in array)
+            {
+                set.Add(m);
+            }
+        }
+
+        /// <summary>
+        /// Add List's members to the HashSet.
+        /// </summary>
+        public static void AddList<T>(this HashSet<T> set, List<T> list)
+        {
+            foreach (var m in list)
+            {
+                set.Add(m);
+            }
+        }
+
+        /// <summary>
+        /// Add HashSet's members to the HashSet.
+        /// </summary>
+        public static void AddHashSet<T>(this HashSet<T> set, HashSet<T> addSet)
+        {
+            foreach (var m in addSet)
             {
                 set.Add(m);
             }

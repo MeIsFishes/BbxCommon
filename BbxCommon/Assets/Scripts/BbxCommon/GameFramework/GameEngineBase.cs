@@ -125,7 +125,10 @@ namespace BbxCommon
         private World m_EcsWorld;
         private Entity m_SingletonEntity;
 
-        protected abstract void InitSingletonComponents();
+        /// <summary>
+        /// You can initialize singleton components before <see cref="GameStage"/> loading.
+        /// </summary>
+        protected virtual void InitSingletonComponents() { }
 
         private void OnAwakeEcsWorld()
         {

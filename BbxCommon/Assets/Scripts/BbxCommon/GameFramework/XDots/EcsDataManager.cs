@@ -204,7 +204,7 @@ namespace BbxCommon
         #region private
         private static void RemoveEcsData(int index)
         {
-            m_EcsDatas.UnorderedRemove(index);
+            m_EcsDatas.UnorderedRemoveAt(index);
             if (m_EcsDatas.Count > 0 && index < m_EcsDatas.Count)
                 m_EcsDatas[index].Obj.Index = index;     // swap the last one to the removed slot, then set its index as new
         }

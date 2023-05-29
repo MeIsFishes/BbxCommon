@@ -124,7 +124,7 @@ namespace BbxCommon
                 if (RawAspects[i] is T)
                 {
                     aspect = (T)RawAspects[i];
-                    RawAspects.UnorderedRemove(i);
+                    RawAspects.UnorderedRemoveAt(i);
                     return;
                 }
             }

@@ -255,7 +255,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86e7aea3b96678a42b7d11a5486b8a04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultOpen: 0
+  DefaultShow: 1
   UiInteractor: {fileID: 3867593555159398160}
   DiceFilledGroup: {fileID: 776140124853773632}
 --- !u!1 &5392867067338980589

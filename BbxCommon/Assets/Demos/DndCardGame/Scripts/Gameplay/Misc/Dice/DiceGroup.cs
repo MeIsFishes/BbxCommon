@@ -21,9 +21,9 @@ namespace Dcg
         /// </summary>
         public DiceList RollingDices;
         /// <summary>
-        /// 基础值和属性加值
+        /// 属性加值
         /// </summary>
-        public DiceList AttributeModifier;
+        public DiceList AbilityModifier;
         /// <summary>
         /// buff加值
         /// </summary>
@@ -31,9 +31,9 @@ namespace Dcg
 
         /// <param name="diceGroup"> 掷骰的场景 </param>
         /// <param name="entity"> 掷骰主体 </param>
-        /// <param name="attrbuteModifier"> 属性加值 </param>
+        /// <param name="abilityModifier"> 属性加值 </param>
         /// <param name="savingThrow"> 属性豁免 </param>
-        public static DiceGroup Create(EDiceGroup diceGroup, Entity entity, EAttribute attrbuteModifier, EAttribute savingThrow)
+        public static DiceGroup Create(EDiceGroup diceGroup, Entity entity, EAbility abilityModifier, EAbility savingThrow)
         {
             return ObjectPool<DiceGroup>.Alloc();
         }
@@ -48,7 +48,7 @@ namespace Dcg
         {
             BaseDices.CollectToPool();
             RollingDices.CollectToPool();
-            AttributeModifier.CollectToPool();
+            AbilityModifier.CollectToPool();
             BuffModifier.CollectToPool();
         }
     }
