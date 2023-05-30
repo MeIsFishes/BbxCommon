@@ -18,7 +18,7 @@ namespace Oxd
     [DisableAutoCreation]
     public class GetComponentTSyetem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             Profiler.BeginSample("GetComponentT");
             for (int i = 0; i < 30000; i++)
@@ -32,7 +32,7 @@ namespace Oxd
     [DisableAutoCreation]
     public class EmptySystem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             Profiler.BeginSample("Empty");
             for (int i = 0; i < 30000; i++) ;

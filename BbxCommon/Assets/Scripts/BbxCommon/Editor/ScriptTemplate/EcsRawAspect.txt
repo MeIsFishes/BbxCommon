@@ -1,0 +1,9 @@
+using BbxCommon;
+
+public class #SCRIPT_NAME# : EcsRawAspect
+{
+    protected override void CreateAspect()
+    {
+
+    }
+}

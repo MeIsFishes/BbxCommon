@@ -7,7 +7,7 @@ namespace Nnp
     [DisableAutoCreation]
     public partial class CameraSystem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             var localPlayerComp = GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
             if (localPlayerComp == null)

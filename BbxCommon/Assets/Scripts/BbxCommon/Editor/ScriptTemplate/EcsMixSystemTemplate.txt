@@ -1,0 +1,11 @@
+using Unity.Entities;
+using BbxCommon;
+
+[DisableAutoCreation]
+public class #SCRIPT_NAME# : EcsMixSystemBase
+{
+    protected override void OnUpdate()
+    {
+
+    }
+}

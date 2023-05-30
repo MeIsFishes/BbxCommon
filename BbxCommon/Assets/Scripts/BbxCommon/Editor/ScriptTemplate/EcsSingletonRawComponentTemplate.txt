@@ -1,0 +1,6 @@
+using BbxCommon;
+
+public class #SCRIPT_NAME# : EcsSingletonRawComponent
+{
+
+}

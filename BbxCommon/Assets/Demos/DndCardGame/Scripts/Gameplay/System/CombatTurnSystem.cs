@@ -6,6 +6,9 @@ namespace Dcg
     [DisableAutoCreation]
     public class CombatTurnSystem : EcsMixSystemBase
     {
-        
+        protected override void OnUpdate()
+        {
+            
+        }
     }
 }

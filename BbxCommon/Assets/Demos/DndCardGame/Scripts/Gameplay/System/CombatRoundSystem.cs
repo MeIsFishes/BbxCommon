@@ -6,7 +6,7 @@ namespace Dcg
     [DisableAutoCreation]
     public class CombatRoundSystem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             EcsApi.GetSingletonRawComponent<CombatRoundSingletonRawComponent>();
         }

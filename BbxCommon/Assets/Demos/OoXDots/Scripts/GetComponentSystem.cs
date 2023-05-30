@@ -14,7 +14,7 @@ namespace Oxd
     [DisableAutoCreation]
     public class GetComponentSystem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             Group.RawComponents.TryAdd(typeof(TestRawComponent), new TestRawComponent());
             Profiler.BeginSample("GetComponent");
@@ -29,7 +29,7 @@ namespace Oxd
     [DisableAutoCreation]
     public class GetAndCastSystem : EcsMixSystemBase
     {
-        protected override void OnSystemUpdate()
+        protected override void OnUpdate()
         {
             Profiler.BeginSample("GetAndCast");
             for (int i = 0; i < 30000; i++)

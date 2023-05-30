@@ -8,24 +8,7 @@ namespace BbxCommon
     /// </summary>
     public abstract partial class EcsSystemBase : SystemBase
     {
-        protected sealed override void OnCreate()
-        {
-            OnSystemCreate();
-        }
-
-        protected sealed override void OnUpdate()
-        {
-            OnSystemUpdate();
-        }
-
-        protected  sealed override void OnDestroy()
-        {
-            OnSystemDestroy();
-        }
-
-        protected virtual void OnSystemCreate() { }
-        protected virtual void OnSystemUpdate() { }
-        protected virtual void OnSystemDestroy() { }
+        
     }
 
     /// <summary>
