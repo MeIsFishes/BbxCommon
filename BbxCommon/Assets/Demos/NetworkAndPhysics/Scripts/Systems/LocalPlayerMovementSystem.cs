@@ -6,7 +6,7 @@ namespace Nnp
     [DisableAutoCreation]
     public partial class LocalPlayerMovementSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             ForeachRawAspect(
                 (LocalPlayerMovementRawAspect aspect) =>

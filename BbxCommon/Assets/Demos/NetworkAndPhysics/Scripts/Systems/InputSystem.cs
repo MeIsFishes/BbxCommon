@@ -7,7 +7,7 @@ namespace Nnp
     [DisableAutoCreation]
     public partial class InputSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var inputComp = GetSingletonRawComponent<InputSingletonRawComponent>();
             inputComp.MovementDirection = new Vector3();
