@@ -7,16 +7,29 @@ namespace BbxCommon.Ui
         void SetDirty();
     }
 
-    public class UiModelItem<T> : PooledObject, IModelItemHost
+    public enum EUiModelItemEvent
+    {
+        Dirty,
+        Destroy,
+    }
+
+    public abstract class UiModelItemBase : PooledObject, IModelItemHost
+    {
+        internal virtual IMessageDispatcher<EUiModelItemEvent> MessageDispatcher { get; }
+        public virtual void SetDirty() { }
+    }
+
+    public class UiModelItem<T> : UiModelItemBase
     {
         private T m_Value;
         private IModelItemHost m_Host;
 
         /// <summary>
-        /// There should be only <see cref="SimpleMessageListener"/> adding to the <see cref="MessageHandler"/>,
-        /// so that we don't care about the message key.
+        /// There should be only <see cref="SimpleMessageListener"/> adding to the <see cref="m_MessageHandler"/>.
         /// </summary>
-        internal MessageHandler<int> MessageHandler = new();
+        private MessageHandler<EUiModelItemEvent> m_MessageHandler = new();
+
+        internal override IMessageDispatcher<EUiModelItemEvent> MessageDispatcher => m_MessageHandler;
 
         public T Value => m_Value;
 
@@ -32,9 +45,9 @@ namespace BbxCommon.Ui
             SetDirty();
         }
 
-        public void SetDirty()
+        public override void SetDirty()
         {
-            MessageHandler.Dispatch(0);
+            m_MessageHandler.Dispatch(0);
             m_Host.SetDirty();
         }
     }

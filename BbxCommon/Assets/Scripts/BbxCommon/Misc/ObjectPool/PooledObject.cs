@@ -46,6 +46,11 @@ namespace BbxCommon
             m_InstanceId = obj.UniqueId;
         }
 
+        public bool IsNotNull()
+        {
+            return m_Obj != null && m_Obj.UniqueId == m_InstanceId;
+        }
+
         public bool IsNull()
         {
             return m_Obj == null || m_Obj.UniqueId != m_InstanceId;

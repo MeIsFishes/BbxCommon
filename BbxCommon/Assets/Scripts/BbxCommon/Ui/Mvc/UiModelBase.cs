@@ -1,7 +1,7 @@
 
 namespace BbxCommon.Ui
 {
-    public class UiModelBase
+    public class UiModelBase : PooledObject
     {
 
     }

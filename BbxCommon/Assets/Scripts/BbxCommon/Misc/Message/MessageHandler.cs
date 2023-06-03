@@ -14,7 +14,7 @@ namespace BbxCommon
     /// to avoid GC overhead, consider using <see cref="MessageQueueHandler{TMessageKey}"/> to listen.
     /// </para>
     /// </summary>
-    public class MessageHandler<TMessageKey> : PooledObject, IMessageListener<TMessageKey>
+    public class MessageHandler<TMessageKey> : PooledObject, IMessageDispatcher<TMessageKey>, IMessageListener<TMessageKey>
     {
         #region Normal Callback
         private Dictionary<TMessageKey, UnityAction<MessageData>> m_Callbacks = new();
@@ -80,6 +80,11 @@ namespace BbxCommon
         public override void OnCollect()
         {
             m_Callbacks.Clear();
+            foreach (var pair in Listeners)
+            {
+                pair.Value.CollectToPool();
+            }
+            Listeners.CollectToPool();
         }
         #endregion
     }
