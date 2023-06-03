@@ -14,17 +14,17 @@ namespace BbxCommon
     /// to avoid GC overhead, consider using <see cref="MessageQueueHandler{TMessageKey}"/> to listen.
     /// </para>
     /// </summary>
-    public class MessageHandler<TMessageKey> : PooledObject
+    public class MessageHandler<TMessageKey> : PooledObject, IMessageListener<TMessageKey>
     {
+        #region Normal Callback
         private Dictionary<TMessageKey, UnityAction<MessageData>> m_Callbacks = new();
-        internal Dictionary<TMessageKey, HashSet<MessageQueueHandler<TMessageKey>>> MessageQueues = new();
 
-        public void RegisterListener(TMessageKey messageKey, UnityAction<MessageData> callback)
+        public void AddCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
         {
             m_Callbacks[messageKey] += callback;
         }
 
-        public void UnregisterListener(TMessageKey messageKey, UnityAction<MessageData> callback)
+        public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
         {
             m_Callbacks[messageKey] -= callback;
         }
@@ -35,18 +35,52 @@ namespace BbxCommon
             {
                 callback?.Invoke(messageData);
             }
-            if (MessageQueues.TryGetValue(messageKey, out var set))
+            if (Listeners.TryGetValue(messageKey, out var set))
             {
-                foreach (var messageQueue in set)
+                foreach (var listener in set)
                 {
-                    messageQueue.Dispatch(messageKey, messageData);
+                    listener.OnRespond(messageKey, messageData);
                 }
             }
         }
 
+        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageData messageData)
+        {
+            m_Callbacks[messageKey].Invoke(messageData);
+            if (Listeners.TryGetValue(messageKey, out var set))
+            {
+                foreach (var listener in set)
+                {
+                    listener.OnRespond(messageKey, messageData);
+                }
+            }
+        }
+        #endregion
+
+        #region Listener
+        internal Dictionary<TMessageKey, HashSet<IMessageListener<TMessageKey>>> Listeners = new();
+
+        public void AddListener(TMessageKey messageKey, IMessageListener<TMessageKey> listener)
+        {
+            if (Listeners.TryGetValue(messageKey, out var set) == false)
+            {
+                set = SimplePool<HashSet<IMessageListener<TMessageKey>>>.Alloc();
+                Listeners[messageKey] = set;
+            }
+            set.Add(listener);
+        }
+
+        public void RemoveListener(TMessageKey messageKey, IMessageListener<TMessageKey> listener)
+        {
+            Listeners[messageKey].Remove(listener);
+        }
+        #endregion
+
+        #region Collect to Pool
         public override void OnCollect()
         {
             m_Callbacks.Clear();
         }
+        #endregion
     }
 }
