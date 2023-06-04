@@ -260,19 +260,19 @@ namespace BbxCommon.Ui
         protected struct ModelItemListenerInfo
         {
             public ObjRef<UiModelItemBase> ModelItem;
-            public EUiModelItemEvent ListeningEvent;
+            public int MessageKey;
 
             /// <summary>
             /// Adding a listener reference to <see cref="IMessageDispatcher{TMessageKey}"/> but not directly setting functions, to provide
             /// a GC-free delegate operation.
             /// </summary>
-            private SimpleMessageListener<EUiModelItemEvent> m_Listener;
+            private SimpleMessageListener<int> m_Listener;
 
-            public ModelItemListenerInfo(UiModelItemBase modelItem, EUiModelItemEvent listeningEvent, UnityAction callback)
+            public ModelItemListenerInfo(UiModelItemBase modelItem, int messageKey, UnityAction callback)
             {
                 ModelItem = modelItem.AsObjRef();
-                ListeningEvent = listeningEvent;
-                m_Listener = ObjectPool<SimpleMessageListener<EUiModelItemEvent>>.Alloc();
+                MessageKey = messageKey;
+                m_Listener = ObjectPool<SimpleMessageListener<int>>.Alloc();
                 m_Listener.Callback += (MessageData messageData) => { callback.Invoke(); };
             }
 
@@ -283,13 +283,13 @@ namespace BbxCommon.Ui
                     Debug.LogError("The ModelItem is not set or has been collcted.");
                     return;
                 }
-                ModelItem.Obj.MessageDispatcher.AddListener(ListeningEvent, m_Listener);
+                ModelItem.Obj.MessageDispatcher.AddListener(MessageKey, m_Listener);
             }
 
             public void TryRemoveListener()
             {
                 if (ModelItem.IsNotNull())
-                    ModelItem.Obj.MessageDispatcher.RemoveListener(ListeningEvent, m_Listener);
+                    ModelItem.Obj.MessageDispatcher.RemoveListener(MessageKey, m_Listener);
             }
 
             public void RebindModelItem(UiModelItemBase item)
@@ -308,7 +308,7 @@ namespace BbxCommon.Ui
             }
         }
 
-        protected ModelItemListenerInfo AddUiModelListener(UiModelItemBase modelItem, EUiModelItemEvent listeningEvent, UnityAction callback)
+        protected ModelItemListenerInfo AddUiModelListener(UiModelItemBase modelItem, EUiModelVariableEvent listeningEvent, UnityAction callback)
         {
             var info = new ModelItemListenerInfo();
             return info;
