@@ -179,7 +179,7 @@ namespace BbxCommon.Ui
         /// </summary>
         public T CreateItem<T>() where T : UiControllerBase, IUiListItem
         {
-            var uiController = UiApi.OpenUiController(ItemProto, UiControllerTypeId<T>.Id, this.transform);
+            var uiController = UiApi.OpenUiController(ItemProto, ClassTypeId<UiControllerBase, T>.Id, this.transform);
             uiController.transform.SetParent(transform);
             uiController.Show();
             m_UiItems.Add((IUiListItem)uiController);

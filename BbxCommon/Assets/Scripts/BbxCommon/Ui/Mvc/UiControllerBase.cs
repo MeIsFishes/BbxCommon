@@ -5,36 +5,6 @@ using UnityEngine.Events;
 namespace BbxCommon.Ui
 {
     #region ControllerTypeId
-    internal static class UiControllerTypeId
-    {
-        internal static int CurIndex;
-    }
-
-    internal static class UiControllerTypeId<T> where T : UiControllerBase
-    {
-        private static bool Inited;
-        private static int m_Id;
-        internal static int Id
-        {
-            get
-            {
-                if (Inited)
-                    return m_Id;
-                else
-                {
-                    m_Id = UiControllerTypeId.CurIndex++;
-                    Inited = true;
-                    return m_Id;
-                }
-            }
-        }
-
-        internal static int GetId()
-        {
-            return Id;
-        }
-    }
-
     internal interface IUiControllerTypeId
     {
         internal int GetControllerTypeId();
@@ -177,7 +147,7 @@ namespace BbxCommon.Ui
             else
             {
                 // register type id via reflection
-                var type = typeof(UiControllerTypeId<>).MakeGenericType(this.GetType());
+                var type = typeof(ClassTypeId<,>).MakeGenericType(typeof(UiControllerBase), this.GetType());
                 var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic);
                 SetControllerTypeId((int)method.Invoke(null, null));
                 return m_ControllerTypeId;

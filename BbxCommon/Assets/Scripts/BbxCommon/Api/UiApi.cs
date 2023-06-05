@@ -17,7 +17,7 @@ namespace BbxCommon.Ui
         /// <param name="uiView"> A <see cref="UiViewBase"/> hangs on an exist UI proto <see cref="GameObject"/> or a prefab. </param>
         public static int GetUiControllerTypeId(UiViewBase uiView)
         {
-            var type = typeof(UiControllerTypeId<>).MakeGenericType(uiView.GetControllerType());
+            var type = typeof(ClassTypeId<,>).MakeGenericType(typeof(UiControllerBase), uiView.GetControllerType());
             var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic);
             return (int)method.Invoke(null, null);
         }
@@ -29,7 +29,7 @@ namespace BbxCommon.Ui
 
         public static int GetUiControllerTypeId<T>() where T : UiControllerBase
         {
-            return UiControllerTypeId<T>.Id;
+            return ClassTypeId<UiControllerBase, T>.Id;
         }
 
         /// <summary>

@@ -69,13 +69,13 @@ namespace BbxCommon.Ui
 
         internal static T GetUiController<T>() where T : UiControllerBase
         {
-            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            var uiCollection = GetUiCollection(ClassTypeId<UiControllerBase, T>.Id);
             return (T)uiCollection.GetUiController();
         }
 
         internal static void CollectUiController<T>(T uiController) where T : UiControllerBase
         {
-            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            var uiCollection = GetUiCollection(ClassTypeId<UiControllerBase, T>.Id);
             uiCollection.CollectUiController(uiController);
         }
 
@@ -93,7 +93,7 @@ namespace BbxCommon.Ui
 
         internal static T GetPooledUiController<T>() where T : UiControllerBase
         {
-            return (T)GetUiCollection(UiControllerTypeId<T>.Id).GetPooledUiController();
+            return (T)GetUiCollection(ClassTypeId<UiControllerBase, T>.Id).GetPooledUiController();
         }
 
         internal static void OnUiOpen(UiControllerBase uiController)
@@ -104,7 +104,7 @@ namespace BbxCommon.Ui
 
         internal static void OnUiOpen<T>(UiControllerBase uiController) where T : UiControllerBase
         {
-            var uiCollection = GetUiCollection(UiControllerTypeId<T>.Id);
+            var uiCollection = GetUiCollection(ClassTypeId<UiControllerBase, T>.Id);
             uiCollection.OnUiOpen(uiController);
         }
         #endregion

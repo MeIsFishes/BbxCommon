@@ -49,35 +49,35 @@ namespace BbxCommon
         internal T AddRawComponent<T>(T comp) where T : EcsRawComponent, new()
         {
             RefreshCapacity();
-            RawComponents[EcsRawComponentId<T>.Id] = comp;
+            RawComponents[ClassTypeId<EcsRawComponent, T>.Id] = comp;
             return comp;
         }
 
         internal T GetRawComponent<T>() where T : EcsRawComponent
         {
             RefreshCapacity();
-            return (T)RawComponents[EcsRawComponentId<T>.Id];
+            return (T)RawComponents[ClassTypeId<EcsRawComponent, T>.Id];
         }
 
         internal bool HasRawComponent<T>() where T : EcsRawComponent
         {
             RefreshCapacity();
-            return RawComponents[EcsRawComponentId<T>.Id] != null;
+            return RawComponents[ClassTypeId<EcsRawComponent, T>.Id] != null;
         }
 
         internal void RemoveRawComponent<T>(out T comp) where T : EcsRawComponent
         {
             RefreshCapacity();
-            var removed = RawComponents[EcsRawComponentId<T>.Id];
-            RawComponents[EcsRawComponentId<T>.Id] = null;
+            var removed = RawComponents[ClassTypeId<EcsRawComponent, T>.Id];
+            RawComponents[ClassTypeId<EcsRawComponent, T>.Id] = null;
             comp = (T)removed;
         }
 
         private void RefreshCapacity()
         {
-            if (RawComponents.Count > EcsRawComponentId.CurId)
+            if (RawComponents.Count > TypeIdCounter<EcsRawComponent>.CurId)
                 return;
-            RawComponents.Capacity = EcsRawComponentId.CurId + 1;
+            RawComponents.Capacity = TypeIdCounter<EcsRawComponent>.CurId + 1;
             for (int i = RawComponents.Count; i < RawComponents.Capacity; i++)
                 RawComponents.Add(null);
         }

@@ -11,7 +11,7 @@ namespace BbxCommon
     /// stack of how message sends and be processed.
     /// </para><para>
     /// However, as delegates are often with closure data, GC is always a problem. In that case, if you need
-    /// to avoid GC overhead, consider using <see cref="MessageQueueHandler{TMessageKey}"/> to listen.
+    /// to avoid GC overhead, consider using <see cref="MessageQueueHandler{TMessageKey}"/> for listening.
     /// </para>
     /// </summary>
     public class MessageHandler<TMessageKey> : PooledObject, IMessageDispatcher<TMessageKey>, IMessageListener<TMessageKey>
