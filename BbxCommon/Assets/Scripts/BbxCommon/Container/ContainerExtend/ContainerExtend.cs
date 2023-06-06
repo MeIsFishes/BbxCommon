@@ -103,7 +103,8 @@ namespace BbxCommon
         }
 
         /// <summary>
-        /// Modify the List's capacity and count to fit the given count, and fill up all the new-created elements.
+        /// Modify the <see cref="List{T}"/>'s capacity and count to fit the specific count, and fill up all the new-created slots.
+        /// The capacity will be set as required count * <paramref name="factor"/>, preparing for the upcoming elements.
         /// </summary>
         public static void ModifyCount<T>(this List<T> list, int count, float factor = 1.5f)
         {

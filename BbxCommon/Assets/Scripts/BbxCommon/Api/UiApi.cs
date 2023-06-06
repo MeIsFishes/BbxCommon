@@ -79,6 +79,23 @@ namespace BbxCommon.Ui
         }
         #endregion
 
+        #region UiModel
+        public static void AddUiModel<T>() where T : UiModelBase, new()
+        {
+            UiModelManager.AddUiModel<T>();
+        }
+
+        public static T GetUiModel<T>() where T : UiModelBase
+        {
+            return UiModelManager.GetUiModel<T>();
+        }
+
+        public static void RemoveUiModel<T>() where T : UiModelBase
+        {
+            UiModelManager.RemoveUiModel<T>();
+        }
+        #endregion
+
         #region UiTop
         public static void SetUiTop(GameObject uiGameObject)
         {
