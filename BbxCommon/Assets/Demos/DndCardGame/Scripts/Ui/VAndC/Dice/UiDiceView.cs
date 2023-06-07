@@ -16,19 +16,9 @@ namespace Dcg.Ui
         [Tooltip("The value of local scale of the whole UI item when dragging.")]
         public float OnDragScale;
 
-        public override string GetResourcePath()
-        {
-            return "DndCardGame/Prefabs/Ui/Dice";
-        }
-
         public override Type GetControllerType()
         {
             return typeof(UiDiceController);
-        }
-
-        public override int GetUiGroup()
-        {
-            return (int)EUiSceneGroup.SubMenu;
         }
     }
 }

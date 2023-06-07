@@ -31,10 +31,6 @@ namespace BbxCommon.Ui
         }
 #endif
 
-        public abstract string GetResourcePath();
-
         public abstract Type GetControllerType();
-
-        public abstract int GetUiGroup();
     }
 }

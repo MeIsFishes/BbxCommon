@@ -11,15 +11,5 @@ namespace Dcg.Ui
         {
             return typeof(UiDicesInHandController);
         }
-
-        public override string GetResourcePath()
-        {
-            return "DndCardGame/Prefabs/Ui/DicesInHand";
-        }
-
-        public override int GetUiGroup()
-        {
-            return (int)EUiSceneGroup.Normal;
-        }
     }
 }

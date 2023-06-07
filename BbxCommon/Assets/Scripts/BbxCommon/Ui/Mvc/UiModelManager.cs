@@ -10,7 +10,7 @@ namespace BbxCommon.Ui
         {
             var model = ObjectPool<T>.Alloc();
             var typeId = ClassTypeId<UiModelBase, T>.Id;
-            m_UiModels.ModifyCount(typeId);
+            m_UiModels.ModifyCount(typeId + 1);
             m_UiModels[typeId] = model;
         }
 

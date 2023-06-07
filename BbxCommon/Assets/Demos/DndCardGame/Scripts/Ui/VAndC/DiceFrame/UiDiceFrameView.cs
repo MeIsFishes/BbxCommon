@@ -13,15 +13,5 @@ namespace Dcg.Ui
         {
             return typeof(UiDiceFrameController);
         }
-
-        public override string GetResourcePath()
-        {
-            return "DndCardGame/Prefabs/Ui/DiceFrame";
-        }
-
-        public override int GetUiGroup()
-        {
-            return (int)EUiSceneGroup.SubMenu;
-        }
     }
 }
