@@ -1,0 +1,6 @@
+using BbxCommon.Ui;
+
+public class #SCRIPT_NAME# : UiModelBase
+{
+
+}

@@ -13,7 +13,7 @@ namespace BbxCommon.Editor
         public static void CreateEcsRawComponent()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                new SimpleScriptReplacer(), "EcsRawComponentTemplate.cs",
+                new SimpleScriptReplacer(), "TestRawComponent.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsRawComponentTemplate.txt");
         }
@@ -22,7 +22,7 @@ namespace BbxCommon.Editor
         public static void CreateEcsSingletonRawComponent()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                new SimpleScriptReplacer(), "EcsSingletonRawComponentTemplate.cs",
+                new SimpleScriptReplacer(), "TestSingletonRawComponent.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsSingletonRawComponentTemplate.txt");
         }
@@ -31,7 +31,7 @@ namespace BbxCommon.Editor
         public static void CreateEcsRawAspect()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                new SimpleScriptReplacer(), "EcsRawAspectTemplate.cs",
+                new SimpleScriptReplacer(), "TestRawAspect.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsRawAspectTemplate.txt");
         }
@@ -40,9 +40,36 @@ namespace BbxCommon.Editor
         public static void CreateEcsMixSystem()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
-                new SimpleScriptReplacer(), "EcsMixSystemTemplate.cs",
+                new SimpleScriptReplacer(), "TestSystem.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsMixSystemTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Ui/UiModel", false)]
+        public static void CreateUiModel()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "UiTestModel.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiModelTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Ui/UiView", false)]
+        public static void CreateUiView()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new UiScriptReplacer(), "UiTestView.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Ui/UiController", false)]
+        public static void CreateUiController()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new UiScriptReplacer(), "UiTestController.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
         }
     }
 
@@ -54,8 +81,38 @@ namespace BbxCommon.Editor
             StreamReader streamReader = new StreamReader(resourceFile);
             string txt = streamReader.ReadToEnd();
             streamReader.Close();
-            string fileNameWithOutExtension = Path.GetFileNameWithoutExtension(pathName);
-            txt = Regex.Replace(txt, "#SCRIPT_NAME#", fileNameWithOutExtension);
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
+            txt = Regex.Replace(txt, "#SCRIPT_NAME#", fileNameWithoutExtension);
+            bool encoderShouldEmitUTF8Identifier = true;
+            bool throwOnInvalidBytes = false;
+            UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
+            bool append = false;
+            StreamWriter streamWriter = new StreamWriter(fullPath, append, encoding);
+            streamWriter.Write(txt);
+            streamWriter.Close();
+            AssetDatabase.ImportAsset(txt);
+            var obj = AssetDatabase.LoadAssetAtPath(pathName, typeof(Object));
+            ProjectWindowUtil.ShowCreatedAsset(obj);
+            AssetDatabase.Refresh();
+        }
+    }
+
+    internal class UiScriptReplacer : EndNameEditAction
+    {
+        public override void Action(int instanceId, string pathName, string resourceFile)
+        {
+            string fullPath = Path.GetFullPath(pathName);
+            StreamReader streamReader = new StreamReader(resourceFile);
+            string txt = streamReader.ReadToEnd();
+            streamReader.Close();
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
+            var uiName = fileNameWithoutExtension;
+            if (uiName.EndsWith("Controller"))
+                uiName = uiName.Remove(uiName.Length - "Controller".Length - 1, "Controller".Length);
+            else if (uiName.EndsWith("View"))
+                uiName = uiName.Remove(uiName.Length - "View".Length - 1, "View".Length);
+            uiName = uiName.StartsWith("Ui") || uiName.StartsWith("UI") ? uiName.Remove(0, 2) : uiName;
+            txt = Regex.Replace(txt, "#UI_NAME#", uiName);
             bool encoderShouldEmitUTF8Identifier = true;
             bool throwOnInvalidBytes = false;
             UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);

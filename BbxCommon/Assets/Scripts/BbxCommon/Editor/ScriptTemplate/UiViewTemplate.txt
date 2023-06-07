@@ -1,0 +1,10 @@
+using System;
+using BbxCommon.Ui;
+
+public class Ui#UI_NAME#View : UiViewBase
+{
+    public override Type GetControllerType()
+    {
+        return typeof(Ui#UI_NAME#Controller);
+    }
+}
