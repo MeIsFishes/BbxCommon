@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 using UnityEngine.Events;
@@ -50,6 +51,10 @@ namespace BbxCommon.Ui
         {
             if (m_Inited == false)
             {
+                m_InitListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_OpenListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_ShowListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+
                 OnUiInit();
                 foreach (var uiItem in m_View.UiItems)
                 {
@@ -91,6 +96,11 @@ namespace BbxCommon.Ui
         {
             if (m_Visible)
             {
+                foreach (var listenerInfo in m_ShowListener)
+                {
+                    listenerInfo.TryRemoveListener();
+                }
+
                 gameObject.SetActive(false);
                 OnUiHide();
                 foreach (var uiItem in m_View.UiItems)
@@ -105,6 +115,11 @@ namespace BbxCommon.Ui
         {
             if (m_Opened)
             {
+                foreach (var listenerInfo in m_ShowListener)
+                {
+                    listenerInfo.TryRemoveListener();
+                }
+
                 gameObject.SetActive(false);
                 Hide();
                 OnUiClose();
@@ -124,6 +139,11 @@ namespace BbxCommon.Ui
 
         protected override sealed void OnDestroy()
         {
+            foreach (var listenerInfo in m_InitListener)
+            {
+                listenerInfo.TryRemoveListener();
+            }
+
             if (m_Visible)
                 OnUiHide();
             if (m_Opened)
@@ -132,6 +152,112 @@ namespace BbxCommon.Ui
             foreach (var uiItem in m_View.UiItems)
             {
                 uiItem.OnUiDestroy(this);
+            }
+
+            foreach (var listenerInfo in m_InitListener)
+            {
+                listenerInfo.ReleaseInfo();
+            }
+            m_InitListener.CollectToPool();
+            foreach (var listenerInfo in m_OpenListener)
+            {
+                listenerInfo.ReleaseInfo();
+            }
+            m_OpenListener.CollectToPool();
+            foreach (var listenerInfo in m_ShowListener)
+            {
+                listenerInfo.ReleaseInfo();
+            }
+            m_ShowListener.CollectToPool();
+        }
+        #endregion
+
+        #region ModelListener
+        protected struct ModelItemListenerInfo
+        {
+            public ObjRef<UiModelItemBase> ModelItem;
+            public int MessageKey;
+
+            /// <summary>
+            /// Adding a listener reference to <see cref="IMessageDispatcher{TMessageKey}"/> but not directly setting functions, to provide
+            /// a GC-free delegate operation.
+            /// </summary>
+            private SimpleMessageListener<int> m_Listener;
+
+            public ModelItemListenerInfo(UiModelItemBase modelItem, int messageKey, UnityAction<MessageData> callback)
+            {
+                ModelItem = modelItem.AsObjRef();
+                MessageKey = messageKey;
+                m_Listener = ObjectPool<SimpleMessageListener<int>>.Alloc();
+                m_Listener.Callback += callback;
+            }
+
+            public void AddListener()
+            {
+                if (ModelItem.IsNull())
+                {
+                    Debug.LogError("The ModelItem is not set or has been collcted.");
+                    return;
+                }
+                ModelItem.Obj.MessageDispatcher.AddListener(MessageKey, m_Listener);
+            }
+
+            public void TryRemoveListener()
+            {
+                if (ModelItem.IsNotNull())
+                    ModelItem.Obj.MessageDispatcher.RemoveListener(MessageKey, m_Listener);
+            }
+
+            public void RebindModelItem(UiModelItemBase item)
+            {
+                TryRemoveListener();
+                ModelItem = item.AsObjRef();
+                AddListener();
+            }
+
+            /// <summary>
+            /// In most cases, this function is unnecessary to call, unless the <see cref="UiControllerBase"/> need to be destroyed but not closed.
+            /// </summary>
+            public void ReleaseInfo()
+            {
+                m_Listener.CollectToPool();
+            }
+        }
+
+        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableAt, UiModelItemBase modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
+        {
+            var info = new ModelItemListenerInfo(modelItem, (int)listeningEvent, callback);
+            info.AddListener();
+            StoreUiModelListener(enableAt, info);
+            return info;
+        }
+
+        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableAt, UiModelItemBase modelItem, int listeningEvent, UnityAction<MessageData> callback)
+        {
+            var info = new ModelItemListenerInfo(modelItem, listeningEvent, callback);
+            info.AddListener();
+            StoreUiModelListener(enableAt, info);
+            return info;
+        }
+
+        // Listeners below will be unload when the controller is uninited, closed or hidden automatically.
+        private List<ModelItemListenerInfo> m_InitListener;
+        private List<ModelItemListenerInfo> m_OpenListener;
+        private List<ModelItemListenerInfo> m_ShowListener;
+
+        private void StoreUiModelListener(EControllerLifeCycle enableAt, ModelItemListenerInfo info)
+        {
+            switch (enableAt)
+            {
+                case EControllerLifeCycle.Init:
+                    m_InitListener.Add(info);
+                    break;
+                case EControllerLifeCycle.Open:
+                    m_OpenListener.Add(info);
+                    break;
+                case EControllerLifeCycle.Show:
+                    m_ShowListener.Add(info);
+                    break;
             }
         }
         #endregion
@@ -224,65 +350,6 @@ namespace BbxCommon.Ui
         /// unless you declare a destroying request.
         /// </summary>
         protected virtual void OnUiDestroy() { }
-        #endregion
-
-        #region ModelListener
-        protected struct ModelItemListenerInfo
-        {
-            public ObjRef<UiModelItemBase> ModelItem;
-            public int MessageKey;
-
-            /// <summary>
-            /// Adding a listener reference to <see cref="IMessageDispatcher{TMessageKey}"/> but not directly setting functions, to provide
-            /// a GC-free delegate operation.
-            /// </summary>
-            private SimpleMessageListener<int> m_Listener;
-
-            public ModelItemListenerInfo(UiModelItemBase modelItem, int messageKey, UnityAction callback)
-            {
-                ModelItem = modelItem.AsObjRef();
-                MessageKey = messageKey;
-                m_Listener = ObjectPool<SimpleMessageListener<int>>.Alloc();
-                m_Listener.Callback += (MessageData messageData) => { callback.Invoke(); };
-            }
-
-            public void AddListener()
-            {
-                if (ModelItem.IsNull())
-                {
-                    Debug.LogError("The ModelItem is not set or has been collcted.");
-                    return;
-                }
-                ModelItem.Obj.MessageDispatcher.AddListener(MessageKey, m_Listener);
-            }
-
-            public void TryRemoveListener()
-            {
-                if (ModelItem.IsNotNull())
-                    ModelItem.Obj.MessageDispatcher.RemoveListener(MessageKey, m_Listener);
-            }
-
-            public void RebindModelItem(UiModelItemBase item)
-            {
-                TryRemoveListener();
-                ModelItem = item.AsObjRef();
-                AddListener();
-            }
-
-            /// <summary>
-            /// In most cases, this function is unnecessary to call, unless the <see cref="UiControllerBase"/> need to be destroyed but not closed.
-            /// </summary>
-            public void ReleaseInfo()
-            {
-                m_Listener.CollectToPool();
-            }
-        }
-
-        protected ModelItemListenerInfo AddUiModelListener(UiModelItemBase modelItem, EUiModelVariableEvent listeningEvent, UnityAction callback)
-        {
-            var info = new ModelItemListenerInfo();
-            return info;
-        }
         #endregion
     }
 }

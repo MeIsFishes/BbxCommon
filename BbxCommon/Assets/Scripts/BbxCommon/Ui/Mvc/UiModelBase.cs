@@ -15,10 +15,5 @@ namespace BbxCommon.Ui
     {
         private MessageHandler<int> m_MessageHandler = new();
         internal override IMessageDispatcher<int> MessageDispatcher => m_MessageHandler;
-
-        /// <summary>
-        /// The index in <see cref="UiModelManager"/>.
-        /// </summary>
-        internal int Index;
     }
 }

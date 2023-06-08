@@ -1,6 +1,14 @@
-﻿using BbxCommon;
+﻿using System.Collections.Generic;
+using BbxCommon;
 
-public class OperationRequestSingletonRawComponent : EcsSingletonRawComponent
+namespace Dcg
 {
-
+    public class OperationRequestSingletonRawComponent : EcsSingletonRawComponent
+    {
+        /// <summary>
+        /// 操作处理是否被要求阻塞
+        /// </summary>
+        public bool Blocked;
+        public Queue<OperationBase> Operations = new();
+    }
 }

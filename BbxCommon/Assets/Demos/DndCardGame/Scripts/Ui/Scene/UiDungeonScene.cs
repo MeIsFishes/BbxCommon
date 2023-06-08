@@ -2,20 +2,20 @@ using BbxCommon.Ui;
 
 namespace Dcg.Ui
 {
-    public enum EUiSceneGroup
+    public enum EUiGroup
     {
         Info,
         SubMenu,
         Normal,
     }
 
-    public class UiDungeonScene : UiSceneBase<EUiSceneGroup>
+    public class UiDungeonScene : UiSceneBase<EUiGroup>
     {
         protected override void OnSceneInit()
         {
-            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.Info);
-            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.SubMenu);
-            UiGroupWrapper.CreateUiGroupRoot(EUiSceneGroup.Normal);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGroup.Info);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGroup.SubMenu);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGroup.Normal);
         }
     }
 }

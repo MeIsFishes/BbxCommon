@@ -8,7 +8,7 @@ namespace BbxCommon.Ui
         Destroy,
     }
 
-    public class UiModeVariable<T> : UiModelItemBase
+    public class UiModelVariable<T> : UiModelItemBase
     {
         private T m_Value;
         private UiModelItemBase m_Host;
@@ -22,7 +22,9 @@ namespace BbxCommon.Ui
 
         public T Value => m_Value;
 
-        public UiModeVariable(UiModelItemBase host, T value = default(T))
+        private UiModelVariable() { }
+
+        public UiModelVariable(UiModelItemBase host, T value = default(T))
         {
             m_Host = host;
             m_Value = value;

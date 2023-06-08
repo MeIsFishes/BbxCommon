@@ -514,7 +514,7 @@ MonoBehaviour:
   - {fileID: 1174623740}
   - {fileID: 2100245424}
   ExportPath: Assets/Resources/DndCardGame/Configs
-  FullUiGroupType: Dcg.Ui.EUiSceneGroup
+  FullUiGroupType: Dcg.Ui.EUiGroup
 --- !u!114 &2036581089
 MonoBehaviour:
   m_ObjectHideFlags: 0
