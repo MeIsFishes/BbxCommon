@@ -175,7 +175,11 @@ namespace BbxCommon.Ui
         #region ModelListener
         protected struct ModelItemListenerInfo
         {
-            public ObjRef<UiModelItemBase> ModelItem;
+            /// <summary>
+            /// Stores <see cref="IUiModelItem"/> in fact. As the model item may be collected during listening, and interfaces cannot be
+            /// packed by <see cref="ObjRef{T}"/>, we make a explicit converting.
+            /// </summary>
+            public ObjRef<PooledObject> ModelItem;
             public int MessageKey;
 
             /// <summary>
@@ -184,9 +188,9 @@ namespace BbxCommon.Ui
             /// </summary>
             private SimpleMessageListener<int> m_Listener;
 
-            public ModelItemListenerInfo(UiModelItemBase modelItem, int messageKey, UnityAction<MessageData> callback)
+            public ModelItemListenerInfo(IUiModelItem modelItem, int messageKey, UnityAction<MessageData> callback)
             {
-                ModelItem = modelItem.AsObjRef();
+                ModelItem = ((PooledObject)modelItem).AsObjRef();
                 MessageKey = messageKey;
                 m_Listener = ObjectPool<SimpleMessageListener<int>>.Alloc();
                 m_Listener.Callback += callback;
@@ -199,19 +203,19 @@ namespace BbxCommon.Ui
                     Debug.LogError("The ModelItem is not set or has been collcted.");
                     return;
                 }
-                ModelItem.Obj.MessageDispatcher.AddListener(MessageKey, m_Listener);
+                ((IUiModelItem)ModelItem.Obj).MessageDispatcher.AddListener(MessageKey, m_Listener);
             }
 
             public void TryRemoveListener()
             {
                 if (ModelItem.IsNotNull())
-                    ModelItem.Obj.MessageDispatcher.RemoveListener(MessageKey, m_Listener);
+                    ((IUiModelItem)ModelItem.Obj).MessageDispatcher.RemoveListener(MessageKey, m_Listener);
             }
 
-            public void RebindModelItem(UiModelItemBase item)
+            public void RebindModelItem(IUiModelItem item)
             {
                 TryRemoveListener();
-                ModelItem = item.AsObjRef();
+                ModelItem = ((PooledObject)item).AsObjRef();
                 AddListener();
             }
 
@@ -224,7 +228,7 @@ namespace BbxCommon.Ui
             }
         }
 
-        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableAt, UiModelItemBase modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
+        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableAt, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelItemListenerInfo(modelItem, (int)listeningEvent, callback);
             info.AddListener();
@@ -232,7 +236,7 @@ namespace BbxCommon.Ui
             return info;
         }
 
-        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableAt, UiModelItemBase modelItem, int listeningEvent, UnityAction<MessageData> callback)
+        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableAt, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelItemListenerInfo(modelItem, listeningEvent, callback);
             info.AddListener();

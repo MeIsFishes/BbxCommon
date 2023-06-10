@@ -1,10 +1,15 @@
 
 namespace BbxCommon.Ui
 {
-    public abstract class UiModelItemBase : PooledObject
+    public interface IUiModelItem
     {
-        internal abstract IMessageDispatcher<int> MessageDispatcher { get; }
-        public virtual void SetDirty() { }
+        public IMessageDispatcher<int> MessageDispatcher { get; }
+    }
+
+    public abstract class UiModelItemBase : PooledObject, IUiModelItem
+    {
+        protected MessageHandler<int> m_MessageHandler = new();
+        public IMessageDispatcher<int> MessageDispatcher => m_MessageHandler;
     }
 
     /// <summary>
@@ -13,7 +18,6 @@ namespace BbxCommon.Ui
     /// </summary>
     public abstract class UiModelBase : UiModelItemBase
     {
-        private MessageHandler<int> m_MessageHandler = new();
-        internal override IMessageDispatcher<int> MessageDispatcher => m_MessageHandler;
+        
     }
 }

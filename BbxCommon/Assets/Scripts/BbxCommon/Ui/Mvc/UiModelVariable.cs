@@ -11,23 +11,16 @@ namespace BbxCommon.Ui
     public class UiModelVariable<T> : UiModelItemBase
     {
         private T m_Value;
-        private UiModelItemBase m_Host;
-
-        /// <summary>
-        /// There should be only <see cref="SimpleMessageListener"/> adding to the <see cref="m_MessageHandler"/>.
-        /// </summary>
-        private MessageHandler<int> m_MessageHandler = new();
-
-        internal override IMessageDispatcher<int> MessageDispatcher => m_MessageHandler;
 
         public T Value => m_Value;
 
-        private UiModelVariable() { }
+        public UiModelVariable() { }
 
-        public UiModelVariable(UiModelItemBase host, T value = default(T))
+        public static UiModelVariable<T> Create(T value)
         {
-            m_Host = host;
-            m_Value = value;
+            var variable = ObjectPool<UiModelVariable<T>>.Alloc();
+            variable.m_Value = value;
+            return variable;
         }
 
         public void SetValue(T value)
@@ -36,10 +29,9 @@ namespace BbxCommon.Ui
             SetDirty();
         }
 
-        public override void SetDirty()
+        public void SetDirty()
         {
             m_MessageHandler.Dispatch((int)EUiModelVariableEvent.Dirty);
-            m_Host?.SetDirty();
         }
     }
 }

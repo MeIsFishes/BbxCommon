@@ -77,7 +77,7 @@ namespace BbxCommon
         #endregion
 
         #region Collect to Pool
-        public override void OnCollect()
+        public void ClearAndRelease()
         {
             m_Callbacks.Clear();
             foreach (var pair in Listeners)
@@ -85,6 +85,11 @@ namespace BbxCommon
                 pair.Value.CollectToPool();
             }
             Listeners.CollectToPool();
+        }
+
+        public override void OnCollect()
+        {
+            ClearAndRelease();
         }
         #endregion
     }

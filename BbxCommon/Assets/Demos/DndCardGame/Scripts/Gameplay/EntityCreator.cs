@@ -15,11 +15,11 @@ namespace Dcg
             var playerDeckComp = entity.AddRawComponent<CharacterDeckRawComponent>();
             for (int i = 0; i < 6; i++)
             {
-                playerDeckComp.Dices.Add(Dice.Create(EDiceType.D4));
+                playerDeckComp.AddDice(Dice.Create(EDiceType.D4));
             }
             for (int i = 0; i < 4; i++)
             {
-                playerDeckComp.Dices.Add(Dice.Create(EDiceType.D6));
+                playerDeckComp.AddDice(Dice.Create(EDiceType.D6));
             }
 
             // ³õÊ¼»¯ÊôÐÔ
