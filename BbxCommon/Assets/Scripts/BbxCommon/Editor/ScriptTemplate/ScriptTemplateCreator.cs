@@ -126,10 +126,11 @@ namespace BbxCommon.Editor
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
             var uiName = fileNameWithoutExtension;
             if (uiName.EndsWith("Controller"))
-                uiName = uiName.Remove(uiName.Length - "Controller".Length - 1, "Controller".Length);
+                uiName = uiName.TryRemoveEnd("Controller");
             else if (uiName.EndsWith("View"))
-                uiName = uiName.Remove(uiName.Length - "View".Length - 1, "View".Length);
-            uiName = uiName.StartsWith("Ui") || uiName.StartsWith("UI") ? uiName.Remove(0, 2) : uiName;
+                uiName = uiName.TryRemoveEnd("View");
+            uiName = uiName.TryRemoveStart("Ui");
+            uiName = uiName.TryRemoveStart("UI");
             txt = Regex.Replace(txt, "#UI_NAME#", uiName);
             bool encoderShouldEmitUTF8Identifier = true;
             bool throwOnInvalidBytes = false;

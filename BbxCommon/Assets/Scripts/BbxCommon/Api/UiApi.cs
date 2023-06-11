@@ -18,7 +18,7 @@ namespace BbxCommon.Ui
         public static int GetUiControllerTypeId(UiViewBase uiView)
         {
             var type = typeof(ClassTypeId<,>).MakeGenericType(typeof(UiControllerBase), uiView.GetControllerType());
-            var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic);
+            var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
             return (int)method.Invoke(null, null);
         }
 

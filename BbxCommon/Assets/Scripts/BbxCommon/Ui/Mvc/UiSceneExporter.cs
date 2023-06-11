@@ -20,6 +20,7 @@ namespace BbxCommon.Ui
         [Tooltip("The full name of the UI group enum, for getting members via reflection.")]
         public string FullUiGroupType;
 
+        [SerializeField]
         private List<int> m_UiGroupValue = new();
 
         [Button]
@@ -44,7 +45,9 @@ namespace BbxCommon.Ui
                     UiGroups[i].gameObject.name = groupName;
                 else
                     UiGroups[i] = new GameObject(groupName);
+                UiGroups[i].AddMissingComponent<RectTransform>();
                 UiGroups[i].transform.SetParent(this.transform);
+                ((RectTransform)UiGroups[i].transform).localPosition = Vector3.zero;
                 m_UiGroupValue[i] = (int)values.GetValue(i);
             }
             // remove extra members
@@ -67,9 +70,7 @@ namespace BbxCommon.Ui
                 foreach (var uiView in uiViews)
                 {
                     UiSceneAsset.UiObjectData data = new UiSceneAsset.UiObjectData();
-                    data.PrefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(uiView.gameObject);
-                    if (data.PrefabPath.StartsWith("Assets/Resources/"))
-                        data.PrefabPath = data.PrefabPath.Remove(0, "Assets/Resources/".Length);
+                    data.PrefabPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(uiView.gameObject).TryRemoveStart("Assets/Resources/").TryRemoveEnd(".prefab");
                     data.UiGroup = m_UiGroupValue[i];
                     data.DefaultShow = uiView.DefaultShow;
                     data.Position = (uiView.transform as RectTransform).localPosition;

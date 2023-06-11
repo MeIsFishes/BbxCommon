@@ -278,7 +278,7 @@ namespace BbxCommon.Ui
             {
                 // register type id via reflection
                 var type = typeof(ClassTypeId<,>).MakeGenericType(typeof(UiControllerBase), this.GetType());
-                var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic);
+                var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
                 SetControllerTypeId((int)method.Invoke(null, null));
                 return m_ControllerTypeId;
             }

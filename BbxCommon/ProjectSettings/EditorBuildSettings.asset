@@ -20,4 +20,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Demos/OoXDots/Scenes/OxdLauncher.unity
     guid: 72fe96fd7000be64185508c4a337a5c3
+  - enabled: 1
+    path: Assets/Demos/Cinemachine/Scenes/CinMain.unity
+    guid: 9fe4efe1267cd2045a9cc8a9884eceac
+  - enabled: 1
+    path: Assets/Demos/Cinemachine/Scenes/CinLauncher.unity
+    guid: 27be1637de3bc494bbab9a12bf4fdd04
   m_configObjects: {}

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using BbxCommon.Ui;
 
 public class Ui#UI_NAME#Controller : UiControllerBase<Ui#UI_NAME#View>

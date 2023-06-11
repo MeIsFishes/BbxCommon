@@ -377,16 +377,18 @@ namespace BbxCommon
         #endregion
 
         #region String
-        public static void TryRemoveStart(this string str, string remove)
+        public static string TryRemoveStart(this string str, string remove)
         {
             if (str.StartsWith(remove))
-                str.Remove(0, remove.Length);
+                return str.Remove(0, remove.Length);
+            return str;
         }
 
-        public static void TryRemoveEnd(this string str, string remove)
+        public static string TryRemoveEnd(this string str, string remove)
         {
             if (str.EndsWith(remove))
-                str.Remove(str.Length - remove.Length, remove.Length);
+                return str.Remove(str.Length - remove.Length, remove.Length);
+            return str;
         }
 
         public static bool IsNullOrEmpty(this string str)
