@@ -171,6 +171,36 @@ namespace BbxCommon
             queue.Clear();
             SimplePool<Queue<T>>.Collect(queue);
         }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectAndClearElements<T>(this Queue<T> queue, bool collectSelf = false) where T : PooledObject
+        {
+            while (queue.Count > 0)
+            {
+                queue.Dequeue().CollectToPool();
+            }
+            if (collectSelf)
+                queue.CollectToPool();
+        }
+
+        public static void EnqueueList<T>(this Queue<T> queue, List<T> list)
+        {
+            foreach (var item in list)
+            {
+                queue.Enqueue(item);
+            }
+        }
+
+        public static void EnqueueQueue<T>(this Queue<T> queue, Queue<T> addQueue)
+        {
+            foreach (var item in addQueue)
+            {
+                queue.Enqueue(item);
+            }
+        }
         #endregion
 
         #region Stack
@@ -215,6 +245,54 @@ namespace BbxCommon
         {
             dic.Clear();
             SimplePool<Dictionary<TKey, TValue>>.Collect(dic);
+        }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectKeyAndClear<TKey, TValue>(this Dictionary<TKey, TValue> dic, bool collectSelf = false) where TKey : PooledObject
+        {
+            foreach (var pair in dic)
+            {
+                pair.Key.CollectToPool();
+            }
+            dic.Clear();
+            if (collectSelf)
+                dic.CollectToPool();
+        }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectValueAndClear<TKey, TValue>(this Dictionary<TKey, TValue> dic, bool collectSelf = false) where TValue : PooledObject
+        {
+            foreach (var pair in dic)
+            {
+                pair.Value.CollectToPool();
+            }
+            dic.Clear();
+            if (collectSelf)
+                dic.CollectToPool();
+        }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectKeyValueAndClear<TKey, TValue>(this Dictionary<TKey, TValue> dic, bool collectSelf = false)
+            where TKey : PooledObject
+            where TValue : PooledObject
+        {
+            foreach (var pair in dic)
+            {
+                pair.Key.CollectToPool();
+                pair.Value.CollectToPool();
+            }
+            dic.Clear();
+            if (collectSelf)
+                dic.CollectToPool();
         }
         #endregion
 
@@ -282,9 +360,35 @@ namespace BbxCommon
                 list.Add(data);
             }
         }
+
+        /// <summary>
+        /// Collect all elements in the List to <see cref="ObjectPool{T}"/>.
+        /// </summary>
+        /// <param name="collectSelf"> If true, the list will be collected after solving elements. </param>
+        public static void CollectAndClearElements<T>(this HashSet<T> set, bool collectSelf = false) where T : PooledObject
+        {
+            foreach (var item in set)
+            {
+                item.CollectToPool();
+            }
+            if (collectSelf)
+                set.CollectToPool();
+        }
         #endregion
 
         #region String
+        public static void TryRemoveStart(this string str, string remove)
+        {
+            if (str.StartsWith(remove))
+                str.Remove(0, remove.Length);
+        }
+
+        public static void TryRemoveEnd(this string str, string remove)
+        {
+            if (str.EndsWith(remove))
+                str.Remove(str.Length - remove.Length, remove.Length);
+        }
+
         public static bool IsNullOrEmpty(this string str)
         {
             return str == null || str.Length == 0;

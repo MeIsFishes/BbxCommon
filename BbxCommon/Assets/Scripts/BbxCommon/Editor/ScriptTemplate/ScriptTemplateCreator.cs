@@ -36,6 +36,15 @@ namespace BbxCommon.Editor
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsRawAspectTemplate.txt");
         }
 
+        [MenuItem("Assets/Create/BbxCommon/Script/Ecs/EcsBaker", false)]
+        public static void CreateEcsBaker()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TestBaker.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsBakerTemplate.txt");
+        }
+
         [MenuItem("Assets/Create/BbxCommon/Script/Ecs/EcsMixSystem", false)]
         public static void CreateEcsMixSystem()
         {
@@ -70,6 +79,15 @@ namespace BbxCommon.Editor
                 new UiScriptReplacer(), "UiTestController.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/ScriptableObject", false)]
+        public static void CreateScriptableObject()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TestData.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/ScriptableObjectTemplate.txt");
         }
     }
 

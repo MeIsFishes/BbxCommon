@@ -29,9 +29,7 @@ namespace BbxCommon
         protected override ETaskState OnExecute()
         {
             var deltaDistance = m_Speed * Time.deltaTime;
-            // 因为距离计算涉及到开方，性能会相对差一些，所以这里可以直接用四则运算和比较完成
-            if (Mathf.Abs(TargetPosition.x - Target.transform.position.x) <= Mathf.Abs(m_Direction.x * deltaDistance) &&
-                Mathf.Abs(TargetPosition.y - Target.transform.position.y) <= Mathf.Abs(m_Direction.y * deltaDistance))
+            if ((TargetPosition - Target.transform.position).magnitude < deltaDistance)
             {
                 Target.transform.position = TargetPosition;
                 return ETaskState.Finished;

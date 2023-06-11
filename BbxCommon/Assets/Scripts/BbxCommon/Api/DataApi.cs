@@ -50,12 +50,18 @@ namespace BbxCommon
         }
 
         /// <param name="tryCollectToPool"> If true and if the data is a <see cref="PooledObject"/>, it will call <see cref="PooledObject.CollectToPool"/>. </param>
+        public static void ReleaseData<T>(bool tryCollectToPool = true)
+        {
+            DataManager<T>.ReleaseData(tryCollectToPool);
+        }
+
+        /// <param name="tryCollectToPool"> If true and if the data is a <see cref="PooledObject"/>, it will call <see cref="PooledObject.CollectToPool"/>. </param>
         public static void ReleaseData<T>(string key, bool tryCollectToPool = true)
         {
             DataManager<T>.ReleaseData(key, tryCollectToPool);
         }
 
-        /// <param name="tryCollectToPool"> If true, the data released will call <see cref="PooledObject.CollectToPool"/> if it is a <see cref="PooledObject"/>. </param>
+        /// <param name="tryCollectToPool"> If true and if the data is a <see cref="PooledObject"/>, it will call <see cref="PooledObject.CollectToPool"/>. </param>
         public static void ReleaseData<T>(int key, bool tryCollectToPool = true)
         {
             DataManager<T>.ReleaseData(key, tryCollectToPool);
@@ -158,6 +164,13 @@ namespace BbxCommon
                     break;
             }
             return default(T);
+        }
+
+        internal static void ReleaseData(bool tryCollectToPool)
+        {
+            if (tryCollectToPool && m_Data is PooledObject pooled)
+                pooled.CollectToPool();
+            m_Data = default(T);
         }
 
         internal static void ReleaseData(string key, bool tryCollectToPool)

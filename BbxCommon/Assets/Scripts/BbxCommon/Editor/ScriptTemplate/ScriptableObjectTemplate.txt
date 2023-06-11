@@ -1,0 +1,11 @@
+using System;
+using System.Collection.Generic;
+using UnityEngine;
+using Unity.Entities;
+using BbxCommon;
+
+[CreateAssetMenu(fileName = "#SCRIPT_NAME#", menuName = "ScriptableObject/#SCRIPT_NAME#")]
+public class #SCRIPT_NAME# : ScriptableObject
+{
+
+}

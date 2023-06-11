@@ -4,7 +4,7 @@ using Unity.Entities;
 
 namespace BbxCommon
 {
-    public class EcsBaker : MonoBehaviour
+    public abstract class EcsBaker : MonoBehaviour
     {
         public Entity Entity;
         [Tooltip("If true, EcsBaker will destroy the entity when itself is destroyed.")]
@@ -22,7 +22,7 @@ namespace BbxCommon
                 Entity.Destroy();
         }
 
-        protected virtual void Bake() { }
+        protected abstract void Bake();
 
         private void InternalBake()
         {

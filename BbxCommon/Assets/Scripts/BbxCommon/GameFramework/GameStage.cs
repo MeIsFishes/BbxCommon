@@ -161,6 +161,9 @@ namespace BbxCommon
                     continue;
                 SceneManager.LoadScene(scene, LoadSceneMode.Additive);
             }
+            // set the first scene as active
+            if (m_Scenes.Count > 0)
+                SceneManager.SetActiveScene(SceneManager.GetSceneByName(m_Scenes[0]));
         }
 
         protected void OnUnloadStageScene()

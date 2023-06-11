@@ -1,4 +1,9 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.Entities;
 using BbxCommon;
+using BbxCommon.Ui;
 
 public class #SCRIPT_NAME# : EcsRawComponent
 {

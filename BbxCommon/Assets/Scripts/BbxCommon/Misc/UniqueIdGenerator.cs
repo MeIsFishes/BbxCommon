@@ -7,6 +7,7 @@ namespace BbxCommon
     /// </summary>
     public class UniqueIdGenerator : PooledObject
     {
+        #region Common
         private ulong m_Id = 0;
 
         public ulong GenerateID()
@@ -14,11 +15,18 @@ namespace BbxCommon
             return m_Id++;
         }
 
+        public void ResetCounter(ulong value = 0)
+        {
+            m_Id = value;
+        }
+
         public override void OnAllocate()
         {
             m_Id = 0;
         }
+        #endregion
 
+        #region Static Generators
         // There are 2 ways to create a UniqueIDGenerator:
         // 1. Instantiate and manage an instance yourself.
         // 2. Create an instance by static function, then hold and visit the instance through the key.
@@ -88,5 +96,6 @@ namespace BbxCommon
         {
             m_s_GeneratorString.Remove(key);
         }
+        #endregion
     }
 }

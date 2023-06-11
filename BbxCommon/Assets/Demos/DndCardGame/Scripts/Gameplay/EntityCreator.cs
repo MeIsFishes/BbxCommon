@@ -11,6 +11,13 @@ namespace Dcg
 
             entity.AddRawComponent<PlayerSingletonRawComponent>();
 
+            return entity;
+        }
+
+        public static Entity CreateCharacterEntity()
+        {
+            var entity = EcsApi.CreateEntity();
+
             // 创建初始卡组
             var playerDeckComp = entity.AddRawComponent<CharacterDeckRawComponent>();
             for (int i = 0; i < 6; i++)
