@@ -68,6 +68,8 @@ namespace BbxCommon
         internal static T GetRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
             var group = GetAndRefreshGroup(entity);
+            if (group == null)
+                return null;
             return group.GetRawComponent<T>();
         }
 
