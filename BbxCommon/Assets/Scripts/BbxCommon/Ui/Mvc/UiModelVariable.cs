@@ -8,6 +8,11 @@ namespace BbxCommon.Ui
         Destroy,
     }
 
+    public class VariableDirtyMessageData<T> : MessageDataBase
+    {
+        public T CurValue;
+    }
+
     public class UiModelVariable<T> : UiModelItemBase
     {
         private T m_Value;
@@ -25,13 +30,19 @@ namespace BbxCommon.Ui
 
         public void SetValue(T value)
         {
-            m_Value = value;
-            SetDirty();
+            if (m_Value.Equals(value) == false)
+            {
+                m_Value = value;
+                SetDirty();
+            }
         }
 
         public void SetDirty()
         {
-            m_MessageHandler.Dispatch((int)EUiModelVariableEvent.Dirty);
+            var messageData = ObjectPool<VariableDirtyMessageData<T>>.Alloc();
+            messageData.CurValue = m_Value;
+            m_MessageHandler.Dispatch((int)EUiModelVariableEvent.Dirty, messageData);
+            messageData.CollectToPool();
         }
     }
 }

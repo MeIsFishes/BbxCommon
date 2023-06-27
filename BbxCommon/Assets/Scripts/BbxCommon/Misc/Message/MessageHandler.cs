@@ -17,19 +17,19 @@ namespace BbxCommon
     public class MessageHandler<TMessageKey> : PooledObject, IMessageDispatcher<TMessageKey>, IMessageListener<TMessageKey>
     {
         #region Normal Callback
-        private Dictionary<TMessageKey, UnityAction<MessageData>> m_Callbacks = new();
+        private Dictionary<TMessageKey, UnityAction<MessageDataBase>> m_Callbacks = new();
 
-        public void AddCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
+        public void AddCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
         {
             m_Callbacks[messageKey] += callback;
         }
 
-        public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
+        public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
         {
             m_Callbacks[messageKey] -= callback;
         }
 
-        public void Dispatch(TMessageKey messageKey, MessageData messageData = null)
+        public void Dispatch(TMessageKey messageKey, MessageDataBase messageData = null)
         {
             if (m_Callbacks.TryGetValue(messageKey, out var callback))
             {
@@ -44,7 +44,7 @@ namespace BbxCommon
             }
         }
 
-        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageData messageData)
+        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageDataBase messageData)
         {
             m_Callbacks[messageKey].Invoke(messageData);
             if (Listeners.TryGetValue(messageKey, out var set))

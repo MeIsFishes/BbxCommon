@@ -159,6 +159,11 @@ namespace BbxCommon
             }
         }
 
+        public static void RemoveFront<T>(this List<T> list)
+        {
+            list.RemoveAt(0);
+        }
+
         public static void RemoveBack<T>(this List<T> list)
         {
             list.RemoveAt(list.Count - 1);

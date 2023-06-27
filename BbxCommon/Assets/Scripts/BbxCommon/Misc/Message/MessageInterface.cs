@@ -7,16 +7,16 @@ namespace BbxCommon
     /// </summary>
     public interface IMessageListener<TMessageKey>
     {
-        void OnRespond(TMessageKey messageKey, MessageData messageData);
+        void OnRespond(TMessageKey messageKey, MessageDataBase messageData);
     }
 
     /// <summary>
-    /// Classes inherit this interface can dispath message and invoke <see cref="IMessageListener{TMessageKey}.OnRespond(TMessageKey, MessageData)"/>
+    /// Classes inherit this interface can dispath message and invoke <see cref="IMessageListener{TMessageKey}.OnRespond(TMessageKey, MessageDataBase)"/>
     /// to process messages.
     /// </summary>
     public interface IMessageDispatcher<TMessageKey>
     {
-        void Dispatch(TMessageKey messageKey, MessageData messageData = null);
+        void Dispatch(TMessageKey messageKey, MessageDataBase messageData = null);
         void AddListener(TMessageKey messageKey, IMessageListener<TMessageKey> listener);
         void RemoveListener(TMessageKey messageKey, IMessageListener<TMessageKey> listener);
     }

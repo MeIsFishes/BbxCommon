@@ -31,3 +31,45 @@ MonoBehaviour:
     Position: {x: 800, y: -490, z: 0}
     Scale: {x: 1, y: 1, z: 1}
     Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiPosXDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: -750, y: 450, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiPosYDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: -750, y: 250, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiPosZDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: -750, y: 50, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiRotXDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 750, y: 450, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiRotYDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 750, y: 250, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiRotZDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 750, y: 50, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: Cinemachine/Prefab/Ui/DataShower/UiRotWDataShower
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 750, y: -150, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}

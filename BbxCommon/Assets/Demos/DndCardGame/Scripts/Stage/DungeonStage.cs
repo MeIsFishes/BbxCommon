@@ -9,6 +9,7 @@ namespace Dcg
         private GameStage CreateDungeonStage()
         {
             var dungeonStage = StageWrapper.CreateStage("Dungeon Stage");
+            dungeonStage.AddScene("DcgDungeon");
             dungeonStage.AddLoadItem(new InitModelData());
             dungeonStage.AddLoadItem(new InitPlayerAndCharacter());
             dungeonStage.AddLoadItem(new InitRoomData());

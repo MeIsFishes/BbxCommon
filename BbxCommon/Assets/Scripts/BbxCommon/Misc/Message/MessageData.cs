@@ -1,7 +1,7 @@
 ﻿
 namespace BbxCommon
 {
-    public abstract class MessageData : PooledObject
+    public abstract class MessageDataBase : PooledObject
     {
         /// <summary>
         /// Broadcast the message to global registered listeners in <see cref="MessageApi"/>.

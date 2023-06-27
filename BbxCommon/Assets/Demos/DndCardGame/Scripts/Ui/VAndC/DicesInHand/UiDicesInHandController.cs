@@ -21,7 +21,7 @@ namespace Dcg.Ui
             RefreshDices();
         }
 
-        private void RefreshDices(MessageData messageData = null)
+        private void RefreshDices(MessageDataBase messageData = null)
         {
             if (m_CombatDeckComp.IsNull())
             {

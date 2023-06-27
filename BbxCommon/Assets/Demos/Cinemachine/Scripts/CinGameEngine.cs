@@ -15,6 +15,7 @@ namespace Cin
             stage.AddScene("CinMain");
             stage.SetUiScene(uiScene, Resources.Load<UiSceneAsset>("Cinemachine/Config/UiScene"));
             stage.AddUpdateSystem<PlayerMoveSystem>();
+            stage.AddUpdateSystem<SyncCameraInfoSystem>();
 
             StageWrapper.LoadStage(stage);
         }

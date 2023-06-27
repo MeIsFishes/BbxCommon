@@ -36,7 +36,7 @@ namespace BbxCommon.Ui
         protected virtual void OnUpdate() { }
 
         // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
-        // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), Show() and Hide().
+        // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), and Show() with Hide().
         // 3. Show() and Hide() can be skipped.
         // 4. By default, UI items will be collected to the pool, which means they call Close() instead of Destroy(), and they call Init()
         //    only once when being created, not every time getting from the pool.
@@ -51,9 +51,16 @@ namespace BbxCommon.Ui
         {
             if (m_Inited == false)
             {
-                m_InitListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
-                m_OpenListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
-                m_ShowListener = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_InitListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_OpenListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_ShowListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+
+                InitUiModelListeners();
+
+                foreach (var listener in m_InitListeners)
+                {
+                    listener.AddListener();
+                }
 
                 OnUiInit();
                 foreach (var uiItem in m_View.UiItems)
@@ -68,6 +75,11 @@ namespace BbxCommon.Ui
         {
             if (m_Opened == false)
             {
+                foreach (var listener in m_OpenListeners)
+                {
+                    listener.AddListener();
+                }
+
                 OnUiOpen();
                 foreach (var uiItem in m_View.UiItems)
                 {
@@ -82,6 +94,11 @@ namespace BbxCommon.Ui
         {
             if (m_Visible == false)
             {
+                foreach (var listener in m_ShowListeners)
+                {
+                    listener.AddListener();
+                }
+
                 gameObject.SetActive(true);
                 OnUiShow();
                 foreach (var uiItem in m_View.UiItems)
@@ -96,7 +113,7 @@ namespace BbxCommon.Ui
         {
             if (m_Visible)
             {
-                foreach (var listenerInfo in m_ShowListener)
+                foreach (var listenerInfo in m_ShowListeners)
                 {
                     listenerInfo.TryRemoveListener();
                 }
@@ -115,7 +132,7 @@ namespace BbxCommon.Ui
         {
             if (m_Opened)
             {
-                foreach (var listenerInfo in m_ShowListener)
+                foreach (var listenerInfo in m_ShowListeners)
                 {
                     listenerInfo.TryRemoveListener();
                 }
@@ -139,7 +156,7 @@ namespace BbxCommon.Ui
 
         protected override sealed void OnDestroy()
         {
-            foreach (var listenerInfo in m_InitListener)
+            foreach (var listenerInfo in m_InitListeners)
             {
                 listenerInfo.TryRemoveListener();
             }
@@ -154,25 +171,25 @@ namespace BbxCommon.Ui
                 uiItem.OnUiDestroy(this);
             }
 
-            foreach (var listenerInfo in m_InitListener)
+            foreach (var listenerInfo in m_InitListeners)
             {
                 listenerInfo.ReleaseInfo();
             }
-            m_InitListener.CollectToPool();
-            foreach (var listenerInfo in m_OpenListener)
+            m_InitListeners.CollectToPool();
+            foreach (var listenerInfo in m_OpenListeners)
             {
                 listenerInfo.ReleaseInfo();
             }
-            m_OpenListener.CollectToPool();
-            foreach (var listenerInfo in m_ShowListener)
+            m_OpenListeners.CollectToPool();
+            foreach (var listenerInfo in m_ShowListeners)
             {
                 listenerInfo.ReleaseInfo();
             }
-            m_ShowListener.CollectToPool();
+            m_ShowListeners.CollectToPool();
         }
         #endregion
 
-        #region ModelListener
+        #region Model Listener
         protected struct ModelItemListenerInfo
         {
             /// <summary>
@@ -188,7 +205,7 @@ namespace BbxCommon.Ui
             /// </summary>
             private SimpleMessageListener<int> m_Listener;
 
-            public ModelItemListenerInfo(IUiModelItem modelItem, int messageKey, UnityAction<MessageData> callback)
+            public ModelItemListenerInfo(IUiModelItem modelItem, int messageKey, UnityAction<MessageDataBase> callback)
             {
                 ModelItem = ((PooledObject)modelItem).AsObjRef();
                 MessageKey = messageKey;
@@ -228,39 +245,60 @@ namespace BbxCommon.Ui
             }
         }
 
-        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableAt, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
+        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
         {
             var info = new ModelItemListenerInfo(modelItem, (int)listeningEvent, callback);
-            info.AddListener();
-            StoreUiModelListener(enableAt, info);
+            AddListenerIfConditionMeets(info, enableDuring);
+            StoreUiModelListener(enableDuring, info);
             return info;
         }
 
-        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableAt, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageData> callback)
+        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
         {
             var info = new ModelItemListenerInfo(modelItem, listeningEvent, callback);
-            info.AddListener();
-            StoreUiModelListener(enableAt, info);
+            AddListenerIfConditionMeets(info, enableDuring);
+            StoreUiModelListener(enableDuring, info);
             return info;
+        }
+
+        protected virtual void InitUiModelListeners() { }
+
+        private void AddListenerIfConditionMeets(ModelItemListenerInfo info, EControllerLifeCycle enableDuring)
+        {
+            switch (enableDuring)
+            {
+                case EControllerLifeCycle.Init:
+                    if (m_Inited)
+                        info.AddListener();
+                    break;
+                case EControllerLifeCycle.Open:
+                    if (m_Opened)
+                        info.AddListener();
+                    break;
+                case EControllerLifeCycle.Show:
+                    if (m_Visible)
+                        info.AddListener();
+                    break;
+            }
         }
 
         // Listeners below will be unload when the controller is uninited, closed or hidden automatically.
-        private List<ModelItemListenerInfo> m_InitListener;
-        private List<ModelItemListenerInfo> m_OpenListener;
-        private List<ModelItemListenerInfo> m_ShowListener;
+        private List<ModelItemListenerInfo> m_InitListeners;
+        private List<ModelItemListenerInfo> m_OpenListeners;
+        private List<ModelItemListenerInfo> m_ShowListeners;
 
-        private void StoreUiModelListener(EControllerLifeCycle enableAt, ModelItemListenerInfo info)
+        private void StoreUiModelListener(EControllerLifeCycle enableDuring, ModelItemListenerInfo info)
         {
-            switch (enableAt)
+            switch (enableDuring)
             {
                 case EControllerLifeCycle.Init:
-                    m_InitListener.Add(info);
+                    m_InitListeners.Add(info);
                     break;
                 case EControllerLifeCycle.Open:
-                    m_OpenListener.Add(info);
+                    m_OpenListeners.Add(info);
                     break;
                 case EControllerLifeCycle.Show:
-                    m_ShowListener.Add(info);
+                    m_ShowListeners.Add(info);
                     break;
             }
         }

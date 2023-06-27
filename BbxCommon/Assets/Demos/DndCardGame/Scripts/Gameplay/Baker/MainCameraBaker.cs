@@ -8,6 +8,8 @@ namespace Dcg
         protected override void Bake()
         {
             AddRawComponent<MainCameraSingletonRawComponent>();
+
+
         }
     }
 }
