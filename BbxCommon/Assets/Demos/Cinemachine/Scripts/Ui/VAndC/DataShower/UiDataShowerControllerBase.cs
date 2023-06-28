@@ -60,22 +60,33 @@ namespace Cin.Ui
 
         private void ShowPoints()
         {
+            // keep point objects' count equals to the point datas'
+            while (m_PointObjs.Count > m_Points.Count)
+            {
+                Destroy(m_PointObjs.GetBack());
+                m_PointObjs.RemoveBack();
+            }
+            while (m_PointObjs.Count < m_Points.Count)
+            {
+                var pointObj = Instantiate(m_View.PointPrefab, this.transform);
+                m_PointObjs.Add(pointObj);
+            }
+
             var rectTransform = (RectTransform)m_View.DataPanel.transform;
             float xMin = rectTransform.rect.xMin + rectTransform.localPosition.x;
             float xMax = rectTransform.rect.xMax + rectTransform.localPosition.x;
             float yMin = rectTransform.rect.yMin + rectTransform.localPosition.y;
             float yMax = rectTransform.rect.yMax + rectTransform.localPosition.y;
-            foreach (var point in m_Points)
+            for (int i = 0; i < m_Points.Count; i++)
             {
+                var point = m_Points[i];
                 float x = xMin;
                 if (m_MaxTime - m_MinTime != 0)
                     x = xMin + ((point.Time - m_MinTime) / (m_MaxTime - m_MinTime)) * (xMax - xMin);
                 float y = yMin;
                 if (m_MaxValue - m_MinValue != 0)
                     y = yMin + ((point.Value - m_MinValue) / (m_MaxValue - m_MinValue)) * (yMax - yMin);
-                var pointObj = Instantiate(m_View.PointPrefab, this.transform);
-                ((RectTransform)pointObj.transform).localPosition = new Vector3(x, y, 0);
-                m_PointObjs.Add(pointObj);
+                ((RectTransform)m_PointObjs[i].transform).localPosition = new Vector3(x, y, 0);
             }
         }
 

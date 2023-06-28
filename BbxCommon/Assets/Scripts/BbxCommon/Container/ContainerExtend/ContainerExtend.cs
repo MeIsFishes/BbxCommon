@@ -115,6 +115,13 @@ namespace BbxCommon
                 list.Add(fill);
         }
 
+        public static T GetBack<T>(this List<T> list)
+        {
+            if (list.Count == 0)
+                return default(T);
+            return list[list.Count - 1];
+        }
+
         /// <summary>
         /// Add the item in the front of the list.
         /// </summary>
