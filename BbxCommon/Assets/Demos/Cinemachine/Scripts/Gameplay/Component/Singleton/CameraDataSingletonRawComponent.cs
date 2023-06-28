@@ -10,15 +10,17 @@ namespace Cin
 {
     public class CameraDataSingletonRawComponent : EcsSingletonRawComponent
     {
-        public Entity CurCamera;
+        public UiModelVariable<Entity> CurCamera = new();
         public List<Entity> CamerasInScene = new();
 
         public void SetActiveCamera(Entity camera)
         {
-            if (CurCamera.GetGameObject() != null)
-                CurCamera.GetGameObject().GetComponent<CinemachineVirtualCamera>().Priority = 0;
-            camera.GetGameObject().GetComponent<CinemachineVirtualCamera>().Priority = 10;
-            CurCamera = camera;
+            foreach (var cameraInScene in CamerasInScene)
+            {
+                cameraInScene.GetGameObject().GetComponent<CinemachineVirtualCameraBase>().Priority = 0;
+            }
+            camera.GetGameObject().GetComponent<CinemachineVirtualCameraBase>().Priority = 10;
+            CurCamera.SetValue(camera);
         }
 
         public override void OnCollect()

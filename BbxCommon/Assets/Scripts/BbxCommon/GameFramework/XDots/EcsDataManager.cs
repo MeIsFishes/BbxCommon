@@ -76,12 +76,16 @@ namespace BbxCommon
         internal static bool HasRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
             var group = GetAndRefreshGroup(entity);
+            if (group == null)
+                return false;
             return group.HasRawComponent<T>();
         }
 
         internal static void RemoveRawComponent<T>(Entity entity) where T : EcsRawComponent
         {
             var group = GetAndRefreshGroup(entity);
+            if (group == null)
+                return;
             group.RemoveRawComponent<T>(out var comp);
             comp.CollectToPool();
         }

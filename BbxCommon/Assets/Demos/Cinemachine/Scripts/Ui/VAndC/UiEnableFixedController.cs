@@ -6,7 +6,7 @@ using BbxCommon.Ui;
 
 namespace Cin.Ui
 {
-    public class UiEnableNoMoveController : UiControllerBase<UiEnableNoMoveView>
+    public class UiEnableFixedController : UiControllerBase<UiEnableFixedView>
     {
         protected override void OnUiInit()
         {
@@ -15,7 +15,7 @@ namespace Cin.Ui
 
         private void OnClick()
         {
-            var camera = EcsApi.GetSingletonRawComponent<NoMoveCameraSingletonRawComponent>().GetEntity();
+            var camera = EcsApi.GetSingletonRawComponent<FixedCameraSingletonRawComponent>().GetEntity();
             EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().SetActiveCamera(camera);
         }
     }

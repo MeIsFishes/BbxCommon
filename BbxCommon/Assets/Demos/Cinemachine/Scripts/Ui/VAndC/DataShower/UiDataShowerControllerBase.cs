@@ -152,7 +152,7 @@ namespace Cin.Ui
 
         private void OnListeningTargetDirty(MessageDataBase messageData)
         {
-            var value = ((VariableDirtyMessageData<float>)messageData).CurValue;
+            var value = ((UiModelVariableDirtyMessageData<float>)messageData).CurValue;
             AddPoint(new PointData(Time.realtimeSinceStartup, value));
             m_AddedPoint = true;
         }

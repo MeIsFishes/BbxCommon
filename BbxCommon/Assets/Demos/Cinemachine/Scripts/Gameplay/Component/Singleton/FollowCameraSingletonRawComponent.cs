@@ -9,6 +9,6 @@ namespace Cin
 {
     public class FollowCameraSingletonRawComponent : EcsSingletonRawComponent
     {
-
+        public bool EnableCircle;
     }
 }

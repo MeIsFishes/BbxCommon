@@ -7,13 +7,13 @@ using BbxCommon.Ui;
 
 namespace Cin.Ui
 {
-    public class UiEnableNoMoveView : UiViewBase
+    public class UiEnableFixedView : UiViewBase
     {
         public Button Button; 
 
         public override Type GetControllerType()
         {
-            return typeof(UiEnableNoMoveController);
+            return typeof(UiEnableFixedController);
         }
     }
 }

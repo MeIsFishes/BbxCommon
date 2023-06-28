@@ -8,7 +8,7 @@ namespace BbxCommon.Ui
         Destroy,
     }
 
-    public class VariableDirtyMessageData<T> : MessageDataBase
+    public class UiModelVariableDirtyMessageData<T> : MessageDataBase
     {
         public T CurValue;
     }
@@ -39,7 +39,7 @@ namespace BbxCommon.Ui
 
         public void SetDirty()
         {
-            var messageData = ObjectPool<VariableDirtyMessageData<T>>.Alloc();
+            var messageData = ObjectPool<UiModelVariableDirtyMessageData<T>>.Alloc();
             messageData.CurValue = m_Value;
             m_MessageHandler.Dispatch((int)EUiModelVariableEvent.Dirty, messageData);
             messageData.CollectToPool();
