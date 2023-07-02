@@ -51,5 +51,19 @@ namespace Dcg
 
             return entity;
         }
+
+        public static Entity CreateMainCameraEntity()
+        {
+            var entity = EcsApi.CreateEntity();
+
+            var cameraData = DataApi.GetData<CameraData>();
+
+            entity.AddRawComponent<MainCameraSingletonRawComponent>();
+
+            var gameObject = Object.Instantiate(cameraData.CameraPrefab);
+            entity.AttachToGameObject(gameObject);
+
+            return entity;
+        }
     }
 }

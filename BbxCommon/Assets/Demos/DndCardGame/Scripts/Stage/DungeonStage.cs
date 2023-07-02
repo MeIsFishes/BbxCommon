@@ -19,6 +19,8 @@ namespace Dcg
             dungeonStage.AddLoadItem(new InitRoomData());
 
             dungeonStage.AddLateLoadItem(new InitDungeon());
+
+            dungeonStage.AddUpdateSystem<DungeonCameraSystem>();
             
             return dungeonStage;
         }
@@ -27,7 +29,8 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                DataApi.SetData(Resources.Load<ModelAttributesData>("DndCardGame/Config/ModelAttributesData"));
+                var modelAttributesData = Resources.Load<ModelAttributesData>("DndCardGame/Config/ModelAttributesData");
+                DataApi.SetData(Object.Instantiate(modelAttributesData));
             }
 
             void IStageLoad.Unload(GameStage stage)
@@ -57,7 +60,8 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                DataApi.SetData(Resources.Load<RoomData>("DndCardGame/Config/RoomData"));
+                var roomData = Resources.Load<RoomData>("DndCardGame/Config/RoomData");
+                DataApi.SetData(Object.Instantiate(roomData));
                 EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
             }
 

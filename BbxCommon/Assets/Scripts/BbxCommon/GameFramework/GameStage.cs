@@ -186,7 +186,7 @@ namespace BbxCommon
                 return;
             }
             m_UiScene = uiScene;
-            m_UiSceneAsset = uiSceneAsset;
+            m_UiSceneAsset = Object.Instantiate(uiSceneAsset);
         }
 
         protected void OnLoadStageUiScene()

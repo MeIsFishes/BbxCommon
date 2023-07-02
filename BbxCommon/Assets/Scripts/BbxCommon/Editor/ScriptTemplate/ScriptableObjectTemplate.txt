@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
+using Sirenix.OdinInspector;
 using BbxCommon;
 
 [CreateAssetMenu(fileName = "#SCRIPT_NAME#", menuName = "ScriptableObject/#SCRIPT_NAME#")]
