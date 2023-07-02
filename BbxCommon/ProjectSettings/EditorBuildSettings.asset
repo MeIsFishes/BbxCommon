@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Demos/Cinemachine/Scenes/CinLauncher.unity
     guid: 27be1637de3bc494bbab9a12bf4fdd04
+  - enabled: 1
+    path: Assets/Demos/DndCardGame/Scenes/DcgDungeon.unity
+    guid: 8f52848b9feabba4781699ba1dfe6f13
   m_configObjects: {}

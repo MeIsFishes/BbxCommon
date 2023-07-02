@@ -21,6 +21,7 @@ namespace Dcg
             newRoom.transform.position = finalPos.AddY(-1);
             // 慢慢拼上去
             taskMoveTo.Init(newRoom, finalPos, 2f, -1f);
+            roomComp.AddRoom(newRoom);
         }
     }
 }

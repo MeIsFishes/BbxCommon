@@ -1,3 +1,4 @@
+using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
 
@@ -36,6 +37,17 @@ namespace Dcg
             attributesComp.Constitution = 3;
             attributesComp.Intelligence = 3;
             attributesComp.Wisdom = 3;
+
+            // 添加其他component
+            entity.AddRawComponent<WalkToRawComponent>();
+
+            // 关联到GameObject
+            var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
+            var gameObject = Object.Instantiate(prefab);
+            entity.AttachToGameObject(gameObject);
+
+            // 创建aspect
+            entity.CreateRawAspect<WalkToRawAspect>();
 
             return entity;
         }

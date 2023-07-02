@@ -19,38 +19,127 @@ namespace BbxCommon
         }
 
         [SerializeField]
-        private List<DataItem<TKey, TValue>> m_List;
+        private List<DataItem<TKey, TValue>> m_Items;
         private Dictionary<TKey, TValue> m_Dictionary;
 
-        private bool Inited;
+        private bool m_Inited;
         public void Init()
         {
-            if (Inited == true)
+            if (m_Inited == true)
                 return;
-            Inited = true;
+            m_Inited = true;
             m_Dictionary = new Dictionary<TKey, TValue>();
-            foreach (var item in m_List)
+            foreach (var item in m_Items)
             {
                 m_Dictionary.Add(item.Key, item.Value);
             }
-            m_List.Clear();
         }
         #endregion
 
         #region RewriteDic
-        public TValue this[TKey key] => m_Dictionary[key];
-        public int Count => m_Dictionary.Count;
+        public TValue this[TKey key]
+        {
+            get
+            {
+                if (m_Inited == false)
+                    Init();
+                return m_Dictionary[key];
+            }
+        }
 
-        public void Add(TKey key, TValue value) => m_Dictionary.Add(key, value);
-        public void Clear() => m_Dictionary.Clear();
-        public bool ContainsKey(TKey key) => m_Dictionary.ContainsKey(key);
-        public bool ContainsValue(TValue value) => m_Dictionary.ContainsValue(value);
-        public int EnsureCapacity(int capacity) => m_Dictionary.EnsureCapacity(capacity);
-        public Dictionary<TKey, TValue>.Enumerator GetEnumerator() => m_Dictionary.GetEnumerator();
-        public bool Remove(TKey key, out TValue value) => m_Dictionary.Remove(key, out value);
-        public bool Remove(TKey key) => m_Dictionary.Remove(key);
-        public bool TryAdd(TKey key, TValue value) => m_Dictionary.TryAdd(key, value);
-        public bool TryGetValue(TKey key, out TValue value) => m_Dictionary.TryGetValue(key, out value);
+        public int Count
+        {
+            get
+            {
+                if (m_Inited == false)
+                    Init();
+                return m_Dictionary.Count;
+            }
+        }
+
+        public void Add(TKey key, TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            m_Dictionary.Add(key, value);
+        }
+
+        public void Clear()
+        {
+            if (m_Inited == false)
+                Init();
+            m_Dictionary.Clear();
+        }
+
+        public bool ContainsKey(TKey key)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.ContainsKey(key);
+        }
+
+        public bool ContainsValue(TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.ContainsValue(value);
+        }
+
+        public int EnsureCapacity(int capacity)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.EnsureCapacity(capacity);
+        }
+
+        public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.GetEnumerator();
+        }
+
+        public bool Remove(TKey key, out TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.Remove(key, out value);
+        }
+
+        public bool Remove(TKey key)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.Remove(key);
+        }
+
+        public bool TryRemove(TKey key)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.TryRemove(key);
+        }
+
+        public bool TryRemove(TKey key, out TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.TryRemove(key, out value);
+        }
+
+        public bool TryAdd(TKey key, TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.TryAdd(key, value);
+        }
+
+        public bool TryGetValue(TKey key, out TValue value)
+        {
+            if (m_Inited == false)
+                Init();
+            return m_Dictionary.TryGetValue(key, out value);
+        }
         #endregion
     }
 }

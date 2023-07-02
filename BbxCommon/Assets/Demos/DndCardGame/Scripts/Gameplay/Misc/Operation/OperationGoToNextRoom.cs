@@ -4,8 +4,6 @@ namespace Dcg
 {
     public class OperationGoToNextRoom : OperationBase
     {
-        private int m_BlockKey;
-
         // 暂时用hard code写死，后面需要做timeline的editor然后转移过去
         private float m_ElapsedTime = 0;
         private float m_FinishTime = 2.5f;
@@ -15,7 +13,6 @@ namespace Dcg
         protected override void OnEnter()
         {
             EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>().RequestSpawnRoom = true;
-            m_BlockKey = EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().Block();
         }
 
         protected override EOperationState OnUpdate(float deltaTime)
@@ -26,10 +23,11 @@ namespace Dcg
             {
                 var roomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
                 var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var roomData = DataApi.GetData<RoomData>();
                 foreach (var character in playerComp.Characters)
                 {
                     var walkToComp = character.GetRawComponent<WalkToRawComponent>();
-                    walkToComp.AddRequest(roomComp.CurRoom.transform.position + roomComp.CharacterOffset);
+                    walkToComp.AddRequest(roomComp.CurRoom.transform.position + roomData.CharacterOffset);
                     m_RequestWalk = true;
                 }
             }
@@ -40,7 +38,7 @@ namespace Dcg
 
         protected override void OnExit()
         {
-            EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().Unblock(m_BlockKey);
+            
         }
 
         public override void OnCollect()

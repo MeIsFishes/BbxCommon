@@ -7,5 +7,7 @@ namespace Dcg
     {
         public GameObject RoomPrefab;
         public Vector2 RoomSize;
+        public Vector3 CharacterOffset;
+        public Vector3 MonsterOffset;
     }
 }

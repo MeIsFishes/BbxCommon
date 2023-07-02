@@ -9,10 +9,17 @@ namespace Dcg
         private GameStage CreateDungeonStage()
         {
             var dungeonStage = StageWrapper.CreateStage("Dungeon Stage");
+            
             dungeonStage.AddScene("DcgDungeon");
+
+            dungeonStage.SetUiScene(UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiDungeonScene"));
+
             dungeonStage.AddLoadItem(new InitModelData());
             dungeonStage.AddLoadItem(new InitPlayerAndCharacter());
             dungeonStage.AddLoadItem(new InitRoomData());
+
+            dungeonStage.AddLateLoadItem(new InitDungeon());
+            
             return dungeonStage;
         }
 
@@ -58,6 +65,32 @@ namespace Dcg
             {
                 DataApi.ReleaseData<RoomData>();
                 EcsApi.RemoveSingletonRawComponent<DungeonRoomSingletonRawComponent>();
+            }
+        }
+
+        /// <summary>
+        /// 初始化地牢关卡
+        /// </summary>
+        private class InitDungeon : IStageLoad
+        {
+            void IStageLoad.Load(GameStage stage)
+            {
+                // 创建初始房间
+                var roomData = DataApi.GetData<RoomData>();
+                var roomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
+                var room = Object.Instantiate(roomData.RoomPrefab);
+                room.transform.position = new Vector3();
+                roomComp.AddRoom(room);
+
+                // 将玩家拉过来
+                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var character = playerComp.Characters[0];
+                character.GetGameObject().transform.position = roomComp.CurRoom.transform.position + roomData.CharacterOffset;
+            }
+
+            void IStageLoad.Unload(GameStage stage)
+            {
+                EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>().DestroyAllRooms();
             }
         }
     }

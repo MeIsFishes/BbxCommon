@@ -179,6 +179,11 @@ namespace BbxCommon
             else
                 return comp;
         }
+
+        public static void Destroy(this GameObject gameObject)
+        {
+            GameObject.Destroy(gameObject);
+        }
         #endregion
         #endregion
 

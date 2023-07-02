@@ -34,12 +34,12 @@ namespace BbxCommon
     {
         public abstract void ApplyInteractingData();
 
-        public void Load(GameStage stage)
+        public virtual void Load(GameStage stage)
         {
             ApplyInteractingData();
         }
 
-        public void Unload(GameStage stage)
+        public virtual void Unload(GameStage stage)
         {
 
         }

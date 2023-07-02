@@ -12,6 +12,7 @@ namespace Dcg
         public UiDungeonScene UiScene;
 
         private GameStage m_GlobalStage;
+        private GameStage m_DungeonWalkStage;
         private GameStage m_DungeonStage;
         private GameStage m_CombatStage;
 
@@ -25,10 +26,12 @@ namespace Dcg
             UiScene = UiSceneWrapper.CreateUiScene<UiDungeonScene>();
             m_GlobalStage = CreateGlobalStage();
             m_DungeonStage = CreateDungeonStage();
+            m_DungeonWalkStage = CreateDungeonWalkStage();
             m_CombatStage = CreateCombatStage();
 
             StageWrapper.LoadStage(m_GlobalStage);
             StageWrapper.LoadStage(m_DungeonStage);
+            StageWrapper.LoadStage(m_DungeonWalkStage);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Dcg
         private GameStage CreateCombatStage()
         {
             var combatStage = StageWrapper.CreateStage("Combat Stage");
-            combatStage.SetUiScene(UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Configs/UiCombatScene"));
+            combatStage.SetUiScene(UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiCombatScene"));
             combatStage.AddLoadItem(new CombatStageInitPlayerData());
             combatStage.AddLateLoadItem(new CombatStageBindUi());
             return combatStage;
