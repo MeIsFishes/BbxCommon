@@ -100,7 +100,12 @@ namespace BbxCommon.Editor
             string txt = streamReader.ReadToEnd();
             streamReader.Close();
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
+
             txt = Regex.Replace(txt, "#SCRIPT_NAME#", fileNameWithoutExtension);
+
+            if (fileNameWithoutExtension.EndsWith("Base"))
+                txt = Regex.Replace(txt, "public class", "public abstract class");
+
             bool encoderShouldEmitUTF8Identifier = true;
             bool throwOnInvalidBytes = false;
             UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
@@ -125,13 +130,27 @@ namespace BbxCommon.Editor
             streamReader.Close();
             string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
             var uiName = fileNameWithoutExtension;
+
             if (uiName.EndsWith("Controller"))
                 uiName = uiName.TryRemoveEnd("Controller");
             else if (uiName.EndsWith("View"))
                 uiName = uiName.TryRemoveEnd("View");
+            else if (uiName.EndsWith("ControllerBase"))
+                uiName = uiName.TryRemoveEnd("ControllerBase");
+            else if (uiName.EndsWith("ViewBase"))
+                uiName = uiName.TryRemoveEnd("ViewBase");
             uiName = uiName.TryRemoveStart("Ui");
             uiName = uiName.TryRemoveStart("UI");
             txt = Regex.Replace(txt, "#UI_NAME#", uiName);
+
+            if (fileNameWithoutExtension.EndsWith("Base"))
+            {
+                txt = Regex.Replace(txt, "public class", "public abstract class");
+                txt = Regex.Replace(txt, "#BASE#", "Base");
+            }
+            else
+                txt = Regex.Replace(txt, "#BASE#", "");
+
             bool encoderShouldEmitUTF8Identifier = true;
             bool throwOnInvalidBytes = false;
             UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
