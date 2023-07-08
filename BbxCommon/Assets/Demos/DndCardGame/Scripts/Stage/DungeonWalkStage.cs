@@ -4,11 +4,11 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
-    public partial class DcgGameEngine
+    public class DungeonWalkStage
     {
-        private GameStage CreateDungeonWalkStage()
+        public static GameStage CreateStage()
         {
-            var dungeonWalkStage = StageWrapper.CreateStage("Dungeon Walk Stage");
+            var dungeonWalkStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Walk Stage");
             dungeonWalkStage.AddUpdateSystem<WalkToSystem>();
             return dungeonWalkStage;
         }

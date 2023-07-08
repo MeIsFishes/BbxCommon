@@ -4,15 +4,15 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
-    public partial class DcgGameEngine
+    public class DungeonStage
     {
-        private GameStage CreateDungeonStage()
+        public static GameStage CreateStage()
         {
-            var dungeonStage = StageWrapper.CreateStage("Dungeon Stage");
+            var dungeonStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Stage");
             
             dungeonStage.AddScene("DcgDungeon");
 
-            dungeonStage.SetUiScene(UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiDungeonScene"));
+            dungeonStage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiDungeonScene"));
 
             dungeonStage.AddLoadItem(new InitModelData());
             dungeonStage.AddLoadItem(new InitPlayerAndCharacter());

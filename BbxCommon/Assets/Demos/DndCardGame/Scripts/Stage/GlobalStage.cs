@@ -4,11 +4,11 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
-    public partial class DcgGameEngine
+    public class GlobalStage
     {
-        private GameStage CreateGlobalStage()
+        public static GameStage CreateStage()
         {
-            var globalStage = StageWrapper.CreateStage("Global Stage");
+            var globalStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Global Stage");
 
             globalStage.AddScene("DcgMain");
 

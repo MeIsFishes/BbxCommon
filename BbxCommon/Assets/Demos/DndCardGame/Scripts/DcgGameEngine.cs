@@ -24,10 +24,10 @@ namespace Dcg
         protected override void OnAwake()
         {
             UiScene = UiSceneWrapper.CreateUiScene<UiDungeonScene>();
-            m_GlobalStage = CreateGlobalStage();
-            m_DungeonStage = CreateDungeonStage();
-            m_DungeonWalkStage = CreateDungeonWalkStage();
-            m_CombatStage = CreateCombatStage();
+            m_GlobalStage = GlobalStage.CreateStage();
+            m_DungeonStage = DungeonStage.CreateStage();
+            m_DungeonWalkStage = DungeonWalkStage.CreateStage();
+            m_CombatStage = CombatStage.CreateStage();
 
             StageWrapper.LoadStage(m_GlobalStage);
             StageWrapper.LoadStage(m_DungeonStage);

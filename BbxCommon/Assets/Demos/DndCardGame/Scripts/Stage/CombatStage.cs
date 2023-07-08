@@ -5,12 +5,12 @@ using Dcg.Ui;
 
 namespace Dcg
 {
-    public partial class DcgGameEngine
+    public class CombatStage
     {
-        private GameStage CreateCombatStage()
+        public static GameStage CreateStage()
         {
-            var combatStage = StageWrapper.CreateStage("Combat Stage");
-            combatStage.SetUiScene(UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiCombatScene"));
+            var combatStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Combat Stage");
+            combatStage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiCombatScene"));
             combatStage.AddLoadItem(new CombatStageInitPlayerData());
             combatStage.AddLateLoadItem(new CombatStageBindUi());
             return combatStage;
