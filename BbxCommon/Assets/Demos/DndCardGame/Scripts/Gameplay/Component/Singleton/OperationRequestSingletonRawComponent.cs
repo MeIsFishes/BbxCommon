@@ -20,10 +20,13 @@ namespace Dcg
         private HashSet<int> m_Locks = new();
         private UniqueIdGenerator m_LockIdGenerator = new();
 
-        // 使用这个函数添加请求而不要直接操作Queue，这是为未来联网做的预留
+        /// <summary>
+        /// 使用这个函数添加请求而不要直接操作<see cref="BlockedOperations"/>，这是为未来联网做的预留
+        /// </summary>
         public void AddBlockedOperation(OperationBase operation)
         {
-            BlockedOperations.Enqueue(operation);
+            if (BlockedOperations.Count == 0)
+                BlockedOperations.Enqueue(operation);
         }
 
         public int Block()

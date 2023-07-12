@@ -19,17 +19,19 @@ namespace Dcg
                 // 面朝目标
                 aspect.Transform.LookAt(aspect.Transform.position + (aspect.Destination - aspect.Transform.position).SetY(0));
                 // 向目标移动
-                var distance = (aspect.Destination - aspect.Transform.position).magnitude;
-                var walkLength = aspect.WalkSpeed * UnityEngine.Time.deltaTime;
-                if (distance < walkLength)
+                var deltaMove = aspect.WalkSpeed * UnityEngine.Time.deltaTime;
+                if (Mathf.Abs(aspect.Destination.x - aspect.Transform.position.x) < deltaMove &&
+                    Mathf.Abs(aspect.Destination.z - aspect.Transform.position.z) < deltaMove &&
+                    Mathf.Abs(aspect.Destination.y - aspect.Transform.position.y) < 0.5f)
                 {
-                    aspect.Transform.position = aspect.Destination;
+                    aspect.CharacterController.Move(aspect.Destination - aspect.Transform.position);
                     aspect.Animator.Play("Idle");
                     aspect.Finished = true;
                 }
                 else
                 {
-                    aspect.CharacterController.Move((aspect.Destination - aspect.Transform.position).normalized * walkLength);
+                    aspect.CharacterController.Move((aspect.Destination - aspect.Transform.position).SetY(0).normalized * deltaMove);
+                    aspect.CharacterController.Move(new Vector3(0, -10, 0) * deltaMove);    // 贴地
                     aspect.Animator.Play("Walk");
                 }
             });

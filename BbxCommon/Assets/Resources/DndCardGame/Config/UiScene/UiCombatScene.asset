@@ -10,6 +10,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 5f0e18b2d261e954b91f2bc9c06f1a8b, type: 3}
-  m_Name: UiDungeonScene
+  m_Name: UiCombatScene
   m_EditorClassIdentifier: 
-  UiObjectDatas: []
+  UiObjectDatas:
+  - PrefabPath: DndCardGame/Prefab/Ui/DicesInHand
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 0, y: 0, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}

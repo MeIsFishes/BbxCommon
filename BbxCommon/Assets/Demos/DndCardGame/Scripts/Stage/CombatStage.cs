@@ -9,11 +9,15 @@ namespace Dcg
     {
         public static GameStage CreateStage()
         {
-            var combatStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Combat Stage");
-            combatStage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiCombatScene"));
-            combatStage.AddLoadItem(new CombatStageInitPlayerData());
-            combatStage.AddLateLoadItem(new CombatStageBindUi());
-            return combatStage;
+            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Combat Stage");
+
+            stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiCombatScene"));
+
+            stage.AddLoadItem(new CombatStageInitPlayerData());
+
+            stage.AddLateLoadItem(new CombatStageBindUi());
+
+            return stage;
         }
 
         private class CombatStageInitPlayerData : IStageLoad

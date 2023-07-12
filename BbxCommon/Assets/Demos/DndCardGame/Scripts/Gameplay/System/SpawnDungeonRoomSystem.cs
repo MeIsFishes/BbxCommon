@@ -16,12 +16,14 @@ namespace Dcg
             var roomData = DataApi.GetData<RoomData>();
             var taskMoveTo = TaskManager<TaskMoveTo>.Instance.CreateTask();
             var newRoom = Object.Instantiate(roomData.RoomPrefab);
-            var finalPos = roomComp.CurRoom.transform.position.AddX(roomData.RoomSize.x);
+            var finalPos = roomComp.CurRoom.transform.position.AddZ(roomData.RoomSize.y);
             // 初始化在稍稍偏下的位置
             newRoom.transform.position = finalPos.AddY(-1);
             // 慢慢拼上去
             taskMoveTo.Init(newRoom, finalPos, 2f, -1f);
             roomComp.AddRoom(newRoom);
+
+            roomComp.RequestSpawnRoom = false;
         }
     }
 }

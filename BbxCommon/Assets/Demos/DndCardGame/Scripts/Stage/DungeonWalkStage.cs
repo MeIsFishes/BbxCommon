@@ -8,9 +8,11 @@ namespace Dcg
     {
         public static GameStage CreateStage()
         {
-            var dungeonWalkStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Walk Stage");
-            dungeonWalkStage.AddUpdateSystem<WalkToSystem>();
-            return dungeonWalkStage;
+            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Walk Stage");
+
+            stage.AddUpdateSystem<WalkToSystem>();
+
+            return stage;
         }
     }
 }

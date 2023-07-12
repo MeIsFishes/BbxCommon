@@ -8,21 +8,22 @@ namespace Dcg
     {
         public static GameStage CreateStage()
         {
-            var dungeonStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Stage");
+            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Stage");
             
-            dungeonStage.AddScene("DcgDungeon");
+            stage.AddScene("DcgDungeon");
 
-            dungeonStage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiDungeonScene"));
+            stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonScene"));
 
-            dungeonStage.AddLoadItem(new InitModelData());
-            dungeonStage.AddLoadItem(new InitPlayerAndCharacter());
-            dungeonStage.AddLoadItem(new InitRoomData());
+            stage.AddLoadItem(new InitModelData());
+            stage.AddLoadItem(new InitPlayerAndCharacter());
+            stage.AddLoadItem(new InitRoomData());
 
-            dungeonStage.AddLateLoadItem(new InitDungeon());
+            stage.AddLateLoadItem(new InitDungeon());
 
-            dungeonStage.AddUpdateSystem<DungeonCameraSystem>();
+            stage.AddUpdateSystem<DungeonCameraSystem>();
+            stage.AddUpdateSystem<SpawnDungeonRoomSystem>();
             
-            return dungeonStage;
+            return stage;
         }
 
         private class InitModelData : IStageLoad

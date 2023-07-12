@@ -8,15 +8,31 @@ namespace Dcg
     {
         public static GameStage CreateStage()
         {
-            var globalStage = DcgGameEngine.Instance.StageWrapper.CreateStage("Global Stage");
+            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Global Stage");
 
-            globalStage.AddScene("DcgMain");
+            stage.AddScene("DcgMain");
 
-            globalStage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-            globalStage.AddLoadItem(new InitPrefabData());
-            globalStage.AddLoadItem(new InitCamera());
+            stage.AddLoadItem(new InitSingletonComponent());
+            stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
+            stage.AddLoadItem(new InitPrefabData());
+            stage.AddLoadItem(new InitCamera());
 
-            return globalStage;
+            stage.AddUpdateSystem<ProcessOperationSystem>();
+
+            return stage;
+        }
+
+        private class InitSingletonComponent : IStageLoad
+        {
+            void IStageLoad.Load(GameStage stage)
+            {
+                EcsApi.AddSingletonRawComponent<OperationRequestSingletonRawComponent>();
+            }
+
+            void IStageLoad.Unload(GameStage stage)
+            {
+                EcsApi.RemoveSingletonRawComponent<OperationRequestSingletonRawComponent>();
+            }
         }
 
         private class InitPrefabData : IStageLoad
