@@ -5,7 +5,17 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public abstract class UiTweenBase<TValue> : MonoBehaviour, IBbxUiItem
+    public abstract class UiTweenBase<TValue> : UiTweenBase
+    {
+        #region Variables On Inspector
+        [FoldoutGroup("Play Tween")]
+        public TValue MinValue;
+        [FoldoutGroup("Play Tween")]
+        public TValue MaxValue;
+        #endregion
+    }
+
+    public abstract class UiTweenBase: MonoBehaviour, IBbxUiItem
     {
         #region Enum Define
         public enum EEnableAt
@@ -28,10 +38,6 @@ namespace BbxCommon.Ui
             "descripts the real time in length the Tween component finishes. The final sampling value" +
             "in [MinValue, MaxValue] projected into the Curve range [0, 1].")]
         public float Duration;
-        [FoldoutGroup("Play Tween")]
-        public TValue MinValue;
-        [FoldoutGroup("Play Tween")]
-        public TValue MaxValue;
         [FoldoutGroup("Play Tween")]
         [Tooltip("Descripts how value changes in range [MinValue, MaxValue] by time range [StartTime, StartTime + Duration].")]
         public AnimationCurve Curve;
@@ -129,6 +135,12 @@ namespace BbxCommon.Ui
             m_Enabled = false;
             m_ElapsedTime = 0;
             m_Finished = true;
+            // keep targets with final states
+            var evaluate = Curve.Evaluate(m_MaxTime);
+            foreach (var component in TweenTargets)
+            {
+                ApplyTween(component, evaluate);
+            }
         }
 
         public void Continue()
