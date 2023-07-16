@@ -1,27 +1,27 @@
 using UnityEngine;
+using BbxCommon.Ui;
 
 namespace BbxCommon
 {
-    public abstract class GameTimerItem
+    public class GameTimer
     {
-        public abstract float DeltaTime { get; }
-        public abstract float ElapsedTime { get; }
+        public virtual float DeltaTime { get; }
+        public virtual float GameTime { get; }
     }
 
     /// <summary>
-    /// Scripts in BbxCommon read time from BbxRawTimer. Set GameTimerItem if you need to control time.
-    /// As naming it BbxRawTimer, it means the time don't think of time scale and other factors.
+    /// UI items implemented <see cref="IBbxUiItem"/> read time from <see cref="UiTimer"/>. Call <see cref="SetTimer(GameTimer)"/> if you need.
     /// </summary>
-    public static class BbxRawTimer
+    public static class UiTimer
     {
-        private static GameTimerItem m_s_GameTimerItem;
+        private static GameTimer m_GameTimer;
 
-        public static void SetGameTimerItem(GameTimerItem item)
+        public static void SetTimer(GameTimer item)
         {
-            m_s_GameTimerItem = item;
+            m_GameTimer = item;
         }
 
-        public static float DeltaTime => m_s_GameTimerItem == null ? Time.deltaTime : m_s_GameTimerItem.DeltaTime;
-        public static float GameTime => m_s_GameTimerItem == null ? Time.time : m_s_GameTimerItem.ElapsedTime;
+        public static float DeltaTime => m_GameTimer == null ? Time.deltaTime : m_GameTimer.DeltaTime;
+        public static float GameTime => m_GameTimer == null ? Time.time : m_GameTimer.GameTime;
     }
 }

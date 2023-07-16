@@ -107,7 +107,7 @@ namespace BbxCommon.Ui
                 OnPointerStay?.Invoke(m_CurrentData);
 
             if (m_Dragging)
-                DraggedTime += BbxRawTimer.DeltaTime;
+                DraggedTime += UiTimer.DeltaTime;
         }
 
         private void AddCallbacks()
