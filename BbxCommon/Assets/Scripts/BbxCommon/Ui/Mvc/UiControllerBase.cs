@@ -26,14 +26,14 @@ namespace BbxCommon.Ui
         #region Lifecycle
         protected override sealed void Update()
         {
-            OnUpdate();
+            OnUiUpdate();
             foreach (var uiItem in m_View.UiItems)
             {
-                uiItem.OnUiUpdate(this);
+                ((IBbxUiItem)uiItem).OnUiUpdate(this);
             }
         }
 
-        protected virtual void OnUpdate() { }
+        protected virtual void OnUiUpdate() { }
 
         // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
         // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), and Show() with Hide().
@@ -43,9 +43,9 @@ namespace BbxCommon.Ui
         // 5. When calling Close() or Destroy(), previous functions will be called. For example, it will call Hide() if it is shown, and
         //    call Close() if it is opened.
 
-        private bool m_Inited = false;
-        private bool m_Opened = false;
-        private bool m_Visible = false;
+        protected bool m_Inited { get; private set; }
+        protected bool m_Opened { get; private set; }
+        protected bool m_Shown { get; private set; }
 
         internal override sealed void Init()
         {
@@ -65,7 +65,7 @@ namespace BbxCommon.Ui
                 OnUiInit();
                 foreach (var uiItem in m_View.UiItems)
                 {
-                    uiItem.OnUiInit(this);
+                    ((IBbxUiItem)uiItem).OnUiInit(this);
                 }
                 m_Inited = true;
             }
@@ -83,7 +83,7 @@ namespace BbxCommon.Ui
                 OnUiOpen();
                 foreach (var uiItem in m_View.UiItems)
                 {
-                    uiItem.OnUiOpen(this);
+                    ((IBbxUiItem)uiItem).OnUiOpen(this);
                 }
                 m_Opened = true;
                 UiControllerManager.OnUiOpen(this);
@@ -92,7 +92,7 @@ namespace BbxCommon.Ui
 
         public override sealed void Show()
         {
-            if (m_Visible == false)
+            if (m_Shown == false)
             {
                 foreach (var listener in m_ShowListeners)
                 {
@@ -103,15 +103,15 @@ namespace BbxCommon.Ui
                 OnUiShow();
                 foreach (var uiItem in m_View.UiItems)
                 {
-                    uiItem.OnUiShow(this);
+                    ((IBbxUiItem)uiItem).OnUiShow(this);
                 }
-                m_Visible = true;
+                m_Shown = true;
             }
         }
 
         public override sealed void Hide()
         {
-            if (m_Visible)
+            if (m_Shown)
             {
                 foreach (var listenerInfo in m_ShowListeners)
                 {
@@ -122,9 +122,9 @@ namespace BbxCommon.Ui
                 OnUiHide();
                 foreach (var uiItem in m_View.UiItems)
                 {
-                    uiItem.OnUiHide(this);
+                    ((IBbxUiItem)uiItem).OnUiHide(this);
                 }
-                m_Visible = false;
+                m_Shown = false;
             }
         }
 
@@ -142,7 +142,7 @@ namespace BbxCommon.Ui
                 OnUiClose();
                 foreach (var uiItem in m_View.UiItems)
                 {
-                    uiItem.OnUiClose(this);
+                    ((IBbxUiItem)uiItem).OnUiClose(this);
                 }
                 UiControllerManager.CollectUiController(this);
                 m_Opened = false;
@@ -161,14 +161,14 @@ namespace BbxCommon.Ui
                 listenerInfo.TryRemoveListener();
             }
 
-            if (m_Visible)
+            if (m_Shown)
                 OnUiHide();
             if (m_Opened)
                 OnUiClose();
             OnUiDestroy();
             foreach (var uiItem in m_View.UiItems)
             {
-                uiItem.OnUiDestroy(this);
+                ((IBbxUiItem)uiItem).OnUiDestroy(this);
             }
 
             foreach (var listenerInfo in m_InitListeners)
@@ -276,7 +276,7 @@ namespace BbxCommon.Ui
                         info.AddListener();
                     break;
                 case EControllerLifeCycle.Show:
-                    if (m_Visible)
+                    if (m_Shown)
                         info.AddListener();
                     break;
             }

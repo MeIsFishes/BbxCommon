@@ -10,9 +10,15 @@ namespace Dcg
 
     public abstract class OperationBase : PooledObject
     {
+        private int m_BlockKey;
+
         public void Enter()
         {
             OnEnter();
+            if (IsBlocked())
+            {
+                m_BlockKey = EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().Block();
+            }
         }
         protected virtual void OnEnter() { }
 
@@ -25,7 +31,21 @@ namespace Dcg
         public void Exit()
         {
             OnExit();
+            if (IsBlocked())
+            {
+                EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().Unblock(m_BlockKey);
+            }
         }
         protected virtual void OnExit() { }
+
+        protected virtual bool IsBlocked() { return false; }
+    }
+
+    public abstract class BlockedOperationBase : OperationBase
+    {
+        protected sealed override bool IsBlocked()
+        {
+            return true;
+        }
     }
 }

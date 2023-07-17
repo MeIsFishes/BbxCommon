@@ -215,7 +215,7 @@ GameObject:
   - component: {fileID: 6032431097315583076}
   - component: {fileID: 635372297258768522}
   m_Layer: 5
-  m_Name: DiceFrame
+  m_Name: UiDiceFrame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

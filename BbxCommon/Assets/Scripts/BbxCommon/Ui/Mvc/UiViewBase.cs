@@ -13,7 +13,7 @@ namespace BbxCommon.Ui
         [NonSerialized]
         public UiControllerBase UiController;
         [SerializeField]
-        internal List<IBbxUiItem> UiItems = new List<IBbxUiItem>();
+        internal List<Component> UiItems = new();
 
 #if UNITY_EDITOR
         [Button("Pre-UiInit")]
@@ -21,8 +21,11 @@ namespace BbxCommon.Ui
         {
             var uiItems = GetComponentsInChildren<IBbxUiItem>();
             UiItems.Clear();
-            UiItems.AddArray(uiItems);
-            foreach (var item in UiItems)
+            foreach (var item in uiItems)
+            {
+                UiItems.Add((Component)item);
+            }
+            foreach (var item in uiItems)
             {
                 item.PreInit(this);
                 EditorUtility.SetDirty((Component)item);

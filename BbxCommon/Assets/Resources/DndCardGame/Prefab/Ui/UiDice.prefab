@@ -89,7 +89,7 @@ GameObject:
   - component: {fileID: 7220269692404147734}
   - component: {fileID: 1153564080249549915}
   m_Layer: 5
-  m_Name: Dice
+  m_Name: UiDice
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -137,7 +137,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a4f586b2ac6c754eb63908ac24cee72, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultOpen: 0
+  DefaultShow: 1
+  DiceTittle: {fileID: 0}
   UiDragable: {fileID: 3682755452414818849}
   UiInteractor: {fileID: 2358620174404244115}
   OnDragGroup: {fileID: 4595174208597290224}

@@ -12,6 +12,8 @@ namespace Dcg
 
             stage.AddScene("DcgMain");
 
+            stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiGlobalScene"));
+
             stage.AddLoadItem(new InitSingletonComponent());
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
             stage.AddLoadItem(new InitPrefabData());

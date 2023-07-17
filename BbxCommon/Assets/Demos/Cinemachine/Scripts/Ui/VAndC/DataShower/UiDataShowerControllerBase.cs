@@ -33,7 +33,7 @@ namespace Cin.Ui
         private float m_MinTime;
         private float m_MaxTime;
 
-        protected override void OnUpdate()
+        protected override void OnUiUpdate()
         {
             foreach (var pointObj in m_PointObjs)
             {

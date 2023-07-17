@@ -2,7 +2,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    public class OperationGoToNextRoom : OperationBase
+    public class OperationGoToNextRoom : BlockedOperationBase
     {
         // 暂时用hard code写死，后面需要做timeline的editor然后转移过去
         private float m_ElapsedTime = 0;

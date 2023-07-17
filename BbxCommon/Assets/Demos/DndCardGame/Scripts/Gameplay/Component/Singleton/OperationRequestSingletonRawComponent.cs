@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using BbxCommon;
+using BbxCommon.Ui;
+using Dcg.Ui;
 
 namespace Dcg
 {
@@ -25,13 +27,17 @@ namespace Dcg
         /// </summary>
         public void AddBlockedOperation(OperationBase operation)
         {
-            if (BlockedOperations.Count == 0)
+            if (BlockedOperations.Count == 0 && Blocked == false)
                 BlockedOperations.Enqueue(operation);
+            else
+                UiApi.GetUiController<UiPromptController>()?.ShowPrompt("你现在不能下达指令！");
         }
 
         public int Block()
         {
-            return (int)m_LockIdGenerator.GenerateID();
+            var key = (int)m_LockIdGenerator.GenerateID();
+            m_Locks.Add(key);
+            return key;
         }
 
         public void Unblock(int key)

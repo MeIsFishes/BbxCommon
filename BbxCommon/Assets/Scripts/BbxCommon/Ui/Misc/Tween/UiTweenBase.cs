@@ -18,13 +18,6 @@ namespace BbxCommon.Ui
     public abstract class UiTweenBase: MonoBehaviour, IBbxUiItem
     {
         #region Enum Define
-        public enum EEnableAt
-        {
-            Show,
-            Hide,
-            Manually,
-        }
-
         public enum ESearchTarget
         {
             Single,
@@ -41,11 +34,12 @@ namespace BbxCommon.Ui
         [FoldoutGroup("Play Tween")]
         [Tooltip("Descripts how value changes in range [MinValue, MaxValue] by time range [StartTime, StartTime + Duration].")]
         public AnimationCurve Curve;
-        [FoldoutGroup("Play Tween")]
-        public EEnableAt EnableAt;
 
         [FoldoutGroup("Tween Targets")]
         public bool AutoSearch = true;
+        [FoldoutGroup("Tween Targets")]
+        [Tooltip("If set, search tween targets using the given transform root, instead of using the component's one.")]
+        public Transform TransformRootOverride;
         [FoldoutGroup("Tween Targets")]
         public List<Component> TweenTargets = new();
         #endregion
@@ -56,7 +50,9 @@ namespace BbxCommon.Ui
         protected bool m_Enabled;
         protected float m_ElapsedTime;
 
+        [SerializeField]
         private float m_MinTime;
+        [SerializeField]
         private float m_MaxTime;
         #endregion
 
@@ -68,12 +64,13 @@ namespace BbxCommon.Ui
             {
                 var types = new List<Type>();
                 GetSearchType(types);
+                var transformOverride = TransformRootOverride ? TransformRootOverride : transform;
                 switch (GetSearchTarget())
                 {
                     case ESearchTarget.Multiple:
                         foreach (var type in types)
                         {
-                            var components = GetComponentsInChildren(type);
+                            var components = transformOverride.GetComponentsInChildren(type);
                             foreach (var component in components)
                             {
                                 if (TweenTargets.Contains(component) == false)
@@ -84,7 +81,7 @@ namespace BbxCommon.Ui
                     case ESearchTarget.Single:
                         foreach (var type in types)
                         {
-                            var component = GetComponentInChildren(type);
+                            var component = transformOverride.GetComponentInChildren(type);
                             if (TweenTargets.Contains(component) == false)
                                 TweenTargets.Add(component);
                         }

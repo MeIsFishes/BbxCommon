@@ -10,6 +10,8 @@ namespace Dcg
         {
             var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Walk Stage");
 
+            stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonWalkScene"));
+
             stage.AddUpdateSystem<WalkToSystem>();
 
             return stage;

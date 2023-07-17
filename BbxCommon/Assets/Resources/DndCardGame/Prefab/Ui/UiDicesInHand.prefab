@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 7120033124863585920}
   - component: {fileID: 1824776721637339452}
   m_Layer: 0
-  m_Name: DicesInHand
+  m_Name: UiDicesInHand
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
