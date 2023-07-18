@@ -17,6 +17,10 @@ namespace Dcg
 
             stage.AddLateLoadItem(new CombatStageBindUi());
 
+            stage.AddUpdateSystem<CauseDamageSystem>();
+            stage.AddUpdateSystem<TakeDamageSystem>();
+            stage.AddUpdateSystem<MonsterTurnSystem>();
+
             return stage;
         }
 

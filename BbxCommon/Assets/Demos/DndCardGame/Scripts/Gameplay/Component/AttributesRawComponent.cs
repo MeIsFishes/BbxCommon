@@ -32,6 +32,9 @@ namespace Dcg
 
     public class AttributesRawComponent : EcsRawComponent
     {
+        public int MaxHp;
+        public int CurHp;
+
         public int Strength;
         public int Dexterity;
         public int Constitution;
