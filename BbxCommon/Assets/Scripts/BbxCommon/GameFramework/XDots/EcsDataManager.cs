@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using Unity.Entities;
+using System.Collections;
 
 namespace BbxCommon
 {
@@ -89,11 +90,6 @@ namespace BbxCommon
             group.RemoveRawComponent<T>(out var comp);
             comp.CollectToPool();
         }
-
-        internal static void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
-        {
-            EcsDataList<T>.ForeachEcsData(action);
-        }
         #endregion
 
         #region SingletonRawComponent
@@ -140,11 +136,6 @@ namespace BbxCommon
             group.RemoveRawAspect<T>(out var aspect);
             aspect.CollectToPool();
         }
-
-        internal static void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
-        {
-            EcsDataList<T>.ForeachEcsData(action);
-        }
         #endregion
 
         #region private
@@ -172,7 +163,7 @@ namespace BbxCommon
     internal static class EcsDataList<T> where T : EcsData
     {
         #region Common
-        private static List<ObjRef<T>> m_EcsDatas = new();
+        private static List<ObjRef<T>> m_EcsDatas = new();  // active datas
         private static List<int> m_DeletedDatas = new();    // data's index
 
         internal static void AddEcsData(T data)
@@ -193,23 +184,30 @@ namespace BbxCommon
             return null;
         }
 
-        internal static void ForeachEcsData(UnityAction<T> action)
+        public static IEnumerable<T> GetEnumerator()
         {
             for (int i = 0; i < m_EcsDatas.Count; i++)
             {
-                var data = m_EcsDatas[i];
-                if (data.Obj != null)
-                    action(data.Obj);
-                else
+                var data = m_EcsDatas[i].Obj;
+                if (data == null || data.RequestDeactive)
                     m_DeletedDatas.Add(i);
+                else
+                    yield return data;
             }
             RemoveDeletedDatas();
         }
         #endregion
 
         #region private
-        private static void RemoveEcsData(int index)
+        private static void RemoveData(int index)
         {
+            var data = m_EcsDatas[index].Obj;
+            if (data != null)
+            {
+                data.Active = false;
+                data.RequestDeactive = false;
+            }
+
             m_EcsDatas.UnorderedRemoveAt(index);
             if (m_EcsDatas.Count > 0 && index < m_EcsDatas.Count)
                 m_EcsDatas[index].Obj.Index = index;     // swap the last one to the removed slot, then set its index as new
@@ -228,10 +226,9 @@ namespace BbxCommon
         /// </summary>
         private static void RemoveDeletedDatas()
         {
-            m_DeletedDatas.Sort();
             for (int i = m_DeletedDatas.Count - 1; i >= 0; i--)
             {
-                RemoveEcsData(i);
+                RemoveData(i);
             }
             m_DeletedDatas.Clear();
         }

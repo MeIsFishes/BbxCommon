@@ -13,9 +13,26 @@ namespace BbxCommon
         /// </summary>
         internal int Index;
 
+        /// <summary>
+        /// Deactive instances will not be visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
+        internal bool Active;
+        /// <summary>
+        /// An <see cref="EcsData"/> requested to be deactivated will be removed from <see cref="EcsDataList{T}.m_EcsDatas"/>
+        /// when the enumerator runs, but be added to <see cref="EcsDataList{T}.m_EcsDatas"/> at once be requested. All these
+        /// offer better-performed activating and deactivating operations.
+        /// </summary>
+        internal bool RequestDeactive;
+
         public Entity GetEntity()
         {
             return Entity;
+        }
+
+        public override void OnAllocate()
+        {
+            Active = true;
+            RequestDeactive = false;
         }
     }
 

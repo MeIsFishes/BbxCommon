@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 
@@ -40,6 +41,20 @@ namespace BbxCommon
         public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             EcsDataManager.RemoveSingletonRawComponent<T>();
+        }
+
+        public static void ActivateRawComponent<T>(T comp) where T : EcsRawComponent
+        {
+            if (comp.Active)
+                return;
+            EcsDataList<T>.AddEcsData(comp);
+            comp.Active = true;
+            comp.RequestDeactive = false;
+        }
+
+        public static void DeactivateRawComponent<T>(T comp) where T : EcsRawComponent
+        {
+            comp.RequestDeactive = true;
         }
         #endregion
 
@@ -111,6 +126,18 @@ namespace BbxCommon
         public static void Destroy(this Entity entity)
         {
             DestroyEntity(entity);
+        }
+        #endregion
+
+        #region RawComponent Extend
+        public static void Activate<T>(this T comp) where T : EcsRawComponent
+        {
+            ActivateRawComponent(comp);
+        }
+
+        public static void Deactivate<T>(this T comp) where T : EcsRawComponent
+        {
+            DeactivateRawComponent(comp);
         }
         #endregion
     }

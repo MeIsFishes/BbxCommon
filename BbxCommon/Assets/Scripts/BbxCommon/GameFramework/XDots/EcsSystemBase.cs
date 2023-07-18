@@ -1,4 +1,4 @@
-using UnityEngine.Events;
+using System.Collections.Generic;
 using Unity.Entities;
 
 namespace BbxCommon
@@ -16,19 +16,14 @@ namespace BbxCommon
     /// </summary>
     public abstract partial class EcsMixSystemBase : EcsSystemBase
     {
-        protected void ForeachRawComponent<T>(UnityAction<T> action) where T : EcsRawComponent
-        {
-            EcsDataManager.ForeachRawComponent(action);
-        }
-
         protected T GetSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             return EcsDataManager.GetSingletonRawComponent<T>();
         }
 
-        protected void ForeachRawAspect<T>(UnityAction<T> action) where T : EcsRawAspect
+        protected IEnumerable<T> GetEnumerator<T>() where T : EcsData
         {
-            EcsDataManager.ForeachRawAspect(action);
+            return EcsDataList<T>.GetEnumerator();
         }
     }
 }

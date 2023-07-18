@@ -11,10 +11,10 @@ namespace Dcg
     {
         protected override void OnUpdate()
         {
-            ForeachRawAspect((WalkToRawAspect aspect) =>
+            foreach (var aspect in GetEnumerator<WalkToRawAspect>())
             {
                 if (aspect.Finished)
-                    return;
+                    continue;
 
                 // 面朝目标
                 aspect.Transform.LookAt(aspect.Transform.position + (aspect.Destination - aspect.Transform.position).SetY(0));
@@ -34,7 +34,7 @@ namespace Dcg
                     aspect.CharacterController.Move(new Vector3(0, -10, 0) * deltaMove);    // 贴地
                     aspect.Animator.Play("Walk");
                 }
-            });
+            }
         }
     }
 }

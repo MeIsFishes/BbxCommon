@@ -13,13 +13,12 @@ namespace Nnp
             if (localPlayerComp == null)
                 return;
             var localPlayerTranform = localPlayerComp.GetEntity().GetGameObject().transform;
-            ForeachRawComponent(
-                (CameraRawComponent cameraComp) =>
-                {
-                    var transform = cameraComp.GetEntity().GetGameObject().transform;
-                    transform.position = new Vector3(0, 10, -8) + localPlayerTranform.position;
-                    transform.LookAt(localPlayerTranform.position);
-                });
+            foreach (var cameraComp in GetEnumerator<CameraRawComponent>())
+            {
+                var transform = cameraComp.GetEntity().GetGameObject().transform;
+                transform.position = new Vector3(0, 10, -8) + localPlayerTranform.position;
+                transform.LookAt(localPlayerTranform.position);
+            }
         }
     }
 }
