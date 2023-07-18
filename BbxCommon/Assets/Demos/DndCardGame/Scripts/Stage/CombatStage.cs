@@ -19,6 +19,8 @@ namespace Dcg
 
             stage.AddUpdateSystem<CauseDamageSystem>();
             stage.AddUpdateSystem<TakeDamageSystem>();
+            stage.AddUpdateSystem<CombatRoundSystem>();
+            stage.AddUpdateSystem<CombatTurnSystem>();
             stage.AddUpdateSystem<MonsterTurnSystem>();
 
             return stage;
