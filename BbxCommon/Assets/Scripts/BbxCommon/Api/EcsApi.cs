@@ -28,6 +28,9 @@ namespace BbxCommon
             goComp.GameObject = gameObject;
         }
 
+        /// <summary>
+        /// Add a <see cref="EcsSingletonRawComponent"/> to a free access <see cref="Entity"/>.
+        /// </summary>
         public static T AddSingletonRawComponent<T>() where T : EcsSingletonRawComponent, new()
         {
             return EcsDataManager.AddSingletonRawComponent<T>();
@@ -38,11 +41,18 @@ namespace BbxCommon
             return EcsDataManager.GetSingletonRawComponent<T>();
         }
 
+        /// <summary>
+        /// Once getting the <see cref="EcsSingletonRawComponent"/>, remove it from its host.
+        /// </summary>
         public static void RemoveSingletonRawComponent<T>() where T : EcsSingletonRawComponent
         {
             EcsDataManager.RemoveSingletonRawComponent<T>();
         }
 
+        /// <summary>
+        /// Set the <see cref="EcsRawComponent"/> active. Only active <see cref="EcsRawComponent"/>s can be
+        /// visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
         public static void ActivateRawComponent<T>(T comp) where T : EcsRawComponent
         {
             if (comp.Active)
@@ -52,6 +62,10 @@ namespace BbxCommon
             comp.RequestDeactive = false;
         }
 
+        /// <summary>
+        /// Set the <see cref="EcsRawComponent"/> deactive. Deactive <see cref="EcsRawComponent"/>s will be
+        /// ignored by <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
         public static void DeactivateRawComponent<T>(T comp) where T : EcsRawComponent
         {
             comp.RequestDeactive = true;
@@ -130,11 +144,19 @@ namespace BbxCommon
         #endregion
 
         #region RawComponent Extend
+        /// <summary>
+        /// Set the <see cref="EcsRawComponent"/> active. Only active <see cref="EcsRawComponent"/>s can be
+        /// visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
         public static void Activate<T>(this T comp) where T : EcsRawComponent
         {
             ActivateRawComponent(comp);
         }
 
+        /// <summary>
+        /// Set the <see cref="EcsRawComponent"/> deactive. Deactive <see cref="EcsRawComponent"/>s will be
+        /// ignored by <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
         public static void Deactivate<T>(this T comp) where T : EcsRawComponent
         {
             DeactivateRawComponent(comp);
