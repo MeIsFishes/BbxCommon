@@ -10,7 +10,7 @@ namespace Dcg
 
     public abstract class OperationBase : PooledObject
     {
-        private int m_BlockKey;
+        private LockItemKey m_BlockKey;
 
         public void Enter()
         {

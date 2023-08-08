@@ -48,31 +48,11 @@ namespace BbxCommon
         {
             EcsDataManager.RemoveSingletonRawComponent<T>();
         }
-
-        /// <summary>
-        /// Set the <see cref="EcsRawComponent"/> active. Only active <see cref="EcsRawComponent"/>s can be
-        /// visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
-        /// </summary>
-        public static void ActivateRawComponent<T>(T comp) where T : EcsRawComponent
-        {
-            if (comp.Active)
-                return;
-            EcsDataList<T>.AddEcsData(comp);
-            comp.Active = true;
-            comp.RequestDeactive = false;
-        }
-
-        /// <summary>
-        /// Set the <see cref="EcsRawComponent"/> deactive. Deactive <see cref="EcsRawComponent"/>s will be
-        /// ignored by <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
-        /// </summary>
-        public static void DeactivateRawComponent<T>(T comp) where T : EcsRawComponent
-        {
-            comp.RequestDeactive = true;
-        }
         #endregion
 
         #region Entity Extend
+
+        #region Component
         public static void AddComponent<T>(this Entity entity) where T : unmanaged, IComponentData
         {
             World.DefaultGameObjectInjectionWorld.EntityManager.AddComponent<T>(entity);
@@ -93,7 +73,9 @@ namespace BbxCommon
         {
             World.DefaultGameObjectInjectionWorld.EntityManager.RemoveComponent<T>(entity);
         }
+        #endregion
 
+        #region RawComponent
         public static T AddRawComponent<T>(this Entity entity) where T : EcsRawComponent, new()
         {
             return EcsDataManager.AddRawComponent<T>(entity);
@@ -114,6 +96,20 @@ namespace BbxCommon
             EcsDataManager.RemoveRawComponent<T>(entity);
         }
 
+        public static void ActivateRawComponent<T>(this Entity entity) where T : EcsRawComponent
+        {
+            var comp = EcsDataManager.GetRawComponent<T>(entity);
+            EcsDataManager.ActivateEcsData(comp);
+        }
+
+        public static void DeactiveRawComponent<T>(this Entity entity) where T : EcsRawComponent
+        {
+            var comp = EcsDataManager.GetRawComponent<T>(entity);
+            EcsDataManager.DeactivateEcsData(comp);
+        }
+        #endregion
+
+        #region RawAspect
         public static T CreateRawAspect<T>(this Entity entity) where T : EcsRawAspect, new()
         {
             return EcsDataManager.CreateRawAspect<T>(entity);
@@ -129,6 +125,20 @@ namespace BbxCommon
             AttachEntityToGameObject(entity, gameObject);
         }
 
+        public static void ActivateRawAspect<T>(this Entity entity) where T : EcsRawAspect
+        {
+            var aspect = EcsDataManager.GetRawAspect<T>(entity);
+            EcsDataManager.ActivateEcsData(aspect);
+        }
+
+        public static void DeactiveRawAspect<T>(this Entity entity) where T : EcsRawAspect
+        {
+            var aspect = EcsDataManager.GetRawAspect<T>(entity);
+            EcsDataManager.DeactivateEcsData(aspect);
+        }
+        #endregion
+
+        #region Common
         public static GameObject GetGameObject(this Entity entity)
         {
             var goComp = entity.GetRawComponent<GameObjectRawComponent>();
@@ -143,23 +153,17 @@ namespace BbxCommon
         }
         #endregion
 
-        #region RawComponent Extend
-        /// <summary>
-        /// Set the <see cref="EcsRawComponent"/> active. Only active <see cref="EcsRawComponent"/>s can be
-        /// visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
-        /// </summary>
-        public static void Activate<T>(this T comp) where T : EcsRawComponent
+        #endregion
+
+        #region EcsData Extend
+        public static void Activate<T>(this T data) where T : EcsData
         {
-            ActivateRawComponent(comp);
+            EcsDataManager.ActivateEcsData(data);
         }
 
-        /// <summary>
-        /// Set the <see cref="EcsRawComponent"/> deactive. Deactive <see cref="EcsRawComponent"/>s will be
-        /// ignored by <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
-        /// </summary>
-        public static void Deactivate<T>(this T comp) where T : EcsRawComponent
+        public static void Deactivate<T>(this T data) where T : EcsData
         {
-            DeactivateRawComponent(comp);
+            EcsDataManager.DeactivateEcsData(data);
         }
         #endregion
     }

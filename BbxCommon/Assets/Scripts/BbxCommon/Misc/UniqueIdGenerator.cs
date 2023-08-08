@@ -10,7 +10,14 @@ namespace BbxCommon
         #region Common
         private ulong m_Id = 0;
 
-        public ulong GenerateID()
+        public UniqueIdGenerator() { }
+
+        public UniqueIdGenerator(ulong id)
+        {
+            m_Id = id;
+        }
+
+        public ulong GenerateId()
         {
             return m_Id++;
         }
@@ -44,7 +51,7 @@ namespace BbxCommon
         {
             if (m_s_KeyGenerator == null)
                 m_s_KeyGenerator = new UniqueIdGenerator();
-            ulong newId = m_s_KeyGenerator.GenerateID();
+            ulong newId = m_s_KeyGenerator.GenerateId();
             var generator = ObjectPool<UniqueIdGenerator>.Alloc();
             m_s_GeneratorUint.Add(newId, generator);
             key = newId;

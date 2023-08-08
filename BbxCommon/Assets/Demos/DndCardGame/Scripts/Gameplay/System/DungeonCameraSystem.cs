@@ -14,21 +14,20 @@ namespace Dcg
             var mainCameraComp = EcsApi.GetSingletonRawComponent<MainCameraSingletonRawComponent>();
             if (mainCameraComp == null)
                 return;
-            var gameObject = mainCameraComp.GetEntity().GetGameObject();
-            if (gameObject == null)
-                return;
             var cameraData = DataApi.GetData<CameraData>();
             if (cameraData == null)
                 return;
             var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
             if (playerComp.Characters.Count == 0)
                 return;
-            var characterGo = playerComp.Characters[0].GetGameObject();
-            if (characterGo == null)
+            var character = playerComp.Characters[0];
+            if (character == null)
                 return;
 
-            gameObject.transform.position = characterGo.transform.position + cameraData.DungeonOffset;
-            gameObject.transform.LookAt(characterGo.transform.position);
+            var transform = mainCameraComp.GetEntity().GetGameObject().transform;
+            var characterTransform = character.GetGameObject().transform;
+            transform.position = characterTransform.position + cameraData.DungeonOffset;
+            transform.rotation = Quaternion.LookRotation(characterTransform.position - transform.position);
         }
     }
 }

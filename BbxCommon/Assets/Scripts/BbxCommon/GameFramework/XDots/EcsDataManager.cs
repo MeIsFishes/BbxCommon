@@ -52,6 +52,28 @@ namespace BbxCommon
             group.CollectToPool();
             m_EcsDataGroups[entity.Index] = null;
         }
+
+        /// <summary>
+        /// Set the <see cref="EcsData"/> active. Only active <see cref="EcsData"/>s can be
+        /// visited via <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
+        internal static void ActivateEcsData<T>(T data) where T : EcsData
+        {
+            if (data.Active)
+                return;
+            EcsDataList<T>.AddEcsData(data);
+            data.Active = true;
+            data.RequestDeactive = false;
+        }
+
+        /// <summary>
+        /// Set the <see cref="EcsData"/> deactive. Deactive <see cref="EcsData"/>s will be
+        /// ignored by <see cref="EcsMixSystemBase.GetEnumerator{T}"/>.
+        /// </summary>
+        internal static void DeactivateEcsData<T>(T data) where T : EcsData
+        {
+            data.RequestDeactive = true;
+        }
         #endregion
 
         #region RawComponent
@@ -128,6 +150,14 @@ namespace BbxCommon
             aspect.Create();
             EcsDataList<T>.AddEcsData(aspect);
             return aspect;
+        }
+
+        internal static T GetRawAspect<T>(Entity entity) where T : EcsRawAspect
+        {
+            var group = GetAndRefreshGroup(entity);
+            if (group == null)
+                return null;
+            return group.GetRawAspect<T>();
         }
 
         internal static void RemoveRawAspect<T>(Entity entity) where T : EcsRawAspect

@@ -27,7 +27,7 @@ namespace Dcg
                 foreach (var character in playerComp.Characters)
                 {
                     var walkToComp = character.GetRawComponent<WalkToRawComponent>();
-                    walkToComp.AddRequest(roomComp.CurRoom.transform.position + roomData.CharacterOffset);
+                    walkToComp.AddRequest(roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset);
                     m_RequestWalk = true;
                 }
             }

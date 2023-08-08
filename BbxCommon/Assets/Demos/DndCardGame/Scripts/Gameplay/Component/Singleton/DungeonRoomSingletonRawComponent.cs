@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using Unity.Entities;
 using BbxCommon;
 
 namespace Dcg
@@ -7,19 +8,19 @@ namespace Dcg
     public class DungeonRoomSingletonRawComponent : EcsSingletonRawComponent
     {
         public bool RequestSpawnRoom;
-        public GameObject CurRoom
+        public Entity CurRoom
         {
             get
             {
                 if (m_Rooms.Count > 0)
                     return m_Rooms[m_Rooms.Count - 1];
-                return null;
+                return Entity.Null;
             }
         }
 
-        private List<GameObject> m_Rooms = new();
+        private List<Entity> m_Rooms = new();
 
-        public void AddRoom(GameObject room)
+        public void AddRoom(Entity room)
         {
             m_Rooms.Add(room);
         }

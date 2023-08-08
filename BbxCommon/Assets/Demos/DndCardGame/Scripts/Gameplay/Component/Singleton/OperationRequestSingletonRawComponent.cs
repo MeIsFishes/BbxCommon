@@ -16,10 +16,10 @@ namespace Dcg
         /// <summary>
         /// 操作处理是否被要求阻塞
         /// </summary>
-        public bool Blocked => m_Locks.Count > 0;
+        public bool Blocked => m_LockItem.IsLocked;
         public Queue<OperationBase> BlockedOperations = new();
 
-        private HashSet<int> m_Locks = new();
+        private LockItem m_LockItem = new();
         private UniqueIdGenerator m_LockIdGenerator = new();
 
         /// <summary>
@@ -33,19 +33,16 @@ namespace Dcg
                 UiApi.GetUiController<UiPromptController>()?.ShowPrompt("你现在不能下达指令！");
         }
 
-        public int Block()
+        public LockItemKey Block()
         {
-            var key = (int)m_LockIdGenerator.GenerateID();
-            m_Locks.Add(key);
-            return key;
+            return m_LockItem.Lock();
         }
 
-        public void Unblock(int key)
+        public void Unblock(LockItemKey key)
         {
-            m_Locks.Remove(key);
-            if (m_Locks.Count == 0)
-                m_LockIdGenerator.ResetCounter(0);
+            m_LockItem.Unlock(key);
         }
+
         #endregion
 
         #region Free Operation
@@ -64,8 +61,14 @@ namespace Dcg
         #endregion
 
         #region Common
+        public override void OnAllocate()
+        {
+            m_LockItem = ObjectPool<LockItem>.Alloc();
+        }
+
         public override void OnCollect()
         {
+            m_LockItem.CollectToPool();
             BlockedOperations.CollectAndClearElements();
             FreeOperations.CollectAndClearElements();
             UpdatingOperations.CollectAndClearElements();

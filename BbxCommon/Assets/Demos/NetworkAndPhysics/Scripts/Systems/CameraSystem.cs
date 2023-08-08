@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
+using Dcg;
 
 namespace Nnp
 {
@@ -17,7 +18,7 @@ namespace Nnp
             {
                 var transform = cameraComp.GetEntity().GetGameObject().transform;
                 transform.position = new Vector3(0, 10, -8) + localPlayerTranform.position;
-                transform.LookAt(localPlayerTranform.position);
+                transform.rotation = Quaternion.LookRotation(localPlayerTranform.position - transform.position);
             }
         }
     }

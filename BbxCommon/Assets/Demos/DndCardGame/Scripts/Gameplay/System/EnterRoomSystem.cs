@@ -6,7 +6,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [DisableAutoCreation, UpdateAfter(typeof(SpawnDungeonRoomSystem))]
+    [DisableAutoCreation, UpdateAfter(typeof(SpawnRoomShowSystem))]
     public partial class EnterRoomSystem : EcsMixSystemBase
     {
         protected override void OnUpdate()

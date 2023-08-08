@@ -21,7 +21,8 @@ namespace Dcg
             stage.AddLateLoadItem(new InitDungeon());
 
             stage.AddUpdateSystem<DungeonCameraSystem>();
-            stage.AddUpdateSystem<SpawnDungeonRoomSystem>();
+            stage.AddUpdateSystem<SpawnRoomSystem>();
+            stage.AddUpdateSystem<SpawnRoomShowSystem>();
             
             return stage;
         }
@@ -83,14 +84,13 @@ namespace Dcg
                 // 创建初始房间
                 var roomData = DataApi.GetData<RoomData>();
                 var roomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
-                var room = Object.Instantiate(roomData.RoomPrefab);
-                room.transform.position = new Vector3();
+                var room = EntityCreator.CreateRoomEntity(Vector3.zero);
                 roomComp.AddRoom(room);
 
                 // 将玩家拉过来
                 var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
                 var character = playerComp.Characters[0];
-                character.GetGameObject().transform.position = roomComp.CurRoom.transform.position + roomData.CharacterOffset;
+                character.GetGameObject().transform.position = roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset;
             }
 
             void IStageLoad.Unload(GameStage stage)

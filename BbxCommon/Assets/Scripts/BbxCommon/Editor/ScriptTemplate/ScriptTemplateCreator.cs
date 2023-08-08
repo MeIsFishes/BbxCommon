@@ -104,7 +104,10 @@ namespace BbxCommon.Editor
             txt = Regex.Replace(txt, "#SCRIPT_NAME#", fileNameWithoutExtension);
 
             if (fileNameWithoutExtension.EndsWith("Base"))
+            {
+                txt = Regex.Replace(txt, "public partial class", "public abstract partial class");
                 txt = Regex.Replace(txt, "public class", "public abstract class");
+            }
 
             bool encoderShouldEmitUTF8Identifier = true;
             bool throwOnInvalidBytes = false;

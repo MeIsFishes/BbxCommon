@@ -65,5 +65,24 @@ namespace Dcg
 
             return entity;
         }
+
+        public static Entity CreateRoomEntity(Vector3 position)
+        {
+            var entity = EcsApi.CreateEntity();
+
+            var roomData = DataApi.GetData<RoomData>();
+
+            var spawnRoomShowComp = entity.AddRawComponent<SpawnRoomShowRawComponent>();
+            spawnRoomShowComp.OriginalPos = position;
+
+            entity.AddRawComponent<RoomRawComponent>();
+
+            var gameObject = Object.Instantiate(roomData.RoomPrefab);
+            entity.AttachToGameObject(gameObject);
+
+            gameObject.transform.position = position;
+
+            return entity;
+        }
     }
 }
