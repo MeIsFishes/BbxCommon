@@ -32,6 +32,9 @@ namespace Dcg
 
             // 初始化属性
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
+            attributesComp.MaxHp = 16;
+            attributesComp.CurHp = 16;
+            attributesComp.ArmorClass.Add(EDiceType.D8);
             attributesComp.Strength = 3;
             attributesComp.Dexterity = 3;
             attributesComp.Constitution = 3;
@@ -40,6 +43,7 @@ namespace Dcg
 
             // 添加其他component
             entity.AddRawComponent<WalkToRawComponent>();
+            entity.AddRawComponent<AttackableRawComponent>();
 
             // 关联到GameObject
             var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
@@ -48,6 +52,38 @@ namespace Dcg
 
             // 创建aspect
             entity.CreateRawAspect<WalkToRawAspect>();
+
+            return entity;
+        }
+
+        public static Entity CreateMonsterEntity(MonsterData monsterData, Vector3 position, Quaternion rotation)
+        {
+            var entity = EcsApi.CreateEntity();
+
+            // 初始化属性
+            var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
+            attributesComp.MaxHp = monsterData.HitPoints;
+            attributesComp.CurHp = monsterData.HitPoints;
+            attributesComp.ArmorClass.AddList(monsterData.ArmorClass);
+            attributesComp.Strength = monsterData.Strength;
+            attributesComp.Dexterity = monsterData.Dexterity;
+            attributesComp.Constitution = monsterData.Constitution;
+            attributesComp.Intelligence = monsterData.Intelligence;
+            attributesComp.Wisdom = monsterData.Wisdom;
+
+            // 初始化怪物属性
+            var monsterComp = entity.AddRawComponent<MonsterRawComponent>();
+            monsterComp.AttackDices.AddList(monsterData.AttackDices);
+            monsterComp.DamageDices.AddList(monsterData.DamageDices);
+
+            // 添加其他component
+            entity.AddRawComponent<AttackableRawComponent>();
+
+            // 关联到GameObject
+            var gameObject = Object.Instantiate(monsterData.Prefab);
+            entity.AttachToGameObject(gameObject);
+            gameObject.transform.position = position;
+            gameObject.transform.rotation = rotation;
 
             return entity;
         }

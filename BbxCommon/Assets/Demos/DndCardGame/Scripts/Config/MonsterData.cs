@@ -11,7 +11,16 @@ namespace Dcg
     public class MonsterData : ScriptableObject
     {
         public GameObject Prefab;
+
         public int HitPoints;
         public List<EDiceType> ArmorClass;
+        public List<EDiceType> AttackDices;
+        public List<EDiceType> DamageDices;
+
+        public int Strength;
+        public int Dexterity;
+        public int Constitution;
+        public int Intelligence;
+        public int Wisdom;
     }
 }

@@ -66,6 +66,12 @@ namespace BbxCommon
         {
             DataManager<T>.ReleaseData(key, tryCollectToPool);
         }
+
+        /// <param name="tryCollectToPool"> If true and if the data is a <see cref="PooledObject"/>, it will call <see cref="PooledObject.CollectToPool"/>. </param>
+        public static void ReleaseAllData<T>(bool tryCollectToPool = true)
+        {
+            DataManager<T>.ReleaseAllData(tryCollectToPool);
+        }
         #endregion
 
         #region Asset
@@ -170,7 +176,7 @@ namespace BbxCommon
         {
             if (tryCollectToPool && m_Data is PooledObject pooled)
                 pooled.CollectToPool();
-            m_Data = default(T);
+            m_Data = default;
         }
 
         internal static void ReleaseData(string key, bool tryCollectToPool)
@@ -182,12 +188,12 @@ namespace BbxCommon
 
         internal static void ReleaseData(int key, bool tryCollectToPool)
         {
-            T released = default(T);
+            T released = default;
             switch (m_Distribution)
             {
                 case EDataDistribution.Continuous:
                     released = m_DataList[key];
-                    m_DataList[key] = default(T);
+                    m_DataList[key] = default;
                     break;
                 case EDataDistribution.Discrete:
                     m_IntDic.Remove(key, out released);
@@ -195,6 +201,34 @@ namespace BbxCommon
             }
             if (tryCollectToPool && released is PooledObject pooled)
                 pooled.CollectToPool();
+        }
+
+        internal static void ReleaseAllData(bool tryCollectToPool)
+        {
+            if (tryCollectToPool && m_Data is PooledObject pooled)
+                pooled.CollectToPool();
+            m_Data = default;
+
+            foreach (var data in m_DataList)
+            {
+                if (tryCollectToPool)
+                    (data as PooledObject)?.CollectToPool();
+            }
+            m_DataList.Clear();
+
+            foreach (var pair in m_IntDic)
+            {
+                if (tryCollectToPool)
+                    (pair.Value as PooledObject)?.CollectToPool();
+            }
+            m_IntDic.Clear();
+
+            foreach (var pair in m_StringDic)
+            {
+                if (tryCollectToPool)
+                    (pair.Value as PooledObject)?.CollectToPool();
+            }
+            m_StringDic.Clear();
         }
         #endregion
     }

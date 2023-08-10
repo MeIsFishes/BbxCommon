@@ -35,6 +35,8 @@ namespace Dcg
         public int MaxHp;
         public int CurHp;
 
+        public List<EDiceType> ArmorClass = new();
+
         public int Strength;
         public int Dexterity;
         public int Constitution;
@@ -85,6 +87,18 @@ namespace Dcg
                         break;
                 }
             }
+        }
+
+        public override void OnCollect()
+        {
+            MaxHp = 0;
+            CurHp = 0;
+            ArmorClass.Clear();
+            Strength = 0;
+            Dexterity = 0;
+            Constitution = 0;
+            Intelligence = 0;
+            Wisdom = 0;
         }
     }
 }

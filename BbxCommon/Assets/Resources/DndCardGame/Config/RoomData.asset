@@ -14,5 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RoomPrefab: {fileID: 5311168476267763342, guid: dfdba9f01bf71a74bba807d45f89e3d1, type: 3}
   RoomSize: {x: 10, y: 10}
-  CharacterOffset: {x: 0, y: 0.2, z: -3.5}
-  MonsterOffset: {x: 0, y: 0, z: 0}
+  CharacterOffset: {x: 0, y: 0.2, z: -3.2}
+  MonsterOffset: {x: 0, y: 0.5, z: 3.2}
+  SpawnOffset: {x: 0, y: 0, z: 0}
+  TransitionCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4

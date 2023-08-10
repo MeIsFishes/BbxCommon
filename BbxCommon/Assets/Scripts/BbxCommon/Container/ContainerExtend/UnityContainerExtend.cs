@@ -185,6 +185,14 @@ namespace BbxCommon
             GameObject.Destroy(gameObject);
         }
         #endregion
+
+        #region Transform
+        public static void LookAtIgnoreY(this Transform transform, Vector3 target)
+        {
+            target = target.SetY(transform.position.y);
+            transform.rotation = Quaternion.LookRotation(target -  transform.position);
+        }
+        #endregion
         #endregion
 
         #region DOTS
