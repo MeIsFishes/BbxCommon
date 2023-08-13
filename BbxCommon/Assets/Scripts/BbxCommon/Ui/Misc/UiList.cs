@@ -5,7 +5,7 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public class UiList : MonoBehaviour, IBbxUiItem
+    public class UiList : MonoBehaviour, IUiPreInit, IUiInit, IUiOpen, IUiShow, IUiHide, IUiClose, IUiDestroy, IUiUpdate
     {
         [Serializable]
         public struct UiListWrapper
@@ -60,11 +60,16 @@ namespace BbxCommon.Ui
         private bool m_ProtoInfoInited;
         private ProtoInfo m_ProtoInfo;
 
-        void IBbxUiItem.OnUiInit(UiControllerBase uiController) { }
+        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        {
+            Wrapper = new UiListWrapper(this);
+        }
 
-        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
+        void IUiInit.OnUiInit(UiControllerBase uiController) { }
 
-        void IBbxUiItem.OnUiShow(UiControllerBase uiController)
+        void IUiOpen.OnUiOpen(UiControllerBase uiController) { }
+
+        void IUiShow.OnUiShow(UiControllerBase uiController)
         {
             foreach (var item in m_UiItems)
             {
@@ -72,7 +77,7 @@ namespace BbxCommon.Ui
             }
         }
 
-        void IBbxUiItem.OnUiHide(UiControllerBase uiController)
+        void IUiHide.OnUiHide(UiControllerBase uiController)
         {
             foreach (var item in m_UiItems)
             {
@@ -80,12 +85,12 @@ namespace BbxCommon.Ui
             }
         }
 
-        void IBbxUiItem.OnUiClose(UiControllerBase uiController)
+        void IUiClose.OnUiClose(UiControllerBase uiController)
         {
             ClearItems();
         }
 
-        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController)
+        void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
         {
             foreach (var item in m_UiItems)
             {
@@ -93,12 +98,7 @@ namespace BbxCommon.Ui
             }
         }
 
-        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
-
-        void IBbxUiItem.PreInit(UiViewBase uiView)
-        {
-            Wrapper = new UiListWrapper(this);
-        }
+        void IUiUpdate.OnUiUpdate(UiControllerBase uiController, float deltaTime) { }
 
         private void Refresh()
         {

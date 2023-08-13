@@ -27,9 +27,9 @@ namespace BbxCommon.Ui
         protected override sealed void Update()
         {
             OnUiUpdate();
-            foreach (var uiItem in m_View.UiItems)
+            foreach (var uiItem in m_View.UiUpdates)
             {
-                ((IBbxUiItem)uiItem).OnUiUpdate(this);
+                ((IUiUpdate)uiItem).OnUiUpdate(this, UiTimer.DeltaTime);
             }
         }
 
@@ -63,9 +63,9 @@ namespace BbxCommon.Ui
                 }
 
                 OnUiInit();
-                foreach (var uiItem in m_View.UiItems)
+                foreach (var uiItem in m_View.UiInits)
                 {
-                    ((IBbxUiItem)uiItem).OnUiInit(this);
+                    ((IUiInit)uiItem).OnUiInit(this);
                 }
                 m_Inited = true;
             }
@@ -81,9 +81,9 @@ namespace BbxCommon.Ui
                 }
 
                 OnUiOpen();
-                foreach (var uiItem in m_View.UiItems)
+                foreach (var uiItem in m_View.UiOpens)
                 {
-                    ((IBbxUiItem)uiItem).OnUiOpen(this);
+                    ((IUiOpen)uiItem).OnUiOpen(this);
                 }
                 m_Opened = true;
                 UiControllerManager.OnUiOpen(this);
@@ -101,9 +101,9 @@ namespace BbxCommon.Ui
 
                 gameObject.SetActive(true);
                 OnUiShow();
-                foreach (var uiItem in m_View.UiItems)
+                foreach (var uiItem in m_View.UiShows)
                 {
-                    ((IBbxUiItem)uiItem).OnUiShow(this);
+                    ((IUiShow)uiItem).OnUiShow(this);
                 }
                 m_Shown = true;
             }
@@ -120,9 +120,9 @@ namespace BbxCommon.Ui
 
                 gameObject.SetActive(false);
                 OnUiHide();
-                foreach (var uiItem in m_View.UiItems)
+                foreach (var uiItem in m_View.UiHides)
                 {
-                    ((IBbxUiItem)uiItem).OnUiHide(this);
+                    ((IUiHide)uiItem).OnUiHide(this);
                 }
                 m_Shown = false;
             }
@@ -140,9 +140,9 @@ namespace BbxCommon.Ui
                 gameObject.SetActive(false);
                 Hide();
                 OnUiClose();
-                foreach (var uiItem in m_View.UiItems)
+                foreach (var uiItem in m_View.UiCloses)
                 {
-                    ((IBbxUiItem)uiItem).OnUiClose(this);
+                    ((IUiClose)uiItem).OnUiClose(this);
                 }
                 UiControllerManager.CollectUiController(this);
                 m_Opened = false;
@@ -166,9 +166,9 @@ namespace BbxCommon.Ui
             if (m_Opened)
                 OnUiClose();
             OnUiDestroy();
-            foreach (var uiItem in m_View.UiItems)
+            foreach (var uiItem in m_View.UiDestroys)
             {
-                ((IBbxUiItem)uiItem).OnUiDestroy(this);
+                ((IUiDestroy)uiItem).OnUiDestroy(this);
             }
 
             foreach (var listenerInfo in m_InitListeners)

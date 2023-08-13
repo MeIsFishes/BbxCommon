@@ -15,7 +15,7 @@ namespace BbxCommon.Ui
         Drag,
     }
 
-    public class UiEventListener : MonoBehaviour, IBbxUiItem, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler,
+    public class UiEventListener : MonoBehaviour, IPointerDownHandler, IPointerUpHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler,
         IPointerMoveHandler, IDragHandler
     {
         public UnityAction<PointerEventData> OnPointerDown;
@@ -25,20 +25,6 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnPointerClick;
         public UnityAction<PointerEventData> OnPointerMove;
         public UnityAction<PointerEventData> OnDrag;
-
-        void IBbxUiItem.OnUiInit(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
 
         public void AddCallback(EUiEvent uiEvent, UnityAction<PointerEventData> callback)
         {
@@ -129,11 +115,6 @@ namespace BbxCommon.Ui
         void IDragHandler.OnDrag(PointerEventData eventData)
         {
             OnDrag?.Invoke(eventData);
-        }
-
-        void IBbxUiItem.PreInit(UiViewBase uiView)
-        {
-
         }
     }
 }

@@ -15,7 +15,7 @@ namespace BbxCommon.Ui
         #endregion
     }
 
-    public abstract class UiTweenBase: MonoBehaviour, IBbxUiItem
+    public abstract class UiTweenBase: MonoBehaviour, IUiPreInit, IUiInit, IUiOpen, IUiShow, IUiUpdate, IUiHide, IUiClose, IUiDestroy
     {
         #region Enum Define
         public enum ESearchTarget
@@ -57,7 +57,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Lifecycle
-        void IBbxUiItem.PreInit(UiViewBase uiView)
+        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
             // search playing tween targets
             if (AutoSearch)
@@ -96,17 +96,17 @@ namespace BbxCommon.Ui
             OnTweenPreInit();
         }
 
-        void IBbxUiItem.OnUiInit(UiControllerBase uiController) { OnTweenInit(); }
-        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { OnTweenOpen(); }
-        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { OnTweenShow(); }
-        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { OnTweenHide(); }
-        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { OnTweenClose(); }
-        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { OnTweenDestroy(); }
-        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController)
+        void IUiInit.OnUiInit(UiControllerBase uiController) { OnTweenInit(); }
+        void IUiOpen.OnUiOpen(UiControllerBase uiController) { OnTweenOpen(); }
+        void IUiShow.OnUiShow(UiControllerBase uiController) { OnTweenShow(); }
+        void IUiHide.OnUiHide(UiControllerBase uiController) { OnTweenHide(); }
+        void IUiClose.OnUiClose(UiControllerBase uiController) { OnTweenClose(); }
+        void IUiDestroy.OnUiDestroy(UiControllerBase uiController) { OnTweenDestroy(); }
+        void IUiUpdate.OnUiUpdate(UiControllerBase uiController, float deltaTime)
         {
             if (m_Enabled)
             {
-                m_ElapsedTime += UiTimer.DeltaTime;
+                m_ElapsedTime += deltaTime;
                 float evaluateTime = m_MinTime + (m_MaxTime - m_MinTime) * (m_ElapsedTime / Duration);
                 var evaluate = Curve.Evaluate(evaluateTime);
                 foreach (var target in TweenTargets)

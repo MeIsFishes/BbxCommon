@@ -1,15 +1,43 @@
 
 namespace BbxCommon.Ui
 {
-    internal interface IBbxUiItem
+    public interface IUiPreInit
     {
-        void PreInit(UiViewBase uiView);
+        void OnUiPreInit(UiViewBase uiView);
+    }
+
+    public interface IUiInit
+    {
         void OnUiInit(UiControllerBase uiController);
+    }
+
+    public interface IUiOpen
+    {
         void OnUiOpen(UiControllerBase uiController);
+    }
+
+    public interface IUiShow
+    {
         void OnUiShow(UiControllerBase uiController);
-        void OnUiUpdate(UiControllerBase uiController);
+    }
+
+    public interface IUiUpdate
+    {
+        void OnUiUpdate(UiControllerBase uiController, float deltaTime);
+    }
+
+    public interface IUiHide
+    {
         void OnUiHide(UiControllerBase uiController);
+    }
+
+    public interface IUiClose
+    {
         void OnUiClose(UiControllerBase uiController);
+    }
+
+    public interface IUiDestroy
+    {
         void OnUiDestroy(UiControllerBase uiController);
     }
 }

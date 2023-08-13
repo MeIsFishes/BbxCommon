@@ -9,7 +9,7 @@ namespace BbxCommon.Ui
     /// <summary>
     /// A MonoBehaviour which responses pointer events like moving in, dragging, etc.
     /// </summary>
-    public class UiDragable : MonoBehaviour, IBbxUiItem
+    public class UiDragable : MonoBehaviour, IUiPreInit, IUiInit, IUiUpdate, IUiDestroy
     {
         #region Wrapper
         [Serializable]
@@ -47,7 +47,7 @@ namespace BbxCommon.Ui
         [Tooltip("If true, the object move to relative position with pointer when it is pressed down.")]
         public bool SetWhenDown = true;
 
-        [FoldoutGroup("EventListener")]
+        [FoldoutGroup("EventListener"), Tooltip("Drag EventListener to here.")]
         public UiEventListener EventListener;
         [FoldoutGroup("EventListener"), Tooltip("The event triggers beginning drag.")]
         public EUiEvent EventBeginDrag = EUiEvent.PointerDown;
@@ -78,36 +78,28 @@ namespace BbxCommon.Ui
         #endregion
 
         #region CallbacksAndTick
-        void IBbxUiItem.PreInit(UiViewBase uiView)
+        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
             Wrapper = new UiDragableWrapper(this);
         }
 
-        void IBbxUiItem.OnUiInit(UiControllerBase uiController)
+        void IUiInit.OnUiInit(UiControllerBase uiController)
         {
             AddCallbacks();
         }
 
-        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController)
+        void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
         {
             RemoveCallbacks();
         }
 
-        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController)
+        void IUiUpdate.OnUiUpdate(UiControllerBase uiController, float deltaTime)
         {
             if (m_PointerIn && !m_Dragging)
                 OnPointerStay?.Invoke(m_CurrentData);
 
             if (m_Dragging)
-                DraggedTime += UiTimer.DeltaTime;
+                DraggedTime += deltaTime;
         }
 
         private void AddCallbacks()

@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public class UiInteractor : Interactor, IBbxUiItem
+    public class UiInteractor : Interactor, IUiPreInit, IUiInit
     {
         #region Wrapper
         [Serializable]
@@ -51,23 +51,16 @@ namespace BbxCommon.Ui
         /// </summary>
         private HashSet<GameObject> m_RaycastTargets = new HashSet<GameObject>();
 
-        void IBbxUiItem.OnUiInit(UiControllerBase uiController)
+        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        {
+            Wrapper = new UiInteractorWrapper(this);
+        }
+
+        void IUiInit.OnUiInit(UiControllerBase uiController)
         {
             SearchAllRaycastTargets();
             InitUiDragable();
         }
-
-        void IBbxUiItem.OnUiOpen(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiShow(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiHide(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiClose(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiDestroy(UiControllerBase uiController) { }
-
-        void IBbxUiItem.OnUiUpdate(UiControllerBase uiController) { }
 
         private void SearchAllRaycastTargets()
         {
@@ -78,11 +71,6 @@ namespace BbxCommon.Ui
                 m_RaycastTargets.TryAdd(graphic.gameObject);
             }
             graphics.CollectToPool();
-        }
-
-        void IBbxUiItem.PreInit(UiViewBase uiView)
-        {
-            Wrapper = new UiInteractorWrapper(this);
         }
         #endregion
 
