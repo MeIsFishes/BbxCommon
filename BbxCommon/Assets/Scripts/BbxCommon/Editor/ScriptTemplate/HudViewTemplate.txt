@@ -1,0 +1,16 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using TMPro;
+using Sirenix.OdinInspector;
+using BbxCommon;
+using BbxCommon.Ui;
+
+public class Hud#HUD_NAME#View : HudViewBase
+{
+    public override Type GetControllerType()
+    {
+        return typeof(Hud#HUD_NAME#Controller#BASE#);
+    }
+}

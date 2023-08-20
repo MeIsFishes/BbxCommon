@@ -138,6 +138,20 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
+  UiPreInits:
+  - {fileID: 3682755452414818849}
+  - {fileID: 2358620174404244115}
+  UiInits:
+  - {fileID: 3682755452414818849}
+  - {fileID: 2358620174404244115}
+  UiOpens: []
+  UiShows: []
+  UiUpdates:
+  - {fileID: 3682755452414818849}
+  UiHides: []
+  UiCloses: []
+  UiDestroys:
+  - {fileID: 3682755452414818849}
   DiceTittle: {fileID: 0}
   UiDragable: {fileID: 3682755452414818849}
   UiInteractor: {fileID: 2358620174404244115}

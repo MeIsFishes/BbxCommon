@@ -87,9 +87,10 @@ namespace BbxCommon.Ui
                 }    
                 var controller = UiApi.OpenUiController(data.UiView, data.ControllerTypeId, m_UiGroups[(TGroupKey)(object)data.UiGroup].transform);
                 data.CreatedController = controller;
-                (controller.transform as RectTransform).localPosition = data.Position;
-                (controller.transform as RectTransform).localScale = data.Scale;
-                (controller.transform as RectTransform).pivot = data.Pivot;
+                var viewTransform = controller.View.transform as RectTransform;
+                viewTransform.localPosition = data.Position;
+                viewTransform.localScale = data.Scale;
+                viewTransform.pivot = data.Pivot;
                 if (data.DefaultShow)   // keep OnUiShow() calls after setting data
                     controller.Show();
             }

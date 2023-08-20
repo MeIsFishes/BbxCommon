@@ -17,6 +17,8 @@ namespace BbxCommon.Ui
         #region Common
         protected TView m_View;
 
+        internal override UiViewBase View { get { return m_View; } set { m_View = (TView)value; } }
+
         public override void SetView(UiViewBase view)
         {
             m_View = view as TView;
@@ -26,14 +28,14 @@ namespace BbxCommon.Ui
         #region Lifecycle
         protected override sealed void Update()
         {
-            OnUiUpdate();
+            OnUiUpdate(UiTimer.DeltaTime);
             foreach (var uiItem in m_View.UiUpdates)
             {
                 ((IUiUpdate)uiItem).OnUiUpdate(this, UiTimer.DeltaTime);
             }
         }
 
-        protected virtual void OnUiUpdate() { }
+        protected virtual void OnUiUpdate(float deltaTime) { }
 
         // 1. The full lifecycle of a UI item is: Init() -> Open() -> Show() -> Hide() -> Close() -> Destroy().
         // 2. You can consider them as 3 sets of opposing stages: Init() with Destroy(), Open() with Close(), and Show() with Hide().
@@ -99,7 +101,7 @@ namespace BbxCommon.Ui
                     listener.AddListener();
                 }
 
-                gameObject.SetActive(true);
+                m_View.gameObject.SetActive(true);
                 OnUiShow();
                 foreach (var uiItem in m_View.UiShows)
                 {
@@ -118,7 +120,7 @@ namespace BbxCommon.Ui
                     listenerInfo.TryRemoveListener();
                 }
 
-                gameObject.SetActive(false);
+                m_View.gameObject.SetActive(false);
                 OnUiHide();
                 foreach (var uiItem in m_View.UiHides)
                 {
@@ -137,7 +139,6 @@ namespace BbxCommon.Ui
                     listenerInfo.TryRemoveListener();
                 }
 
-                gameObject.SetActive(false);
                 Hide();
                 OnUiClose();
                 foreach (var uiItem in m_View.UiCloses)
@@ -341,6 +342,8 @@ namespace BbxCommon.Ui
     public abstract class UiControllerBase : MonoBehaviour
     {
         #region Common
+        internal virtual UiViewBase View { get; set; }
+
         public abstract void SetView(UiViewBase view);
 
         public abstract int GetControllerTypeId();

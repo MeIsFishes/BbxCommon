@@ -113,8 +113,14 @@ namespace BbxCommon
                 return;
             m_UiSceneRoot = new GameObject("UiSceneRoot");
             m_UiSceneRoot.transform.SetParent(this.transform);
+
+            UiApi.HudRoot = Instantiate(UiCanvasProto);
+            UiApi.HudRoot.name = "HudRoot";
+            UiApi.HudRoot.transform.SetParent(m_UiSceneRoot.transform);;
+
             var customUiSceneRoot = new GameObject("CustomUiScenes");
             customUiSceneRoot.transform.SetParent(m_UiSceneRoot.transform);
+
             var uiGameEngineScene = CreateUiScene<UiGameEngineScene>();
             UiApi.SetUiGameEngineScene(uiGameEngineScene);
             m_UiSceneRoot = customUiSceneRoot;  // keep custom UiScenes hang on a separate root to ensure GameEngine can show its UI items above other all

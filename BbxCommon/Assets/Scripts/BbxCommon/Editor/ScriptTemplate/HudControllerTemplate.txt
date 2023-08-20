@@ -1,0 +1,17 @@
+using System;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+using BbxCommon;
+using BbxCommon.Ui;
+
+public class Hud#HUD_NAME#Controller : HudControllerBase<Hud#HUD_NAME#View#BASE#>
+{
+    /// <summary>
+    /// Return the path of current HUD prefab under the Resources folder, without "Resources/".
+    /// </summary>
+    public override string GetResourcePath()
+    {
+        return null;
+    }
+}

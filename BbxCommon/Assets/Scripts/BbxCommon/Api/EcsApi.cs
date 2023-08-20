@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
+using BbxCommon.Ui;
 
 namespace BbxCommon
 {
@@ -18,11 +19,12 @@ namespace BbxCommon
 
         public static void DestroyEntity(Entity entity)
         {
+            entity.ClearHud();
             EcsDataManager.DestroyEntity(entity);
             World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
 
-        public static void AttachEntityToGameObject(Entity entity, GameObject gameObject)
+        public static void BindEntityWithGameObject(Entity entity, GameObject gameObject)
         {
             var goComp = EcsDataManager.AddRawComponent<GameObjectRawComponent>(entity);
             goComp.GameObject = gameObject;
@@ -120,9 +122,9 @@ namespace BbxCommon
             EcsDataManager.RemoveRawAspect<T>(entity);
         }
 
-        public static void AttachToGameObject(this Entity entity, GameObject gameObject)
+        public static void BindGameObject(this Entity entity, GameObject gameObject)
         {
-            AttachEntityToGameObject(entity, gameObject);
+            BindEntityWithGameObject(entity, gameObject);
         }
 
         public static void ActivateRawAspect<T>(this Entity entity) where T : EcsRawAspect

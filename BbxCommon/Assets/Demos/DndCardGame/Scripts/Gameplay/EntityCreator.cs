@@ -1,6 +1,8 @@
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
+using BbxCommon.Ui;
+using Dcg.Ui;
 
 namespace Dcg
 {
@@ -32,9 +34,10 @@ namespace Dcg
 
             // 初始化属性
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
-            attributesComp.MaxHp = 16;
-            attributesComp.CurHp = 16;
+            attributesComp.MaxHp = 24;
+            attributesComp.CurHp = 24;
             attributesComp.ArmorClass.Add(EDiceType.D8);
+            attributesComp.ArmorClassVariable.SetDirty();
             attributesComp.Strength = 3;
             attributesComp.Dexterity = 3;
             attributesComp.Constitution = 3;
@@ -48,7 +51,7 @@ namespace Dcg
             // 关联到GameObject
             var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
             var gameObject = Object.Instantiate(prefab);
-            entity.AttachToGameObject(gameObject);
+            entity.BindGameObject(gameObject);
 
             // 创建aspect
             entity.CreateRawAspect<WalkToRawAspect>();
@@ -65,6 +68,7 @@ namespace Dcg
             attributesComp.MaxHp = monsterData.HitPoints;
             attributesComp.CurHp = monsterData.HitPoints;
             attributesComp.ArmorClass.AddList(monsterData.ArmorClass);
+            attributesComp.ArmorClassVariable.SetDirty();
             attributesComp.Strength = monsterData.Strength;
             attributesComp.Dexterity = monsterData.Dexterity;
             attributesComp.Constitution = monsterData.Constitution;
@@ -81,9 +85,12 @@ namespace Dcg
 
             // 关联到GameObject
             var gameObject = Object.Instantiate(monsterData.Prefab);
-            entity.AttachToGameObject(gameObject);
+            entity.BindGameObject(gameObject);
             gameObject.transform.position = position;
             gameObject.transform.rotation = rotation;
+
+            // 绑定HUD
+            entity.BindHud<HudMonsterStatusController>();
 
             return entity;
         }
@@ -97,7 +104,7 @@ namespace Dcg
             entity.AddRawComponent<MainCameraSingletonRawComponent>();
 
             var gameObject = Object.Instantiate(cameraData.CameraPrefab);
-            entity.AttachToGameObject(gameObject);
+            entity.BindGameObject(gameObject);
 
             return entity;
         }
@@ -114,7 +121,7 @@ namespace Dcg
             entity.AddRawComponent<RoomRawComponent>();
 
             var gameObject = Object.Instantiate(roomData.RoomPrefab);
-            entity.AttachToGameObject(gameObject);
+            entity.BindGameObject(gameObject);
 
             gameObject.transform.position = position;
 

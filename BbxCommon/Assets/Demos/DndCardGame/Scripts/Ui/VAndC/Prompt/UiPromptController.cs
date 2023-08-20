@@ -11,7 +11,7 @@ namespace Dcg.Ui
     {
         private string m_CurPrompt;
 
-        protected override void OnUiUpdate()
+        protected override void OnUiUpdate(float deltaTime)
         {
             if (m_View.TweenGroup.Finished)
                 Hide();

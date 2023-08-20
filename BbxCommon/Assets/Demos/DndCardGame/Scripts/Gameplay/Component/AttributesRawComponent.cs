@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using BbxCommon;
+using BbxCommon.Ui;
 
 namespace Dcg
 {
@@ -32,16 +33,25 @@ namespace Dcg
 
     public class AttributesRawComponent : EcsRawComponent
     {
-        public int MaxHp;
-        public int CurHp;
+        public int MaxHp { get { return MaxHpVariable.Value; } set { MaxHpVariable.SetValue(value); } }
+        public int CurHp { get { return CurHpVariable.Value; } set { CurHpVariable.SetValue(value); } }
 
         public List<EDiceType> ArmorClass = new();
 
-        public int Strength;
-        public int Dexterity;
-        public int Constitution;
-        public int Intelligence;
-        public int Wisdom;
+        public int Strength { get { return StrengthVariable.Value; } set { StrengthVariable.SetValue(value); } }
+        public int Dexterity { get { return DexterityVariable.Value; } set { DexterityVariable.SetValue(value); } }
+        public int Constitution { get { return ConstitutionVariable.Value; } set { ConstitutionVariable.SetValue(value); } }
+        public int Intelligence { get { return IntelligenceVariable.Value; } set { IntelligenceVariable.SetValue(value); } }
+        public int Wisdom { get { return WisdomVariable.Value; } set { WisdomVariable.SetValue(value); } }
+
+        public UiModelVariable<int> MaxHpVariable = new();
+        public UiModelVariable<int> CurHpVariable = new();
+        public UiModelVariable<List<EDiceType>> ArmorClassVariable = new();
+        public UiModelVariable<int> StrengthVariable = new();
+        public UiModelVariable<int> DexterityVariable = new();
+        public UiModelVariable<int> ConstitutionVariable = new();
+        public UiModelVariable<int> IntelligenceVariable = new();
+        public UiModelVariable<int> WisdomVariable = new();
 
         public void GetModifierDice(EAbility attribute, List<Dice> res)
         {
@@ -94,6 +104,7 @@ namespace Dcg
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();
+            ArmorClassVariable.SetDirty();
             Strength = 0;
             Dexterity = 0;
             Constitution = 0;

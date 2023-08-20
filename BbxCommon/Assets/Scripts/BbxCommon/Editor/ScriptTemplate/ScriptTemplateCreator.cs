@@ -81,6 +81,24 @@ namespace BbxCommon.Editor
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
         }
 
+        [MenuItem("Assets/Create/BbxCommon/Script/Ui/HudView", false)]
+        public static void CreateHudView()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new HudScriptReplacer(), "HudTestView.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Ui/HudController", false)]
+        public static void CreateHudController()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new HudScriptReplacer(), "HudTestController.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+        }
+
         [MenuItem("Assets/Create/BbxCommon/Script/ScriptableObject", false)]
         public static void CreateScriptableObject()
         {
@@ -145,6 +163,51 @@ namespace BbxCommon.Editor
             uiName = uiName.TryRemoveStart("Ui");
             uiName = uiName.TryRemoveStart("UI");
             txt = Regex.Replace(txt, "#UI_NAME#", uiName);
+
+            if (fileNameWithoutExtension.EndsWith("Base"))
+            {
+                txt = Regex.Replace(txt, "public class", "public abstract class");
+                txt = Regex.Replace(txt, "#BASE#", "Base");
+            }
+            else
+                txt = Regex.Replace(txt, "#BASE#", "");
+
+            bool encoderShouldEmitUTF8Identifier = true;
+            bool throwOnInvalidBytes = false;
+            UTF8Encoding encoding = new UTF8Encoding(encoderShouldEmitUTF8Identifier, throwOnInvalidBytes);
+            bool append = false;
+            StreamWriter streamWriter = new StreamWriter(fullPath, append, encoding);
+            streamWriter.Write(txt);
+            streamWriter.Close();
+            AssetDatabase.ImportAsset(txt);
+            var obj = AssetDatabase.LoadAssetAtPath(pathName, typeof(Object));
+            ProjectWindowUtil.ShowCreatedAsset(obj);
+            AssetDatabase.Refresh();
+        }
+    }
+
+    internal class HudScriptReplacer : EndNameEditAction
+    {
+        public override void Action(int instanceId, string pathName, string resourceFile)
+        {
+            string fullPath = Path.GetFullPath(pathName);
+            StreamReader streamReader = new StreamReader(resourceFile);
+            string txt = streamReader.ReadToEnd();
+            streamReader.Close();
+            string fileNameWithoutExtension = Path.GetFileNameWithoutExtension(pathName);
+            var hudName = fileNameWithoutExtension;
+
+            if (hudName.EndsWith("Controller"))
+                hudName = hudName.TryRemoveEnd("Controller");
+            else if (hudName.EndsWith("View"))
+                hudName = hudName.TryRemoveEnd("View");
+            else if (hudName.EndsWith("ControllerBase"))
+                hudName = hudName.TryRemoveEnd("ControllerBase");
+            else if (hudName.EndsWith("ViewBase"))
+                hudName = hudName.TryRemoveEnd("ViewBase");
+            hudName = hudName.TryRemoveStart("Hud");
+            hudName = hudName.TryRemoveStart("HUD");
+            txt = Regex.Replace(txt, "#HUD_NAME#", hudName);
 
             if (fileNameWithoutExtension.EndsWith("Base"))
             {

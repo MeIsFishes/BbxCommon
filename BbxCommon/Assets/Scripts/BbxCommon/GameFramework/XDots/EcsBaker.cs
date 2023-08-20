@@ -26,7 +26,7 @@ namespace BbxCommon
 
         private void InternalBake()
         {
-            Entity.AttachToGameObject(gameObject);
+            Entity.BindGameObject(gameObject);
             Bake();
         }
 
