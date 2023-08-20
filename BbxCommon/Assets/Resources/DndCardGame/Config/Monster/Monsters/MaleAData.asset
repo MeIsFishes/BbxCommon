@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MaleAData
   m_EditorClassIdentifier: 
   Prefab: {fileID: 1668188202801692, guid: b1b151927a3996846a9d94c10d2fd2f4, type: 3}
-  HitPoints: 9
+  HitPoints: 11
   ArmorClass: 0000000000000000
   AttackDices: 01000000
   DamageDices: 01000000

@@ -14,6 +14,7 @@ namespace Dcg
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiCombatScene"));
 
             stage.AddLoadItem(new CombatStageInitPlayerData());
+            stage.AddLoadItem(new CombatStageInitCombatInfo());
 
             stage.AddLateLoadItem(new CombatStageBindUi());
 
@@ -30,9 +31,9 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                var playerEntity = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().GetEntity();
-                var charcterDeckComp = playerEntity.GetRawComponent<CharacterDeckRawComponent>();
-                var combatDeckComp = playerEntity.AddRawComponent<CombatDeckRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var charcterDeckComp = playerComp.Characters[0].GetRawComponent<CharacterDeckRawComponent>();
+                var combatDeckComp = playerComp.Characters[0].AddRawComponent<CombatDeckRawComponent>();
                 combatDeckComp.DicesInDeck.Clear();
                 combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
             }
@@ -41,6 +42,30 @@ namespace Dcg
             {
                 var playerEntity = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().GetEntity();
                 playerEntity.RemoveRawComponent<CombatDeckRawComponent>();
+            }
+        }
+
+        private class CombatStageInitCombatInfo : IStageLoad
+        {
+            void IStageLoad.Load(GameStage stage)
+            {
+                // 创建怪物
+                var dungeonRoomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
+                var roomData = DataApi.GetData<RoomData>();
+                var roomPos = dungeonRoomComp.CurRoom.GetGameObject().transform.position;
+                var spawnPos = roomPos + roomData.MonsterOffset;
+                var monster = EntityCreator.CreateMonsterEntity(DataApi.GetData<MonsterData>(10010001), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
+
+                // 初始化战场信息
+                var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                combatInfoComp.Character = playerComp.Characters[0];
+                combatInfoComp.Monster = monster;
+            }
+
+            void IStageLoad.Unload(GameStage stage)
+            {
+                
             }
         }
 

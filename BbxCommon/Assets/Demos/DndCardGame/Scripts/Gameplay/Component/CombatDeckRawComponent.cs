@@ -13,9 +13,9 @@ namespace Dcg
             DicesInDiscardRefresh,
         }
 
-        public List<UiModelVariable<Dice>> DicesInDeck = new();
-        public List<UiModelVariable<Dice>> DicesInHand = new();
-        public List<UiModelVariable<Dice>> DicesInDiscard = new();
+        public List<Dice> DicesInDeck = new();
+        public List<Dice> DicesInHand = new();
+        public List<Dice> DicesInDiscard = new();
 
         private MessageHandler<int> m_MessageHandler = new();
         IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;

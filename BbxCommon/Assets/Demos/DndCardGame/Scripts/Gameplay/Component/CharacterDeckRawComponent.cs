@@ -11,15 +11,14 @@ namespace Dcg
             DeckRefresh,
         }
 
-        public List<UiModelVariable<Dice>> Dices = new();
+        public List<Dice> Dices = new();
 
         private MessageHandler<int> m_MessageHandler = new();
         IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;
 
         public void AddDice(Dice dice)
         {
-            var diceVar = UiModelVariable<Dice>.Create(dice);
-            Dices.Add(diceVar);
+            Dices.Add(dice);
             m_MessageHandler.Dispatch((int)EUiEvent.DeckRefresh);
         }
 

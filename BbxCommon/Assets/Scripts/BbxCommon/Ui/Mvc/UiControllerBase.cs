@@ -218,7 +218,7 @@ namespace BbxCommon.Ui
             {
                 if (ModelItem.IsNull())
                 {
-                    Debug.LogError("The ModelItem is not set or has been collcted.");
+                    Debug.LogError("The ModelItem is not set or has been collected.");
                     return;
                 }
                 ((IUiModelItem)ModelItem.Obj).MessageDispatcher.AddListener(MessageKey, m_Listener);

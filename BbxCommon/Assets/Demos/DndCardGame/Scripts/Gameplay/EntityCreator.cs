@@ -116,7 +116,7 @@ namespace Dcg
             var roomData = DataApi.GetData<RoomData>();
 
             var spawnRoomShowComp = entity.AddRawComponent<SpawnRoomShowRawComponent>();
-            spawnRoomShowComp.OriginalPos = position;
+            EntityUtility.Room.SpawnRoomStart(entity, position);
 
             entity.AddRawComponent<RoomRawComponent>();
 

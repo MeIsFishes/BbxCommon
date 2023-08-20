@@ -98,6 +98,7 @@ namespace BbxCommon
         /// </summary>
         public static void UnorderedRemoveAt<T>(this List<T> list, int index)
         {
+            if (list.Count == 0) return;
             list[index] = list[list.Count - 1]; // save the value of last element, then remove the last one
             list.RemoveAt(list.Count - 1);
         }

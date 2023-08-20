@@ -42,8 +42,16 @@ namespace BbxCommon
 
         public ObjRef(T obj)
         {
-            m_Obj = obj;
-            m_InstanceId = obj.UniqueId;
+            if (obj == null)
+            {
+                m_Obj = null;
+                m_InstanceId = 0;
+            }
+            else
+            {
+                m_Obj = obj;
+                m_InstanceId = obj.UniqueId;
+            }
         }
 
         public bool IsNotNull()

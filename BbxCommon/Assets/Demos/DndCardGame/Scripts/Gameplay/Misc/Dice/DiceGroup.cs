@@ -1,25 +1,15 @@
+using System.Collections.Generic;
 using Unity.Entities;
 using BbxCommon;
 
 namespace Dcg
 {
-    public enum EDiceGroup
-    {
-        Attack,
-        BeAttacked,
-        Damage,
-    }
-
     public class DiceGroup : PooledObject
     {
         /// <summary>
         /// 基础骰，如武器攻击骰、防御骰
         /// </summary>
         public DiceList BaseDices;
-        /// <summary>
-        /// 玩家主动拖入的骰子
-        /// </summary>
-        public DiceList RollingDices;
         /// <summary>
         /// 属性加值
         /// </summary>
@@ -29,33 +19,67 @@ namespace Dcg
         /// </summary>
         public DiceList BuffModifier;
 
-        /// <param name="diceGroup"> 掷骰的场景 </param>
         /// <param name="entity"> 掷骰主体 </param>
+        /// <param name="baseDices"> 基础骰，如武器攻击、防御骰 </param>
         /// <param name="abilityModifier"> 属性加值 </param>
-        /// <param name="savingThrow"> 属性豁免 </param>
-        public static DiceGroup Create(EDiceGroup diceGroup, Entity entity, EAbility abilityModifier, EAbility savingThrow)
+        public static DiceGroup Create(Entity entity, List<Dice> baseDices, EAbility abilityModifier)
         {
-            return ObjectPool<DiceGroup>.Alloc();
+            var diceGroup = ObjectPool<DiceGroup>.Alloc();
+            diceGroup.BaseDices.Dices.AddList(baseDices);
+            var attributesComp = entity.GetRawComponent<AttributesRawComponent>();
+            var modifier = SimplePool<List<Dice>>.Alloc();
+            attributesComp.GetModifierDiceList(abilityModifier, modifier);
+            diceGroup.AbilityModifier.Dices.AddList(modifier);
+            modifier.CollectAndClearElements(true);
+            return diceGroup;
         }
 
-        private static DiceList CreateBaseAndModifier(EDiceGroup diceGroup)
+        /// <summary>
+        /// 创建一个应用护甲等级的<see cref="DiceGroup"/>。
+        /// </summary>
+        public static DiceGroup CreateAcGroup(Entity entity, EAbility abilityModifier)
         {
-            var diceList = DiceList.Create();
-            return diceList;
+            var ac = entity.GetRawComponent<AttributesRawComponent>().ArmorClass;
+            var acList = SimplePool<List<Dice>>.Alloc();
+            foreach (var diceType in ac)
+            {
+                acList.Add(Dice.Create(diceType));
+            }
+            var diceGroup = Create(entity, acList, abilityModifier);
+            acList.CollectAndClearElements(true);
+            return diceGroup;
+        }
+
+        public DiceGroupResult GetGroupResult()
+        {
+            var result = new DiceGroupResult();
+            result.BaseDicesResult = BaseDices.GetListResult();
+            result.AbilityModifierResult = AbilityModifier.GetListResult();
+            result.BuffModifierResult = BuffModifier.GetListResult();
+            result.Amount = BaseDices.GetListResult().Amount + AbilityModifier.GetListResult().Amount + BuffModifier.GetListResult().Amount;
+            return result;
+        }
+
+        public override void OnAllocate()
+        {
+            BaseDices = ObjectPool<DiceList>.Alloc();
+            AbilityModifier = ObjectPool<DiceList>.Alloc();
+            BuffModifier = ObjectPool<DiceList>.Alloc();
         }
 
         public override void OnCollect()
         {
             BaseDices.CollectToPool();
-            RollingDices.CollectToPool();
             AbilityModifier.CollectToPool();
             BuffModifier.CollectToPool();
         }
     }
 
-    public class DiceBattle
+    public struct DiceGroupResult
     {
-        public DiceGroup Camp1;
-        public DiceGroup Camp2;
+        public int Amount;
+        public DiceListResult BaseDicesResult;
+        public DiceListResult AbilityModifierResult;
+        public DiceListResult BuffModifierResult;
     }
 }

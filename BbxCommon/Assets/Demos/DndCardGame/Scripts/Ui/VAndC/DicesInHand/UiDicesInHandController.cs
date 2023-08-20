@@ -34,7 +34,7 @@ namespace Dcg.Ui
             foreach (var dice in deckComp.DicesInHand)
             {
                 var diceController = m_View.DicesList.CreateItem<UiDiceController>();
-                diceController.Bind(dice.Value);
+                diceController.Bind(dice);
             }
         }
     }

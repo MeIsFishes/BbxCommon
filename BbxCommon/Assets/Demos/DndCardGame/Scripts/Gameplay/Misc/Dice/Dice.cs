@@ -17,7 +17,7 @@ namespace Dcg
     public class Dice : PooledObject
     {
         public EDiceType DiceType;
-        public List<DiceAffixBase> Affixes = new();
+        public List<DiceAffixBase> Affixes;
 
         public static Dice Create(EDiceType diceType)
         {
@@ -73,10 +73,15 @@ namespace Dcg
             return null;
         }
 
+        public override void OnAllocate()
+        {
+            Affixes = SimplePool<List<DiceAffixBase>>.Alloc();
+        }
+
         public override void OnCollect()
         {
             DiceType = EDiceType.D4;
-            Affixes.Clear();
+            Affixes.CollectAndClearElements(true);
         }
     }
 

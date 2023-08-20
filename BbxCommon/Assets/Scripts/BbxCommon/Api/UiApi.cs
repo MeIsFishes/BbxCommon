@@ -138,7 +138,7 @@ namespace BbxCommon.Ui
             get
             {
                 if (m_HudRootTransform == null)
-                    m_HudRootTransform = HudRootTransform.GetComponent<RectTransform>();
+                    m_HudRootTransform = HudRoot.GetComponent<RectTransform>();
                 return m_HudRootTransform;
             }
         }

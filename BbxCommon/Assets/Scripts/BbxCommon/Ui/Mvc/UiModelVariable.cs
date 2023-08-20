@@ -30,7 +30,7 @@ namespace BbxCommon.Ui
 
         public void SetValue(T value)
         {
-            if (m_Value.Equals(value) == false)
+            if (m_Value == null || m_Value.Equals(value) == false)
             {
                 m_Value = value;
                 SetDirty();

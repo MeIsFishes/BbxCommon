@@ -36,7 +36,7 @@ namespace Dcg
         public int MaxHp { get { return MaxHpVariable.Value; } set { MaxHpVariable.SetValue(value); } }
         public int CurHp { get { return CurHpVariable.Value; } set { CurHpVariable.SetValue(value); } }
 
-        public List<EDiceType> ArmorClass = new();
+        public List<EDiceType> ArmorClass => ArmorClassVariable.Value;
 
         public int Strength { get { return StrengthVariable.Value; } set { StrengthVariable.SetValue(value); } }
         public int Dexterity { get { return DexterityVariable.Value; } set { DexterityVariable.SetValue(value); } }
@@ -53,7 +53,7 @@ namespace Dcg
         public UiModelVariable<int> IntelligenceVariable = new();
         public UiModelVariable<int> WisdomVariable = new();
 
-        public void GetModifierDice(EAbility attribute, List<Dice> res)
+        public void GetModifierDiceList(EAbility attribute, List<Dice> res)
         {
             int attributeValue = 0;
             switch (attribute)
@@ -99,12 +99,19 @@ namespace Dcg
             }
         }
 
+        public override void OnAllocate()
+        {
+            ArmorClassVariable = ObjectPool<UiModelVariable<List<EDiceType>>>.Alloc();
+            ArmorClassVariable.SetValue(SimplePool<List<EDiceType>>.Alloc());
+        }
+
         public override void OnCollect()
         {
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();
             ArmorClassVariable.SetDirty();
+            ArmorClassVariable.CollectToPool();
             Strength = 0;
             Dexterity = 0;
             Constitution = 0;

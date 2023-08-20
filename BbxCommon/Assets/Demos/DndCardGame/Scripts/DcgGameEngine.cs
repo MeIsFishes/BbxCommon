@@ -33,5 +33,11 @@ namespace Dcg
             StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);
         }
+
+        public void EnterCombat()
+        {
+            StageWrapper.UnloadStage(m_DungeonWalkStage);
+            StageWrapper.LoadStage(m_CombatStage);
+        }
     }
 }

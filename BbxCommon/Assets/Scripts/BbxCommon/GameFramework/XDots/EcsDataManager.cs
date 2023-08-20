@@ -59,7 +59,7 @@ namespace BbxCommon
         /// </summary>
         internal static void ActivateEcsData<T>(T data) where T : EcsData
         {
-            if (data.Active)
+            if (data == null || data.Active)
                 return;
             EcsDataList<T>.AddEcsData(data);
             data.Active = true;

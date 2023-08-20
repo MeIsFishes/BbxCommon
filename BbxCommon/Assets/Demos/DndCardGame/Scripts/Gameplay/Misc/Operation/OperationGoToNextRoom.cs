@@ -39,12 +39,7 @@ namespace Dcg
             // ½øÈëÕ½¶·
             if (m_ElapsedTime > m_EnterCombatTime && m_RequestedCombat == false)
             {
-                var dungeonRoomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
-                var roomData = DataApi.GetData<RoomData>();
-                var roomPos = dungeonRoomComp.CurRoom.GetGameObject().transform.position;
-                var spawnPos = roomPos + roomData.MonsterOffset;
-                EntityCreator.CreateMonsterEntity(DataApi.GetData<MonsterData>(10010001), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
+                DcgGameEngine.Instance.EnterCombat();
                 m_RequestedCombat = true;
             }
             if (m_ElapsedTime > m_FinishTime)
