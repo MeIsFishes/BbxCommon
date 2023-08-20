@@ -133,6 +133,17 @@ namespace BbxCommon.Ui
 
         #region HudController
         internal static GameObject HudRoot;
+        internal static RectTransform HudRootTransform
+        {
+            get
+            {
+                if (m_HudRootTransform == null)
+                    m_HudRootTransform = HudRootTransform.GetComponent<RectTransform>();
+                return m_HudRootTransform;
+            }
+        }
+
+        private static RectTransform m_HudRootTransform;
 
         /// <summary>
         /// <para>

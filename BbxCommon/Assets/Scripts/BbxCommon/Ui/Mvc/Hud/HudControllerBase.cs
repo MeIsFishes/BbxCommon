@@ -100,7 +100,7 @@ namespace BbxCommon.Ui
             if (entityGo == null)
                 return;
             m_ViewTransform.localPosition = Camera.main.WorldToViewportPoint(entityGo.transform.position + m_View.HudOffset);
-            RectTransform canvasTransform = UiApi.HudRoot.GetComponent<RectTransform>();
+            RectTransform canvasTransform = UiApi.HudRootTransform;
             m_ViewTransform.localPosition = new Vector3(m_ViewTransform.localPosition.x * canvasTransform.sizeDelta.x,
                 m_ViewTransform.localPosition.y * canvasTransform.sizeDelta.y);
         }
