@@ -13,6 +13,12 @@ MonoBehaviour:
   m_Name: UiGlobalScene
   m_EditorClassIdentifier: 
   UiObjectDatas:
+  - PrefabPath: DndCardGame/Prefab/Ui/UiTip
+    UiGroup: 0
+    DefaultShow: 0
+    Position: {x: 0, y: 0, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
   - PrefabPath: DndCardGame/Prefab/Ui/UiPrompt
     UiGroup: 0
     DefaultShow: 0

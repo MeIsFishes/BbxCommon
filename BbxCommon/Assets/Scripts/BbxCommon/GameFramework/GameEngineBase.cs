@@ -116,7 +116,8 @@ namespace BbxCommon
 
             UiApi.HudRoot = Instantiate(UiCanvasProto);
             UiApi.HudRoot.name = "HudRoot";
-            UiApi.HudRoot.transform.SetParent(m_UiSceneRoot.transform);;
+            UiApi.HudRoot.transform.SetParent(m_UiSceneRoot.transform);
+            UiApi.HudRoot.GetComponent<Canvas>().sortingOrder = -100;
 
             var customUiSceneRoot = new GameObject("CustomUiScenes");
             customUiSceneRoot.transform.SetParent(m_UiSceneRoot.transform);

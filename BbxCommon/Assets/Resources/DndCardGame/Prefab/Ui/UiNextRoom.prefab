@@ -51,6 +51,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
+  UiPreInits: []
+  UiInits: []
+  UiOpens: []
+  UiShows: []
+  UiUpdates: []
+  UiHides: []
+  UiCloses: []
+  UiDestroys: []
   Button: {fileID: 2662966575150368258}
 --- !u!1 &6621000242003487918
 GameObject:

@@ -51,6 +51,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
+  UiPreInits:
+  - {fileID: 4419953065054020138}
+  UiInits:
+  - {fileID: 4419953065054020138}
+  UiOpens:
+  - {fileID: 4419953065054020138}
+  UiShows:
+  - {fileID: 4419953065054020138}
+  UiUpdates:
+  - {fileID: 4419953065054020138}
+  UiHides:
+  - {fileID: 4419953065054020138}
+  UiCloses:
+  - {fileID: 4419953065054020138}
+  UiDestroys:
+  - {fileID: 4419953065054020138}
   DicesList: {fileID: 4419953065054020138}
 --- !u!1 &5334914559760536115
 GameObject:

@@ -44,5 +44,12 @@ namespace BbxCommon.Ui
                     break;
             }
         }
+
+        protected override bool AllowAutoCreate()
+        {
+            if (SearchType == ESearchType.CanvasGroup)
+                return true;
+            return false;
+        }
     }
 }

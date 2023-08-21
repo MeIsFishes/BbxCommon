@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Sirenix.Utilities;
 
 namespace BbxCommon.Ui
 {
@@ -50,14 +51,21 @@ namespace BbxCommon.Ui
         protected bool m_Enabled;
         protected float m_ElapsedTime;
 
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private float m_MinTime;
-        [SerializeField]
+        [SerializeField, HideInInspector]
         private float m_MaxTime;
         #endregion
 
         #region Lifecycle
         void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        {
+            SearchTweenTargets();
+            OnTweenPreInit();
+        }
+
+        [Button, ShowIf("AutoSearch")]
+        private void SearchTweenTargets()
         {
             // search playing tween targets
             if (AutoSearch)
@@ -65,6 +73,7 @@ namespace BbxCommon.Ui
                 var types = new List<Type>();
                 GetSearchType(types);
                 var transformOverride = TransformRootOverride ? TransformRootOverride : transform;
+                TweenTargets.Clear();
                 switch (GetSearchTarget())
                 {
                     case ESearchTarget.Multiple:
@@ -82,18 +91,23 @@ namespace BbxCommon.Ui
                         foreach (var type in types)
                         {
                             var component = transformOverride.GetComponentInChildren(type);
-                            if (TweenTargets.Contains(component) == false)
+                            if (TweenTargets.Contains(component) == false && component != null)
                                 TweenTargets.Add(component);
+                        }
+                        if (TweenTargets.Count == 0 && types.Count == 1)
+                        {
+                            TweenTargets.Add(transformOverride.gameObject.AddComponent(types[0]));
                         }
                         break;
                 }
             }
 
             // pre-calculate curve
-            m_MinTime = Curve.keys[0].time;
-            m_MaxTime = Curve.keys[Curve.length - 1].time;
-
-            OnTweenPreInit();
+            if (Curve.keys.Length > 0)
+            {
+                m_MinTime = Curve.keys[0].time;
+                m_MaxTime = Curve.keys[Curve.length - 1].time;
+            }
         }
 
         void IUiInit.OnUiInit(UiControllerBase uiController) { OnTweenInit(); }
@@ -154,6 +168,14 @@ namespace BbxCommon.Ui
         #region Override
         protected abstract ESearchTarget GetSearchTarget();
         protected abstract void GetSearchType(List<Type> types);
+        /// <summary>
+        /// While <see cref="GetSearchTarget"/> returns <see cref="ESearchTarget.Single"/>, the Tween item will try
+        /// to search a <see cref="Component"/> which fits the <see cref="Type"/> required. If there is not a fit
+        /// <see cref="Component"/> and <see cref="AllowAutoCreate"/> returns true, it will create one on the
+        /// <see cref="TransformRootOverride"/>. Notice: when <see cref="GetSearchTarget"/> returns <see cref="ESearchTarget.Multiple"/>,
+        /// or there are multiple <see cref="Type"/>s in <see cref="GetSearchType(List{Type})"/>, auto creating will not occur.
+        /// </summary>
+        protected virtual bool AllowAutoCreate() { return false; }
         protected abstract void ApplyTween(Component component, float evaluate);
         protected virtual void OnTweenPreInit() { }
         protected virtual void OnTweenInit() { }

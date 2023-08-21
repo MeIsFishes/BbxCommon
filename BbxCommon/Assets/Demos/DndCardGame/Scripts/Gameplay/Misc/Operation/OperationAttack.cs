@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
+using BbxCommon.Ui;
+using Dcg.Ui;
 
 namespace Dcg
 {
@@ -35,7 +37,7 @@ namespace Dcg
                 sb.Append("\n¹¥»÷Î´ÃüÖÐ£¡");
             var diceGroupString = sb.ToString();
             sb.Clear();
-            Debug.Log(diceGroupString);
+            UiApi.GetUiController<UiTipController>().ShowTip("¹¥»÷ÖÀ÷»½á¹û", diceGroupString);
         }
 
         private void GenerateDiceGroupString(StringBuilder sb, DiceGroup diceGroup, DiceGroupResult result)
