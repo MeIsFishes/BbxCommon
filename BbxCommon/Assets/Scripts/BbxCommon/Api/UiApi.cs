@@ -81,7 +81,7 @@ namespace BbxCommon.Ui
                 Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
                 return null;
             }
-            var controllerGo = new GameObject(uiGameObject.name + "Controller");
+            var controllerGo = new GameObject(uiGameObject.name.TryRemoveEnd("(Clone)") + "Controller");
             uiGameObject.transform.SetParent(controllerGo.transform);
             var uiController = (UiControllerBase)controllerGo.AddComponent(uiView.GetControllerType());
             uiView.UiController = uiController;
@@ -171,7 +171,7 @@ namespace BbxCommon.Ui
                 var hudGameObject = Object.Instantiate(Resources.Load<GameObject>(hudController.GetResourcePath()));
                 hudGameObject.SetActive(false);
                 hudGameObject.transform.SetParent(controllerGameObject.transform);
-                controllerGameObject.name = hudGameObject.name;
+                controllerGameObject.name = hudGameObject.name.TryRemoveEnd("(Clone)") + "Controller";
                 // attach view and controller each other
                 var hudView = hudGameObject.GetComponent<HudViewBase>();
                 hudView.UiController = hudController;

@@ -24,20 +24,47 @@ namespace Dcg
             var defendGroup = DiceGroup.CreateAcGroup(Defender, DefendModifier);
             var attackResult = attackGroup.GetGroupResult();
             var defendResult = defendGroup.GetGroupResult();
-            bool succeeded = attackResult.Amount > defendResult.Amount;
+            bool hit = attackResult.Amount >= defendResult.Amount;
+            bool crit = attackResult.Amount >= defendResult.Amount * 2.5f;
 
             StringBuilder sb = new StringBuilder();
             sb.Append("¹¥»÷·½ÖÀ÷»£º\n");
             GenerateDiceGroupString(sb, attackGroup, attackResult);
             sb.Append("\n·ÀÓù·½ÖÀ÷»£º\n");
             GenerateDiceGroupString(sb, defendGroup, defendResult);
-            if (succeeded)
-                sb.Append("\n¹¥»÷ÃüÖÐ£¡");
+            if (crit)
+            {
+                sb.Append("¹¥»÷÷»´ïµ½·ÀÓù÷»µÄ2.5±¶£¬±©»÷ÃüÖÐ£¡");
+            }
             else
-                sb.Append("\n¹¥»÷Î´ÃüÖÐ£¡");
+            {
+                if (hit)
+                    sb.Append("\n¹¥»÷ÃüÖÐ£¡");
+                else
+                    sb.Append("\n¹¥»÷Î´ÃüÖÐ£¡");
+            }
             var diceGroupString = sb.ToString();
             sb.Clear();
             UiApi.GetUiController<UiTipController>().ShowTip("¹¥»÷ÖÀ÷»½á¹û", diceGroupString);
+
+            if (hit)
+            {
+                var damageGroup = DiceGroup.Create(Attacker, DamageBaseDices, AttackModifier);
+                if (crit)
+                {
+                    var baseDicesCount = damageGroup.BaseDices.Dices.Count;
+                    for (int i = 0; i < baseDicesCount; i++)
+                    {
+                        damageGroup.BaseDices.Dices.Add(Dice.Create(damageGroup.BaseDices.Dices[i].DiceType));
+                    }
+                }
+                var damageResult = damageGroup.GetGroupResult();
+                GenerateDiceGroupString(sb, damageGroup, damageResult);
+                var damageGroupString = sb.ToString();
+                sb.Clear();
+                UiApi.GetUiController<UiTipController>().ShowTip("ÉËº¦½á¹û", damageGroupString);
+                damageGroup.CollectToPool();
+            }
         }
 
         private void GenerateDiceGroupString(StringBuilder sb, DiceGroup diceGroup, DiceGroupResult result)
