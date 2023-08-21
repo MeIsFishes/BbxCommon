@@ -10,7 +10,6 @@ GameObject:
   m_Component:
   - component: {fileID: 3661814582829214313}
   - component: {fileID: 7470335374781118468}
-  - component: {fileID: 8581826571533430416}
   m_Layer: 5
   m_Name: TweenAlpha
   m_TagString: Untagged
@@ -76,27 +75,15 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   AutoSearch: 1
-  TransformRootOverride: {fileID: 0}
+  TransformRootOverride: {fileID: 2627374173448444369}
   TweenTargets:
-  - {fileID: 8581826571533430416}
+  - {fileID: 4588064655794399816}
   m_MinTime: 0
   m_MaxTime: 0.5
   MinValue: 0
   MaxValue: 0
   SearchType: 0
   SearchTarget: 0
---- !u!225 &8581826571533430416
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 453867207647181139}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &1261532184864706565
 GameObject:
   m_ObjectHideFlags: 0
@@ -243,7 +230,6 @@ GameObject:
   m_Component:
   - component: {fileID: 760915903517203155}
   - component: {fileID: 9213891715556109576}
-  - component: {fileID: 814393440114937379}
   m_Layer: 5
   m_Name: TweenInteractable
   m_TagString: Untagged
@@ -309,24 +295,12 @@ MonoBehaviour:
     m_PostInfinity: 2
     m_RotationOrder: 4
   AutoSearch: 1
-  TransformRootOverride: {fileID: 0}
+  TransformRootOverride: {fileID: 2627374173448444369}
   TweenTargets:
-  - {fileID: 814393440114937379}
+  - {fileID: 4588064655794399816}
   m_MinTime: 0
   m_MaxTime: 0.5
   Description: 
---- !u!225 &814393440114937379
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1688687470945358346}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &2242846702814461761
 GameObject:
   m_ObjectHideFlags: 0
@@ -374,7 +348,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2242846702814461761}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
