@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using UnityEngine;
+using Unity.Entities;
 using BbxCommon;
 
 namespace Dcg
@@ -13,7 +14,7 @@ namespace Dcg
                 // 没有伤害请求，返回
                 if (attackableComp.TakeDamageRequests.Count < 1)
                 {
-                    return;
+                    continue;
                 }
 
                 var attributesRawComponent = attackableComp.GetEntity().GetRawComponent<AttributesRawComponent>();
@@ -25,6 +26,7 @@ namespace Dcg
                 attackableComp.OnTakeDamage?.Invoke(damageRequest);
                 // 伤害和治疗公用逻辑
                 attributesRawComponent.CurHp -= damageRequest.Damage;
+                Debug.Log(attributesRawComponent.CurHp);
                 if (attributesRawComponent.CurHp > attributesRawComponent.MaxHp)
                 {
                     attributesRawComponent.CurHp = attributesRawComponent.MaxHp;

@@ -64,7 +64,13 @@ namespace Dcg
                 sb.Clear();
                 UiApi.GetUiController<UiTipController>().ShowTip("ÉËº¦½á¹û", damageGroupString);
                 damageGroup.CollectToPool();
+
+                var attackableComp = Attacker.GetRawComponent<AttackableRawComponent>();
+                attackableComp.AddCauseDamageRequest(Attacker, Defender, damageResult.Amount);
             }
+
+            attackGroup.CollectToPool();
+            defendGroup.CollectToPool();
         }
 
         private void GenerateDiceGroupString(StringBuilder sb, DiceGroup diceGroup, DiceGroupResult result)

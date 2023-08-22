@@ -77,7 +77,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 var uiController = UiApi.GetUiController<UiDicesInHandController>();
-                uiController.Bind(EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().GetEntity());
+                uiController.Bind(EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().Characters[0]);
             }
 
             void IStageLoad.Unload(GameStage stage) { }
