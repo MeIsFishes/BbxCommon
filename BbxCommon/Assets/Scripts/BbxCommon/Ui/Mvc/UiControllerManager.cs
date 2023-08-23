@@ -77,12 +77,14 @@ namespace BbxCommon.Ui
         {
             var uiCollection = GetUiCollection(ClassTypeId<UiControllerBase, T>.Id);
             uiCollection.CollectUiController(uiController);
+            m_UiGameEngineScene.PoolUiController(uiController);
         }
 
         internal static void CollectUiController(UiControllerBase uiController)
         {
             var uiCollection = GetUiCollection(((IUiControllerTypeId)uiController).GetControllerTypeId());
             uiCollection.CollectUiController(uiController);
+            m_UiGameEngineScene.PoolUiController(uiController);
         }
 
         internal static UiControllerBase GetPooledUiController(int typeId)
@@ -132,6 +134,7 @@ namespace BbxCommon.Ui
             var index = m_UiControllers.IndexOf(uiController);
             m_UiControllers.UnorderedRemoveAt(index);
             m_PooledControllers.Add(uiController);
+            uiController.gameObject.SetActive(false);
         }
 
         internal UiControllerBase GetPooledUiController()
@@ -140,6 +143,7 @@ namespace BbxCommon.Ui
             {
                 var res = m_PooledControllers[m_PooledControllers.Count - 1];
                 m_PooledControllers.RemoveAt(m_PooledControllers.Count - 1);
+                res.gameObject.SetActive(true);
                 return res;
             }
             return null;
