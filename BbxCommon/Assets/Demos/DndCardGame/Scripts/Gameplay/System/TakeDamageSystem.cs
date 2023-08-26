@@ -26,7 +26,6 @@ namespace Dcg
                 attackableComp.OnTakeDamage?.Invoke(damageRequest);
                 // 伤害和治疗公用逻辑
                 attributesRawComponent.CurHp -= damageRequest.Damage;
-                Debug.Log(attributesRawComponent.CurHp);
                 if (attributesRawComponent.CurHp > attributesRawComponent.MaxHp)
                 {
                     attributesRawComponent.CurHp = attributesRawComponent.MaxHp;

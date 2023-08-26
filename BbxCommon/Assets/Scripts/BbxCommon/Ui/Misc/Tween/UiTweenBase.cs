@@ -58,15 +58,20 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Lifecycle
-        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
-            SearchTweenTargets();
-            OnTweenPreInit();
+            bool res = true;
+            if (SearchTweenTargets() == false)
+                res = false;
+            if (OnTweenPreInit() == false)
+                res = false;
+            return res;
         }
 
-        [Button, ShowIf("AutoSearch")]
-        private void SearchTweenTargets()
+        [Button(DrawResult = false), ShowIf("AutoSearch")]
+        private bool SearchTweenTargets()
         {
+            bool res = true;
             // search playing tween targets
             if (AutoSearch)
             {
@@ -94,9 +99,10 @@ namespace BbxCommon.Ui
                             if (TweenTargets.Contains(component) == false && component != null)
                                 TweenTargets.Add(component);
                         }
-                        if (TweenTargets.Count == 0 && types.Count == 1)
+                        if (TweenTargets.Count == 0 && types.Count == 1 && AllowAutoCreate())
                         {
                             TweenTargets.Add(transformOverride.gameObject.AddComponent(types[0]));
+                            res = false;
                         }
                         break;
                 }
@@ -108,6 +114,8 @@ namespace BbxCommon.Ui
                 m_MinTime = Curve.keys[0].time;
                 m_MaxTime = Curve.keys[Curve.length - 1].time;
             }
+
+            return res;
         }
 
         void IUiInit.OnUiInit(UiControllerBase uiController) { OnTweenInit(); }
@@ -121,17 +129,25 @@ namespace BbxCommon.Ui
             if (m_Enabled)
             {
                 m_ElapsedTime += deltaTime;
-                float evaluateTime = m_MinTime + (m_MaxTime - m_MinTime) * (m_ElapsedTime / Duration);
-                var evaluate = Curve.Evaluate(evaluateTime);
-                foreach (var target in TweenTargets)
-                {
-                    ApplyTween(target, evaluate);
-                }
-
+                ApplyTime(m_ElapsedTime);
                 if (m_ElapsedTime > Duration)
                     Stop();
             }
             OnTweenUpdate();
+        }
+
+        public void ApplyTime(float time)
+        {
+            float evaluateTime;
+            if (time > Duration)
+                evaluateTime = m_MaxTime;
+            else
+                evaluateTime = m_MinTime + (m_MaxTime - m_MinTime) * (time / Duration);
+            var evaluate = Curve.Evaluate(evaluateTime);
+            foreach (var target in TweenTargets)
+            {
+                ApplyTween(target, evaluate);
+            }
         }
 
         public void Play()
@@ -139,6 +155,10 @@ namespace BbxCommon.Ui
             m_Enabled = true;
             m_ElapsedTime = 0;
             m_Finished = false;
+            foreach (var component in TweenTargets)
+            {
+                ApplyTween(component, Curve.Evaluate(m_MinTime));
+            }
         }
 
         public void Stop()
@@ -146,8 +166,8 @@ namespace BbxCommon.Ui
             m_Enabled = false;
             m_ElapsedTime = 0;
             m_Finished = true;
-            // keep targets with final states
-            var evaluate = Curve.Evaluate(m_MaxTime);
+            // keep targets into beginning status
+            var evaluate = Curve.Evaluate(m_MinTime);
             foreach (var component in TweenTargets)
             {
                 ApplyTween(component, evaluate);
@@ -177,7 +197,7 @@ namespace BbxCommon.Ui
         /// </summary>
         protected virtual bool AllowAutoCreate() { return false; }
         protected abstract void ApplyTween(Component component, float evaluate);
-        protected virtual void OnTweenPreInit() { }
+        protected virtual bool OnTweenPreInit() { return true; }
         protected virtual void OnTweenInit() { }
         protected virtual void OnTweenOpen() { }
         protected virtual void OnTweenShow() { }

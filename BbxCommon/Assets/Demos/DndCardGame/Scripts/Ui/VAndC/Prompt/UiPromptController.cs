@@ -13,14 +13,14 @@ namespace Dcg.Ui
 
         protected override void OnUiUpdate(float deltaTime)
         {
-            if (m_View.TweenGroup.Finished)
+            if (m_View.TweenGroup.Wrapper.Finished)
                 Hide();
         }
 
         protected override void OnUiShow()
         {
             m_View.Text.text = m_CurPrompt;
-            m_View.TweenGroup.Play();
+            m_View.TweenGroup.Wrapper.Play();
         }
 
         public void ShowPrompt(string prompt)

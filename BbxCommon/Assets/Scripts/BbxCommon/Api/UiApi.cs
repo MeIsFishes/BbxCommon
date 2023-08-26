@@ -35,7 +35,7 @@ namespace BbxCommon.Ui
 
         /// <summary>
         /// <para>
-        /// Recommended to be used for UI tools or library items only. In most cases, openning UI with interfaces offered in
+        /// Recommended to be used for UI tools or library items only. In most cases, open UI with interfaces offered in
         /// <see cref="GameEngineBase{TEngine}"/> and <see cref="GameStage"/> instead.
         /// </para><para>
         /// Open a <see cref="UiControllerBase"/> by getting out from the pool or creating a new one.

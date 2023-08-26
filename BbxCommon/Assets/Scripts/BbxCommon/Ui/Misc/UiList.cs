@@ -60,9 +60,10 @@ namespace BbxCommon.Ui
         private bool m_ProtoInfoInited;
         private ProtoInfo m_ProtoInfo;
 
-        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
             Wrapper = new UiListWrapper(this);
+            return true;
         }
 
         void IUiInit.OnUiInit(UiControllerBase uiController) { }

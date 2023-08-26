@@ -64,6 +64,8 @@ namespace BbxCommon.Ui
         public UnityAction<PointerEventData> OnBackFromTop;
 
         // internal datas
+        [SerializeField, HideInInspector]
+        private UiTransformSetter m_TransformSetter;
         [NonSerialized]
         public float DraggedTime;
         private bool m_PointerIn;
@@ -78,9 +80,22 @@ namespace BbxCommon.Ui
         #endregion
 
         #region CallbacksAndTick
-        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
             Wrapper = new UiDragableWrapper(this);
+            bool res = true;
+            if (EventListener == null)
+                EventListener = gameObject.AddComponent<UiEventListener>();
+            if (EventListener.gameObject.HasComponent<UiTransformSetter>())
+            {
+                m_TransformSetter = EventListener.gameObject.GetComponent<UiTransformSetter>();
+            }
+            else
+            {
+                m_TransformSetter = EventListener.gameObject.AddComponent<UiTransformSetter>();
+                res = false;
+            }
+            return res;
         }
 
         void IUiInit.OnUiInit(UiControllerBase uiController)
@@ -149,9 +164,10 @@ namespace BbxCommon.Ui
             OnDrag?.Invoke(eventData);
 
             if (AlwaysRelativeOffset)
-                transform.position = eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y);
+                m_TransformSetter.PosWrapper.AddPositionRequest(eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y),
+                    UiTransformSetter.EPosPriority.Drag);
             else
-                transform.position = eventData.position.AsVector3XY() + m_DragOffset;
+                m_TransformSetter.PosWrapper.AddPositionRequest(eventData.position.AsVector3XY() + m_DragOffset, UiTransformSetter.EPosPriority.Drag);
         }
 
         private void OnBeginDragCallback(PointerEventData eventData)
@@ -164,7 +180,8 @@ namespace BbxCommon.Ui
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
 
             if (AlwaysRelativeOffset && SetWhenDown)
-                transform.position = (eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY();
+                m_TransformSetter.PosWrapper.AddPositionRequest((eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY(),
+                    UiTransformSetter.EPosPriority.Drag);
 
             UiApi.SetUiTop(EventListener.gameObject);
         }
@@ -175,8 +192,9 @@ namespace BbxCommon.Ui
 
             m_Dragging = false;
 
+            m_TransformSetter.PosWrapper.RemovePositionRequest(UiTransformSetter.EPosPriority.Drag);
             if (TurnBackWhenDragEnd)
-                transform.position = m_OriginalPos;
+                m_TransformSetter.PosWrapper.SetPositionOnce(m_OriginalPos, UiTransformSetter.EPosPriority.Drag);
 
             UiApi.SetTopUiBack(EventListener.gameObject);
             OnBackFromTop?.Invoke(eventData);

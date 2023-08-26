@@ -14,7 +14,7 @@ namespace Dcg.Ui
         public TMP_Text Title;
         public TMP_Text Description;
         public Button FinishButton;
-        public UiTweenGroup TweenGroupOnShow;
+        public UiTweenGroup TweenGroup;
 
         public override Type GetControllerType()
         {

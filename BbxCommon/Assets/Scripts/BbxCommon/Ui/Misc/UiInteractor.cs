@@ -51,9 +51,10 @@ namespace BbxCommon.Ui
         /// </summary>
         private HashSet<GameObject> m_RaycastTargets = new HashSet<GameObject>();
 
-        void IUiPreInit.OnUiPreInit(UiViewBase uiView)
+        bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
             Wrapper = new UiInteractorWrapper(this);
+            return true;
         }
 
         void IUiInit.OnUiInit(UiControllerBase uiController)

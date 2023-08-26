@@ -20,7 +20,7 @@ namespace BbxCommon.Ui
 
         protected override void OnTweenShow()
         {
-            m_OriginalScale = transform.localScale;
+            m_OriginalScale = TransformRootOverride.localScale;
         }
 
         protected override void ApplyTween(Component component, float evaluate)
@@ -28,10 +28,10 @@ namespace BbxCommon.Ui
             switch (ScaleType)
             {
                 case EScaleType.RelativeScale:
-                    ((Transform)component).localScale = Vector3.Scale(m_OriginalScale, MinValue + (MaxValue - MinValue) * evaluate);
+                    ((UiTransformSetter)component).ScaleWrapper.AddScaleRequest(Vector3.Scale(m_OriginalScale, MinValue + (MaxValue - MinValue) * evaluate), UiTransformSetter.EScalePriority.Tween);
                     break;
                 case EScaleType.AbsoluteScale:
-                    ((Transform)component).localScale = MinValue + (MaxValue - MinValue) * evaluate;
+                    ((UiTransformSetter)component).ScaleWrapper.AddScaleRequest(MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EScalePriority.Tween);
                     break;
             }
         }
@@ -43,7 +43,12 @@ namespace BbxCommon.Ui
 
         protected override void GetSearchType(List<Type> types)
         {
-            types.Add(typeof(Transform));
+            types.Add(typeof(UiTransformSetter));
+        }
+
+        protected override bool AllowAutoCreate()
+        {
+            return true;
         }
     }
 }

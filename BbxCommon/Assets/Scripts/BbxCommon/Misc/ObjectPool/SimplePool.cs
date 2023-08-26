@@ -30,4 +30,12 @@ namespace BbxCommon
             m_s_Pool.Add(obj);
         }
     }
+
+    public static class SimplePool
+    {
+        public static void Alloc<T>(out T obj) where T : new()
+        {
+            obj = SimplePool<T>.Alloc();
+        }
+    }
 }

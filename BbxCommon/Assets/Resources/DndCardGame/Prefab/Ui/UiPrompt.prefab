@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 2723325536304974546}
   - component: {fileID: 2845296638401778632}
   - component: {fileID: 8613245977274486413}
+  - component: {fileID: 1975881734415137400}
   m_Layer: 5
   m_Name: UiPrompt
   m_TagString: Untagged
@@ -31,9 +32,8 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 9177136762882261736}
+  - {fileID: 5352387454787080670}
   - {fileID: 5072024809838250722}
-  - {fileID: 5215947584465146892}
-  - {fileID: 2146755620825964860}
   m_Father: {fileID: 0}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -67,35 +67,48 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiPreInits:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
   UiInits:
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiOpens:
+  - {fileID: 1975881734415137400}
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiShows:
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiUpdates:
+  - {fileID: 1975881734415137400}
+  - {fileID: 766255277583642320}
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiHides:
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiCloses:
+  - {fileID: 1975881734415137400}
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
   UiDestroys:
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
-  TweenGroup:
-    Tweens:
-    - {fileID: 5849741440561029465}
-    - {fileID: 6605064264092861232}
+  TweenGroup: {fileID: 766255277583642320}
   Text: {fileID: 5335956966537029578}
+--- !u!114 &1975881734415137400
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1609465506522939411}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 093bc175d3b09eb4db371e9668ee318c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PosWrapper:
+    m_Ref: {fileID: 1975881734415137400}
+  DontRemove: 0
 --- !u!1 &3373221520673495835
 GameObject:
   m_ObjectHideFlags: 0
@@ -120,12 +133,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3373221520673495835}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2723325536304974546}
+  m_Father: {fileID: 5352387454787080670}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -274,6 +287,62 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!1 &6404616730426576409
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 5352387454787080670}
+  - component: {fileID: 766255277583642320}
+  m_Layer: 5
+  m_Name: TweenGroup
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &5352387454787080670
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6404616730426576409}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 5215947584465146892}
+  - {fileID: 2146755620825964860}
+  m_Father: {fileID: 2723325536304974546}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &766255277583642320
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6404616730426576409}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ee0dc3283684a49b0d7433deb4c647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Wrapper:
+    m_Ref: {fileID: 766255277583642320}
+  Tweens:
+  - {fileID: 6605064264092861232}
+  - {fileID: 5849741440561029465}
 --- !u!1 &6842133084607189974
 GameObject:
   m_ObjectHideFlags: 0
@@ -433,12 +502,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 7835630000906676660}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2723325536304974546}
+  m_Father: {fileID: 5352387454787080670}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -504,7 +573,7 @@ MonoBehaviour:
   AutoSearch: 1
   TransformRootOverride: {fileID: 2723325536304974546}
   TweenTargets:
-  - {fileID: 2723325536304974546}
+  - {fileID: 1975881734415137400}
   m_MinTime: 0
   m_MaxTime: 1
   MinValue: {x: 0, y: -15, z: 0}

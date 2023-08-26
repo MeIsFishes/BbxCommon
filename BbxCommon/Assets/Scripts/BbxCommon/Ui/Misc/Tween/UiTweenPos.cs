@@ -20,7 +20,7 @@ namespace BbxCommon.Ui
 
         protected override void OnTweenShow()
         {
-            m_OriginalPos = transform.position;
+            m_OriginalPos = TransformRootOverride.localPosition;
         }
 
         protected override void ApplyTween(Component component, float evaluate)
@@ -28,10 +28,10 @@ namespace BbxCommon.Ui
             switch (PosType)
             {
                 case EPosType.RelativePos:
-                    ((Transform)component).position = m_OriginalPos + MinValue + (MaxValue - MinValue) * evaluate;
+                    ((UiTransformSetter)component).PosWrapper.AddPositionRequest(m_OriginalPos + MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
                 case EPosType.AbsolutePos:
-                    ((Transform)component).position = MinValue + (MaxValue - MinValue) * evaluate;
+                    ((UiTransformSetter)component).PosWrapper.AddPositionRequest(MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
             }
         }
@@ -43,7 +43,12 @@ namespace BbxCommon.Ui
 
         protected override void GetSearchType(List<Type> types)
         {
-            types.Add(typeof(Transform));
+            types.Add(typeof(UiTransformSetter));
+        }
+
+        protected override bool AllowAutoCreate()
+        {
+            return true;
         }
     }
 }

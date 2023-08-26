@@ -85,14 +85,19 @@ namespace BbxCommon
     // a syntactic sugar class
     public static class ObjectPool
     {
+        public static void Alloc<T>(out T obj) where T : PooledObject, new()
+        {
+            obj = ObjectPool<T>.Alloc();
+        }
+
         /// <summary>
         /// Check the given reference, allocate and return a pooled object if it is null.
         /// Example: obj = AllocIfNull(obj);
         /// </summary>
-        public static Type AllocIfNull<Type>(Type reference) where Type : PooledObject, new()
+        public static T AllocIfNull<T>(T reference) where T : PooledObject, new()
         {
             if (reference == null)
-                return ObjectPool<Type>.Alloc();
+                return ObjectPool<T>.Alloc();
             return reference;
         }
     }

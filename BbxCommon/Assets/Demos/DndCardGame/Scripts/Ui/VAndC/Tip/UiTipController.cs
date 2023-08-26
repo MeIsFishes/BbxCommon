@@ -31,11 +31,12 @@ namespace Dcg.Ui
         protected override void OnUiInit()
         {
             m_View.FinishButton.onClick.AddListener(OnFinishButton);
+            m_View.TweenGroup.Wrapper.OnPlayReverseFinishes += () => { Hide(); };
         }
 
         protected override void OnUiShow()
         {
-            m_View.TweenGroupOnShow.Play();
+            m_View.TweenGroup.Wrapper.Play();
         }
 
         protected override void OnUiUpdate(float deltaTime)
@@ -56,7 +57,7 @@ namespace Dcg.Ui
 
         private void OnFinishButton()
         {
-            Hide();
+            m_View.TweenGroup.Wrapper.PlayReverse();
         }
     }
 }

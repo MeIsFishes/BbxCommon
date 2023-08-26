@@ -24,12 +24,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 453867207647181139}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2723325536304974546}
+  m_Father: {fileID: 972928830869465545}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -153,8 +153,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 3661814582829214313}
-  - {fileID: 760915903517203155}
+  - {fileID: 972928830869465545}
   - {fileID: 2627374173448444369}
   m_Father: {fileID: 0}
   m_RootOrder: -1
@@ -189,9 +188,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiPreInits:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
   UiInits:
   - {fileID: 7470335374781118468}
   - {fileID: 9213891715556109576}
@@ -202,6 +198,7 @@ MonoBehaviour:
   - {fileID: 7470335374781118468}
   - {fileID: 9213891715556109576}
   UiUpdates:
+  - {fileID: 4410180852821027031}
   - {fileID: 7470335374781118468}
   - {fileID: 9213891715556109576}
   UiHides:
@@ -216,10 +213,7 @@ MonoBehaviour:
   Title: {fileID: 5335956966537029578}
   Description: {fileID: 5622861013973276352}
   FinishButton: {fileID: 785375695501004287}
-  TweenGroupOnShow:
-    Tweens:
-    - {fileID: 7470335374781118468}
-    - {fileID: 9213891715556109576}
+  TweenGroup: {fileID: 4410180852821027031}
 --- !u!1 &1688687470945358346
 GameObject:
   m_ObjectHideFlags: 0
@@ -244,12 +238,12 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1688687470945358346}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2723325536304974546}
+  m_Father: {fileID: 972928830869465545}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -933,3 +927,59 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!1 &9105270421870829749
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 972928830869465545}
+  - component: {fileID: 4410180852821027031}
+  m_Layer: 5
+  m_Name: Tween
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &972928830869465545
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105270421870829749}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 3661814582829214313}
+  - {fileID: 760915903517203155}
+  m_Father: {fileID: 2723325536304974546}
+  m_RootOrder: -1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 100, y: 100}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &4410180852821027031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9105270421870829749}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 01ee0dc3283684a49b0d7433deb4c647, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Wrapper:
+    m_Ref: {fileID: 4410180852821027031}
+  Tweens:
+  - {fileID: 7470335374781118468}
+  - {fileID: 9213891715556109576}

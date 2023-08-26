@@ -13,8 +13,6 @@ namespace BbxCommon.Ui
         [NonSerialized]
         public UiControllerBase UiController;
         [SerializeField]
-        internal List<Component> UiPreInits = new();
-        [SerializeField]
         internal List<Component> UiInits = new();
         [SerializeField]
         internal List<Component> UiOpens = new();
@@ -33,11 +31,34 @@ namespace BbxCommon.Ui
         [Button("Pre-UiInit")]
         private void PreUiInit()
         {
-            var uiPreInits = GetComponentsInChildren<IUiPreInit>();
-            UiPreInits.Clear();
-            foreach (var item in uiPreInits)
+            var uiPreInitRemoves = GetComponentsInChildren<IUiPreInitRemove>();
+            foreach (var item in uiPreInitRemoves)
             {
-                UiPreInits.Add((Component)item);
+                if (item.DontRemove == false)
+                    DestroyImmediate((Component)item);
+            }
+
+            int loop = 0;
+            while (true)
+            {
+                bool end = true;
+                var uiPreInits = GetComponentsInChildren<IUiPreInit>();
+                foreach (var item in uiPreInits)
+                {
+                    if (item.OnUiPreInit(this) == false)
+                        end = false;
+                    EditorUtility.SetDirty((Component)item);
+                }
+                EditorUtility.SetDirty(this);
+
+                if (end) break;
+
+                loop++;
+                if (loop > 8)
+                {
+                    Debug.LogError("UiPreInit has run too many loops! Is there something wrong?");
+                    break;
+                }
             }
 
             var uiInits = GetComponentsInChildren<IUiInit>();
@@ -88,13 +109,6 @@ namespace BbxCommon.Ui
             {
                 UiDestroys.Add((Component)item);
             }
-
-            foreach (var item in uiPreInits)
-            {
-                item.OnUiPreInit(this);
-                EditorUtility.SetDirty((Component)item);
-            }
-            EditorUtility.SetDirty(this);
         }
 #endif
 
