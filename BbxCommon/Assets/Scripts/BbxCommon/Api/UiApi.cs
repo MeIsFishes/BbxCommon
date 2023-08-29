@@ -1,5 +1,6 @@
 using System.Reflection;
 using Unity.Entities;
+using UnityEditor;
 using UnityEngine;
 
 namespace BbxCommon.Ui
@@ -13,7 +14,7 @@ namespace BbxCommon.Ui
         }
 
         /// <summary>
-        /// Getting type id of <see cref="UiControllerBase{TView}"/> through reflection. Recommends to cache the result.
+        /// Get type id of <see cref="UiControllerBase{TView}"/> through reflection. Recommends to cache the result.
         /// </summary>
         /// <param name="uiView"> A <see cref="UiViewBase"/> hangs on an exist UI proto <see cref="GameObject"/> or a prefab. </param>
         public static int GetUiControllerTypeId(UiViewBase uiView)
@@ -31,6 +32,20 @@ namespace BbxCommon.Ui
         public static int GetUiControllerTypeId<T>() where T : UiControllerBase
         {
             return ClassTypeId<UiControllerBase, T>.Id;
+        }
+
+        /// <summary>
+        /// Open a <see cref="UiControllerBase"/> by getting out from the pool or creating a new one.
+        /// The returned <see cref="UiControllerBase"/> is with base class type and set as invisible. If you need it to
+        /// show on the screen, call <see cref="UiControllerBase.Show"/>.
+        /// The <see cref="UiControllerBase"/> be opened in this way must be pre-load first.
+        /// </summary>
+        public static T OpenUiController<T>(Transform parent) where T : UiControllerBase
+        {
+            var preLoadUiData = DataApi.GetData<PreLoadUiData>();
+            var uiView = preLoadUiData.GetViewPrefabBy<T>();
+            int controllerTypeId = ClassTypeId<UiControllerBase, T>.Id;
+            return (T)OpenUiController(uiView, controllerTypeId, parent);
         }
 
         /// <summary>
@@ -83,9 +98,11 @@ namespace BbxCommon.Ui
             }
             var controllerGo = new GameObject(uiGameObject.name.TryRemoveEnd("(Clone)") + "Controller");
             uiGameObject.transform.SetParent(controllerGo.transform);
+            // attach view and controller to each other
             var uiController = (UiControllerBase)controllerGo.AddComponent(uiView.GetControllerType());
             uiView.UiController = uiController;
             uiController.SetView(uiView);
+            // run life cycle
             uiController.Init();
             uiController.Open();
             return uiController;
@@ -157,29 +174,7 @@ namespace BbxCommon.Ui
         /// </summary>
         public static T OpenHudController<T>() where T : UiControllerBase, IHudController
         {
-            // try getting controller from pool
-            var hudController = UiControllerManager.GetPooledUiController(ClassTypeId<UiControllerBase, T>.Id) as T;
-            if (hudController != null)
-            {
-                hudController.Open();
-            }
-            else
-            {
-                // or create one
-                var controllerGameObject = new GameObject();
-                hudController = controllerGameObject.AddComponent<T>();
-                var hudGameObject = Object.Instantiate(Resources.Load<GameObject>(hudController.GetResourcePath()));
-                hudGameObject.SetActive(false);
-                hudGameObject.transform.SetParent(controllerGameObject.transform);
-                controllerGameObject.name = hudGameObject.name.TryRemoveEnd("(Clone)") + "Controller";
-                // attach view and controller each other
-                var hudView = hudGameObject.GetComponent<HudViewBase>();
-                hudView.UiController = hudController;
-                hudController.View = hudView;
-                // run life cycle
-                hudController.Init();
-                hudController.Open();
-            }
+            var hudController = OpenUiController<T>(m_HudRootTransform);
             var transform = hudController.gameObject.AddMissingComponent<RectTransform>();
             transform.SetParent(HudRoot.transform);
             transform.anchorMin = Vector3.zero;     // function WorldToViewPort return the position relative to bottom left
@@ -259,6 +254,14 @@ namespace BbxCommon.Ui
         internal static T GetPooledUiController<T>() where T : UiControllerBase
         {
             return UiControllerManager.GetPooledUiController<T>();
+        }
+
+        internal static void ExportPreLoadUiController(UiViewBase uiView)
+        {
+            var preLoadUiData = DataApi.LoadOrCreateAssetInResources<PreLoadUiData>(GlobalStaticVariable.ExportPreLoadUiPathInResources);
+            preLoadUiData.SetUi(uiView);
+            EditorUtility.SetDirty(preLoadUiData);
+            AssetDatabase.SaveAssets();
         }
         #endregion
     }

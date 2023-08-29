@@ -2,24 +2,29 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 using Sirenix.OdinInspector;
+using Unity.Entities.UniversalDelegates;
 
 namespace BbxCommon.Ui
 {
     public class UiList : MonoBehaviour, IUiPreInit, IUiInit, IUiOpen, IUiShow, IUiHide, IUiClose, IUiDestroy, IUiUpdate
     {
+        #region Wrapper
+        [HideInInspector]
+        public WpData Wrapper;
+
         [Serializable]
-        public struct UiListWrapper
+        public struct WpData
         {
             [SerializeField]
             private UiList m_Ref;
 
-            public UiListWrapper(UiList obj) { m_Ref = obj; }
+            public WpData(UiList obj) { m_Ref = obj; }
 
-            public T CreateItem<T>() where T : UiControllerBase, IUiListItem => m_Ref.CreateItem<T>();
+            public T CreateItem<T>() where T : UiControllerBase => m_Ref.CreateItem<T>();
             public void RemoveItem(int index) => m_Ref.RemoveItem(index);
-            public void RemoveItem(IUiListItem item) => m_Ref.RemoveItem(item);
             public void ClearItems() => m_Ref.ClearItems();
         }
+        #endregion
 
         private struct ProtoInfo
         {
@@ -44,8 +49,6 @@ namespace BbxCommon.Ui
             Vertical,
         }
 
-        [HideInInspector]
-        public UiListWrapper Wrapper;
         [Tooltip("Proto view to create items of the list.")]
         public UiViewBase ItemProto;
         [InfoBox("ConstantSlot: Giving numbers of a single line and padding space, set each item to the calculated slot." +
@@ -56,13 +59,14 @@ namespace BbxCommon.Ui
         [ShowIf("@ArragementType == EArrangement.AreaFit"), Tooltip("Padding space between two items.")]
         public float PaddingSpace;
 
-        private List<IUiListItem> m_UiItems = new List<IUiListItem>();
+        private List<GameObject> m_UiItems = new();
+        private List<UiControllerBase> m_Controllers = new();
         private bool m_ProtoInfoInited;
         private ProtoInfo m_ProtoInfo;
 
         bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
-            Wrapper = new UiListWrapper(this);
+            Wrapper = new WpData(this);
             return true;
         }
 
@@ -72,17 +76,23 @@ namespace BbxCommon.Ui
 
         void IUiShow.OnUiShow(UiControllerBase uiController)
         {
-            foreach (var item in m_UiItems)
+            for (int i = 0; i < m_UiItems.Count; i++)
             {
-                ((UiControllerBase)item).Show();
+                if (m_Controllers[i] != null)
+                    m_Controllers[i].Show();
+                else
+                    m_UiItems[i].SetActive(true);
             }
         }
 
         void IUiHide.OnUiHide(UiControllerBase uiController)
         {
-            foreach (var item in m_UiItems)
+            for (int i = 0; i < m_UiItems.Count; i++)
             {
-                ((UiControllerBase)item).Hide();
+                if (m_Controllers[i] != null)
+                    m_Controllers[i].Hide();
+                else
+                    m_UiItems[(int)i].SetActive(false);
             }
         }
 
@@ -93,9 +103,10 @@ namespace BbxCommon.Ui
 
         void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
         {
-            foreach (var item in m_UiItems)
+            for (int i = 0; i < m_UiItems.Count; i++)
             {
-                ((UiControllerBase)item).Destroy();
+                if (m_Controllers[i] != null)
+                    m_Controllers[i].Destroy();
             }
         }
 
@@ -126,7 +137,7 @@ namespace BbxCommon.Ui
 
             var rect = ((RectTransform)transform).rect;
             if (m_UiItems.Count == 1)   // keep it in center
-                ((UiControllerBase)m_UiItems[0]).transform.position = rect.position;
+                m_UiItems[0].transform.position = rect.position;
 
             switch (AreaDirection)
             {
@@ -139,7 +150,7 @@ namespace BbxCommon.Ui
                         float interval = (positionRight - positionLeft) / m_UiItems.Count - 1;
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            ((UiControllerBase)m_UiItems[i]).transform.position = new Vector2(positionLeft + interval * i, rect.y);
+                            m_UiItems[i].transform.position = new Vector2(positionLeft + interval * i, rect.y);
                         }
                     }
                     else    // else fit the padding space as setting
@@ -147,7 +158,7 @@ namespace BbxCommon.Ui
                         float positionLeft = rect.x - requestSpaceX / 2 + m_ProtoInfo.Size.x / 2;
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            ((UiControllerBase)m_UiItems[i]).transform.position = new Vector2(positionLeft + PaddingSpace * i, rect.y);
+                            m_UiItems[i].transform.position = new Vector2(positionLeft + PaddingSpace * i, rect.y);
                         }
                     }
                     break;
@@ -160,7 +171,7 @@ namespace BbxCommon.Ui
                         float interval = (positionTop - positionBottom) / m_UiItems.Count - 1;
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            ((UiControllerBase)m_UiItems[i]).transform.position = new Vector2(rect.x, positionBottom + interval * i);
+                            m_UiItems[i].transform.position = new Vector2(rect.x, positionBottom + interval * i);
                         }
                     }
                     else
@@ -168,7 +179,7 @@ namespace BbxCommon.Ui
                         float positionButtom = rect.y - requestSpaceY / 2 + m_ProtoInfo.Size.y / 2;
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            ((UiControllerBase)m_UiItems[i]).transform.position = new Vector2(rect.x, positionButtom + PaddingSpace * i);
+                            m_UiItems[i].transform.position = new Vector2(rect.x, positionButtom + PaddingSpace * i);
                         }
                     }
                     break;
@@ -178,13 +189,12 @@ namespace BbxCommon.Ui
         /// <summary>
         /// Create a list item via <see cref="ItemProto"/>.
         /// </summary>
-        public T CreateItem<T>() where T : UiControllerBase, IUiListItem
+        public T CreateItem<T>() where T : UiControllerBase
         {
             var uiController = UiApi.OpenUiController(ItemProto, ClassTypeId<UiControllerBase, T>.Id, this.transform);
             uiController.transform.SetParent(transform);
             uiController.Show();
-            m_UiItems.Add((IUiListItem)uiController);
-            m_UiItems[m_UiItems.Count - 1].OnIndexChanged(m_UiItems.Count - 1);
+            m_UiItems.Add(uiController.gameObject);
             // cache proto info
             if (m_ProtoInfoInited == false)
             {
@@ -198,38 +208,23 @@ namespace BbxCommon.Ui
 
         public void RemoveItem(int index)
         {
-            ((UiControllerBase)m_UiItems[index]).Close();
+            if (m_Controllers[index] != null)
+                m_Controllers[index].Close();
+            else
+                m_UiItems[index].Destroy();
             m_UiItems.RemoveAt(index);
-            for (int i = index; i < m_UiItems.Count - 1; i++)
-            {
-                m_UiItems[i].OnIndexChanged(i);
-            }
+            m_Controllers.RemoveAt(index);
             Refresh();
-        }
-
-        public void RemoveItem(IUiListItem item)
-        {
-            RemoveItem(item.IndexInList);
         }
 
         public void ClearItems()
         {
-            foreach (var item in m_UiItems)
+            for (int i = 0; i < m_UiItems.Count; i++)
             {
-                ((UiControllerBase)item).Close();
+                if (m_Controllers[i] != null)
+                    m_Controllers[i].Close();
             }
             m_UiItems.Clear();
         }
-    }
-
-    /// <summary>
-    /// Inherit this interface by a <see cref="UiControllerBase{TView}"/> to become <see cref="UiList"/>'s member item.
-    /// </summary>
-    public interface IUiListItem
-    {
-        public UiList ParentUiList { get; set; }
-        public int IndexInList { get; set; }
-        public void OnIndexChanged(int newIndex);
-        public void OnListRefresh();
     }
 }

@@ -15,7 +15,6 @@ namespace BbxCommon.Ui
         void Hide();
         void Close();
         void Destroy();
-        string GetResourcePath();
     }
 
     public abstract class HudControllerBase<TView> : UiControllerBase<TView>, IHudController where TView : HudViewBase
@@ -104,13 +103,6 @@ namespace BbxCommon.Ui
             m_ViewTransform.localPosition = new Vector3(m_ViewTransform.localPosition.x * canvasTransform.sizeDelta.x,
                 m_ViewTransform.localPosition.y * canvasTransform.sizeDelta.y);
         }
-        #endregion
-
-        #region Abstract
-        /// <summary>
-        /// Return the path of current HUD prefab under the Resources folder, without "Resources/".
-        /// </summary>
-        public abstract string GetResourcePath();
         #endregion
     }
 }

@@ -256,6 +256,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
+  UiInits:
+  - {fileID: 3867593555159398160}
+  UiOpens: []
+  UiShows: []
+  UiUpdates: []
+  UiHides: []
+  UiCloses: []
+  UiDestroys: []
   UiInteractor: {fileID: 3867593555159398160}
   DiceFilledGroup: {fileID: 776140124853773632}
 --- !u!1 &5392867067338980589

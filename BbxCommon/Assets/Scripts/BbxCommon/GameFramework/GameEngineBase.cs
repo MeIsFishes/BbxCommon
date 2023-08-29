@@ -10,7 +10,7 @@ namespace BbxCommon
     public partial class UpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
-    public abstract class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
+    public abstract partial class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
         public EngineUiSceneWp UiSceneWrapper;
@@ -57,6 +57,7 @@ namespace BbxCommon
 
             OnAwakeEcsWorld();
             OnAwakeUiScene();
+            OnAwakeStage();
 
             // call overridable OnAwake() after all datas are initialized
             OnAwake();
@@ -188,6 +189,11 @@ namespace BbxCommon
         public void UnloadStage(GameStage stage)
         {
             m_OperateStages.Add(new OperateStage(stage, EOperateStage.Unload));
+        }
+
+        private void OnAwakeStage()
+        {
+            LoadStage(CreateGameEngineStage());
         }
 
         private void OnUpdateStage()

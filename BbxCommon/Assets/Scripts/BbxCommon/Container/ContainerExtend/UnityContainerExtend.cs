@@ -193,6 +193,13 @@ namespace BbxCommon
             transform.rotation = Quaternion.LookRotation(target -  transform.position);
         }
         #endregion
+
+        #region Component
+        public static void Destroy(this Component component)
+        {
+            UnityEngine.Object.Destroy(component);
+        }
+        #endregion
         #endregion
 
         #region DOTS

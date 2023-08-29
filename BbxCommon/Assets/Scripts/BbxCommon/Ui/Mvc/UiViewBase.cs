@@ -110,6 +110,12 @@ namespace BbxCommon.Ui
                 UiDestroys.Add((Component)item);
             }
         }
+
+        [Button("Export as Pre-load")]
+        private void ExportAsPreLoadUi()
+        {
+            UiApi.ExportPreLoadUiController(this);
+        }
 #endif
 
         public abstract Type GetControllerType();

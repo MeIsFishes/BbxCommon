@@ -88,6 +88,7 @@ GameObject:
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7220269692404147734}
   - component: {fileID: 1153564080249549915}
+  - component: {fileID: 1002205931191218935}
   m_Layer: 5
   m_Name: UiDice
   m_TagString: Untagged
@@ -138,18 +139,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiPreInits:
-  - {fileID: 3682755452414818849}
-  - {fileID: 2358620174404244115}
   UiInits:
   - {fileID: 3682755452414818849}
   - {fileID: 2358620174404244115}
-  UiOpens: []
+  UiOpens:
+  - {fileID: 1002205931191218935}
   UiShows: []
   UiUpdates:
+  - {fileID: 1002205931191218935}
   - {fileID: 3682755452414818849}
   UiHides: []
-  UiCloses: []
+  UiCloses:
+  - {fileID: 1002205931191218935}
   UiDestroys:
   - {fileID: 3682755452414818849}
   DiceTittle: {fileID: 0}
@@ -169,6 +170,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf60e366a2681429ea8dde277a537d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1002205931191218935
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1372915186548853049}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 093bc175d3b09eb4db371e9668ee318c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PosWrapper:
+    m_Ref: {fileID: 1002205931191218935}
+  DontRemove: 0
 --- !u!1 &2362882392947419803
 GameObject:
   m_ObjectHideFlags: 0
@@ -231,6 +247,7 @@ MonoBehaviour:
   EventListener: {fileID: 1153564080249549915}
   EventBeginDrag: 0
   EventEndDrag: 1
+  m_TransformSetter: {fileID: 1002205931191218935}
   Wrapper:
     m_Ref: {fileID: 3682755452414818849}
 --- !u!114 &2358620174404244115

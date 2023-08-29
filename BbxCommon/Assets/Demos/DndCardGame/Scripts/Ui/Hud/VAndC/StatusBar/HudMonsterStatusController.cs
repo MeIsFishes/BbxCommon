@@ -10,14 +10,6 @@ namespace Dcg.Ui
 {
     public class HudMonsterStatusController : HudControllerBase<HudMonsterStatusView>
     {
-        /// <summary>
-        /// Return the path of current HUD prefab under the Resources folder, without "Resources/".
-        /// </summary>
-        public override string GetResourcePath()
-        {
-            return "DndCardGame/Prefab/Ui/Hud/HudMonsterStatus";
-        }
-
         protected override void OnHudBind(Entity entity)
         {
             var attributesComp = entity.GetRawComponent<AttributesRawComponent>();

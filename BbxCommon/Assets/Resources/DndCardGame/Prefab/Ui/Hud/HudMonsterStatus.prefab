@@ -67,7 +67,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiPreInits: []
   UiInits: []
   UiOpens: []
   UiShows: []
