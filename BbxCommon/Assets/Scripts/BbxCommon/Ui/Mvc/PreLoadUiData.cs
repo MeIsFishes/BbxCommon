@@ -54,6 +54,11 @@ namespace BbxCommon
 
         internal UiViewBase GetViewPrefabBy<TController>() where TController : UiControllerBase
         {
+#if UNITY_EDITOR
+            if (UiDatas.ContainsKey(typeof(TController).FullName) == false)
+                Debug.LogError("The UiController " + typeof(TController).FullName +
+                    " has not been pre-loaded. You should export it from its UiView by clicking the button on inspector first.");
+#endif
             var prefab = Resources.Load<GameObject>(UiDatas[typeof(TController).FullName].UiViewPrefabPath);
             return prefab.GetComponent<UiViewBase>();
         }
