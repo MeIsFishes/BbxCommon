@@ -10,7 +10,7 @@ namespace BbxCommon.Ui
     /// request may conflict others'. So the <see cref="UiTransformSetter"/> is for setting variables in
     /// <see cref="Transform"/> by check the requests' priority of those ones reach in a same frame.
     /// </para><para>
-    /// Modifying request will exist until be removed or you can call the functions like <see cref="SetPositionOnce(Vector3, int)"/>
+    /// Modifying request will exist until be removed or you can call the functions like <see cref="SetPositionOnce(Vector3, int, bool)"/>
     /// to add a one-frame request. That is for the cases, for example, I'm dragging a UI item which is
     /// in a <see cref="UiList"/>, and once I release, it will turn back to the position that the
     /// <see cref="UiList"/> set it.
@@ -36,30 +36,54 @@ namespace BbxCommon.Ui
             /// <summary>
             /// Add a request which will exist until be removed.
             /// </summary>
-            public void AddPositionRequest(Vector3 position, int priority) => m_Ref.AddPositionRequest(position, priority);
+            public void AddPositionRequest(Vector3 position, int priority) => m_Ref.AddPositionRequest(position, priority, false);
             /// <summary>
             /// Add a request which will exist until be removed.
             /// </summary>
-            public void AddPositionRequest<T>(Vector3 position, T priority) where T : Enum => m_Ref.AddPositionRequest(position, priority.GetHashCode());
+            public void AddPositionRequest<T>(Vector3 position, T priority) where T : Enum => m_Ref.AddPositionRequest(position, priority.GetHashCode(), false);
             /// <summary>
             /// Add a request which will exist until be removed.
             /// </summary>
-            internal void AddPositionRequest(Vector3 position, EPosPriority priority) => m_Ref.AddPositionRequest(position, (int)priority);
+            internal void AddPositionRequest(Vector3 position, EPosPriority priority) => m_Ref.AddPositionRequest(position, (int)priority, false);
+            /// <summary>
+            /// Add a request which will exist until be removed.
+            /// </summary>
+            public void AddLocalPositionRequest(Vector3 position, int priority) => m_Ref.AddPositionRequest(position, priority, true);
+            /// <summary>
+            /// Add a request which will exist until be removed.
+            /// </summary>
+            public void AddLocalPositionRequest<T>(Vector3 position, T priority) where T : Enum => m_Ref.AddPositionRequest(position, priority.GetHashCode(), true);
+            /// <summary>
+            /// Add a request which will exist until be removed.
+            /// </summary>
+            internal void AddLocalPositionRequest(Vector3 position, EPosPriority priority) => m_Ref.AddPositionRequest(position, (int)priority, true);
             public void RemovePositionRequest(int priority) => m_Ref.RemovePositionRequest(priority);
             public void RemovePositionRequest<T>(T priority) where T : Enum => m_Ref.RemovePositionRequest(priority.GetHashCode());
             internal void RemovePositionRequest(EPosPriority priority) => m_Ref.RemovePositionRequest((int)priority);
             /// <summary>
             /// Add a request which exists one frame only.
             /// </summary>
-            public void SetPositionOnce(Vector3 position, int priority) => m_Ref.SetPositionOnce(position, priority);
+            public void SetPositionOnce(Vector3 position, int priority) => m_Ref.SetPositionOnce(position, priority, false);
             /// <summary>
             /// Add a request which exists one frame only.
             /// </summary>
-            public void SetPositionOnce<T>(Vector3 position, T priority) where T : Enum => m_Ref.SetPositionOnce(position, priority.GetHashCode());
+            public void SetPositionOnce<T>(Vector3 position, T priority) where T : Enum => m_Ref.SetPositionOnce(position, priority.GetHashCode(), false);
             /// <summary>
             /// Add a request which exists one frame only.
             /// </summary>
-            internal void SetPositionOnce(Vector3 position, EPosPriority priority) => m_Ref.SetPositionOnce(position, (int)priority);
+            internal void SetPositionOnce(Vector3 position, EPosPriority priority) => m_Ref.SetPositionOnce(position, (int)priority, false);
+            /// <summary>
+            /// Add a request which exists one frame only.
+            /// </summary>
+            public void SetLocalPositionOnce(Vector3 position, int priority) => m_Ref.SetPositionOnce(position, priority, true);
+            /// <summary>
+            /// Add a request which exists one frame only.
+            /// </summary>
+            public void SetLocalPositionOnce<T>(Vector3 position, T priority) where T : Enum => m_Ref.SetPositionOnce(position, priority.GetHashCode(), true);
+            /// <summary>
+            /// Add a request which exists one frame only.
+            /// </summary>
+            internal void SetLocalPositionOnce(Vector3 position, EPosPriority priority) => m_Ref.SetPositionOnce(position, (int)priority, true);
         }
 
         public struct RotWpData
@@ -189,11 +213,13 @@ namespace BbxCommon.Ui
         {
             public int Priority;
             public Vector3 Position;
+            public bool Local;
 
-            public PosRequest(int priority, Vector3 position)
+            public PosRequest(int priority, Vector3 position, bool local)
             {
                 Priority = priority;
                 Position = position;
+                Local = local;
             }
         }
 
@@ -216,7 +242,10 @@ namespace BbxCommon.Ui
                 if (m_PosRequests[i].Priority >= priority)
                 {
                     priority = m_PosRequests[i].Priority;
-                    transform.localPosition = m_PosRequests[i].Position;
+                    if (m_PosRequests[i].Local == true)
+                        transform.localPosition = m_PosRequests[i].Position;
+                    else
+                        transform.position = m_PosRequests[i].Position;
                 }
             }
             // if there is a temporary request with the same priority, apply the temporary one first
@@ -225,7 +254,10 @@ namespace BbxCommon.Ui
                 if (m_TempPosRequest[i].Priority >= priority)
                 {
                     priority = m_TempPosRequest[i].Priority;
-                    transform.localPosition = m_TempPosRequest[i].Position;
+                    if (m_TempPosRequest[i].Local == true)
+                        transform.localPosition = m_TempPosRequest[i].Position;
+                    else
+                        transform.position = m_TempPosRequest[i].Position;
                 }
             }
             m_TempPosRequest.Clear();
@@ -237,17 +269,17 @@ namespace BbxCommon.Ui
             m_TempPosRequest.CollectToPool();
         }
 
-        public void AddPositionRequest(Vector3 position, int priority)
+        public void AddPositionRequest(Vector3 position, int priority, bool local)
         {
             for (int i = 0; i < m_PosRequests.Count; i++)
             {
                 if (m_PosRequests[i].Priority == priority)
                 {
-                    m_PosRequests[i] = new PosRequest(priority, position);
+                    m_PosRequests[i] = new PosRequest(priority, position, local);
                     return;
                 }
             }
-            m_PosRequests.Add(new PosRequest(priority, position));
+            m_PosRequests.Add(new PosRequest(priority, position, local));
         }
 
         public void RemovePositionRequest(int priority)
@@ -262,17 +294,17 @@ namespace BbxCommon.Ui
             }
         }
 
-        public void SetPositionOnce(Vector3 position, int priority)
+        public void SetPositionOnce(Vector3 position, int priority, bool local)
         {
             for (int i = 0; i < m_TempPosRequest.Count; i++)
             {
                 if (m_TempPosRequest[i].Priority == priority)
                 {
-                    m_TempPosRequest[i] = new PosRequest(priority, position);
+                    m_TempPosRequest[i] = new PosRequest(priority, position, local);
                     return;
                 }
             }
-            m_TempPosRequest.Add(new PosRequest(priority, position));
+            m_TempPosRequest.Add(new PosRequest(priority, position, local));
         }
         #endregion
 
@@ -321,7 +353,7 @@ namespace BbxCommon.Ui
                 if (m_RotRequests[i].Priority >= priority)
                 {
                     priority = m_RotRequests[i].Priority;
-                    transform.localRotation = m_RotRequests[i].Rotation;
+                    transform.rotation = m_RotRequests[i].Rotation;
                 }
             }
             // if there is a temporary request with the same priority, apply the temporary one first
@@ -330,7 +362,7 @@ namespace BbxCommon.Ui
                 if (m_TempRotRequest[i].Priority >= priority)
                 {
                     priority = m_TempRotRequest[i].Priority;
-                    transform.localRotation = m_TempRotRequest[i].Rotation;
+                    transform.rotation = m_TempRotRequest[i].Rotation;
                 }
             }
             m_TempRotRequest.Clear();

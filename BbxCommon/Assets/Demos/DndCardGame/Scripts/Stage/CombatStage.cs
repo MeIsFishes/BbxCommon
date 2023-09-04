@@ -23,6 +23,7 @@ namespace Dcg
             stage.AddUpdateSystem<CombatRoundSystem>();
             stage.AddUpdateSystem<CombatTurnSystem>();
             stage.AddUpdateSystem<MonsterTurnSystem>();
+            stage.AddUpdateSystem<DrawDiceSystem>();
 
             return stage;
         }
@@ -36,6 +37,8 @@ namespace Dcg
                 var combatDeckComp = playerComp.Characters[0].AddRawComponent<CombatDeckRawComponent>();
                 combatDeckComp.DicesInDeck.Clear();
                 combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
+                combatDeckComp.DicesInDeck.Shuffle();
+                combatDeckComp.DrawDiceRequest += 5;    // ≥ı º≥È≈∆£®¡Ÿ ±£©
             }
 
             void IStageLoad.Unload(GameStage stage)

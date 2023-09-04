@@ -75,7 +75,7 @@ namespace BbxCommon.Ui
 
         internal static void CollectUiController<T>(T uiController) where T : UiControllerBase
         {
-            var uiCollection = GetUiCollection(ClassTypeId<UiControllerBase, T>.Id);
+            var uiCollection = GetUiCollection(uiController.View.GetControllerTypeId());
             uiCollection.CollectUiController(uiController);
             m_UiGameEngineScene.PoolUiController(uiController);
         }

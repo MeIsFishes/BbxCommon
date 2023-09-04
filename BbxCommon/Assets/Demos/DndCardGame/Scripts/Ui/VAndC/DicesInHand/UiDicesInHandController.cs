@@ -7,7 +7,6 @@ namespace Dcg.Ui
 {
     public class UiDicesInHandController : UiControllerBase<UiDicesInHandView>
     {
-        private Entity m_CharacterEntity;
         private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
 
         /// <summary>
@@ -15,7 +14,6 @@ namespace Dcg.Ui
         /// </summary>
         public void Bind(Entity characterEntity)
         {
-            m_CharacterEntity = characterEntity;
             m_CombatDeckComp = characterEntity.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
             AddUiModelListener(EControllerLifeCycle.Open, m_CombatDeckComp.Obj, (int)CombatDeckRawComponent.EUiEvent.DicesInHandRefresh, RefreshDices);
             RefreshDices();
@@ -31,9 +29,10 @@ namespace Dcg.Ui
 
             var deckComp = m_CombatDeckComp.Obj;
             m_View.DicesList.ClearItems();
-            foreach (var dice in deckComp.DicesInHand)
+            for (int i = 0; i < deckComp.DicesInHand.Count; i++)
             {
-                var diceController = m_View.DicesList.CreateItem<UiDiceController>();
+                var dice = deckComp.DicesInHand[i];
+                var diceController = m_View.DicesList.AddItem<UiDiceController>();
                 diceController.Bind(dice);
             }
         }

@@ -1,3 +1,5 @@
+using Codice.CM.SEIDInfo;
+using System;
 using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
@@ -18,6 +20,7 @@ namespace BbxCommon.Ui
         protected TView m_View;
 
         internal override UiViewBase View { get { return m_View; } set { m_View = (TView)value; } }
+        internal override Type GenericType => typeof(UiControllerBase<TView>);
 
         public override void SetView(UiViewBase view)
         {
@@ -343,6 +346,7 @@ namespace BbxCommon.Ui
     {
         #region Common
         internal virtual UiViewBase View { get; set; }
+        internal virtual Type GenericType { get; }
 
         public abstract void SetView(UiViewBase view);
 

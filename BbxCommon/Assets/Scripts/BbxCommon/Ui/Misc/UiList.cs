@@ -61,19 +61,16 @@ namespace BbxCommon.Ui
         [FoldoutGroup("AreaFit")]
         [ShowIf("@ArragementType == EArrangement.AreaFit")]
         public EDirection AreaDirection;
-        [FoldoutGroup("AreaFit")]
-        [ShowIf("@ArragementType == EArrangement.AreaFit"), Tooltip("Padding space between two items.")]
-        public float PaddingSpace;
-        [FoldoutGroup("AreaFit")]
+        [FoldoutGroup("AreaFit"), LabelText("SlotSize")]
         [ShowIf("@ArragementType == EArrangement.AreaFit")]
-        public Vector2 SlotSize;
+        public Vector2 AreaSlotSize;
 
         [FoldoutGroup("Translation")]
         [Tooltip("Check this option to make items to do a smooth translation, or items will flicker to target positions.")]
         public bool UseTranslation;
-        [FoldoutGroup("Translation")]
+        [FoldoutGroup("Translation"), ShowIf("UseTranslation")]
         public AnimationCurve TranslationCurve;
-        [FoldoutGroup("Translation")]
+        [FoldoutGroup("Translation"), ShowIf("UseTranslation")]
         public float TranslationTime;
         #endregion
 
@@ -141,8 +138,8 @@ namespace BbxCommon.Ui
         #region Item Interfaces
         public T AddItem<T>(int index) where T : UiControllerBase
         {
-            var controller = UiApi.OpenUiController<T>(transform);
-            if (controller == null)
+            var uiController = UiApi.OpenUiController<T>(transform);
+            if (uiController == null)
             {
 #if UNITY_EDITOR
                 Debug.LogError("You are creating a UiController has not been pre-loaded.");
@@ -150,10 +147,13 @@ namespace BbxCommon.Ui
                 return null;
             }
             var itemInfo = new ItemInfo();
-            itemInfo.GameObject = controller.gameObject;
-            itemInfo.UiController = controller;
+            uiController.Show();
+            itemInfo.GameObject = uiController.gameObject;
+            itemInfo.UiController = uiController;
+            itemInfo.GameObject.transform.localPosition = Vector3.zero;   // create at center point
             m_UiItems.Insert(index, itemInfo);
-            return controller;
+            RefreshLayout();
+            return uiController;
         }
 
         public T AddItem<T>() where T : UiControllerBase
@@ -168,12 +168,15 @@ namespace BbxCommon.Ui
             else
                 m_UiItems[index].GameObject.Destroy();
             m_UiItems.RemoveAt(index);
-            Refresh();
+            m_InTranslationItemIndexs.Remove(index);
+            RefreshLayout();
         }
 
         public void ClearItems()
         {
-            for (int i = m_UiItems.Count; i >= 0; i--)
+            if (m_UiItems.Count == 0)
+                return;
+            for (int i = m_UiItems.Count - 1; i >= 0; i--)
             {
                 RemoveItem(i);
             }
@@ -183,7 +186,7 @@ namespace BbxCommon.Ui
         #region Layout
         private List<ItemInfo> m_UiItems = new();
 
-        private void Refresh()
+        private void RefreshLayout()
         {
             switch (ArragementType)
             {
@@ -208,52 +211,79 @@ namespace BbxCommon.Ui
 
             var rect = ((RectTransform)transform).rect;
             if (m_UiItems.Count == 1)   // keep it in center
-                SetFromToPosition(0, rect.position);
+                SetToPosition(0, rect.position);
 
+            // initialize variables
+            float areaSize = 0;
+            float slotSize = 0;
             switch (AreaDirection)
             {
                 case EDirection.Horizontal:
-                    float requestSpaceX = SlotSize.x * m_UiItems.Count + PaddingSpace * (m_UiItems.Count - 1);
-                    if (requestSpaceX > rect.size.x)    // if there are too many items, spread them closer
-                    {
-                        float positionLeft = rect.xMin + SlotSize.x / 2;
-                        float positionRight = rect.xMax - SlotSize.x / 2;
-                        float interval = (positionRight - positionLeft) / m_UiItems.Count - 1;
-                        for (int i = 0; i < m_UiItems.Count; i++)
-                        {
-                            SetFromToPosition(i,  new Vector2(positionLeft + interval * i, rect.y));
-                        }
-                    }
-                    else    // else fit the padding space as setting
-                    {
-                        float positionLeft = rect.x - requestSpaceX / 2 + SlotSize.x / 2;
-                        for (int i = 0; i < m_UiItems.Count; i++)
-                        {
-                            SetFromToPosition(i, new Vector2(positionLeft + PaddingSpace * i, rect.y));
-                        }
-                    }
+                    areaSize = rect.width;
+                    slotSize = AreaSlotSize.x;
                     break;
                 case EDirection.Vertical:
-                    float requestSpaceY = SlotSize.y * m_UiItems.Count + PaddingSpace * (m_UiItems.Count - 1);
-                    if (requestSpaceY > rect.size.y)
-                    {
-                        float positionBottom = rect.yMin + SlotSize.y / 2;
-                        float positionTop = rect.yMax - SlotSize.y / 2;
-                        float interval = (positionTop - positionBottom) / m_UiItems.Count - 1;
-                        for (int i = 0; i < m_UiItems.Count; i++)
-                        {
-                            SetFromToPosition(i, new Vector2(rect.x, positionBottom + interval * i));
-                        }
-                    }
-                    else
-                    {
-                        float positionButtom = rect.y - requestSpaceY / 2 + SlotSize.y / 2;
-                        for (int i = 0; i < m_UiItems.Count; i++)
-                        {
-                            SetFromToPosition(i, new Vector2(rect.x, positionButtom + PaddingSpace * i));
-                        }
-                    }
+                    areaSize = rect.height;
+                    slotSize = AreaSlotSize.y;
                     break;
+            }
+
+            // if area size can hold the items' requirement
+            var requireSize = slotSize * m_UiItems.Count;
+            if (requireSize <= areaSize + 0.01f)
+            {
+                var startPos = (areaSize - requireSize) * 0.5f;
+                switch (AreaDirection)
+                {
+                    case EDirection.Horizontal:
+                        for (int i = 0; i < m_UiItems.Count; i++)
+                        {
+                            SetToPosition(i, new Vector2(rect.xMin + startPos + slotSize * (0.5f + i), rect.center.y));
+                        }
+                        break;
+                    case EDirection.Vertical:
+                        for (int i = 0; i < m_UiItems.Count; i++)
+                        {
+                            SetToPosition(i, new Vector2(rect.center.x, rect.yMin + startPos + slotSize * (0.5f + i)));
+                        }
+                        break;
+                }
+            }
+            // or respread them
+            else
+            {
+                // keep items not to go beyond the border
+                switch (AreaDirection)
+                {
+                    case EDirection.Horizontal:
+                        SetToPosition(0, new Vector2(rect.xMin + slotSize * 0.5f, rect.center.y));
+                        SetToPosition(m_UiItems.Count - 1, new Vector2(rect.xMax - slotSize * 0.5f, rect.center.y));
+                        break;
+                    case EDirection.Vertical:
+                        SetToPosition(0, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f));
+                        SetToPosition(m_UiItems.Count - 1, new Vector2(rect.center.x, rect.yMax - slotSize * 0.5f));
+                        break;
+                }
+                // then spread other ones
+                if (m_UiItems.Count > 2)
+                {
+                    var interval = (areaSize - slotSize) / (areaSize - 1);
+                    switch (AreaDirection)
+                    {
+                        case EDirection.Horizontal:
+                            for (int i = 1; i < m_UiItems.Count - 1; i++)
+                            {
+                                SetToPosition(i, new Vector2(rect.xMin + slotSize * 0.5f + interval * i, rect.center.y));
+                            }
+                            break;
+                        case EDirection.Vertical:
+                            for (int i = 1; i < m_UiItems.Count - 1; i++)
+                            {
+                                SetToPosition(i, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f + interval * i));
+                            }
+                            break;
+                    }
+                }
             }
         }
         #endregion
@@ -265,18 +295,26 @@ namespace BbxCommon.Ui
         /// <summary>
         /// Set position translation request, and enable its translation.
         /// </summary>
-        private void SetFromToPosition(int index, Vector2 position)
+        private void SetToPosition(int index, Vector2 toPosition)
         {
-            var info = m_UiItems[index];
-            info.FromPosition = m_UiItems[index].GameObject.transform.localPosition;
-            info.ToPosition = position;
-            if (info.IsInTranslation == false)
+            if (UseTranslation)
             {
-                m_InTranslationItemIndexs.Add(index);
-                info.IsInTranslation = true;
+                var item = m_UiItems[index];
+                item.FromPosition = m_UiItems[index].GameObject.transform.localPosition;
+                item.ToPosition = toPosition;
+                if (item.IsInTranslation == false)
+                {
+                    m_InTranslationItemIndexs.Add(index);
+                    item.IsInTranslation = true;
+                }
+                item.TranslationElapsedTime = 0;
+                m_UiItems[index] = item;
             }
-            info.TranslationElapsedTime = 0;
-            m_UiItems[index] = info;
+            else
+            {
+                var info = m_UiItems[index];
+                info.GameObject.transform.localPosition = toPosition;
+            }
         }
 
         private void UpdateTranslation(float deltaTime)
@@ -285,7 +323,8 @@ namespace BbxCommon.Ui
             // translate position
             for (int i = 0; i < m_InTranslationItemIndexs.Count; i++)
             {
-                var item = m_UiItems[i];
+                var index = m_InTranslationItemIndexs[i];
+                var item = m_UiItems[index];
                 item.TranslationElapsedTime += deltaTime;
                 if (item.TranslationElapsedTime >= TranslationTime)
                 {
@@ -294,14 +333,17 @@ namespace BbxCommon.Ui
                 }
                 var timeRatio = item.TranslationElapsedTime / TranslationTime;
                 var evaluateTime = timeRatio * m_TranslationCurveTime;
-                var deltaVector = (m_UiItems[i].ToPosition - m_UiItems[i].FromPosition) * TranslationCurve.Evaluate(evaluateTime);
-                m_UiItems[i].GameObject.transform.position = m_UiItems[i].FromPosition + deltaVector;
+                var deltaVector = (m_UiItems[index].ToPosition - m_UiItems[index].FromPosition) * TranslationCurve.Evaluate(evaluateTime);
+                m_UiItems[index].GameObject.transform.localPosition = m_UiItems[index].FromPosition + deltaVector;
+                m_UiItems[index] = item;
             }
-
             // remove finished items
             for (int i = translationEndIndexs.Count - 1; i >= 0; i--)
             {
-                m_UiItems.UnorderedRemoveAt(translationEndIndexs[i]);
+                var item = m_UiItems[m_InTranslationItemIndexs[translationEndIndexs[i]]];
+                item.IsInTranslation = false;
+                m_UiItems[m_InTranslationItemIndexs[translationEndIndexs[i]]] = item;
+                m_InTranslationItemIndexs.UnorderedRemoveAt(translationEndIndexs[i]);
             }
         }
         #endregion

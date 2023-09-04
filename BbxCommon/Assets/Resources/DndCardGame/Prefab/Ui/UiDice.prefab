@@ -36,7 +36,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 110, y: 210}
+  m_SizeDelta: {x: 120, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6081625491969014423
 CanvasRenderer:
@@ -59,15 +59,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.7719127, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300178, guid: 1e627bcafe9e32d40ad554880f36b5eb, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7220269692404147734}
   - component: {fileID: 1153564080249549915}
-  - component: {fileID: 1002205931191218935}
+  - component: {fileID: 881864417502546375}
   m_Layer: 5
   m_Name: UiDice
   m_TagString: Untagged
@@ -143,17 +143,17 @@ MonoBehaviour:
   - {fileID: 3682755452414818849}
   - {fileID: 2358620174404244115}
   UiOpens:
-  - {fileID: 1002205931191218935}
+  - {fileID: 881864417502546375}
   UiShows: []
   UiUpdates:
-  - {fileID: 1002205931191218935}
+  - {fileID: 881864417502546375}
   - {fileID: 3682755452414818849}
   UiHides: []
   UiCloses:
-  - {fileID: 1002205931191218935}
+  - {fileID: 881864417502546375}
   UiDestroys:
   - {fileID: 3682755452414818849}
-  DiceTittle: {fileID: 0}
+  DiceTittle: {fileID: 8976375316928351554}
   UiDragable: {fileID: 3682755452414818849}
   UiInteractor: {fileID: 2358620174404244115}
   OnDragGroup: {fileID: 4595174208597290224}
@@ -170,7 +170,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf60e366a2681429ea8dde277a537d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1002205931191218935
+--- !u!114 &881864417502546375
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,7 +183,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PosWrapper:
-    m_Ref: {fileID: 1002205931191218935}
+    m_Ref: {fileID: 881864417502546375}
   DontRemove: 0
 --- !u!1 &2362882392947419803
 GameObject:
@@ -240,6 +240,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 898a15a10c7d64345a9cb3b147a16cd8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Wrapper:
+    m_Ref: {fileID: 3682755452414818849}
   TurnBackWhenDragEnd: 1
   AlwaysRelativeOffset: 1
   RelativeOffset: {x: -40, y: 90}
@@ -247,9 +249,7 @@ MonoBehaviour:
   EventListener: {fileID: 1153564080249549915}
   EventBeginDrag: 0
   EventEndDrag: 1
-  m_TransformSetter: {fileID: 1002205931191218935}
-  Wrapper:
-    m_Ref: {fileID: 3682755452414818849}
+  m_TransformSetter: {fileID: 881864417502546375}
 --- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,8 +346,8 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
-  m_Type: 0
+  m_Sprite: {fileID: 21300186, guid: 1e627bcafe9e32d40ad554880f36b5eb, type: 3}
+  m_Type: 1
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 4
@@ -415,14 +415,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.3946519, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300242, guid: 1e627bcafe9e32d40ad554880f36b5eb, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

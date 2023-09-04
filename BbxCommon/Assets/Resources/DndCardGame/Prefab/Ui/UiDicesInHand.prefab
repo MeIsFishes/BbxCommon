@@ -51,8 +51,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiPreInits:
-  - {fileID: 4419953065054020138}
   UiInits:
   - {fileID: 4419953065054020138}
   UiOpens:
@@ -119,7 +117,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Wrapper:
     m_Ref: {fileID: 4419953065054020138}
-  ItemProto: {fileID: 7220269692404147734, guid: 1506ee9807a6ed844acc5fb59b3f518e, type: 3}
   ArragementType: 1
   AreaDirection: 0
-  PaddingSpace: 0
+  AreaSlotSize: {x: 150, y: 100}
+  UseTranslation: 1
+  TranslationCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  TranslationTime: 0.5

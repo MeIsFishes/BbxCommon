@@ -77,14 +77,14 @@ namespace BbxCommon.Ui
             {
                 var types = new List<Type>();
                 GetSearchType(types);
-                var transformOverride = TransformRootOverride ? TransformRootOverride : transform;
+                TransformRootOverride = TransformRootOverride ? TransformRootOverride : transform;
                 TweenTargets.Clear();
                 switch (GetSearchTarget())
                 {
                     case ESearchTarget.Multiple:
                         foreach (var type in types)
                         {
-                            var components = transformOverride.GetComponentsInChildren(type);
+                            var components = TransformRootOverride.GetComponentsInChildren(type);
                             foreach (var component in components)
                             {
                                 if (TweenTargets.Contains(component) == false)
@@ -95,13 +95,13 @@ namespace BbxCommon.Ui
                     case ESearchTarget.Single:
                         foreach (var type in types)
                         {
-                            var component = transformOverride.GetComponentInChildren(type);
+                            var component = TransformRootOverride.GetComponentInChildren(type);
                             if (TweenTargets.Contains(component) == false && component != null)
                                 TweenTargets.Add(component);
                         }
                         if (TweenTargets.Count == 0 && types.Count == 1 && AllowAutoCreate())
                         {
-                            TweenTargets.Add(transformOverride.gameObject.AddComponent(types[0]));
+                            TweenTargets.Add(TransformRootOverride.gameObject.AddComponent(types[0]));
                             res = false;
                         }
                         break;

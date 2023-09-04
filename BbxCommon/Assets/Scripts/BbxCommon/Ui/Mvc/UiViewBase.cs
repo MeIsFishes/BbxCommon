@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 using Sirenix.OdinInspector;
+using System.Reflection;
 
 namespace BbxCommon.Ui
 {
     public abstract class UiViewBase : MonoBehaviour
     {
+        #region Common
         public bool DefaultShow = true;
 
         [NonSerialized]
@@ -119,5 +121,29 @@ namespace BbxCommon.Ui
 #endif
 
         public abstract Type GetControllerType();
+        #endregion
+
+        #region ControllerTypeId
+        // In generic inheritance, for example, think of the code below:
+        // UiMyController : UiControllerBase<UiMyView>
+        // UiMyController and UiControllerBase<UiMyView> is not the same class. In some cases, we operate a
+        // controller with its base class reference, then we can get its type id by its view, instead of using
+        // ClassTypeId<UiControllerBase, TController>, because its view holds its real type.
+
+        private int m_ControllerTypeId;
+        private bool m_ControllerTypeIdInited;
+
+        internal int GetControllerTypeId()
+        {
+            if (m_ControllerTypeIdInited == false)
+            {
+                var type = typeof(ClassTypeId<,>).MakeGenericType(typeof(UiControllerBase), GetControllerType());
+                var method = type.GetMethod("GetId", BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public);
+                m_ControllerTypeId = (int)method.Invoke(null, null);
+                m_ControllerTypeIdInited = true;
+            }
+            return m_ControllerTypeId;
+        }
+        #endregion
     }
 }

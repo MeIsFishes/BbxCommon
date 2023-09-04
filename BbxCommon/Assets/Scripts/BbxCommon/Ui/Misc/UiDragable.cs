@@ -12,6 +12,9 @@ namespace BbxCommon.Ui
     public class UiDragable : MonoBehaviour, IUiPreInit, IUiInit, IUiUpdate, IUiDestroy
     {
         #region Wrapper
+        [HideInInspector]
+        public UiDragableWrapper Wrapper;
+
         [Serializable]
         public struct UiDragableWrapper
         {
@@ -47,7 +50,7 @@ namespace BbxCommon.Ui
         [Tooltip("If true, the object move to relative position with pointer when it is pressed down.")]
         public bool SetWhenDown = true;
 
-        [FoldoutGroup("EventListener"), Tooltip("Drag EventListener to here.")]
+        [FoldoutGroup("EventListener"), Tooltip("Drag an EventListener to here.")]
         public UiEventListener EventListener;
         [FoldoutGroup("EventListener"), Tooltip("The event triggers beginning drag.")]
         public EUiEvent EventBeginDrag = EUiEvent.PointerDown;
@@ -73,10 +76,6 @@ namespace BbxCommon.Ui
         private PointerEventData m_CurrentData;
         private Vector3 m_DragOffset;
         private Vector3 m_OriginalPos;
-
-        // wrapper
-        [HideInEditorMode]
-        public UiDragableWrapper Wrapper;
         #endregion
 
         #region CallbacksAndTick
@@ -164,10 +163,13 @@ namespace BbxCommon.Ui
             OnDrag?.Invoke(eventData);
 
             if (AlwaysRelativeOffset)
-                m_TransformSetter.PosWrapper.AddPositionRequest(eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y),
+                m_TransformSetter.PosWrapper.AddPositionRequest(
+                    eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y),
                     UiTransformSetter.EPosPriority.Drag);
             else
-                m_TransformSetter.PosWrapper.AddPositionRequest(eventData.position.AsVector3XY() + m_DragOffset, UiTransformSetter.EPosPriority.Drag);
+                m_TransformSetter.PosWrapper.AddPositionRequest(
+                    eventData.position.AsVector3XY() + m_DragOffset,
+                    UiTransformSetter.EPosPriority.Drag);
         }
 
         private void OnBeginDragCallback(PointerEventData eventData)
@@ -180,7 +182,8 @@ namespace BbxCommon.Ui
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
 
             if (AlwaysRelativeOffset && SetWhenDown)
-                m_TransformSetter.PosWrapper.AddPositionRequest((eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y)).AsVector3XY(),
+                m_TransformSetter.PosWrapper.AddPositionRequest(
+                    eventData.position - new Vector2(RelativeOffset.x * transform.localScale.x, RelativeOffset.y * transform.localScale.y),
                     UiTransformSetter.EPosPriority.Drag);
 
             UiApi.SetUiTop(EventListener.gameObject);

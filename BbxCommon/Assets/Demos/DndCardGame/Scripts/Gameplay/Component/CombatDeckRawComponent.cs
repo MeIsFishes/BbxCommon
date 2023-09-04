@@ -16,6 +16,7 @@ namespace Dcg
         public List<Dice> DicesInDeck = new();
         public List<Dice> DicesInHand = new();
         public List<Dice> DicesInDiscard = new();
+        public int DrawDiceRequest;
 
         private MessageHandler<int> m_MessageHandler = new();
         IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;

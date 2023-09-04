@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.EventSystems;
 using BbxCommon.Ui;
+using System.Threading;
 
 namespace Dcg.Ui
 {
@@ -18,6 +19,11 @@ namespace Dcg.Ui
             m_View.UiDragable.Wrapper.OnEndDrag += OnEndDrag;
             m_View.UiDragable.Wrapper.OnPointerEnter += OnPointerEnter;
             m_View.UiDragable.Wrapper.OnPointerExit += OnPointerExit;
+        }
+
+        protected override void OnUiShow()
+        {
+            m_View.OnDragGroup.SetInactive();
         }
 
         private void OnBeginDrag(PointerEventData eventData)

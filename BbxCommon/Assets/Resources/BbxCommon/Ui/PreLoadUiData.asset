@@ -20,15 +20,3 @@ MonoBehaviour:
     - Key: Dcg.Ui.UiDiceController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/UiDice
-    - Key: Dcg.Ui.UiPromptController
-      Value:
-        UiViewPrefabPath: 
-    - Key: Dcg.Ui.UiNextRoomController
-      Value:
-        UiViewPrefabPath: 
-    - Key: Dcg.Ui.UiTipController
-      Value:
-        UiViewPrefabPath: 
-    - Key: Dcg.Ui.UiDiceFrameController
-      Value:
-        UiViewPrefabPath: 

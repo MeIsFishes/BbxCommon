@@ -52,7 +52,7 @@ namespace BbxCommon
             UiDatas.ForceInit();
         }
 
-        internal UiViewBase GetViewPrefabBy<TController>() where TController : UiControllerBase
+        internal UiViewBase GetUiPrefabBy<TController>() where TController : UiControllerBase
         {
 #if UNITY_EDITOR
             if (UiDatas.ContainsKey(typeof(TController).FullName) == false)

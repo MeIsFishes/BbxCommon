@@ -28,10 +28,10 @@ namespace BbxCommon.Ui
             switch (PosType)
             {
                 case EPosType.RelativePos:
-                    ((UiTransformSetter)component).PosWrapper.AddPositionRequest(m_OriginalPos + MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
+                    ((UiTransformSetter)component).PosWrapper.AddLocalPositionRequest(m_OriginalPos + MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
                 case EPosType.AbsolutePos:
-                    ((UiTransformSetter)component).PosWrapper.AddPositionRequest(MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
+                    ((UiTransformSetter)component).PosWrapper.AddLocalPositionRequest(MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
             }
         }

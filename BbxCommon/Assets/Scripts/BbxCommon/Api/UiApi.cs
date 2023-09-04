@@ -43,7 +43,7 @@ namespace BbxCommon.Ui
         public static T OpenUiController<T>(Transform parent) where T : UiControllerBase
         {
             var preLoadUiData = DataApi.GetData<PreLoadUiData>();
-            var uiView = preLoadUiData.GetViewPrefabBy<T>();
+            var uiView = preLoadUiData.GetUiPrefabBy<T>();
             int controllerTypeId = ClassTypeId<UiControllerBase, T>.Id;
             return (T)OpenUiController(uiView, controllerTypeId, parent);
         }
@@ -74,7 +74,6 @@ namespace BbxCommon.Ui
                 // or create one from the GameObject
                 var uiGameObject = Object.Instantiate(sourceView.gameObject);
                 uiGameObject.SetActive(false);
-
                 uiController = CreateUiControllerWithGameObject(uiGameObject);
             }
             var transform = uiController.gameObject.AddMissingComponent<RectTransform>();
