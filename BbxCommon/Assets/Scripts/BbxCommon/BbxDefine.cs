@@ -1,0 +1,1 @@
+#define OBJECT_POOL_DEBUG

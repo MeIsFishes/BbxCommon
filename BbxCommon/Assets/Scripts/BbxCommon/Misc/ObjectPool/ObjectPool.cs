@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using UnityEngine;
 
 namespace BbxCommon
 {
@@ -70,6 +71,13 @@ namespace BbxCommon
         /// </summary>
         public void Collect(T obj)
         {
+            if (m_Pool.Count > GlobalStaticVariable.SimplePoolLimit)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("Pooled objects count exceeds limit.");
+#endif
+                return;
+            }
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
             obj.UniqueId = m_IdGenerator.GenerateId();

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace BbxCommon
 {
@@ -11,15 +12,15 @@ namespace BbxCommon
     /// </summary>
     public static class SimplePool<T> where T : new()
     {
-        private static List<T> m_s_Pool = new List<T>();
+        private static List<T> m_Pool = new();
 
         public static T Alloc()
         {
             T res;
-            if (m_s_Pool.Count > 0)
+            if (m_Pool.Count > 0)
             {
-                res = m_s_Pool[m_s_Pool.Count - 1];
-                m_s_Pool.RemoveAt(m_s_Pool.Count - 1);
+                res = m_Pool[m_Pool.Count - 1];
+                m_Pool.RemoveAt(m_Pool.Count - 1);
                 return res;
             }
             return new T();
@@ -27,7 +28,26 @@ namespace BbxCommon
 
         public static void Collect(T obj)
         {
-            m_s_Pool.Add(obj);
+#if UNITY_EDITOR
+            if (m_Pool.Contains(obj))
+            {
+                Debug.LogError("The object " + obj.GetType().Name + " has already been collected");
+                return;
+            }
+#endif
+            if (m_Pool.Count > GlobalStaticVariable.SimplePoolLimit)
+            {
+#if UNITY_EDITOR
+                Debug.LogWarning("Pooled objects count exceeds limit.");
+#endif
+                return;
+            }
+            m_Pool.Add(obj);
+        }
+
+        public static void Alloc(out T obj)
+        {
+            obj = Alloc();
         }
     }
 

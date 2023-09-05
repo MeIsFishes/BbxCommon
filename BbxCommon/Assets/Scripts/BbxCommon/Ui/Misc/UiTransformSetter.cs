@@ -224,9 +224,9 @@ namespace BbxCommon.Ui
         }
 
         // the requests which will exist until be removed
-        private List<PosRequest> m_PosRequests = new();
+        private List<PosRequest> m_PosRequests;
         // the requests which will be removed at the end of frame
-        private List<PosRequest> m_TempPosRequest = new();
+        private List<PosRequest> m_TempPosRequest;
 
         private void OnUiOpenPos()
         {
@@ -335,14 +335,14 @@ namespace BbxCommon.Ui
         }
 
         // the requests which will exist until be removed
-        private List<RotRequest> m_RotRequests = new();
+        private List<RotRequest> m_RotRequests;
         // the requests which will be removed at the end of frame
-        private List<RotRequest> m_TempRotRequest = new();
+        private List<RotRequest> m_TempRotRequest;
 
         private void OnUiOpenRot()
         {
             SimplePool.Alloc(out m_RotRequests);
-            SimplePool.Alloc(out m_TempPosRequest);
+            SimplePool.Alloc(out m_TempRotRequest);
         }
 
         private void OnUiUpdateRot()
@@ -370,8 +370,8 @@ namespace BbxCommon.Ui
 
         private void OnUiCloseRot()
         {
-            m_PosRequests.CollectToPool();
-            m_TempPosRequest.CollectToPool();
+            m_RotRequests.CollectToPool();
+            m_TempRotRequest.CollectToPool();
         }
 
         public void AddRotationRequest(Quaternion rotation, int priority)
@@ -440,9 +440,9 @@ namespace BbxCommon.Ui
         }
 
         // the requests which will exist until be removed
-        private List<ScaleRequest> m_ScaleRequests = new();
+        private List<ScaleRequest> m_ScaleRequests;
         // the requests which will be removed at the end of frame
-        private List<ScaleRequest> m_TempScaleRequest = new();
+        private List<ScaleRequest> m_TempScaleRequest;
 
         private void OnUiOpenScale()
         {
