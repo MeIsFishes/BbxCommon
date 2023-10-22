@@ -12,6 +12,12 @@ namespace BbxCommon
             SimplePool<List<T>>.Collect(list);
         }
 
+        public static void TryAdd<T>(this List<T> list, T item)
+        {
+            if (list.Contains(item) == false)
+                list.Add(item);
+        }
+
         /// <summary>
         /// Add array's members to the List.
         /// </summary>
@@ -42,6 +48,28 @@ namespace BbxCommon
             foreach (var m in set)
             {
                 list.Add(m);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's key to the List.
+        /// </summary>
+        public static void AddDicKey<TKey, TValue>(this List<TKey> list, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                list.Add(pair.Key);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's value to the List.
+        /// </summary>
+        public static void AddDicValue<TKey, TValue>(this List<TValue> list, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                list.Add(pair.Value);
             }
         }
 
@@ -112,8 +140,22 @@ namespace BbxCommon
             var fill = default(T);
             while (list.Capacity <= count)
                 list.Capacity = Mathf.Max((int)(list.Capacity * factor), 8);    // default capacity is 0
-            for (int i = list.Count; i < list.Capacity; i++)
-                list.Add(fill);
+            if (count < list.Count)
+            {
+                list.RemoveRange(count, list.Count - count);
+            }
+            else
+            {
+                for (int i = list.Count; i < list.Capacity; i++)
+                    list.Add(fill);
+            }
+        }
+
+        public static T GetFront<T>(this List<T> list)
+        {
+            if (list.Count == 0)
+                return default(T);
+            return list[0];
         }
 
         public static T GetBack<T>(this List<T> list)
@@ -134,35 +176,73 @@ namespace BbxCommon
         /// <summary>
         /// Add items in the front of the list.
         /// </summary>
-        public static void AddFront<T>(this List<T> list, List<T> items)
+        public static void AddListFront<T>(this List<T> list, List<T> addList)
         {
             var originalCount = list.Count;
-            list.ModifyCount(list.Count + items.Count);
+            list.ModifyCount(list.Count + addList.Count);
             for (int i = originalCount; i >= 0; i--)
             {
-                list[i + items.Count] = list[i];
+                list[i + addList.Count] = list[i];
             }
-            for (int i = 0; i < items.Count; i++)
+            for (int i = 0; i < addList.Count; i++)
             {
-                list[i] = items[i];
+                list[i] = addList[i];
             }
         }
 
         /// <summary>
         /// Add items in the front of the list.
         /// </summary>
-        public static void AddFront<T>(this List<T> list, HashSet<T> items)
+        public static void AddHashSetFront<T>(this List<T> list, HashSet<T> set)
         {
             var originalCount = list.Count;
-            list.ModifyCount(list.Count + items.Count);
+            list.ModifyCount(list.Count + set.Count);
             for (int i = originalCount; i >= 0; i--)
             {
-                list[i + items.Count] = list[i];
+                list[i + set.Count] = list[i];
             }
             var index = 0;
-            foreach (var item in items)
+            foreach (var item in set)
             {
                 list[index] = item;
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's key to the List.
+        /// </summary>
+        public static void AddDicKeyFront<TKey, TValue>(this List<TKey> list, Dictionary<TKey, TValue> dic)
+        {
+            var originalCount = list.Count;
+            list.ModifyCount(list.Count + dic.Count);
+            for (int i = originalCount; i >= 0; i--)
+            {
+                list[i + dic.Count] = list[i];
+            }
+            var index = 0;
+            foreach (var pair in dic)
+            {
+                list[index] = pair.Key;
+                index++;
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's value to the List.
+        /// </summary>
+        public static void AddDicValueFront<TKey, TValue>(this List<TValue> list, Dictionary<TKey, TValue> dic)
+        {
+            var originalCount = list.Count;
+            list.ModifyCount(list.Count + dic.Count);
+            for (int i = originalCount; i >= 0; i--)
+            {
+                list[i + dic.Count] = list[i];
+            }
+            var index = 0;
+            foreach (var pair in dic)
+            {
+                list[index] = pair.Value;
                 index++;
             }
         }
@@ -352,6 +432,28 @@ namespace BbxCommon
             foreach (var m in addSet)
             {
                 set.Add(m);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's key to the HashSet.
+        /// </summary>
+        public static void AddDicKey<TKey, TValue>(this HashSet<TKey> set, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                set.Add(pair.Key);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's value to the HashSet.
+        /// </summary>
+        public static void AddDicValue<TKey, TValue>(this HashSet<TValue> set, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                set.Add(pair.Value);
             }
         }
 

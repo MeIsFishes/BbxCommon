@@ -16,6 +16,42 @@ namespace BbxCommon.Ui
 
     public abstract class UiControllerBase<TView> : UiControllerBase, IUiControllerTypeId where TView : UiViewBase
     {
+        #region Wrapper
+        public WpData Wrapper;
+        public struct WpData
+        {
+            private UiControllerBase<TView> m_Ref;
+            public WpData(UiControllerBase<TView> obj) { m_Ref = obj; }
+            public void Show() => m_Ref.Show();
+            public void Hide() => m_Ref.Hide();
+            public void Close() => m_Ref.Close();
+            public void Destroy() => m_Ref.Destroy();
+            public int GetControllerTypeId() => m_Ref.GetControllerTypeId();
+            /// <summary>
+            /// Enable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
+            /// </summary>
+            public void EnableUiItem(Component item) => m_Ref.EnableUiItem(item);
+            /// <summary>
+            /// Disable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
+            /// </summary>
+            public void DisableUiItem(Component item) => m_Ref.DisableUiItem(item);
+        }
+
+        /// <summary>
+        /// Functions interacting with <see cref="IUiModelItem"/>s.
+        /// </summary>
+        protected ModelWpData ModelWrapper;
+        protected struct ModelWpData
+        {
+            private UiControllerBase<TView> m_Ref;
+            public ModelWpData(UiControllerBase<TView> obj) { m_Ref = obj; }
+            public ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+                => m_Ref.AddUiModelVariableListener(enableDuring, modelItem, listeningEvent, callback);
+            public ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
+                => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent, callback);
+        }
+        #endregion
+
         #region Common
         protected TView m_View;
 
@@ -34,7 +70,8 @@ namespace BbxCommon.Ui
             OnUiUpdate(UiTimer.DeltaTime);
             foreach (var uiItem in m_View.UiUpdates)
             {
-                ((IUiUpdate)uiItem).OnUiUpdate(this, UiTimer.DeltaTime);
+                if (uiItem is IUiUpdate uiUpdate)
+                    uiUpdate.OnUiUpdate(this, UiTimer.DeltaTime);
             }
         }
 
@@ -54,6 +91,8 @@ namespace BbxCommon.Ui
 
         internal override sealed void Init()
         {
+            Wrapper = new WpData(this);
+            ModelWrapper = new ModelWpData(this);
             if (m_Inited == false)
             {
                 m_InitListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
@@ -70,7 +109,8 @@ namespace BbxCommon.Ui
                 OnUiInit();
                 foreach (var uiItem in m_View.UiInits)
                 {
-                    ((IUiInit)uiItem).OnUiInit(this);
+                    if (uiItem is IUiInit uiInit)
+                        uiInit.OnUiInit(this);
                 }
                 m_Inited = true;
             }
@@ -88,7 +128,8 @@ namespace BbxCommon.Ui
                 OnUiOpen();
                 foreach (var uiItem in m_View.UiOpens)
                 {
-                    ((IUiOpen)uiItem).OnUiOpen(this);
+                    if (uiItem is IUiOpen uiOpen)
+                        uiOpen.OnUiOpen(this);
                 }
                 m_Opened = true;
                 UiControllerManager.OnUiOpen(this);
@@ -108,7 +149,8 @@ namespace BbxCommon.Ui
                 OnUiShow();
                 foreach (var uiItem in m_View.UiShows)
                 {
-                    ((IUiShow)uiItem).OnUiShow(this);
+                    if (uiItem is IUiShow uiShow)
+                        uiShow.OnUiShow(this);
                 }
                 m_Shown = true;
             }
@@ -127,7 +169,8 @@ namespace BbxCommon.Ui
                 OnUiHide();
                 foreach (var uiItem in m_View.UiHides)
                 {
-                    ((IUiHide)uiItem).OnUiHide(this);
+                    if (uiItem is IUiHide uiHide)
+                        uiHide.OnUiHide(this);
                 }
                 m_Shown = false;
             }
@@ -146,7 +189,8 @@ namespace BbxCommon.Ui
                 OnUiClose();
                 foreach (var uiItem in m_View.UiCloses)
                 {
-                    ((IUiClose)uiItem).OnUiClose(this);
+                    if (uiItem is IUiClose uiClose)
+                        uiClose.OnUiClose(this);
                 }
                 UiControllerManager.CollectUiController(this);
                 m_Opened = false;
@@ -172,7 +216,8 @@ namespace BbxCommon.Ui
             OnUiDestroy();
             foreach (var uiItem in m_View.UiDestroys)
             {
-                ((IUiDestroy)uiItem).OnUiDestroy(this);
+                if (uiItem is IUiDestroy uiDestroy)
+                    uiDestroy.OnUiDestroy(this);
             }
 
             foreach (var listenerInfo in m_InitListeners)
@@ -338,6 +383,67 @@ namespace BbxCommon.Ui
                 m_ControllerTypeId = id;
                 m_ControllerTypeIdInited = true;
             }
+        }
+        #endregion
+
+        #region BbxUiItem
+        /// <summary>
+        /// Enable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
+        /// </summary>
+        public void EnableUiItem(Component item)
+        {
+            if (m_Inited && m_View.UiInits.Contains(item))
+            {
+                if (m_View.UiDestroys.Contains(item))
+                {
+                    (item as IUiDestroy).OnUiDestroy(this);
+                }
+            }
+            if (m_Opened && m_View.UiOpens.Contains(item))
+            {
+                if (m_View.UiCloses.Contains(item))
+                {
+                    (item as IUiClose).OnUiClose(this);
+                }
+            }
+            if (m_Shown && m_View.UiShows.Contains(item))
+            {
+                if (m_View.UiHides.Contains(item))
+                {
+                    (item as IUiHide).OnUiHide(this);
+                }
+            }
+            m_View.UiInits.Remove(item);
+            m_View.UiOpens.Remove(item);
+            m_View.UiShows.Remove(item);
+            m_View.UiHides.Remove(item);
+            m_View.UiCloses.Remove(item);
+            m_View.UiDestroys.Remove(item);
+        }
+
+        /// <summary>
+        /// Disable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
+        /// </summary>
+        public void DisableUiItem(Component item)
+        {
+            if (m_Inited && item is IUiInit uiInit)
+                uiInit.OnUiInit(this);
+            if (m_Opened && item is IUiOpen uiOpen)
+                uiOpen.OnUiOpen(this);
+            if (m_Shown && item is IUiShow uiShow)
+                uiShow.OnUiShow(this);
+            if (item is IUiInit)
+                m_View.UiInits.TryAdd(item);
+            if (item is IUiOpen)
+                m_View.UiOpens.TryAdd(item);
+            if (item is IUiShow)
+                m_View.UiShows.TryAdd(item);
+            if (item is IUiHide)
+                m_View.UiHides.TryAdd(item);
+            if (item is IUiClose)
+                m_View.UiCloses.TryAdd(item);
+            if (item is IUiDestroy)
+                m_View.UiDestroys.TryAdd(item);
         }
         #endregion
     }

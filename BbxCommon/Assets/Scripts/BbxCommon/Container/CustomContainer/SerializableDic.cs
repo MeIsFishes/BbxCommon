@@ -31,8 +31,8 @@ namespace BbxCommon
         private bool m_Inited;
         public void Init()
         {
-            if (m_Inited) return;
-            ForceInit();
+            if (m_Inited == false || m_Dictionary == null)
+                ForceInit();
         }
 
         public void ForceInit()
@@ -65,6 +65,14 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// Clear elements in the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto refresh generated <see cref="Dictionary{TKey, TValue}"/>.
+        /// </summary>
+        public void ClearList()
+        {
+            m_Items.Clear();
+        }
+
+        /// <summary>
         /// Add an element to the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto refresh generated <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
         public void SetToList(TKey key, TValue value)
@@ -87,14 +95,12 @@ namespace BbxCommon
         {
             get
             {
-                if (m_Inited == false)
-                    ForceInit();
+                Init();
                 return m_Dictionary[key];
             }
             set
             {
-                if (m_Inited == false)
-                    ForceInit();
+                Init();
                 m_Dictionary[key] = value;
             }
         }
@@ -103,93 +109,80 @@ namespace BbxCommon
         {
             get
             {
-                if (m_Inited == false)
-                    ForceInit();
+                Init();
                 return m_Dictionary.Count;
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             m_Dictionary.Add(key, value);
         }
 
         public void Clear()
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             m_Dictionary.Clear();
         }
 
         public bool ContainsKey(TKey key)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.ContainsKey(key);
         }
 
         public bool ContainsValue(TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.ContainsValue(value);
         }
 
         public int EnsureCapacity(int capacity)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.EnsureCapacity(capacity);
         }
 
         public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.GetEnumerator();
         }
 
         public bool Remove(TKey key, out TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.Remove(key, out value);
         }
 
         public bool Remove(TKey key)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.Remove(key);
         }
 
         public bool TryRemove(TKey key)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.TryRemove(key);
         }
 
         public bool TryRemove(TKey key, out TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.TryRemove(key, out value);
         }
 
         public bool TryAdd(TKey key, TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.TryAdd(key, value);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            if (m_Inited == false)
-                ForceInit();
+            Init();
             return m_Dictionary.TryGetValue(key, out value);
         }
         #endregion

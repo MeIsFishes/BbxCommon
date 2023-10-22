@@ -38,7 +38,7 @@ namespace Dcg
                 combatDeckComp.DicesInDeck.Clear();
                 combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
                 combatDeckComp.DicesInDeck.Shuffle();
-                combatDeckComp.DrawDiceRequest += 5;    // ≥ı º≥È≈∆£®¡Ÿ ±£©
+                combatDeckComp.DrawDice(5);    // ≥ı º≥È≈∆£®¡Ÿ ±£©
             }
 
             void IStageLoad.Unload(GameStage stage)

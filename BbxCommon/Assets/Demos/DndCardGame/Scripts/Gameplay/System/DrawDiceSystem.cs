@@ -11,14 +11,7 @@ namespace Dcg
     {
         protected override void OnUpdate()
         {
-            foreach (var combatDeckComp in GetEnumerator<CombatDeckRawComponent>())
-            {
-                while (combatDeckComp.DrawDiceRequest > 0)
-                {
-                    combatDeckComp.DrawDice();
-                    combatDeckComp.DrawDiceRequest--;
-                }
-            }
+            
         }
     }
 }

@@ -8,7 +8,7 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
-    public class UiInteractor : Interactor, IUiPreInit, IUiInit
+    public class UiInteractor : Interactor, IUiPreInit, IUiInit, IUiDestroy
     {
         #region Wrapper
         [Serializable]
@@ -29,7 +29,7 @@ namespace BbxCommon.Ui
             public UnityAction<Interactor> OnInteractorTouchEnd { get { return m_Ref.OnInteractorTouchEnd; } set { m_Ref.OnInteractorTouchEnd = value; } }
             public UnityAction<Interactor> OnInteractorAwake { get { return m_Ref.OnInteractorAwake; } set { m_Ref.OnInteractorAwake = value; } }
             /// <summary>
-            /// Call OnIteract(requester, responder).
+            /// Call OnIteract(requester, responder). For <see cref="UiDragable"/>, the one be dragged is requester.
             /// </summary>
             public UnityAction<Interactor, Interactor> OnInteract { get { return m_Ref.OnInteract; } set { m_Ref.OnInteract = value; } }
             public UnityAction OnInteractorSleep { get { return m_Ref.OnInteractorSleep; } set { m_Ref.OnInteractorSleep = value; } }
@@ -37,6 +37,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Common
+        public Transform TransformOverride;
         public bool AutoInitUiDragable = true;
         [ShowIf("AutoInitUiDragable")]
         public UiDragable UiDragableRef;
@@ -59,14 +60,22 @@ namespace BbxCommon.Ui
 
         void IUiInit.OnUiInit(UiControllerBase uiController)
         {
+            if (TransformOverride == null)
+                TransformOverride = transform;
             SearchAllRaycastTargets();
             InitUiDragable();
+        }
+
+        void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
+        {
+            UninitUiDragable();
+            m_RaycastTargets.Clear();
         }
 
         private void SearchAllRaycastTargets()
         {
             var graphics = SimplePool<List<Graphic>>.Alloc();
-            GetComponentsInChildren(graphics);
+            TransformOverride.GetComponentsInChildren(graphics);
             foreach (var graphic in graphics)
             {
                 m_RaycastTargets.TryAdd(graphic.gameObject);
@@ -88,7 +97,7 @@ namespace BbxCommon.Ui
             if (AutoInitUiDragable == false)
                 return;
             if (UiDragableRef == null)
-                UiDragableRef = GetComponent<UiDragable>();
+                UiDragableRef = TransformOverride.GetComponentInChildren<UiDragable>();
             if (UiDragableRef == null)
             {
                 Debug.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
@@ -97,6 +106,22 @@ namespace BbxCommon.Ui
             // init
             UiDragableRef.Wrapper.OnDrag += OnDrag;
             UiDragableRef.Wrapper.OnEndDrag += OnDragEnd;
+        }
+
+        private void UninitUiDragable()
+        {
+            if (AutoInitUiDragable == false)
+                return;
+            if (UiDragableRef == null)
+                UiDragableRef = TransformOverride.GetComponentInChildren<UiDragable>();
+            if (UiDragableRef == null)
+            {
+                Debug.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
+                return;
+            }
+            // uninit
+            UiDragableRef.Wrapper.OnDrag -= OnDrag;
+            UiDragableRef.Wrapper.OnEndDrag -= OnDragEnd;
         }
 
         private void OnDrag(PointerEventData eventData)

@@ -19,4 +19,7 @@ MonoBehaviour:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudMonsterStatus
     - Key: Dcg.Ui.UiDiceController
       Value:
-        UiViewPrefabPath: DndCardGame/Prefab/Ui/UiDice
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiDice
+    - Key: Dcg.Ui.UiDicesInHandItemController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiDicesInHandItem

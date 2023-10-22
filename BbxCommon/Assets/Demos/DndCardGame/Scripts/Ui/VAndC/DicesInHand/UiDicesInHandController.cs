@@ -19,6 +19,9 @@ namespace Dcg.Ui
             RefreshDices();
         }
 
+        /// <summary>
+        /// 采用dirty时暴力重新初始化的做法，后面需要优化
+        /// </summary>
         private void RefreshDices(MessageDataBase messageData = null)
         {
             if (m_CombatDeckComp.IsNull())
@@ -32,7 +35,7 @@ namespace Dcg.Ui
             for (int i = 0; i < deckComp.DicesInHand.Count; i++)
             {
                 var dice = deckComp.DicesInHand[i];
-                var diceController = m_View.DicesList.AddItem<UiDiceController>();
+                var diceController = m_View.DicesList.AddItem<UiDicesInHandItemController>();
                 diceController.Bind(dice);
             }
         }

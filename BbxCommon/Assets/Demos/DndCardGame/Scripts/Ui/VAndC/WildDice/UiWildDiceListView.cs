@@ -9,15 +9,13 @@ using BbxCommon.Ui;
 
 namespace Dcg.Ui
 {
-    public class UiAttackView : UiViewBase
+    public class UiWildDiceListView : UiViewBase
     {
-        public Button AttackButton;
-        public UiOptional WeaponOptions;
-        public TMP_Text Description;
+        public UiList SlotList;
 
         public override Type GetControllerType()
         {
-            return typeof(UiAttackController);
+            return typeof(UiWildDiceListController);
         }
     }
 }
