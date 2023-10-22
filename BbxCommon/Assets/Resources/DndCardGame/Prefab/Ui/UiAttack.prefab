@@ -65,7 +65,7 @@ MonoBehaviour:
   IndexWrapper:
     m_Ref: {fileID: 5598470363711208242}
   SelectLimit: 1
-  ClickWhenSelected: 0
+  ClickWhenSelected: 1
   TransformOverride: {fileID: 1206960548235161640}
   StoreButtonsWith: 0
   AutoSearchButtons: 1

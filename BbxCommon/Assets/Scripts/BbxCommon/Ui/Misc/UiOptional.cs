@@ -9,7 +9,7 @@ using Castle.Core;
 
 namespace BbxCommon.Ui
 {
-    public class UiOptional : MonoBehaviour, IUiPreInit, IUiInit
+    public class UiOptional : MonoBehaviour, IUiPreInit, IUiInit, IUiDestroy
     {
         #region Wrapper
         /// <summary>
@@ -35,11 +35,15 @@ namespace BbxCommon.Ui
             public void ToggleSelected(string name) => m_Ref.ToggleSelectedName(name);
             public void Select(string name) => m_Ref.SelectName(name);
             public void Unselect(string name) => m_Ref.UnselectName(name);
+            /// <summary>
+            /// Calls only when be clicked, but not when be selected.
+            /// </summary>
             public void AddOnClickCallback(string name, UnityAction callback) => m_Ref.AddOnClickCallbackName(name, callback);
+            public void AddOnSelectedCallback(string name, UnityAction callbalck) => m_Ref.AddOnSelectedCallbackName(name, callbalck);
             public UnityAction<string> OnButtonSelected { get { return m_Ref.OnButtonWithNameSelected; } set { m_Ref.OnButtonWithNameSelected = value; } }
             public UnityAction<string> OnButtonUnselected { get { return m_Ref.OnButtonWithNameUnselected; } set { m_Ref.OnButtonWithNameUnselected = value; } }
             /// <summary>
-            /// Once selected buttons changed, pass all selected ones to this function.
+            /// Once selected list changes, pass all selected ones to this function.
             /// </summary>
             public UnityAction<List<string>> OnButtonDirty { get { return m_Ref.OnButtonWithNameDirty; } set { m_Ref.OnButtonWithNameDirty = value; } }
         }
@@ -56,11 +60,15 @@ namespace BbxCommon.Ui
             public void ToggleSelected(int index) => m_Ref.ToggleSelectedIndex(index);
             public void Select(int index) => m_Ref.ToggleSelectedIndex(index);
             public void Unselect(int index) => m_Ref.ToggleSelectedIndex(index);
+            /// <summary>
+            /// Calls only when be clicked, but not when be selected.
+            /// </summary>
             public void AddOnClickCallback(int index, UnityAction callback) => m_Ref.AddOnClickCallbackIndex(index, callback);
+            public void AddOnSelectedCallback(int index, UnityAction callback) => m_Ref.AddOnSelectedCallbackIndex(index, callback);
             public UnityAction<int> OnButtonSelected { get { return m_Ref.OnButtonWithIndexSelected; } set { m_Ref.OnButtonWithIndexSelected = value; } }
             public UnityAction<int> OnButtonUnselected { get { return m_Ref.OnButtonWithIndexUnselected; } set { m_Ref.OnButtonWithIndexUnselected = value; } }
             /// <summary>
-            /// Once selected buttons changed, pass all selected ones to this function.
+            /// Once selected list changes, pass all selected ones to this function.
             /// </summary>
             public UnityAction<List<int>> OnButtonDirty { get { return m_Ref.OnButtonWithIndexDirty; } set { m_Ref.OnButtonWithIndexDirty = value; } }
         }
@@ -109,6 +117,11 @@ namespace BbxCommon.Ui
         {
             OnUiInitSelection();
         }
+
+        void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
+        {
+            OnUiDestroySelection();
+        }
         #endregion
 
         #region Selection
@@ -117,8 +130,16 @@ namespace BbxCommon.Ui
         private List<bool> m_SelectedList = new();
         private List<string> m_SelectedNames = new();
         private List<int> m_SelectedIndexes = new();
-        private Dictionary<string, UnityAction> m_CallbackDic = new();
-        private Dictionary<int, UnityAction> m_CallbackList = new();
+        private Dictionary<string, UnityAction> m_OnSelectedCallbackDic = new();
+        private List<UnityAction> m_OnSelectedCallbackList = new();
+        /// <summary>
+        /// Store callbacks registered to the buttons, preparing for unregistering if the current <see cref="UiOptional"/> need to be deactivated.
+        /// </summary>
+        private Dictionary<string, UnityAction> m_ButtonCallbackDic = new();
+        /// <summary>
+        /// Store callbacks registered to the buttons, preparing for unregistering if the current <see cref="UiOptional"/> need to be deactivated.
+        /// </summary>
+        private List<UnityAction> m_ButtonCallbackList = new();
 
         public UnityAction<string> OnButtonWithNameSelected;
         public UnityAction<int> OnButtonWithIndexSelected;
@@ -140,8 +161,9 @@ namespace BbxCommon.Ui
                         {
                             OnButtonClickName(pair.Key);
                         };
+                        m_ButtonCallbackDic[pair.Key] = callback;
                         pair.Value.onClick.AddListener(callback);
-                        m_CallbackDic[pair.Key] = callback;
+                        m_SelectedDic.Add(pair.Key, false);
                     }
                     break;
                 case EStoreButtonsWith.Index:
@@ -151,9 +173,33 @@ namespace BbxCommon.Ui
                         {
                             OnButtonClickIndex(i);
                         };
+                        m_ButtonCallbackList.Add(callback);
                         ButtonList[i].onClick.AddListener(callback);
-                        m_CallbackList[i] = callback;
+                        m_SelectedList.Add(false);
+                        m_OnSelectedCallbackList.Add(null);
                     }
+                    break;
+            }
+        }
+
+        private void OnUiDestroySelection()
+        {
+            switch (StoreButtonsWith)
+            {
+                case EStoreButtonsWith.Name:
+                    foreach (var pair in ButtonDic)
+                    {
+                        pair.Value.onClick.RemoveListener(m_ButtonCallbackDic[pair.Key]);
+                    }
+                    break;
+                case EStoreButtonsWith.Index:
+                    for (int i = 0; i < ButtonList.Count; i++)
+                    {
+                        ButtonList[i].onClick.RemoveListener(m_ButtonCallbackList[i]);
+                    }
+                    ButtonList.Clear();
+                    m_SelectedList.Clear();
+                    m_OnSelectedCallbackList.Clear();
                     break;
             }
         }
@@ -172,6 +218,8 @@ namespace BbxCommon.Ui
                 {
                     case EClickWhenSelected.Unselect:
                         UnselectName(name);
+                        break;
+                    case EClickWhenSelected.KeepSelected:
                         break;
                 }
             }
@@ -195,13 +243,17 @@ namespace BbxCommon.Ui
                 if (m_SelectedNames.Count >= SelectLimit)
                 {
                     UnselectName(m_SelectedNames.GetFront());
-                    m_SelectedNames.RemoveFront();
                 }
                 m_SelectedNames.Add(name);
                 
                 if (OnButtonWithNameDirty != null)
                 {
                     OnButtonWithNameDirty(m_SelectedNames);
+                }
+
+                if (m_OnSelectedCallbackDic.ContainsKey(name))
+                {
+                    m_OnSelectedCallbackDic[name].Invoke();
                 }
             }
         }
@@ -223,7 +275,12 @@ namespace BbxCommon.Ui
         public void AddOnClickCallbackName(string name, UnityAction callback)
         {
             ButtonDic[name].onClick.AddListener(callback);
-            m_CallbackDic[name] = callback;
+            m_ButtonCallbackDic[name] = callback;
+        }
+
+        public void AddOnSelectedCallbackName(string name, UnityAction callback)
+        {
+            m_OnSelectedCallbackDic.Add(name, callback);
         }
         #endregion
 
@@ -240,6 +297,8 @@ namespace BbxCommon.Ui
                 {
                     case EClickWhenSelected.Unselect:
                         UnselectIndex(index);
+                        break;
+                    case EClickWhenSelected.KeepSelected:
                         break;
                 }
             }
@@ -263,13 +322,17 @@ namespace BbxCommon.Ui
                 if (m_SelectedIndexes.Count >= SelectLimit)
                 {
                     UnselectIndex(m_SelectedIndexes.GetFront());
-                    m_SelectedIndexes.RemoveFront();
                 }
                 m_SelectedIndexes.Add(index);
 
                 if (OnButtonWithIndexDirty != null)
                 {
                     OnButtonWithIndexDirty(m_SelectedIndexes);
+                }
+
+                if (m_OnSelectedCallbackList[index] != null)
+                {
+                    m_OnSelectedCallbackList[index].Invoke();
                 }
             }
         }
@@ -291,7 +354,12 @@ namespace BbxCommon.Ui
         public void AddOnClickCallbackIndex(int index, UnityAction callback)
         {
             ButtonList[index].onClick.AddListener(callback);
-            m_CallbackList[index] = callback;
+            m_ButtonCallbackList[index] = callback;
+        }
+
+        public void AddOnSelectedCallbackIndex(int index, UnityAction callback)
+        {
+            m_OnSelectedCallbackList[index] += callback;
         }
         #endregion
         #endregion

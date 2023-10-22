@@ -14,9 +14,14 @@ namespace Dcg.Ui
 
         protected override void OnUiInit()
         {
-            m_View.WeaponOptions.NameWrapper.AddOnClickCallback("Sword", OnSwordButton);
-            m_View.WeaponOptions.NameWrapper.AddOnClickCallback("Dagger", OnDaggerButton);
+            m_View.WeaponOptions.NameWrapper.AddOnSelectedCallback("Sword", OnSwordButton);
+            m_View.WeaponOptions.NameWrapper.AddOnSelectedCallback("Dagger", OnDaggerButton);
             m_View.AttackButton.onClick.AddListener(OnAttackButton);
+        }
+
+        protected override void OnUiOpen()
+        {
+            m_View.WeaponOptions.NameWrapper.Select("Sword");
         }
 
         private void OnSwordButton()
