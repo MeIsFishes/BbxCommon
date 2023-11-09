@@ -17,11 +17,21 @@ namespace BbxCommon.Ui
         {
             [SerializeField]
             private UiList m_Ref;
-
             public WpData(UiList obj) { m_Ref = obj; }
-
+            /// <summary>
+            /// Item count in the <see cref="UiList"/>.
+            /// </summary>
+            public readonly int Count => m_Ref.m_UiItems.Count;
+            public T AddItem<T>(int index) where T :UiControllerBase => m_Ref.AddItem<T>(index);
+            public T AddItem<T>() where T : UiControllerBase => m_Ref.AddItem<T>();
+            public T GetItem<T>(int index) where T : UiControllerBase => m_Ref.GetItem<T>(index);
             public void RemoveItem(int index) => m_Ref.RemoveItem(index);
             public void ClearItems() => m_Ref.ClearItems();
+            /// <summary>
+            /// Modify item count. Remove excessive items or create items in type T to achieve the required quantity.
+            /// If there are items in multiple types, it's strongly recommended to think of modifying manually.
+            /// </summary>
+            public void ModifyCount<T>(int count) where T : UiControllerBase => m_Ref.ModifyCount<T>(count);
         }
         #endregion
 
@@ -161,6 +171,11 @@ namespace BbxCommon.Ui
             return AddItem<T>(m_UiItems.Count);
         }
 
+        public T GetItem<T>(int index) where T : UiControllerBase
+        {
+            return (T)(m_UiItems[index].UiController);
+        }
+
         public void RemoveItem(int index)
         {
             if (m_UiItems[index].UiController != null)
@@ -179,6 +194,22 @@ namespace BbxCommon.Ui
             for (int i = m_UiItems.Count - 1; i >= 0; i--)
             {
                 RemoveItem(i);
+            }
+        }
+
+        /// <summary>
+        /// Modify item count. Remove excessive items or create items in type T to achieve the required quantity.
+        /// If there are items in multiple types, it's strongly recommended to think of modifying manually.
+        /// </summary>
+        public void ModifyCount<T>(int count) where T : UiControllerBase
+        {
+            while (m_UiItems.Count > count)
+            {
+                RemoveItem(m_UiItems.Count - 1);
+            }
+            while (m_UiItems.Count < count)
+            {
+                AddItem<T>();
             }
         }
         #endregion

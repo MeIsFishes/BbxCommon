@@ -4,8 +4,8 @@ namespace Dcg
 {
     public enum EInteractorFlag
     {
-        Dice,
-        DiceFrame,
+        DiceInHand,
+        WildDiceSlot,
     }
 
     public class DcgInteractorSetter : InteractorSetterBase<EInteractorFlag>

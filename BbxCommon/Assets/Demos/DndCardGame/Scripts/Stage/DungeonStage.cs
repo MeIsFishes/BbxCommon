@@ -23,6 +23,7 @@ namespace Dcg
             stage.AddUpdateSystem<DungeonCameraSystem>();
             stage.AddUpdateSystem<SpawnRoomSystem>();
             stage.AddUpdateSystem<SpawnRoomShowSystem>();
+            stage.AddUpdateSystem<CastSkillSystem>();
             
             return stage;
         }

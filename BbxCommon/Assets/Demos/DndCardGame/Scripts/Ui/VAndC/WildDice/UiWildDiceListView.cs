@@ -12,6 +12,7 @@ namespace Dcg.Ui
     public class UiWildDiceListView : UiViewBase
     {
         public UiList SlotList;
+        public Button AcceptButton;
 
         public override Type GetControllerType()
         {

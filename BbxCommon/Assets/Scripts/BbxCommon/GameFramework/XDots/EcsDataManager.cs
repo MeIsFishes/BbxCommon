@@ -175,7 +175,7 @@ namespace BbxCommon
                 return m_EcsDataGroups[entity.Index];
             else
             {
-                m_EcsDataGroups.ModifyCount(entity.Index);
+                m_EcsDataGroups.ModifyCount(entity.Index + 1);
                 return m_EcsDataGroups[entity.Index];
             }
         }

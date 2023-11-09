@@ -47,6 +47,7 @@ namespace Dcg
             // 添加其他component
             entity.AddRawComponent<WalkToRawComponent>();
             entity.AddRawComponent<AttackableRawComponent>();
+            entity.AddRawComponent<CastSkillRawComponent>();
 
             // 关联到GameObject
             var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
@@ -79,6 +80,7 @@ namespace Dcg
             var monsterComp = entity.AddRawComponent<MonsterRawComponent>();
             monsterComp.AttackDices.AddList(monsterData.AttackDices);
             monsterComp.DamageDices.AddList(monsterData.DamageDices);
+            monsterComp.Modifier = monsterData.AttackModifier;
 
             // 添加其他component
             entity.AddRawComponent<AttackableRawComponent>();

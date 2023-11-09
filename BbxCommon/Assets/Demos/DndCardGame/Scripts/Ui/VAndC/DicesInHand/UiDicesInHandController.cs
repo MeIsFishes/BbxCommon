@@ -7,35 +7,36 @@ namespace Dcg.Ui
 {
     public class UiDicesInHandController : UiControllerBase<UiDicesInHandView>
     {
-        private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
-
         /// <summary>
         /// 绑定到对应的角色entity，然后应用该角色的手牌信息
         /// </summary>
         public void Bind(Entity characterEntity)
         {
-            m_CombatDeckComp = characterEntity.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
-            AddUiModelListener(EControllerLifeCycle.Open, m_CombatDeckComp.Obj, (int)CombatDeckRawComponent.EUiEvent.DicesInHandRefresh, RefreshDices);
-            RefreshDices();
+            var combatDeckComp = characterEntity.GetRawComponent<CombatDeckRawComponent>();
+            AddUiModelListener(EControllerLifeCycle.Open, combatDeckComp, (int)CombatDeckRawComponent.EUiEvent.DicesInHandRefresh, RefreshDices);
+            RefreshDices(combatDeckComp);
+        }
+
+        private void RefreshDices(MessageDataBase messageData)
+        {
+            RefreshDices(messageData.GetData<CombatDeckRawComponent>());
         }
 
         /// <summary>
         /// 采用dirty时暴力重新初始化的做法，后面需要优化
         /// </summary>
-        private void RefreshDices(MessageDataBase messageData = null)
+        private void RefreshDices(CombatDeckRawComponent combatDeckComp)
         {
-            if (m_CombatDeckComp.IsNull())
+            for (int i = 0; i < m_View.DicesList.Wrapper.Count; i++)
             {
-                Debug.LogError("You are visiting a collected CombatDeckComponent reference!");
-                return;
+                m_View.DicesList.Wrapper.GetItem<UiDicesInHandItemController>(i).Uninit();
             }
-
-            var deckComp = m_CombatDeckComp.Obj;
-            m_View.DicesList.ClearItems();
-            for (int i = 0; i < deckComp.DicesInHand.Count; i++)
+            m_View.DicesList.Wrapper.ClearItems();
+            for (int i = 0; i < combatDeckComp.DicesInHand.Count; i++)
             {
-                var dice = deckComp.DicesInHand[i];
-                var diceController = m_View.DicesList.AddItem<UiDicesInHandItemController>();
+                var dice = combatDeckComp.DicesInHand[i];
+                var diceController = m_View.DicesList.Wrapper.AddItem<UiDicesInHandItemController>();
+                diceController.Init(i, combatDeckComp);
                 diceController.Bind(dice);
             }
         }

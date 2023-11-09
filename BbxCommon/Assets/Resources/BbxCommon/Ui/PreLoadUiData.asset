@@ -23,3 +23,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.UiDicesInHandItemController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiDicesInHandItem
+    - Key: Dcg.Ui.UiWildDiceSlotController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiWildDiceSlot

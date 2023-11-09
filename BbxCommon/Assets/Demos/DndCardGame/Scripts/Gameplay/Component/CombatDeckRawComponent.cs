@@ -22,7 +22,7 @@ namespace Dcg
 
         public void DispatchEvent(EUiEvent e)
         {
-            m_MessageHandler.Dispatch((int)e);
+            m_MessageHandler.Dispatch((int)e, this);
         }
 
         public void DrawDice()

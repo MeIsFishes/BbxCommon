@@ -37,6 +37,9 @@ namespace BbxCommon.Ui
             }
         }
 
+        /// <summary>
+        /// Announce items which are listening the <see cref="UiModelVariable{T}"/> that its value has changed.
+        /// </summary>
         public void SetDirty()
         {
             var messageData = ObjectPool<UiModelVariableDirtyMessageData<T>>.Alloc();

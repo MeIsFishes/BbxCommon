@@ -54,7 +54,7 @@ namespace BbxCommon.Ui
             else
             {
                 if (m_UiCollections.Count <= typeId)
-                    m_UiCollections.ModifyCount(typeId);
+                    m_UiCollections.ModifyCount(typeId + 1);
                 if (m_UiCollections[typeId] == null)
                     m_UiCollections[typeId] = new();
                 return m_UiCollections[typeId];

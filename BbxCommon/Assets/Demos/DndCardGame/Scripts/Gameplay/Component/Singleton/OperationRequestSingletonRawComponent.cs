@@ -17,7 +17,7 @@ namespace Dcg
         /// 操作处理是否被要求阻塞
         /// </summary>
         public bool Blocked => m_LockItem.IsLocked;
-        public Queue<OperationBase> BlockedOperations = new();
+        public Queue<BlockedOperationBase> BlockedOperations = new();
 
         private LockItem m_LockItem = new();
         private UniqueIdGenerator m_LockIdGenerator = new();
@@ -25,7 +25,7 @@ namespace Dcg
         /// <summary>
         /// 使用这个函数添加请求而不要直接操作<see cref="BlockedOperations"/>，这是为未来联网做的预留
         /// </summary>
-        public void AddBlockedOperation(OperationBase operation)
+        public void AddBlockedOperation(BlockedOperationBase operation)
         {
             if (BlockedOperations.Count == 0 && Blocked == false)
                 BlockedOperations.Enqueue(operation);
@@ -47,17 +47,17 @@ namespace Dcg
 
         #region Free Operation
         // 自由操作。每帧都会被执行一个的操作。
-        public Queue<OperationBase> FreeOperations = new();
+        public Queue<FreeOperationBase> FreeOperations = new();
 
         // 使用这个函数添加请求而不要直接操作Queue，这是为未来联网做的预留
-        public void AddFreeOperation(OperationBase operation)
+        public void AddFreeOperation(FreeOperationBase operation)
         {
             FreeOperations.Enqueue(operation);
         }
         #endregion
 
         #region Updating Operation
-        public List<OperationBase> UpdatingOperations = new();
+        public List<FreeOperationBase> UpdatingOperations = new();
         #endregion
 
         #region Common

@@ -146,8 +146,10 @@ namespace BbxCommon
             }
             else
             {
-                for (int i = list.Count; i < list.Capacity; i++)
+                for (int i = list.Count; i < count; i++)
+                {
                     list.Add(fill);
+                }
             }
         }
 

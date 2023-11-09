@@ -16,14 +16,20 @@ namespace Dcg.Ui
         #region Interfaces
         public UnityAction<Interactor, Interactor> OnInteract
         {
-            get
-            {
-                return m_View.UiInteractor.Wrapper.OnInteract;
-            }
-            set
-            {
-                m_View.UiInteractor.Wrapper.OnInteract = value;
-            }
+            get { return m_View.UiInteractor.Wrapper.OnInteract; }
+            set { m_View.UiInteractor.Wrapper.OnInteract = value; }
+        }
+
+        public UnityAction<Interactor> OnInteractWith
+        {
+            get { return m_View.UiInteractor.Wrapper.OnInteractWith; }
+            set { m_View.UiInteractor.Wrapper.OnInteractWith = value; }
+        }
+
+        public object InteractorInfo
+        {
+            get { return m_View.UiInteractor.Wrapper.ExtraInfo; }
+            set { m_View.UiInteractor.Wrapper.ExtraInfo = value; }
         }
 
         public void Bind(Dice dice)
@@ -34,17 +40,22 @@ namespace Dcg.Ui
         public void SetUiDragableEnable(bool enable)
         {
             if (enable == true)
-                Wrapper.EnableUiItem(m_View.UiDragable);
+                ControllerWrapper.EnableUiItem(m_View.UiDragable);
             else
-                Wrapper.DisableUiItem(m_View.UiDragable);
+                ControllerWrapper.DisableUiItem(m_View.UiDragable);
         }
 
         public void SetUiInteractorEnable(bool enable)
         {
             if (enable == true)
-                Wrapper.EnableUiItem(m_View.UiInteractor);
+                ControllerWrapper.EnableUiItem(m_View.UiInteractor);
             else
-                Wrapper.DisableUiItem(m_View.UiInteractor);
+                ControllerWrapper.DisableUiItem(m_View.UiInteractor);
+        }
+
+        public void SetScale(float scale)
+        {
+            m_View.transform.localScale = new Vector3(scale, scale, 0);
         }
 
         #region InitFunctions
@@ -54,6 +65,13 @@ namespace Dcg.Ui
         {
             SetUiDragableEnable(true);
             SetUiInteractorEnable(true);
+        }
+
+        public void InitWildDiceSlot(float scale)
+        {
+            SetUiDragableEnable(false);
+            SetUiInteractorEnable(false);
+            SetScale(scale);
         }
         #endregion
         #endregion

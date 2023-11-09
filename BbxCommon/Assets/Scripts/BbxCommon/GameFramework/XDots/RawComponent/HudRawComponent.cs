@@ -11,7 +11,7 @@ namespace BbxCommon
         {
             var typeId = ClassTypeId<IHudController, T>.Id;
             if (typeId >= HudControllers.Count)
-                HudControllers.ModifyCount(typeId);
+                HudControllers.ModifyCount(typeId + 1);
             HudControllers[typeId] = hudController;
         }
 

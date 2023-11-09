@@ -11,6 +11,7 @@ namespace Dcg
     {
         public List<EDiceType> AttackDices = new();
         public List<EDiceType> DamageDices = new();
+        public EAbility Modifier;
 
         public override void OnCollect()
         {

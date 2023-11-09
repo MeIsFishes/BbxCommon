@@ -857,14 +857,13 @@ MonoBehaviour:
   DefaultShow: 1
   UiInits:
   - {fileID: 5598470363711208242}
-  UiOpens:
-  - {fileID: 5598470363711208242}
+  UiOpens: []
   UiShows: []
   UiUpdates: []
   UiHides: []
-  UiCloses:
+  UiCloses: []
+  UiDestroys:
   - {fileID: 5598470363711208242}
-  UiDestroys: []
   AttackButton: {fileID: 2662966575150368258}
   WeaponOptions: {fileID: 5598470363711208242}
   Description: {fileID: 7225028987832070284}

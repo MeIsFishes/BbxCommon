@@ -23,7 +23,6 @@ namespace Dcg
             stage.AddUpdateSystem<CombatRoundSystem>();
             stage.AddUpdateSystem<CombatTurnSystem>();
             stage.AddUpdateSystem<MonsterTurnSystem>();
-            stage.AddUpdateSystem<DrawDiceSystem>();
 
             return stage;
         }

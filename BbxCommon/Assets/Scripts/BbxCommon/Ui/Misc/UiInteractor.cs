@@ -8,6 +8,11 @@ using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui
 {
+    /// <summary>
+    /// Hang this item on a <see cref="Transform"/> root, or instead dragging a <see cref="Transform"/>
+    /// to <see cref="TransformOverride"/>, then it will auto select all raycast target under the root,
+    /// and get ready for interacting with other <see cref="UiInteractor"/>s.
+    /// </summary>
     public class UiInteractor : Interactor, IUiPreInit, IUiInit, IUiDestroy
     {
         #region Wrapper
@@ -16,9 +21,11 @@ namespace BbxCommon.Ui
         {
             [SerializeField]
             private UiInteractor m_Ref;
-
             public UiInteractorWrapper(UiInteractor obj) { m_Ref = obj; }
-
+            /// <summary>
+            /// Object for storing interacting information.
+            /// </summary>
+            public object ExtraInfo { get {  return m_Ref.ExtraInfo; } set { m_Ref.ExtraInfo = value; } }
             /// <summary>
             /// Calls when dragging another interactor and touches.
             /// </summary>
@@ -32,6 +39,11 @@ namespace BbxCommon.Ui
             /// Call OnIteract(requester, responder). For <see cref="UiDragable"/>, the one be dragged is requester.
             /// </summary>
             public UnityAction<Interactor, Interactor> OnInteract { get { return m_Ref.OnInteract; } set { m_Ref.OnInteract = value; } }
+            /// <summary>
+            /// A syntax sugar. If the current <see cref="Interactor"/> is requester, than pass the responder as parameter, and so do
+            /// the opposite case, to free users from thinking of who I am.
+            /// </summary>
+            public UnityAction<Interactor> OnInteractWith { get { return m_Ref.OnInteractWith; } set { m_Ref.OnInteractWith = value; } }
             public UnityAction OnInteractorSleep { get { return m_Ref.OnInteractorSleep; } set { m_Ref.OnInteractorSleep = value; } }
         }
         #endregion
@@ -44,7 +56,7 @@ namespace BbxCommon.Ui
         public UnityAction<Interactor> OnInteractorTouch;
         public UnityAction<Interactor> OnInteractorTouchEnd;
 
-        [HideInEditorMode]
+        [HideInInspector]
         public UiInteractorWrapper Wrapper;
 
         /// <summary>

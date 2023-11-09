@@ -16,7 +16,7 @@ namespace BbxCommon
     /// </summary>
     public class MessageHandler<TMessageKey> : PooledObject, IMessageDispatcher<TMessageKey>, IMessageListener<TMessageKey>
     {
-        #region Normal Callback
+        #region Callback
         private Dictionary<TMessageKey, UnityAction<MessageDataBase>> m_Callbacks = new();
 
         public void AddCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
@@ -27,6 +27,18 @@ namespace BbxCommon
         public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
         {
             m_Callbacks[messageKey] -= callback;
+        }
+
+        /// <summary>
+        /// You can easily store an object into <see href="messageKey"/>, but notice that it still be past through a <see cref="MessageDataBase"/>
+        /// instance, and the listener should get it with the function <see cref="MessageDataBase.Get{T}"/>.
+        /// </summary>
+        public void Dispatch(TMessageKey messageKey, object data)
+        {
+            var messageData = ObjectPool<MessageDataBase>.Alloc();
+            messageData.Data = data;
+            Dispatch(messageKey, messageData);
+            messageData.CollectToPool();
         }
 
         public void Dispatch(TMessageKey messageKey, MessageDataBase messageData = null)

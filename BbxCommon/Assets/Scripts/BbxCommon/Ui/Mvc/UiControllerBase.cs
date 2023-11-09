@@ -17,11 +17,11 @@ namespace BbxCommon.Ui
     public abstract class UiControllerBase<TView> : UiControllerBase, IUiControllerTypeId where TView : UiViewBase
     {
         #region Wrapper
-        public WpData Wrapper;
-        public struct WpData
+        public ControllerWpData ControllerWrapper;
+        public struct ControllerWpData
         {
             private UiControllerBase<TView> m_Ref;
-            public WpData(UiControllerBase<TView> obj) { m_Ref = obj; }
+            public ControllerWpData(UiControllerBase<TView> obj) { m_Ref = obj; }
             public void Show() => m_Ref.Show();
             public void Hide() => m_Ref.Hide();
             public void Close() => m_Ref.Close();
@@ -91,7 +91,7 @@ namespace BbxCommon.Ui
 
         internal override sealed void Init()
         {
-            Wrapper = new WpData(this);
+            ControllerWrapper = new ControllerWpData(this);
             ModelWrapper = new ModelWpData(this);
             if (m_Inited == false)
             {

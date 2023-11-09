@@ -176,7 +176,7 @@ namespace BbxCommon.Ui
         {
             OnBeginDrag?.Invoke(eventData);
 
-            m_OriginalPos = transform.position;
+            m_OriginalPos = transform.localPosition;
 
             m_Dragging = true;
             m_DragOffset = transform.position - eventData.position.AsVector3XY();
@@ -197,7 +197,7 @@ namespace BbxCommon.Ui
 
             m_TransformSetter.PosWrapper.RemovePositionRequest(UiTransformSetter.EPosPriority.Drag);
             if (TurnBackWhenDragEnd)
-                m_TransformSetter.PosWrapper.SetPositionOnce(m_OriginalPos, UiTransformSetter.EPosPriority.Drag);
+                m_TransformSetter.PosWrapper.SetLocalPositionOnce(m_OriginalPos, UiTransformSetter.EPosPriority.Drag);
 
             UiApi.SetTopUiBack(EventListener.gameObject);
             OnBackFromTop?.Invoke(eventData);
