@@ -27,15 +27,15 @@ namespace Dcg.Ui
         /// </summary>
         private void RefreshDices(CombatDeckRawComponent combatDeckComp)
         {
-            for (int i = 0; i < m_View.DicesList.Wrapper.Count; i++)
+            for (int i = 0; i < m_View.DicesList.ItemWrapper.Count; i++)
             {
-                m_View.DicesList.Wrapper.GetItem<UiDicesInHandItemController>(i).Uninit();
+                m_View.DicesList.ItemWrapper.GetItem<UiDicesInHandItemController>(i).Uninit();
             }
-            m_View.DicesList.Wrapper.ClearItems();
+            m_View.DicesList.ItemWrapper.ClearItems();
             for (int i = 0; i < combatDeckComp.DicesInHand.Count; i++)
             {
                 var dice = combatDeckComp.DicesInHand[i];
-                var diceController = m_View.DicesList.Wrapper.AddItem<UiDicesInHandItemController>();
+                var diceController = m_View.DicesList.ItemWrapper.AddItem<UiDicesInHandItemController>();
                 diceController.Init(i, combatDeckComp);
                 diceController.Bind(dice);
             }

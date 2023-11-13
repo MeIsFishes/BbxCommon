@@ -9,15 +9,18 @@ namespace BbxCommon.Ui
     public class UiList : MonoBehaviour, IUiPreInit, IUiInit, IUiOpen, IUiShow, IUiHide, IUiClose, IUiDestroy, IUiUpdate
     {
         #region Wrapper
+        /// <summary>
+        /// Functions for getting, adding and removing items.
+        /// </summary>
         [HideInInspector]
-        public WpData Wrapper;
+        public ItemWpData ItemWrapper;
 
         [Serializable]
-        public struct WpData
+        public struct ItemWpData
         {
             [SerializeField]
             private UiList m_Ref;
-            public WpData(UiList obj) { m_Ref = obj; }
+            public ItemWpData(UiList obj) { m_Ref = obj; }
             /// <summary>
             /// Item count in the <see cref="UiList"/>.
             /// </summary>
@@ -64,11 +67,18 @@ namespace BbxCommon.Ui
             Vertical,
         }
 
-        [InfoBox("ConstantSlot: Giving numbers of a single line and padding space, set each item to the calculated slot." +
+        [InfoBox("ConstantSlot: Set items to calculated positions, without any fix." +
             "\nAreaFit: Spread items evenly on the area space, which identical to the RectTransform.size value.")]
         public EArrangement ArragementType;
 
-        [FoldoutGroup("AreaFit")]
+        [FoldoutGroup("ConstantSlot"), LabelText("Direction")]
+        [ShowIf("@ArragementType == EArrangement.ConstantSlot")]
+        public EDirection ConstantSlotDirection;
+        [FoldoutGroup("ConstantSlot"), LabelText("SlotSize")]
+        [ShowIf("@ArragementType == EArrangement.ConstantSlot")]
+        public Vector2 ConstantSlotSize;
+
+        [FoldoutGroup("AreaFit"), LabelText("Direction")]
         [ShowIf("@ArragementType == EArrangement.AreaFit")]
         public EDirection AreaDirection;
         [FoldoutGroup("AreaFit"), LabelText("SlotSize")]
@@ -87,7 +97,7 @@ namespace BbxCommon.Ui
         #region Life Cycle
         bool IUiPreInit.OnUiPreInit(UiViewBase uiView)
         {
-            Wrapper = new WpData(this);
+            ItemWrapper = new ItemWpData(this);
             return true;
         }
 
@@ -95,6 +105,7 @@ namespace BbxCommon.Ui
         {
             if (TranslationCurve != null && TranslationCurve.keys.Length > 0)
                 m_TranslationCurveTime = TranslationCurve[TranslationCurve.keys.Length - 1].time;
+            m_ConstantSlotHelper = new ConstantSlotHelper(this);
         }
 
         void IUiOpen.OnUiOpen(UiControllerBase uiController)
@@ -230,11 +241,131 @@ namespace BbxCommon.Ui
             }
         }
 
-        private void RefreshConstantSlot()
+        #region ConstantSlot
+        private class ConstantSlotHelper
         {
+            // Cache calculated results to avoid calculating them at every visiting.
+            private UiList m_UiList;
+            private bool m_LockedRefresh;   // ban refreshing cached info to reduce cost
+            private int m_CachedHorizontalCapacity;
+            private int m_CachedVerticalCapacity;
+            private Rect m_CachedRect;
+            private Vector2 m_CachedSize;
 
+            public ConstantSlotHelper(UiList uiList)
+            {
+                m_UiList = uiList;
+            }
+
+            public int HorizontalCapacity
+            {
+                get
+                {
+                    RefreshCachedInfo();
+                    return m_CachedHorizontalCapacity;
+                }
+            }
+
+            public int VerticalCapacity
+            {
+                get
+                {
+                    RefreshCachedInfo();
+                    return m_CachedVerticalCapacity;
+                }
+            }
+
+            public int Capacity
+            {
+                get { return HorizontalCapacity * VerticalCapacity; }
+            }
+
+            private void RefreshCachedInfo()
+            {
+                if (m_LockedRefresh == true)
+                    return;
+                var rect = ((RectTransform)m_UiList.transform).rect;
+                if (m_CachedRect != rect || m_CachedSize != m_UiList.ConstantSlotSize)
+                {
+                    m_CachedRect = rect;
+                    m_CachedSize = m_UiList.ConstantSlotSize;
+                    m_CachedHorizontalCapacity = (int)(m_CachedRect.width / m_CachedSize.x);
+                    m_CachedVerticalCapacity = (int)(m_CachedRect.height / m_CachedSize.y);
+                }
+            }
+
+            /// <summary>
+            /// Claim a ban on refreshing caching info to reduce cost.
+            /// </summary>
+            public void ForceLockRefreshInfo()
+            {
+                RefreshCachedInfo();
+                m_LockedRefresh = true;
+            }
+
+            public void ForceUnlockRefreshInfo()
+            {
+                m_LockedRefresh = false;
+            }
+
+            public Vector2 GetLocalPosition(int verticalIndex, int horizontalIndex)
+            {
+                RefreshCachedInfo();
+                return new Vector2(m_CachedRect.xMin + m_CachedSize.x * (horizontalIndex + 0.5f),
+                    m_CachedRect.yMax - m_CachedSize.y * (verticalIndex + 0.5f));
+            }
         }
 
+        private ConstantSlotHelper m_ConstantSlotHelper;
+
+        private void RefreshConstantSlot()
+        {
+            if (m_UiItems.Count == 0)
+                return;
+
+            m_ConstantSlotHelper.ForceLockRefreshInfo();
+            switch (ConstantSlotDirection)
+            {
+                case EDirection.Horizontal:
+                    for (int i = 0; i < m_ConstantSlotHelper.VerticalCapacity; i++)
+                    {
+                        for (int j = 0; j < m_ConstantSlotHelper.HorizontalCapacity; j++)
+                        {
+                            int index = i * m_ConstantSlotHelper.HorizontalCapacity + j;
+                            if (index >= m_UiItems.Count)
+                                goto ConstHoriEndLoop;
+                            SetToLocalPosition(index, m_ConstantSlotHelper.GetLocalPosition(i, j));
+                        }
+                    }
+                ConstHoriEndLoop:
+                    break;
+                /*
+                 * In fact, the most easy way to set position is writting like this:
+                 * for (int i = 0; i < m_UiItems.Count; i++)
+                 * {
+                 *     SetToLocalPosition(i, m_ConstantSlotHelper.GetLocalPosition(i % m_ConstantSlotHelper.HorizontalCapacity, i / m_ConstantSlotHelper.HorizontalCapacity));
+                 * }
+                 * The reason why I wrote it in a seems more complex way is that division and modulus operation cost very much.
+                 */
+                case EDirection.Vertical:
+                    for (int i = 0; i < m_ConstantSlotHelper.HorizontalCapacity; i++)
+                    {
+                        for (int j = 0; j < m_ConstantSlotHelper.VerticalCapacity; j++)
+                        {
+                            int index = i * m_ConstantSlotHelper.VerticalCapacity + j;
+                            if (index >= m_UiItems.Count)
+                                goto ConstVertEndLoop;
+                            SetToLocalPosition(index, m_ConstantSlotHelper.GetLocalPosition(j, i));
+                        }
+                    }
+                ConstVertEndLoop:
+                    break;
+            }
+            m_ConstantSlotHelper.ForceUnlockRefreshInfo();
+        }
+        #endregion
+
+        #region AreaFit
         private void RefreshAreaFit()
         {
             if (m_UiItems.Count == 0)
@@ -242,7 +373,7 @@ namespace BbxCommon.Ui
 
             var rect = ((RectTransform)transform).rect;
             if (m_UiItems.Count == 1)   // keep it in center
-                SetToPosition(0, rect.position);
+                SetToLocalPosition(0, rect.position);
 
             // initialize variables
             float areaSize = 0;
@@ -269,13 +400,13 @@ namespace BbxCommon.Ui
                     case EDirection.Horizontal:
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            SetToPosition(i, new Vector2(rect.xMin + startPos + slotSize * (0.5f + i), rect.center.y));
+                            SetToLocalPosition(i, new Vector2(rect.xMin + startPos + slotSize * (0.5f + i), rect.center.y));
                         }
                         break;
                     case EDirection.Vertical:
                         for (int i = 0; i < m_UiItems.Count; i++)
                         {
-                            SetToPosition(i, new Vector2(rect.center.x, rect.yMin + startPos + slotSize * (0.5f + i)));
+                            SetToLocalPosition(i, new Vector2(rect.center.x, rect.yMin + startPos + slotSize * (0.5f + i)));
                         }
                         break;
                 }
@@ -287,12 +418,12 @@ namespace BbxCommon.Ui
                 switch (AreaDirection)
                 {
                     case EDirection.Horizontal:
-                        SetToPosition(0, new Vector2(rect.xMin + slotSize * 0.5f, rect.center.y));
-                        SetToPosition(m_UiItems.Count - 1, new Vector2(rect.xMax - slotSize * 0.5f, rect.center.y));
+                        SetToLocalPosition(0, new Vector2(rect.xMin + slotSize * 0.5f, rect.center.y));
+                        SetToLocalPosition(m_UiItems.Count - 1, new Vector2(rect.xMax - slotSize * 0.5f, rect.center.y));
                         break;
                     case EDirection.Vertical:
-                        SetToPosition(0, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f));
-                        SetToPosition(m_UiItems.Count - 1, new Vector2(rect.center.x, rect.yMax - slotSize * 0.5f));
+                        SetToLocalPosition(0, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f));
+                        SetToLocalPosition(m_UiItems.Count - 1, new Vector2(rect.center.x, rect.yMax - slotSize * 0.5f));
                         break;
                 }
                 // then spread other ones
@@ -304,19 +435,20 @@ namespace BbxCommon.Ui
                         case EDirection.Horizontal:
                             for (int i = 1; i < m_UiItems.Count - 1; i++)
                             {
-                                SetToPosition(i, new Vector2(rect.xMin + slotSize * 0.5f + interval * i, rect.center.y));
+                                SetToLocalPosition(i, new Vector2(rect.xMin + slotSize * 0.5f + interval * i, rect.center.y));
                             }
                             break;
                         case EDirection.Vertical:
                             for (int i = 1; i < m_UiItems.Count - 1; i++)
                             {
-                                SetToPosition(i, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f + interval * i));
+                                SetToLocalPosition(i, new Vector2(rect.center.x, rect.yMin + slotSize * 0.5f + interval * i));
                             }
                             break;
                     }
                 }
             }
         }
+        #endregion
         #endregion
 
         #region Translation
@@ -326,7 +458,7 @@ namespace BbxCommon.Ui
         /// <summary>
         /// Set position translation request, and enable its translation.
         /// </summary>
-        private void SetToPosition(int index, Vector2 toPosition)
+        private void SetToLocalPosition(int index, Vector2 toPosition)
         {
             if (UseTranslation)
             {

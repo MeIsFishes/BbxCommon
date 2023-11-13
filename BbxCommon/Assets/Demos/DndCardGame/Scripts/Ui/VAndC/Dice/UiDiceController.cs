@@ -73,6 +73,13 @@ namespace Dcg.Ui
             SetUiInteractorEnable(false);
             SetScale(scale);
         }
+
+        public void InitDisplay(float scale)
+        {
+            SetUiDragableEnable(false);
+            SetUiInteractorEnable(false);
+            SetScale(scale);
+        }
         #endregion
         #endregion
 

@@ -5,6 +5,7 @@ namespace BbxCommon.Ui
     public enum EUiModelVariableEvent
     {
         Dirty,
+        // todo: when model is destroyed or collected, dispatch destruction event
         Destroy,
     }
 

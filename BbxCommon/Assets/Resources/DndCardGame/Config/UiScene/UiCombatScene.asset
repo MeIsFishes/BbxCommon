@@ -31,3 +31,15 @@ MonoBehaviour:
     Position: {x: 0, y: 0, z: 0}
     Scale: {x: 1, y: 1, z: 1}
     Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: DndCardGame/Prefab/Ui/Dice/UiDicesInDeck
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: -600, y: -400, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}
+  - PrefabPath: DndCardGame/Prefab/Ui/Dice/UiDicesInDiscard
+    UiGroup: 2
+    DefaultShow: 1
+    Position: {x: 700, y: -400, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}

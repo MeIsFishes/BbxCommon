@@ -54,6 +54,7 @@ namespace Dcg.Ui
         protected override void OnUiInit()
         {
             m_DiceController = UiApi.OpenUiController<UiDiceController>(m_View.transform);
+            m_DiceController.InitDicesInHand();
             m_DiceController.Show();
         }
 

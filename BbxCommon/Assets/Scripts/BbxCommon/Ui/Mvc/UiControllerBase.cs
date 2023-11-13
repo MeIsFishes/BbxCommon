@@ -49,6 +49,8 @@ namespace BbxCommon.Ui
                 => m_Ref.AddUiModelVariableListener(enableDuring, modelItem, listeningEvent, callback);
             public ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
                 => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent, callback);
+            public ModelItemListenerInfo AddUiModelListener<TEnum>(EControllerLifeCycle enableDuring, IUiModelItem modelItem, TEnum listeningEvent, UnityAction<MessageDataBase> callback) where TEnum : Enum
+                => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent.GetHashCode(), callback);
         }
         #endregion
 
@@ -392,6 +394,34 @@ namespace BbxCommon.Ui
         /// </summary>
         public void EnableUiItem(Component item)
         {
+            if (item is IUiInit uiInit)
+            {
+                if (m_View.UiInits.TryAdd(item) && m_Inited)
+                    uiInit.OnUiInit(this);
+            }
+            if (item is IUiOpen uiOpen)
+            {
+                if (m_View.UiOpens.TryAdd(item) && m_Opened)
+                    uiOpen.OnUiOpen(this);
+            }
+            if (item is IUiShow uiShow)
+            {
+                if (m_View.UiShows.TryAdd(item) && m_Shown)
+                    uiShow.OnUiShow(this);
+            }
+            if (item is IUiHide)
+                m_View.UiHides.TryAdd(item);
+            if (item is IUiClose)
+                m_View.UiCloses.TryAdd(item);
+            if (item is IUiDestroy)
+                m_View.UiDestroys.TryAdd(item);
+        }
+
+        /// <summary>
+        /// Disable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
+        /// </summary>
+        public void DisableUiItem(Component item)
+        {
             if (m_Inited && m_View.UiInits.Contains(item))
             {
                 if (m_View.UiDestroys.Contains(item))
@@ -419,31 +449,6 @@ namespace BbxCommon.Ui
             m_View.UiHides.Remove(item);
             m_View.UiCloses.Remove(item);
             m_View.UiDestroys.Remove(item);
-        }
-
-        /// <summary>
-        /// Disable an item like <see cref="UiDragable"/>, <see cref="UiList"/>.
-        /// </summary>
-        public void DisableUiItem(Component item)
-        {
-            if (m_Inited && item is IUiInit uiInit)
-                uiInit.OnUiInit(this);
-            if (m_Opened && item is IUiOpen uiOpen)
-                uiOpen.OnUiOpen(this);
-            if (m_Shown && item is IUiShow uiShow)
-                uiShow.OnUiShow(this);
-            if (item is IUiInit)
-                m_View.UiInits.TryAdd(item);
-            if (item is IUiOpen)
-                m_View.UiOpens.TryAdd(item);
-            if (item is IUiShow)
-                m_View.UiShows.TryAdd(item);
-            if (item is IUiHide)
-                m_View.UiHides.TryAdd(item);
-            if (item is IUiClose)
-                m_View.UiCloses.TryAdd(item);
-            if (item is IUiDestroy)
-                m_View.UiDestroys.TryAdd(item);
         }
         #endregion
     }

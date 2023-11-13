@@ -115,9 +115,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b74801765b7f17744b27a0c31216fa1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Wrapper:
+  ItemWrapper:
     m_Ref: {fileID: 4419953065054020138}
   ArragementType: 1
+  ConstantSlotDirection: 0
+  ConstantSlotSize: {x: 0, y: 0}
   AreaDirection: 0
   AreaSlotSize: {x: 150, y: 100}
   UseTranslation: 1

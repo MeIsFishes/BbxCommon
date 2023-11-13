@@ -48,14 +48,14 @@ namespace Dcg.Ui
         /// </summary>
         private void RefreshWildList(CastSkillRawComponent castSkillComp)
         {
-            for (int i = 0; i < m_View.SlotList.Wrapper.Count; i++)
+            for (int i = 0; i < m_View.SlotList.ItemWrapper.Count; i++)
             {
-                m_View.SlotList.Wrapper.GetItem<UiWildDiceSlotController>(i).Uninit();
+                m_View.SlotList.ItemWrapper.GetItem<UiWildDiceSlotController>(i).Uninit();
             }
-            m_View.SlotList.Wrapper.ModifyCount<UiWildDiceSlotController>(castSkillComp.WildDiceSlotCount);
-            for (int i = 0; i < m_View.SlotList.Wrapper.Count; i++)
+            m_View.SlotList.ItemWrapper.ModifyCount<UiWildDiceSlotController>(castSkillComp.WildDiceSlotCount);
+            for (int i = 0; i < m_View.SlotList.ItemWrapper.Count; i++)
             {
-                var slotController = m_View.SlotList.Wrapper.GetItem<UiWildDiceSlotController>(i);
+                var slotController = m_View.SlotList.ItemWrapper.GetItem<UiWildDiceSlotController>(i);
                 slotController.Init(i, castSkillComp);
                 slotController.Bind(castSkillComp.WildDices[i]);
             }

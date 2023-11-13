@@ -12,10 +12,18 @@ namespace BbxCommon
             SimplePool<List<T>>.Collect(list);
         }
 
-        public static void TryAdd<T>(this List<T> list, T item)
+        /// <summary>
+        /// If contained, return false, or add and return true.
+        /// </summary>
+        public static bool TryAdd<T>(this List<T> list, T item)
         {
-            if (list.Contains(item) == false)
+            if (list.Contains(item))
+                return false;
+            else
+            {
                 list.Add(item);
+                return true;
+            }
         }
 
         /// <summary>
@@ -315,6 +323,9 @@ namespace BbxCommon
         #endregion
 
         #region Dictionary
+        /// <summary>
+        /// If don't have the item, return false, or remove and return true.
+        /// </summary>
         public static bool TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
         {
             if (dic.ContainsKey(key))
@@ -325,6 +336,9 @@ namespace BbxCommon
             return false;
         }
 
+        /// <summary>
+        /// If don't have the item, return false, or remove and return true.
+        /// </summary>
         public static bool TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
         {
             if (dic.ContainsKey(key))
@@ -398,10 +412,18 @@ namespace BbxCommon
             SimplePool<HashSet<T>>.Collect(set);
         }
 
-        public static void TryAdd<T>(this HashSet<T> set, T element)
+        /// <summary>
+        /// If contained, return false, or add and return true.
+        /// </summary>
+        public static bool TryAdd<T>(this HashSet<T> set, T element)
         {
-            if (set.Contains(element) == false)
+            if (set.Contains(element))
+                return false;
+            else
+            {
                 set.Add(element);
+                return true;
+            }
         }
 
         /// <summary>
