@@ -4,6 +4,7 @@ using System.Text.RegularExpressions;
 using UnityEngine;
 using UnityEditor;
 using UnityEditor.ProjectWindowCallback;
+using UnityEditor.Build.Content;
 
 namespace BbxCommon.Editor
 {
@@ -145,6 +146,30 @@ namespace BbxCommon.Editor
     {
         public override void Action(int instanceId, string pathName, string resourceFile)
         {
+            if (pathName.EndsWith("Controller.cs"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("Controller.cs") + "View.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
+            }
+            else if (pathName.EndsWith("View"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("View") + "Controller", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+            }
+            if (pathName.EndsWith("ControllerBase.cs"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ControllerBase.cs") + "ViewBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
+            }
+            else if (pathName.EndsWith("ViewBase"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ViewBase") + "ControllerBase", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+            }
+        }
+
+        private void DoProcess(string pathName, string resourceFile)
+        {
             string fullPath = Path.GetFullPath(pathName);
             StreamReader streamReader = new StreamReader(resourceFile);
             string txt = streamReader.ReadToEnd();
@@ -189,6 +214,30 @@ namespace BbxCommon.Editor
     internal class HudScriptReplacer : EndNameEditAction
     {
         public override void Action(int instanceId, string pathName, string resourceFile)
+        {
+            if (pathName.EndsWith("Controller.cs"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("Controller.cs") + "View.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
+            }
+            else if (pathName.EndsWith("View"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("View") + "Controller", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+            }
+            if (pathName.EndsWith("ControllerBase.cs"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ControllerBase.cs") + "ViewBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
+            }
+            else if (pathName.EndsWith("ViewBase"))
+            {
+                DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ViewBase") + "ControllerBase", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+            }
+        }
+
+        private void DoProcess(string pathName, string resourceFile)
         {
             string fullPath = Path.GetFullPath(pathName);
             StreamReader streamReader = new StreamReader(resourceFile);

@@ -11,7 +11,7 @@ namespace Dcg.Ui
     public class UiWildDiceListController : UiControllerBase<UiWildDiceListView>
     {
         #region Operation
-        public class OperationRequestCastSkill : FreeOperationBase
+        public class OperationRequestCastSkill : BlockedOperationBase
         {
             public Entity Entity;
 
@@ -79,7 +79,7 @@ namespace Dcg.Ui
 
             var operation = ObjectPool<OperationRequestCastSkill>.Alloc();
             operation.Entity = m_CastSkillComp.Obj.GetEntity();
-            EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
+            EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddBlockedOperation(operation);
         }
     }
 }

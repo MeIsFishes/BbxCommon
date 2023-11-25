@@ -17,7 +17,7 @@ namespace Dcg
             var cameraData = DataApi.GetData<CameraData>();
             if (cameraData == null)
                 return;
-            var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+            var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
             if (playerComp.Characters.Count == 0)
                 return;
             var character = playerComp.Characters[0];

@@ -6,7 +6,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [DisableAutoCreation, UpdateAfter(typeof(CombatTurnSystem))]
+    [DisableAutoCreation, UpdateAfter(typeof(CombatEndTurnSystem))]
     public partial class MonsterTurnSystem : EcsMixSystemBase
     {
         protected override void OnUpdate()

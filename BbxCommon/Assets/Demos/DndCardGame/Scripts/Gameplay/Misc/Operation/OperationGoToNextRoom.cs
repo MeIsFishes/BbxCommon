@@ -27,7 +27,7 @@ namespace Dcg
             if (m_ElapsedTime > m_WalkTime && m_RequestedWalk == false)
             {
                 var dungeonRoomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var roomData = DataApi.GetData<RoomData>();
                 foreach (var character in playerComp.Characters)
                 {

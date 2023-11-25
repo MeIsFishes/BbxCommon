@@ -12,7 +12,7 @@ namespace Dcg
         {
             var entity = EcsApi.CreateEntity();
 
-            entity.AddRawComponent<PlayerSingletonRawComponent>();
+            entity.AddRawComponent<LocalPlayerSingletonRawComponent>();
 
             return entity;
         }
@@ -118,7 +118,7 @@ namespace Dcg
             var roomData = DataApi.GetData<RoomData>();
 
             var spawnRoomShowComp = entity.AddRawComponent<SpawnRoomShowRawComponent>();
-            EntityUtility.Room.SpawnRoomStart(entity, position);
+            GameUtility.Room.SpawnRoomStart(entity, position);
 
             entity.AddRawComponent<RoomRawComponent>();
 

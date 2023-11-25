@@ -4,8 +4,8 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [DisableAutoCreation, UpdateAfter(typeof(CombatRoundSystem))]
-    public class CombatTurnSystem : EcsMixSystemBase
+    [DisableAutoCreation, UpdateBefore(typeof(CombatRoundSystem))]
+    public class CombatEndTurnSystem : EcsMixSystemBase
     {
         protected override void OnUpdate()
         {

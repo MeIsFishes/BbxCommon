@@ -48,12 +48,12 @@ namespace Dcg
             {
                 var player = EntityCreator.CreatePlayerEntity();
                 var character = EntityCreator.CreateCharacterEntity();
-                player.GetRawComponent<PlayerSingletonRawComponent>().AddCharacter(character);
+                player.GetRawComponent<LocalPlayerSingletonRawComponent>().AddCharacter(character);
             }
 
             void IStageLoad.Unload(GameStage stage)
             {
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 playerComp.DestroyCharacterEntities();
                 playerComp.GetEntity().Destroy();
             }
@@ -89,7 +89,7 @@ namespace Dcg
                 roomComp.AddRoom(room);
 
                 // 将玩家拉过来
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var character = playerComp.Characters[0];
                 character.GetGameObject().transform.position = roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset;
             }

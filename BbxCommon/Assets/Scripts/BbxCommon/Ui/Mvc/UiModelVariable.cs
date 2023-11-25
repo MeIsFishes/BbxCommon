@@ -39,7 +39,7 @@ namespace BbxCommon.Ui
         }
 
         /// <summary>
-        /// Announce items which are listening the <see cref="UiModelVariable{T}"/> that its value has changed.
+        /// Announce items which are listening the <see cref="UiModelVariable{T}"/> that its value has been changed.
         /// </summary>
         public void SetDirty()
         {

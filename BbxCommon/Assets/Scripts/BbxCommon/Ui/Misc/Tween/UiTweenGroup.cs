@@ -27,7 +27,7 @@ namespace BbxCommon.Ui
             public WpData(UiTweenGroup obj) { m_Ref = obj; }
 
             public bool Finished => m_Ref.Finished;
-            public UnityAction OnPlayFinishes { get { return m_Ref.OnPlayFinishes; } set { m_Ref.OnPlayFinishes = value; } }
+            public UnityAction OnPlayingFinishes { get { return m_Ref.OnPlayingFinishes; } set { m_Ref.OnPlayingFinishes = value; } }
             public UnityAction OnPlayReverseFinishes { get { return m_Ref.OnPlayReverseFinishes; } set { m_Ref.OnPlayReverseFinishes = value; } }
             public void Play() => m_Ref.Play();
             public void PlayReverse() => m_Ref.PlayReverse();
@@ -47,7 +47,7 @@ namespace BbxCommon.Ui
 
         public List<UiTweenBase> Tweens = new();
         public bool Finished => m_PlayState == EPlay.None || m_ElapsedTime >= m_Duration;
-        public UnityAction OnPlayFinishes;
+        public UnityAction OnPlayingFinishes;
         public UnityAction OnPlayReverseFinishes;
 
         private EPlay m_PlayState;
@@ -87,7 +87,7 @@ namespace BbxCommon.Ui
                 switch (m_PlayState)
                 {
                     case EPlay.Play:
-                        OnPlayFinishes?.Invoke();
+                        OnPlayingFinishes?.Invoke();
                         break;
                     case EPlay.PlayReverse:
                         OnPlayReverseFinishes?.Invoke();

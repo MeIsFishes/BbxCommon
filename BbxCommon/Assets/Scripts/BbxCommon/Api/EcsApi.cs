@@ -109,6 +109,11 @@ namespace BbxCommon
             var comp = EcsDataManager.GetRawComponent<T>(entity);
             EcsDataManager.DeactivateEcsData(comp);
         }
+
+        public static IEnumerable<T> GetEnumerator<T>() where T : EcsData
+        {
+            return EcsDataList<T>.GetEnumerator();
+        }
         #endregion
 
         #region RawAspect

@@ -60,6 +60,12 @@ namespace Dcg.Ui
         private void OnAttackButton()
         {
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
+            var combatActionComp = combatInfoComp.Character.GetRawComponent<CombatActionRawComponent>();
+            if (combatActionComp != null && combatActionComp.Action == 0)
+            {
+                UiApi.GetUiController<UiPromptController>().ShowPrompt("您本回合已执行过标准动作！");
+                return;
+            }
             var attackerCastSkillComp = combatInfoComp.Character.GetRawComponent<CastSkillRawComponent>();
             var wildDiceController = UiApi.GetUiController<UiWildDiceListController>();
             attackerCastSkillComp.WildDiceSlotCount = 2;

@@ -20,18 +20,21 @@ namespace Dcg
 
             stage.AddUpdateSystem<CauseDamageSystem>();
             stage.AddUpdateSystem<TakeDamageSystem>();
-            stage.AddUpdateSystem<CombatRoundSystem>();
-            stage.AddUpdateSystem<CombatTurnSystem>();
-            stage.AddUpdateSystem<MonsterTurnSystem>();
+            //stage.AddUpdateSystem<CombatRoundSystem>();
+            //stage.AddUpdateSystem<CombatBeginTurnSystem>();
+            //stage.AddUpdateSystem<CombatEndTurnSystem>();
+            //stage.AddUpdateSystem<MonsterTurnSystem>();
 
             return stage;
         }
 
         private class CombatStageInitPlayerData : IStageLoad
         {
+            // 目前这种临时加上component的做法暂时是可以的，不过考虑了一下未来可能出现召唤物等情况，
+            // 所以最好的做法应该是把战斗中的entity和地图中的entity分为两个entity写在EntityCreator里面
             void IStageLoad.Load(GameStage stage)
             {
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var charcterDeckComp = playerComp.Characters[0].GetRawComponent<CharacterDeckRawComponent>();
                 var combatDeckComp = playerComp.Characters[0].AddRawComponent<CombatDeckRawComponent>();
                 combatDeckComp.DicesInDeck.Clear();
@@ -42,8 +45,9 @@ namespace Dcg
 
             void IStageLoad.Unload(GameStage stage)
             {
-                var playerEntity = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().GetEntity();
-                playerEntity.RemoveRawComponent<CombatDeckRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
+                var characterEntity = playerComp.Characters[0];
+                characterEntity.RemoveRawComponent<CombatDeckRawComponent>();
             }
         }
 
@@ -60,7 +64,7 @@ namespace Dcg
 
                 // 初始化战场信息
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
-                var playerComp = EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>();
+                var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 combatInfoComp.Character = playerComp.Characters[0];
                 combatInfoComp.Monster = monster;
             }
@@ -79,7 +83,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 var uiController = UiApi.GetUiController<UiDicesInHandController>();
-                uiController.Bind(EcsApi.GetSingletonRawComponent<PlayerSingletonRawComponent>().Characters[0]);
+                uiController.Bind(EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>().Characters[0]);
             }
 
             void IStageLoad.Unload(GameStage stage) { }

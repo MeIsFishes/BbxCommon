@@ -14,7 +14,7 @@ namespace Dcg
                 aspect.ElapsedTime += UnityEngine.Time.deltaTime;
                 aspect.Position = aspect.OriginalPos + aspect.Offset * (1 - aspect.TransitionCurve.Evaluate(aspect.ElapsedTime));
                 if (aspect.ElapsedTime > aspect.TransitionLength)
-                    EntityUtility.Room.SpawnRoomEnd(aspect.GetEntity());
+                    GameUtility.Room.SpawnRoomEnd(aspect.GetEntity());
             }
         }
     }

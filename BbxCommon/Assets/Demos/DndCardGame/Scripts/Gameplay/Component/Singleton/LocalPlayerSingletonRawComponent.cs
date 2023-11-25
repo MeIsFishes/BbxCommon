@@ -5,7 +5,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    public class PlayerSingletonRawComponent : EcsSingletonRawComponent
+    public class LocalPlayerSingletonRawComponent : EcsSingletonRawComponent
     {
         public List<Entity> Characters = new();
 
