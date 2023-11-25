@@ -151,20 +151,20 @@ namespace BbxCommon.Editor
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
                 DoProcess(pathName.TryRemoveEnd("Controller.cs") + "View.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
             }
-            else if (pathName.EndsWith("View"))
+            else if (pathName.EndsWith("View.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
-                DoProcess(pathName.TryRemoveEnd("View") + "Controller", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("View.cs") + "Controller.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
             }
             if (pathName.EndsWith("ControllerBase.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
                 DoProcess(pathName.TryRemoveEnd("ControllerBase.cs") + "ViewBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
             }
-            else if (pathName.EndsWith("ViewBase"))
+            else if (pathName.EndsWith("ViewBase.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiViewTemplate.txt");
-                DoProcess(pathName.TryRemoveEnd("ViewBase") + "ControllerBase", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ViewBase.cs") + "ControllerBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/UiControllerTemplate.txt");
             }
         }
 
@@ -220,20 +220,20 @@ namespace BbxCommon.Editor
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
                 DoProcess(pathName.TryRemoveEnd("Controller.cs") + "View.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
             }
-            else if (pathName.EndsWith("View"))
+            else if (pathName.EndsWith("View.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
-                DoProcess(pathName.TryRemoveEnd("View") + "Controller", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("View.cs") + "Controller.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
             }
             if (pathName.EndsWith("ControllerBase.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
                 DoProcess(pathName.TryRemoveEnd("ControllerBase.cs") + "ViewBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
             }
-            else if (pathName.EndsWith("ViewBase"))
+            else if (pathName.EndsWith("ViewBase.cs"))
             {
                 DoProcess(pathName, "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudViewTemplate.txt");
-                DoProcess(pathName.TryRemoveEnd("ViewBase") + "ControllerBase", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
+                DoProcess(pathName.TryRemoveEnd("ViewBase.cs") + "ControllerBase.cs", "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
             }
         }
 
