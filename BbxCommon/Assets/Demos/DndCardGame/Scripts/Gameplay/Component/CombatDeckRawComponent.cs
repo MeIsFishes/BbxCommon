@@ -25,6 +25,9 @@ namespace Dcg
             m_MessageHandler.Dispatch((int)e, this);
         }
 
+        /// <summary>
+        /// 抽一个骰子
+        /// </summary>
         public void DrawDice()
         {
             // 如果牌堆里已经没有骰子，则把弃牌堆里的骰子洗进牌堆
@@ -46,12 +49,47 @@ namespace Dcg
             DispatchEvent(EUiEvent.DicesInDeckRefresh);
         }
 
+        /// <summary>
+        /// 抽若干个骰子
+        /// </summary>
         public void DrawDice(int count)
         {
             for (int i = 0; i < count; i++)
             {
                 DrawDice();
             }
+        }
+
+        /// <summary>
+        /// 弃一个骰子
+        /// </summary>
+        public void DiscardDice(int index)
+        {
+            DicesInDiscard.Add(DicesInHand[index]);
+            DicesInHand.RemoveAt(index);
+            DispatchEvent(EUiEvent.DicesInHandRefresh);
+            DispatchEvent(EUiEvent.DicesInDiscardRefresh);
+        }
+
+        /// <summary>
+        /// 弃一个骰子
+        /// </summary>
+        public void TryDiscardDice(Dice dice)
+        {
+            int index = DicesInHand.IndexOf(dice);
+            if (index != -1)
+                DiscardDice(index);
+        }
+
+        /// <summary>
+        /// 弃掉所有手牌
+        /// </summary>
+        public void DiscardAllHandDices()
+        {
+            DicesInDiscard.AddList(DicesInHand);
+            DicesInHand.Clear();
+            DispatchEvent(EUiEvent.DicesInHandRefresh);
+            DispatchEvent(EUiEvent.DicesInDiscardRefresh);
         }
 
         public override void OnAllocate()

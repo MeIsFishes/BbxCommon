@@ -24,6 +24,7 @@ namespace Dcg.Ui
         }
         #endregion
 
+        private Entity Entity;
         private ObjRef<CastSkillRawComponent> m_CastSkillComp;
 
         protected override void OnUiInit()
@@ -33,6 +34,7 @@ namespace Dcg.Ui
 
         public void Bind(Entity entity)
         {
+            Entity = entity;
             m_CastSkillComp = entity.GetRawComponent<CastSkillRawComponent>().AsObjRef();
             ModelWrapper.AddUiModelListener(EControllerLifeCycle.Open, m_CastSkillComp.Obj, (int)CastSkillRawComponent.EUiEvent.WildDicesRefresh, RefreshWildList);
             RefreshWildList(m_CastSkillComp.Obj);
@@ -80,6 +82,7 @@ namespace Dcg.Ui
             var operation = ObjectPool<OperationRequestCastSkill>.Alloc();
             operation.Entity = m_CastSkillComp.Obj.GetEntity();
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddBlockedOperation(operation);
+            ControllerWrapper.Hide();
         }
     }
 }

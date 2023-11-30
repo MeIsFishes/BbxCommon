@@ -6,12 +6,12 @@ namespace Dcg
 {
     public enum EDiceType
     {
-        D4,
-        D6,
-        D8,
-        D10,
-        D12,
-        D20,
+        D4 = 0,
+        D6 = 1,
+        D8 = 2,
+        D10 = 3,
+        D12 = 4,
+        D20 = 5,
     }
 
     public class Dice : PooledObject

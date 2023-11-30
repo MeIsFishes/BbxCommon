@@ -16,19 +16,19 @@ namespace Dcg
                 if (combatTurnComp.DuringTurn == false && combatTurnComp.RequestBegin == true)
                 {
                     var entity = combatTurnComp.GetEntity();
-                    var combatDeckComp = entity.GetRawComponent<CombatDeckRawComponent>();
                     combatTurnComp.RequestBegin = false;
                     combatTurnComp.DuringTurn = true;
                     var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
                     if (combatTurnComp.GetEntity() == combatInfoComp.Character)
                     {
-                        GameUtility.CombatTurn.ShowTurnUi(ECombatTurn.PlayerTurn);
+                        var combatDeckComp = entity.GetRawComponent<CombatDeckRawComponent>();
+                        GameUtility.CombatTurn.UpdateUiWhenTurnPass(ECombatTurn.PlayerTurn, entity);
+                        combatDeckComp.DrawDice(5);
                     }
                     else if (combatTurnComp.GetEntity() == combatInfoComp.Monster)
                     {
-                        GameUtility.CombatTurn.ShowTurnUi(ECombatTurn.EnemyTurn);
+                        GameUtility.CombatTurn.UpdateUiWhenTurnPass(ECombatTurn.EnemyTurn, entity);
                     }
-                    combatDeckComp.DrawDice(5);
                 }
             }
         }

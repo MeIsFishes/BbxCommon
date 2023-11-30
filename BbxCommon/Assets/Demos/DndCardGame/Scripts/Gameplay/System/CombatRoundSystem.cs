@@ -23,6 +23,7 @@ namespace Dcg
             // 进入下一回合
             if (combatRoundComp.EndTurn == true)
             {
+                combatRoundComp.EndTurn = false;
                 if (combatRoundComp.CurrentTurn == combatRoundComp.RoundOrder.Count - 1)
                 {
                     combatRoundComp.CurrentRound++;

@@ -14,7 +14,7 @@ namespace BbxCommon.Ui
         }
 
         [FoldoutGroup("Play Tween")]
-        public EPosType PosType;
+        public EPosType PosType = EPosType.AbsolutePos;
 
         private Vector3 m_OriginalPos;
 

@@ -73,8 +73,21 @@ namespace Dcg
                     attackableComp.AddCauseDamageRequest(attacker, defender, damageResult.Amount);
                 }
 
+                // 数据回收
                 attackGroup.CollectToPool();
                 defendGroup.CollectToPool();
+                var combatDeckComp = attacker.GetRawComponent<CombatDeckRawComponent>();
+                if (combatDeckComp != null)
+                {
+                    for (int i = 0; i < castSkillComp.WildDices.Count; i++)
+                    {
+                        if (castSkillComp.WildDices[i] != null)
+                            combatDeckComp.DicesInDiscard.Add(castSkillComp.WildDices[i]);
+                    }
+                    combatDeckComp.DispatchEvent(CombatDeckRawComponent.EUiEvent.DicesInDiscardRefresh);
+                    castSkillComp.WildDices.Clear();
+                    castSkillComp.DispatchEvent(CastSkillRawComponent.EUiEvent.WildDicesRefresh);
+                }
             }
         }
 
@@ -155,7 +168,6 @@ namespace Dcg
             {
                 dices.Add(castSkillComp.WildDices[0]);
                 dices.Add(castSkillComp.WildDices[1]);
-                dices.CollectToPool();
                 var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Dexterity);
                 dices.CollectToPool();
                 return diceGroup;
@@ -189,7 +201,6 @@ namespace Dcg
             {
                 dices.Add(Dice.Create(EDiceType.D4));
                 dices.Add(Dice.Create(EDiceType.D4));
-                dices.CollectToPool();
                 var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Dexterity);
                 dices.CollectToPool();
                 return diceGroup;

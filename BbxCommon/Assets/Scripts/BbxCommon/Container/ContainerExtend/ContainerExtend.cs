@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 namespace BbxCommon
@@ -190,9 +191,9 @@ namespace BbxCommon
         {
             var originalCount = list.Count;
             list.ModifyCount(list.Count + addList.Count);
-            for (int i = originalCount; i >= 0; i--)
+            for (int i = originalCount; i > 0; i--)
             {
-                list[i + addList.Count] = list[i];
+                list[i + addList.Count - 1] = list[i - 1];
             }
             for (int i = 0; i < addList.Count; i++)
             {
@@ -207,9 +208,9 @@ namespace BbxCommon
         {
             var originalCount = list.Count;
             list.ModifyCount(list.Count + set.Count);
-            for (int i = originalCount; i >= 0; i--)
+            for (int i = originalCount; i > 0; i--)
             {
-                list[i + set.Count] = list[i];
+                list[i + set.Count - 1] = list[i - 1];
             }
             var index = 0;
             foreach (var item in set)
@@ -226,9 +227,9 @@ namespace BbxCommon
         {
             var originalCount = list.Count;
             list.ModifyCount(list.Count + dic.Count);
-            for (int i = originalCount; i >= 0; i--)
+            for (int i = originalCount; i > 0; i--)
             {
-                list[i + dic.Count] = list[i];
+                list[i + dic.Count - 1] = list[i - 1];
             }
             var index = 0;
             foreach (var pair in dic)
@@ -245,9 +246,9 @@ namespace BbxCommon
         {
             var originalCount = list.Count;
             list.ModifyCount(list.Count + dic.Count);
-            for (int i = originalCount; i >= 0; i--)
+            for (int i = originalCount; i > 0; i--)
             {
-                list[i + dic.Count] = list[i];
+                list[i + dic.Count - 1] = list[i - 1];
             }
             var index = 0;
             foreach (var pair in dic)
@@ -538,6 +539,14 @@ namespace BbxCommon
         public static bool NotNullOrEmpty(this string str)
         {
             return str != null && str.Length > 0;
+        }
+        #endregion
+
+        #region StringBuilder
+        public static void CollectToPool(this StringBuilder sb)
+        {
+            sb.Clear();
+            SimplePool<StringBuilder>.Collect(sb);
         }
         #endregion
     }

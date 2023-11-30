@@ -429,7 +429,7 @@ namespace BbxCommon.Ui
                 // then spread other ones
                 if (m_UiItems.Count > 2)
                 {
-                    var interval = (areaSize - slotSize) / (areaSize - 1);
+                    var interval = (areaSize - slotSize) / (m_UiItems.Count - 1);
                     switch (AreaDirection)
                     {
                         case EDirection.Horizontal:

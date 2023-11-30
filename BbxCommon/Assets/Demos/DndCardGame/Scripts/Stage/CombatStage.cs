@@ -20,10 +20,11 @@ namespace Dcg
 
             stage.AddUpdateSystem<CauseDamageSystem>();
             stage.AddUpdateSystem<TakeDamageSystem>();
-            //stage.AddUpdateSystem<CombatRoundSystem>();
-            //stage.AddUpdateSystem<CombatBeginTurnSystem>();
-            //stage.AddUpdateSystem<CombatEndTurnSystem>();
-            //stage.AddUpdateSystem<MonsterTurnSystem>();
+            stage.AddUpdateSystem<CombatRoundSystem>();
+            stage.AddUpdateSystem<CombatMonsterTurnSystem>();
+            stage.AddUpdateSystem<CombatBeginTurnSystem>();
+            stage.AddUpdateSystem<CombatEndTurnSystem>();
+            stage.AddUpdateSystem<MonsterTurnSystem>();
 
             return stage;
         }
@@ -37,10 +38,10 @@ namespace Dcg
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var charcterDeckComp = playerComp.Characters[0].GetRawComponent<CharacterDeckRawComponent>();
                 var combatDeckComp = playerComp.Characters[0].AddRawComponent<CombatDeckRawComponent>();
+                playerComp.Characters[0].AddRawComponent<CombatTurnRawComponent>();
                 combatDeckComp.DicesInDeck.Clear();
                 combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
                 combatDeckComp.DicesInDeck.Shuffle();
-                combatDeckComp.DrawDice(5);    // 初始抽牌（临时）
             }
 
             void IStageLoad.Unload(GameStage stage)
@@ -48,6 +49,7 @@ namespace Dcg
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var characterEntity = playerComp.Characters[0];
                 characterEntity.RemoveRawComponent<CombatDeckRawComponent>();
+                characterEntity.RemoveRawComponent<CombatTurnRawComponent>();
             }
         }
 
@@ -64,29 +66,33 @@ namespace Dcg
 
                 // 初始化战场信息
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
+                var combatRoundComp = EcsApi.AddSingletonRawComponent<CombatRoundSingletonRawComponent>();
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 combatInfoComp.Character = playerComp.Characters[0];
                 combatInfoComp.Monster = monster;
+                combatRoundComp.EnterCombat = true;
             }
 
             void IStageLoad.Unload(GameStage stage)
             {
-                
+                EcsApi.RemoveSingletonRawComponent<CombatInfoSingletonRawComponent>();
+                EcsApi.RemoveSingletonRawComponent<CombatRoundSingletonRawComponent>();
             }
         }
 
-        /// <summary>
-        /// 为CombatStage的UI绑定信息
-        /// </summary>
         private class CombatStageBindUi : IStageLoad
         {
             void IStageLoad.Load(GameStage stage)
             {
-                var uiController = UiApi.GetUiController<UiDicesInHandController>();
-                uiController.Bind(EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>().Characters[0]);
+                var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
+                UiApi.GetUiController<UiCharacterInfoController>().Bind(combatInfoComp.Character);
+                UiApi.GetUiController<UiMonsterInfoController>().Bind(combatInfoComp.Monster);
             }
 
-            void IStageLoad.Unload(GameStage stage) { }
+            void IStageLoad.Unload(GameStage stage)
+            {
+
+            }
         }
     }
 }

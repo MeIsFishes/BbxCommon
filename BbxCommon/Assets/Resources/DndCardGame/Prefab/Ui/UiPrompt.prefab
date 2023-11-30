@@ -411,8 +411,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u63D0\u793A\u4FE1\u606F"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 712ca5c31cf02c346868997793787cc2, type: 2}
-  m_sharedMaterial: {fileID: 9001805719002597772, guid: 712ca5c31cf02c346868997793787cc2, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
+  m_sharedMaterial: {fileID: 6906481135215602584, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []

@@ -78,12 +78,16 @@ namespace Dcg
 
             // 初始化怪物属性
             var monsterComp = entity.AddRawComponent<MonsterRawComponent>();
+            monsterComp.Name = monsterData.Name;
             monsterComp.AttackDices.AddList(monsterData.AttackDices);
             monsterComp.DamageDices.AddList(monsterData.DamageDices);
             monsterComp.Modifier = monsterData.AttackModifier;
 
             // 添加其他component
             entity.AddRawComponent<AttackableRawComponent>();
+            entity.AddRawComponent<CombatTurnRawComponent>();
+            entity.AddRawComponent<AiBehaviourRawComponent>();
+            entity.AddRawComponent<CastSkillRawComponent>();
 
             // 关联到GameObject
             var gameObject = Object.Instantiate(monsterData.Prefab);

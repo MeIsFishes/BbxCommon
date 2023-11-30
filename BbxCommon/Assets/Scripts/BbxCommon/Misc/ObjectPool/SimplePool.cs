@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -53,9 +54,20 @@ namespace BbxCommon
 
     public static class SimplePool
     {
-        public static void Alloc<T>(out T obj) where T : new()
+        public static T Alloc<T>(out T obj) where T : new()
         {
             obj = SimplePool<T>.Alloc();
+            return obj;
+        }
+
+        public static void Collect<T>(T obj) where T : new()
+        {
+            SimplePool<T>.Collect(obj);
+#if UNITY_EDITOR
+            if (obj is ICollection)
+                Debug.LogWarning("You called SimplePool.Collect() to collect a collector, which will not clear elements in it." +
+                    "Use collector.CollectToPool instead!");
+#endif
         }
     }
 }
