@@ -6,8 +6,11 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [DisableAutoCreation, UpdateAfter(typeof(CombatEndTurnSystem))]
-    public partial class MonsterTurnSystem : EcsMixSystemBase
+    /// <summary>
+    /// 监测战斗失败的条件，并结算
+    /// </summary>
+    [DisableAutoCreation]
+    public partial class CombatDefeatedSystem : EcsMixSystemBase
     {
         protected override void OnUpdate()
         {

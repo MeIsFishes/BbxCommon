@@ -9,12 +9,12 @@ namespace BbxCommon.Ui
     {
         public enum EPosType
         {
-            RelativePos,
-            AbsolutePos,
+            RelativeLocalPos,
+            AbsoluteLocalPos,
         }
 
         [FoldoutGroup("Play Tween")]
-        public EPosType PosType = EPosType.AbsolutePos;
+        public EPosType PosType = EPosType.AbsoluteLocalPos;
 
         private Vector3 m_OriginalPos;
 
@@ -27,10 +27,10 @@ namespace BbxCommon.Ui
         {
             switch (PosType)
             {
-                case EPosType.RelativePos:
+                case EPosType.RelativeLocalPos:
                     ((UiTransformSetter)component).PosWrapper.AddLocalPositionRequest(m_OriginalPos + MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
-                case EPosType.AbsolutePos:
+                case EPosType.AbsoluteLocalPos:
                     ((UiTransformSetter)component).PosWrapper.AddLocalPositionRequest(MinValue + (MaxValue - MinValue) * evaluate, UiTransformSetter.EPosPriority.Tween);
                     break;
             }

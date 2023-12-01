@@ -24,7 +24,6 @@ namespace Dcg
             stage.AddUpdateSystem<CombatMonsterTurnSystem>();
             stage.AddUpdateSystem<CombatBeginTurnSystem>();
             stage.AddUpdateSystem<CombatEndTurnSystem>();
-            stage.AddUpdateSystem<MonsterTurnSystem>();
 
             return stage;
         }
@@ -42,6 +41,7 @@ namespace Dcg
                 combatDeckComp.DicesInDeck.Clear();
                 combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
                 combatDeckComp.DicesInDeck.Shuffle();
+                playerComp.Characters[0].BindHud<HudCharacterStatusController>();
             }
 
             void IStageLoad.Unload(GameStage stage)
@@ -50,6 +50,7 @@ namespace Dcg
                 var characterEntity = playerComp.Characters[0];
                 characterEntity.RemoveRawComponent<CombatDeckRawComponent>();
                 characterEntity.RemoveRawComponent<CombatTurnRawComponent>();
+                characterEntity.UnbindHud<HudCharacterStatusController>();
             }
         }
 

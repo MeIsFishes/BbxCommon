@@ -29,3 +29,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.UiDiceDisplayItemController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiDiceDisplayItem
+    - Key: Dcg.Ui.HudCharacterStatusController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudCharacterStatus

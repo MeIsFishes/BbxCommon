@@ -209,7 +209,7 @@ namespace BbxCommon.Ui
             return null;
         }
 
-        public static void RemoveHud<T>(this Entity entity) where T : UiControllerBase, IHudController
+        public static void UnbindHud<T>(this Entity entity) where T : UiControllerBase, IHudController
         {
             var hudComp = entity.GetRawComponent<HudRawComponent>();
             if (hudComp != null)
