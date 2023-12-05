@@ -390,23 +390,20 @@ namespace BbxCommon.Ui
                         }
                         for (int i = 0; i < deletedKey.Count; i++)
                         {
-                            ButtonDic.RemoveFromList(deletedKey[i]);
+                            ButtonDic.Remove(deletedKey[i]);
                         }
-                        ButtonDic.ForceInit();
                         var buttons = TransformOverride.GetComponentsInChildren<Button>();
                         for (int i = 0; i < buttons.Length; i++)
                         {
                             var button = buttons[i];
                             if (ButtonDic.ContainsValue(button) == false)
-                                ButtonDic.SetToList(button.gameObject.name, button);
+                                ButtonDic[button.gameObject.name] = button;
                         }
-                        ButtonDic.ForceInit();
                     }
                     break;
                 case EStoreButtonsWith.Index:
                     {
-                        ButtonDic.ClearList();
-                        ButtonDic.ForceInit();
+                        ButtonDic.Clear();
                         var deletedIndex = SimplePool<List<int>>.Alloc();
                         for (int i = 0; i < ButtonList.Count; i++)
                         {

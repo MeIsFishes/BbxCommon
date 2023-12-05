@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 15eb2196379dd2d4f9ad1400a97b1455, type: 3}
   m_Name: PrefabData
   m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
   PrefabDic:
     m_Items:
     - Key: Player

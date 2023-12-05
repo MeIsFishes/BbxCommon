@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 820396adaa8c7f74294142c8917d3d88, type: 3}
   m_Name: RoomData
   m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
   RoomPrefab: {fileID: 5311168476267763342, guid: dfdba9f01bf71a74bba807d45f89e3d1, type: 3}
   RoomSize: {x: 10, y: 10}
   CharacterOffset: {x: 0, y: 0.2, z: -3.2}

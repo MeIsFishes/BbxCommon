@@ -6,7 +6,10 @@ using Sirenix.OdinInspector;
 using BbxCommon;
 
 [CreateAssetMenu(fileName = "#SCRIPT_NAME#", menuName = "ScriptableObject/#SCRIPT_NAME#")]
-public class #SCRIPT_NAME# : ScriptableObject
+public class #SCRIPT_NAME# : BbxScriptableObject
 {
-
+    protected override void OnLoad()
+    {
+        DataApi.SetData(this);
+    }
 }

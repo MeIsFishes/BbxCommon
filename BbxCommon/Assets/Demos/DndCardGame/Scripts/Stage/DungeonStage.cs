@@ -14,7 +14,6 @@ namespace Dcg
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonScene"));
 
-            stage.AddLoadItem(new InitModelData());
             stage.AddLoadItem(new InitPlayerAndCharacter());
             stage.AddLoadItem(new InitRoomData());
 
@@ -26,20 +25,6 @@ namespace Dcg
             stage.AddUpdateSystem<CastSkillSystem>();
             
             return stage;
-        }
-
-        private class InitModelData : IStageLoad
-        {
-            void IStageLoad.Load(GameStage stage)
-            {
-                var modelAttributesData = Resources.Load<ModelAttributesData>("DndCardGame/Config/ModelAttributesData");
-                DataApi.SetData(Object.Instantiate(modelAttributesData));
-            }
-
-            void IStageLoad.Unload(GameStage stage)
-            {
-                DataApi.ReleaseData<ModelAttributesData>();
-            }
         }
 
         private class InitPlayerAndCharacter : IStageLoad
@@ -63,14 +48,11 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                var roomData = Resources.Load<RoomData>("DndCardGame/Config/RoomData");
-                DataApi.SetData(Object.Instantiate(roomData));
                 EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
             }
 
             void IStageLoad.Unload(GameStage stage)
             {
-                DataApi.ReleaseData<RoomData>();
                 EcsApi.RemoveSingletonRawComponent<DungeonRoomSingletonRawComponent>();
             }
         }

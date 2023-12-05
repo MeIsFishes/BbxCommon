@@ -26,7 +26,6 @@ namespace BbxCommon
         [Button]
         internal void ClearUnusedData()
         {
-            UiDatas.ForceInit();
             var unusedList = new List<string>();
             foreach (var pair in UiDatas)
             {
@@ -35,9 +34,8 @@ namespace BbxCommon
             }
             for (int i = 0; i < unusedList.Count; i++)
             {
-                UiDatas.RemoveFromList(unusedList[i]);
+                UiDatas.Remove(unusedList[i]);
             }
-            UiDatas.ForceInit();
         }
 
         internal void SetUi(UiViewBase uiView)
@@ -48,8 +46,7 @@ namespace BbxCommon
                     " In Unity, a prefab in folder and the opened are different ones!");
             else
                 Debug.Log("Exported path: " + path);
-            UiDatas.SetToList(uiView.GetControllerType().FullName, new UiData(path));
-            UiDatas.ForceInit();
+            UiDatas[uiView.GetControllerType().FullName] = new UiData(path);
         }
 
         internal UiViewBase GetUiPrefabBy<TController>() where TController : UiControllerBase

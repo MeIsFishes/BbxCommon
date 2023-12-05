@@ -10,6 +10,7 @@ namespace BbxCommon
             var stage = StageWrapper.CreateStage("Game Engine Stage");
 
             stage.AddLoadItem(new PreLoadUi());
+            stage.AddDataGroup("GameEngineDefault");
 
             return stage;
         }

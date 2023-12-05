@@ -12,5 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2b4b99e87aca8f740aed4fb9b725a85e, type: 3}
   m_Name: CameraData
   m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
   CameraPrefab: {fileID: 2646147634551252258, guid: 84e417eca6bd58d4e90030c0f57df874, type: 3}
   DungeonOffset: {x: 5, y: 10, z: -5}

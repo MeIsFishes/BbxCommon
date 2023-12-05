@@ -63,7 +63,7 @@ namespace Dcg
                 var roomData = DataApi.GetData<RoomData>();
                 var roomPos = dungeonRoomComp.CurRoom.GetGameObject().transform.position;
                 var spawnPos = roomPos + roomData.MonsterOffset;
-                var monster = EntityCreator.CreateMonsterEntity(DataApi.GetData<MonsterData>(10010001), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
+                var monster = EntityCreator.CreateMonsterEntity(GameUtility.RandomPool.GetRandomMonster(), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
 
                 // 初始化战场信息
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();

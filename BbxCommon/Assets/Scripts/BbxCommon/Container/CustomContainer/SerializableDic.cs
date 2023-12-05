@@ -8,9 +8,9 @@ namespace BbxCommon
     /// Input items as List to create a Dictionary.
     /// </summary>
     [Serializable]
-    public class SerializableDic<TKey, TValue>
+    public class SerializableDic<TKey, TValue> : ISerializationCallbackReceiver
     {
-        #region ListWrapper
+        #region List Wrapper
         [Serializable]
         private struct DataItem<TItemKey, TItemValue>
         {
@@ -26,20 +26,15 @@ namespace BbxCommon
 
         [SerializeField]
         private List<DataItem<TKey, TValue>> m_Items = new();
-        private Dictionary<TKey, TValue> m_Dictionary;
+        private Dictionary<TKey, TValue> m_Dictionary = new();
 
-        private bool m_Inited;
-        public void Init()
-        {
-            if (m_Inited == false || m_Dictionary == null)
-                ForceInit();
-        }
+        void ISerializationCallbackReceiver.OnBeforeSerialize() { }
 
-        public void ForceInit()
+        void ISerializationCallbackReceiver.OnAfterDeserialize()
         {
-            m_Inited = true;
-            m_Dictionary?.CollectToPool();
-            SimplePool.Alloc(out m_Dictionary);
+            if (m_Dictionary == null)
+                SimplePool.Alloc(out m_Dictionary);
+            m_Dictionary.Clear();
             foreach (var item in m_Items)
             {
                 m_Dictionary.Add(item.Key, item.Value);
@@ -48,59 +43,76 @@ namespace BbxCommon
 
 #if UNITY_EDITOR
         /// <summary>
-        /// Remove an element from the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto refresh generated <see cref="Dictionary{TKey, TValue}"/>.
+        /// Caches the indexes of <see cref="DataItem{TItemKey, TItemValue}.Value"/>s.
         /// </summary>
-        public void RemoveFromList(TKey key)
+        private Dictionary<TKey, int> m_Indexes = new();
+
+        private int GetIndexOf(TKey key)
         {
-            int index = 0;
-            for (int i = 0; i < m_Items.Count; i++)
+            // init
+            if (m_Indexes.Count == 0)
             {
-                if (m_Items[i].Key.Equals(key))
+                for (int i = 0; i < m_Items.Count; i++)
                 {
-                    index = i;
-                    break;
+                    m_Indexes.Add(m_Items[i].Key, i);
                 }
             }
-            m_Items.RemoveAt(index);
+            if (m_Indexes.TryGetValue(key, out var index))
+                return index;
+            else
+                return -1;
         }
 
         /// <summary>
-        /// Clear elements in the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto refresh generated <see cref="Dictionary{TKey, TValue}"/>.
+        /// Remove an element from the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto update the generated <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
-        public void ClearList()
+        private void RemoveFromList(TKey key)
+        {
+            m_Items.RemoveAt(GetIndexOf(key));
+            m_Indexes.Remove(key);
+        }
+
+        /// <summary>
+        /// Clear elements in the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto update the generated <see cref="Dictionary{TKey, TValue}"/>.
+        /// </summary>
+        private void ClearList()
         {
             m_Items.Clear();
+            m_Indexes.Clear();
         }
 
         /// <summary>
-        /// Add an element to the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto refresh generated <see cref="Dictionary{TKey, TValue}"/>.
+        /// Add an element to the <see cref="List{T}"/> <see cref="m_Items"/>. This will not auto update the generated <see cref="Dictionary{TKey, TValue}"/>.
         /// </summary>
-        public void SetToList(TKey key, TValue value)
+        private void SetToList(TKey key, TValue value)
         {
-            for (int i = 0; i < m_Items.Count; i++)
+            var index = GetIndexOf(key);
+            if (index >= 0)
             {
-                if (m_Items[i].Key.Equals(key))
-                {
-                    m_Items[i] = new DataItem<TKey, TValue>(key, value);
-                    return;
-                }
+                m_Items[index] = new DataItem<TKey, TValue>(key, value);
+                m_Indexes[key] = index;
             }
-            m_Items.Add(new DataItem<TKey, TValue>(key, value));
+            else
+            {
+                m_Items.Add(new DataItem<TKey, TValue>(key, value));
+                m_Indexes[key] = m_Items.Count - 1;
+            }
         }
 #endif
         #endregion
 
-        #region RewriteDic
+        #region Rewrite Dic
         public TValue this[TKey key]
         {
             get
             {
-                Init();
                 return m_Dictionary[key];
             }
             set
             {
-                Init();
+#if UNITY_EDITOR
+                SetToList(key, value);
+#endif
                 m_Dictionary[key] = value;
             }
         }
@@ -109,80 +121,88 @@ namespace BbxCommon
         {
             get
             {
-                Init();
                 return m_Dictionary.Count;
             }
         }
 
         public void Add(TKey key, TValue value)
         {
-            Init();
+#if UNITY_EDITOR
+            SetToList(key, value);
+#endif
             m_Dictionary.Add(key, value);
         }
 
         public void Clear()
         {
-            Init();
+#if UNITY_EDITOR
+            ClearList();
+#endif
             m_Dictionary.Clear();
         }
 
         public bool ContainsKey(TKey key)
         {
-            Init();
             return m_Dictionary.ContainsKey(key);
         }
 
         public bool ContainsValue(TValue value)
         {
-            Init();
             return m_Dictionary.ContainsValue(value);
         }
 
         public int EnsureCapacity(int capacity)
         {
-            Init();
             return m_Dictionary.EnsureCapacity(capacity);
         }
 
         public Dictionary<TKey, TValue>.Enumerator GetEnumerator()
         {
-            Init();
             return m_Dictionary.GetEnumerator();
         }
 
         public bool Remove(TKey key, out TValue value)
         {
-            Init();
+#if UNITY_EDITOR
+            RemoveFromList(key);
+#endif
             return m_Dictionary.Remove(key, out value);
         }
 
         public bool Remove(TKey key)
         {
-            Init();
+#if UNITY_EDITOR
+            RemoveFromList(key);
+#endif
             return m_Dictionary.Remove(key);
         }
 
         public bool TryRemove(TKey key)
         {
-            Init();
+#if UNITY_EDITOR
+            RemoveFromList(key);
+#endif
             return m_Dictionary.TryRemove(key);
         }
 
         public bool TryRemove(TKey key, out TValue value)
         {
-            Init();
+#if UNITY_EDITOR
+            RemoveFromList(key);
+#endif
             return m_Dictionary.TryRemove(key, out value);
         }
 
         public bool TryAdd(TKey key, TValue value)
         {
-            Init();
+#if UNITY_EDITOR
+            SetToList(key, value);
+#endif
             return m_Dictionary.TryAdd(key, value);
         }
 
         public bool TryGetValue(TKey key, out TValue value)
         {
-            Init();
             return m_Dictionary.TryGetValue(key, out value);
         }
         #endregion

@@ -16,9 +16,9 @@ namespace Dcg
 
             stage.AddLoadItem(new InitSingletonComponent());
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-            stage.AddLoadItem(new InitPrefabData());
-            stage.AddLoadItem(new InitCamera());
-            stage.AddLoadItem(new InitMonsterData());
+
+            stage.AddLateLoadItem(new InitCamera());
+            stage.AddLateLoadItem(new BuildRandomPool());
 
             stage.AddUpdateSystem<ProcessOperationSystem>();
 
@@ -38,52 +38,29 @@ namespace Dcg
             }
         }
 
-        private class InitPrefabData : IStageLoad
-        {
-            void IStageLoad.Load(GameStage stage)
-            {
-                var prefabData = Resources.Load<PrefabData>("DndCardGame/Config/PrefabData");
-                DataApi.SetData(Object.Instantiate(prefabData));
-            }
-
-            void IStageLoad.Unload(GameStage stage)
-            {
-                DataApi.ReleaseData<PrefabData>();
-            }
-        }
-
         private class InitCamera : IStageLoad
         {
             void IStageLoad.Load(GameStage stage)
             {
-                var cameraData = Resources.Load<CameraData>("DndCardGame/Config/CameraData");
-                DataApi.SetData(Object.Instantiate(cameraData));
                 EntityCreator.CreateMainCameraEntity();
             }
 
             void IStageLoad.Unload(GameStage stage)
             {
-                
+
             }
         }
 
-        /// <summary>
-        /// 怪物放到global初始化，以后可能做个怪物图鉴什么的
-        /// </summary>
-        private class InitMonsterData : IStageLoad
+        private class BuildRandomPool : IStageLoad
         {
             void IStageLoad.Load(GameStage stage)
             {
-                var monsterSetData = Resources.Load<MonsterSetData>("DndCardGame/Config/Monster/MonsterSetData");
-                foreach (var item in monsterSetData.Items)
-                {
-                    DataApi.SetData(item.Id, Object.Instantiate(item.Data));
-                }
+                GameUtility.RandomPool.BuildMonsterDataPool();
             }
 
             void IStageLoad.Unload(GameStage stage)
             {
-                DataApi.ReleaseAllData<MonsterData>();
+
             }
         }
     }

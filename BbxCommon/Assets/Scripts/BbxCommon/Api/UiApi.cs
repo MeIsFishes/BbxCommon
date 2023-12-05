@@ -257,7 +257,7 @@ namespace BbxCommon.Ui
 
         internal static void ExportPreLoadUiController(UiViewBase uiView)
         {
-            var preLoadUiData = DataApi.LoadOrCreateAssetInResources<PreLoadUiData>(GlobalStaticVariable.ExportPreLoadUiPathInResources);
+            var preLoadUiData = ResourceApi.LoadOrCreateAssetInResources<PreLoadUiData>(GlobalStaticVariable.ExportPreLoadUiPathInResources);
             preLoadUiData.SetUi(uiView);
             EditorUtility.SetDirty(preLoadUiData);
             AssetDatabase.SaveAssets();

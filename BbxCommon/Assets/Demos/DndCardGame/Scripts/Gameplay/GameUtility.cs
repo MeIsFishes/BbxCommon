@@ -142,5 +142,26 @@ namespace Dcg
             }
         }
         #endregion
+
+        #region RandomPool
+        public static class RandomPool
+        {
+            private static RandomPool<MonsterData> m_MonsterDataPool;
+
+            public static void BuildMonsterDataPool()
+            {
+                ObjectPool.Alloc(out m_MonsterDataPool);
+                foreach (var data in DataApi.GetEnumerator<MonsterData>())
+                {
+                    m_MonsterDataPool.SetWeight(data, 1);
+                }
+            }
+
+            public static MonsterData GetRandomMonster()
+            {
+                return m_MonsterDataPool.Rand();
+            }
+        }
+        #endregion
     }
 }

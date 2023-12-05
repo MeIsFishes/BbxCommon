@@ -62,7 +62,7 @@ namespace BbxCommon.Ui
         public void ExportUiScene()
         {
             var path = ExportPath + "/" + SceneManager.GetActiveScene().name + ".asset";
-            var asset = DataApi.LoadOrCreateAsset<UiSceneAsset>(path);
+            var asset = ResourceApi.LoadOrCreateAsset<UiSceneAsset>(path);
             asset.UiObjectDatas.Clear();
             for (int i = 0; i < UiGroups.Count; i++)
             {

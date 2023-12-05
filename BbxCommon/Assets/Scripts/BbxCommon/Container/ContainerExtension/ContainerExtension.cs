@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace BbxCommon
 {
-    public static class ContainerExtend
+    public static class ContainerExtension
     {
         #region List
         public static void CollectToPool<T>(this List<T> list)
@@ -61,6 +61,17 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// Add HashSet's members to current List.
+        /// </summary>
+        public static void AddHashSet<T>(this List<T> list, SerializableHashSet<T> set)
+        {
+            foreach (var m in set)
+            {
+                list.Add(m);
+            }
+        }
+
+        /// <summary>
         /// Add Dictionary's key to the List.
         /// </summary>
         public static void AddDicKey<TKey, TValue>(this List<TKey> list, Dictionary<TKey, TValue> dic)
@@ -72,9 +83,31 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// Add Dictionary's key to the List.
+        /// </summary>
+        public static void AddDicKey<TKey, TValue>(this List<TKey> list, SerializableDic<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                list.Add(pair.Key);
+            }
+        }
+
+        /// <summary>
         /// Add Dictionary's value to the List.
         /// </summary>
         public static void AddDicValue<TKey, TValue>(this List<TValue> list, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                list.Add(pair.Value);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's value to the List.
+        /// </summary>
+        public static void AddDicValue<TKey, TValue>(this List<TValue> list, SerializableDic<TKey, TValue> dic)
         {
             foreach (var pair in dic)
             {
@@ -347,7 +380,7 @@ namespace BbxCommon
                 dic.Remove(key, out value);
                 return true;
             }
-            value = default(TValue);
+            value = default;
             return false;
         }
 
@@ -461,6 +494,17 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// Add HashSet's members to the HashSet.
+        /// </summary>
+        public static void AddHashSet<T>(this HashSet<T> set, SerializableHashSet<T> addSet)
+        {
+            foreach (var m in addSet)
+            {
+                set.Add(m);
+            }
+        }
+
+        /// <summary>
         /// Add Dictionary's key to the HashSet.
         /// </summary>
         public static void AddDicKey<TKey, TValue>(this HashSet<TKey> set, Dictionary<TKey, TValue> dic)
@@ -472,9 +516,31 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// Add Dictionary's key to the HashSet.
+        /// </summary>
+        public static void AddDicKey<TKey, TValue>(this HashSet<TKey> set, SerializableDic<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                set.Add(pair.Key);
+            }
+        }
+
+        /// <summary>
         /// Add Dictionary's value to the HashSet.
         /// </summary>
         public static void AddDicValue<TKey, TValue>(this HashSet<TValue> set, Dictionary<TKey, TValue> dic)
+        {
+            foreach (var pair in dic)
+            {
+                set.Add(pair.Value);
+            }
+        }
+
+        /// <summary>
+        /// Add Dictionary's value to the HashSet.
+        /// </summary>
+        public static void AddDicValue<TKey, TValue>(this HashSet<TValue> set, SerializableDic<TKey, TValue> dic)
         {
             foreach (var pair in dic)
             {

@@ -12,4 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b298fa0f3e0be46439b6346aacc8d0aa, type: 3}
   m_Name: ModelAttributesData
   m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
   WalkSpeed: 5

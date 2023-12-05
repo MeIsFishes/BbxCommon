@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
+using UnityEditor;
 using Unity.Entities;
 using BbxCommon.Ui;
 
@@ -55,6 +56,7 @@ namespace BbxCommon
             OnLoadStageLoad();
             OnLoadStageScene();
             OnLoadStageUiScene();
+            OnLoadStageData();
             OnLoadStageTick();
             OnLoadStageLateLoad();
             m_Loaded = true;
@@ -69,6 +71,7 @@ namespace BbxCommon
             PreUnloadStage?.Invoke();
             OnLoadStageLateLoad();
             OnUnloadStageTick();
+            OnUnloadStageData();
             OnUnloadStageUiScene();
             OnUnloadStageScene();
             OnUnloadStageLoad();
@@ -291,6 +294,45 @@ namespace BbxCommon
             {
                 var systemGroup = m_EcsWorld.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
                 systemGroup.RemoveSystemFromUpdateList(system);
+            }
+        }
+        #endregion
+
+        #region StageData
+        private List<string> m_LoadDataGroups = new();
+        private HashSet<BbxScriptableObject> m_ScriptableObjects = new();
+
+        public void AddDataGroup(string group)
+        {
+            m_LoadDataGroups.Add(group);
+        }
+
+        private void OnLoadStageData()
+        {
+            var soAssets = ResourceApi.LoadOrCreateAssetInResources<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
+            for (int i = 0; i < m_LoadDataGroups.Count; i++)
+            {
+                var group = m_LoadDataGroups[i];
+                if (soAssets.Assets.TryGetValue(group, out var paths))
+                {
+                    foreach (var path in paths)
+                    {
+                        var target = AssetDatabase.LoadMainAssetAtPath(path);
+                        if (target is BbxScriptableObject asset)
+                        {
+                            Object.Instantiate(asset).Load();
+                            m_ScriptableObjects.TryAdd(asset);
+                        }
+                    }
+                }
+            }
+        }
+
+        private void OnUnloadStageData()
+        {
+            foreach (var asset in m_ScriptableObjects)
+            {
+                asset.Unload();
             }
         }
         #endregion

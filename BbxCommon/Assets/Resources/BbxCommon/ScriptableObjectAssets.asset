@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f903bba7e97088043b890101c0041e9a, type: 3}
+  m_Name: ScriptableObjectAssets
+  m_EditorClassIdentifier: 
+  Assets:
+    m_Items:
+    - Key: GameEngineDefault
+      Value:
+        m_Items:
+        - Assets/Resources/DndCardGame/Config/ModelAttributesData.asset
+        - Assets/Resources/DndCardGame/Config/CameraData.asset
+        - Assets/Resources/DndCardGame/Config/PrefabData.asset
+        - Assets/Resources/DndCardGame/Config/RoomData.asset
+        - Assets/Resources/DndCardGame/Config/Monster/FemaleCData.asset
+        - Assets/Resources/DndCardGame/Config/Monster/FemaleCData.asset

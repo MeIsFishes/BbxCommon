@@ -8,8 +8,9 @@ using BbxCommon;
 namespace Dcg
 {
     [CreateAssetMenu(fileName = "MonsterData", menuName = "Demos/Dcg/MonsterData")]
-    public class MonsterData : ScriptableObject
+    public class MonsterData : BbxScriptableObject
     {
+        public int Id;
         public GameObject Prefab;
         public string Name;
 
@@ -24,5 +25,17 @@ namespace Dcg
         public int Constitution;
         public int Intelligence;
         public int Wisdom;
+
+        protected override void OnLoad()
+        {
+            DataApi.SetData(Id, this);
+            DataApi.SetData(name, this);
+        }
+
+        protected override void OnUnload()
+        {
+            DataApi.ReleaseData<MonsterData>(Id);
+            DataApi.ReleaseData<MonsterData>(Name);
+        }
     }
 }

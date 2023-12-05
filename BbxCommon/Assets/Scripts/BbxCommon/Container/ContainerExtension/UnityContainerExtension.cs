@@ -4,7 +4,7 @@ using Unity.Mathematics;
 
 namespace BbxCommon
 {
-    public static class UnityContainerExtend
+    public static class UnityContainerExtension
     {
         #region UnityEngine
         #region Vector
