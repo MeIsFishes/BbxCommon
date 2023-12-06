@@ -1,36 +1,37 @@
+﻿using System;
 using System.Collections.Generic;
+using UnityEngine;
+using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
 
 namespace Dcg
 {
-    public class CharacterDeckRawComponent : EcsRawComponent, IUiModelItem
+    /// <summary>
+    /// 存储奖励页面的骰子
+    /// </summary>
+    public class RewardDicesSingletonRawComponent : EcsSingletonRawComponent, IUiModelItem
     {
         public enum EUiEvent
         {
-            DeckRefresh,
+            DicesRefresh,
         }
 
         public List<Dice> Dices = new();
+        public bool Chosen;
 
         private MessageHandler<int> m_MessageHandler = new();
         IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;
 
         public void DispatchEvent(EUiEvent uiEvent)
         {
-            m_MessageHandler.Dispatch((int)uiEvent);
-        }
-
-        public void AddDice(Dice dice)
-        {
-            Dices.Add(dice);
-            m_MessageHandler.Dispatch((int)EUiEvent.DeckRefresh);
+            m_MessageHandler.Dispatch(uiEvent.GetHashCode(), this);
         }
 
         public override void OnCollect()
         {
-            m_MessageHandler.ClearAndRelease();
-            Dices.CollectAndClearElements();
+            Dices.CollectToPool();
+            Chosen = false;
         }
     }
 }

@@ -32,12 +32,12 @@ namespace BbxCommon
             {
                 obj = objectSet[objectSet.Count - 1];
                 objectSet.RemoveAt(objectSet.Count - 1);
-                obj.OnAllocate();
-                return obj;
             }
             obj = new T();
             obj.OnAllocate();
             obj.UniqueId = m_IdGenerator.GenerateId();
+            obj.ObjectPoolBelongs = Instance;
+            obj.IsCollected = false;
             return obj;
         }
 
@@ -71,8 +71,9 @@ namespace BbxCommon
         /// </summary>
         public void Collect(T obj)
         {
-            if (m_Pool.Count > GlobalStaticVariable.SimplePoolLimit)
+            if (m_Pool.Count > GlobalStaticVariable.ObjectPoolLimit)
             {
+                obj.UniqueId = m_IdGenerator.GenerateId();
 #if UNITY_EDITOR
                 Debug.LogWarning("Pooled objects count exceeds limit.");
 #endif
@@ -81,6 +82,7 @@ namespace BbxCommon
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
             obj.UniqueId = m_IdGenerator.GenerateId();
+            obj.IsCollected = true;
         }
 
         void IObjectPoolHandler.Collect(IPooledObject obj)

@@ -155,6 +155,7 @@ MonoBehaviour:
   - {fileID: 3682755452414818849}
   - {fileID: 2358620174404244115}
   DiceTittle: {fileID: 8976375316928351554}
+  UiEventListener: {fileID: 1153564080249549915}
   UiDragable: {fileID: 3682755452414818849}
   UiInteractor: {fileID: 2358620174404244115}
   OnDragGroup: {fileID: 4595174208597290224}

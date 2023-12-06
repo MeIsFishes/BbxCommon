@@ -20,6 +20,7 @@ namespace BbxCommon
         public static void DestroyEntity(Entity entity)
         {
             entity.ClearHud();
+            entity.GetGameObject().Destroy();
             EcsDataManager.DestroyEntity(entity);
             World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }

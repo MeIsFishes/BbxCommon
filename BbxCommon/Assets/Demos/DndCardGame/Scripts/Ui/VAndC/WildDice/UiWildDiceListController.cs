@@ -26,17 +26,27 @@ namespace Dcg.Ui
 
         private Entity Entity;
         private ObjRef<CastSkillRawComponent> m_CastSkillComp;
+        private ModelListener m_WildDicesRefreshListener;
 
         protected override void OnUiInit()
         {
             m_View.AcceptButton.onClick.AddListener(OnAcceptButton);
+            m_WildDicesRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Open, (int)CastSkillRawComponent.EUiEvent.WildDicesRefresh, RefreshWildList);
+        }
+
+        protected override void OnUiClose()
+        {
+            for (int i = 0; i < m_View.SlotList.ItemWrapper.Count; i++)
+            {
+                m_View.SlotList.ItemWrapper.GetItem<UiWildDiceSlotController>(i).Uninit();
+            }
         }
 
         public void Bind(Entity entity)
         {
             Entity = entity;
             m_CastSkillComp = entity.GetRawComponent<CastSkillRawComponent>().AsObjRef();
-            ModelWrapper.AddUiModelListener(EControllerLifeCycle.Open, m_CastSkillComp.Obj, (int)CastSkillRawComponent.EUiEvent.WildDicesRefresh, RefreshWildList);
+            m_WildDicesRefreshListener.RebindModelItem(m_CastSkillComp.Obj);
             RefreshWildList(m_CastSkillComp.Obj);
         }
 

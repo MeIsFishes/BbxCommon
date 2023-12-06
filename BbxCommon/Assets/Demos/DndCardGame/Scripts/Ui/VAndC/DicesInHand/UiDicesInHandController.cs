@@ -7,13 +7,28 @@ namespace Dcg.Ui
 {
     public class UiDicesInHandController : UiControllerBase<UiDicesInHandView>
     {
+        private ModelListener m_DicesInHandRefreshListener;
+
+        protected override void OnUiInit()
+        {
+            m_DicesInHandRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Open, (int)CombatDeckRawComponent.EUiEvent.DicesInHandRefresh, RefreshDices);
+        }
+
+        protected override void OnUiClose()
+        {
+            for (int i = 0; i < m_View.DicesList.ItemWrapper.Count; i++)
+            {
+                m_View.DicesList.ItemWrapper.GetItem<UiDicesInHandItemController>(i).Uninit();
+            }
+        }
+
         /// <summary>
         /// 绑定到对应的角色entity，然后应用该角色的手牌信息
         /// </summary>
         public void Bind(Entity characterEntity)
         {
             var combatDeckComp = characterEntity.GetRawComponent<CombatDeckRawComponent>();
-            AddUiModelListener(EControllerLifeCycle.Open, combatDeckComp, (int)CombatDeckRawComponent.EUiEvent.DicesInHandRefresh, RefreshDices);
+            m_DicesInHandRefreshListener.RebindModelItem(combatDeckComp);
             RefreshDices(combatDeckComp);
         }
 

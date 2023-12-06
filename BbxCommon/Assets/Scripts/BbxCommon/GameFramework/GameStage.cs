@@ -69,7 +69,7 @@ namespace BbxCommon
                 return;
 
             PreUnloadStage?.Invoke();
-            OnLoadStageLateLoad();
+            OnUnloadStageLateLoad();
             OnUnloadStageTick();
             OnUnloadStageData();
             OnUnloadStageUiScene();

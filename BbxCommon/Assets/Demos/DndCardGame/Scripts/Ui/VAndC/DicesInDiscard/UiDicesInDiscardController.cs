@@ -5,21 +5,28 @@ using UnityEngine.UI;
 using BbxCommon;
 using BbxCommon.Ui;
 using UnityEngine.EventSystems;
+using UnityEngine.TextCore.Text;
 
 namespace Dcg.Ui
 {
     public class UiDicesInDiscardController : UiControllerBase<UiDicesInDiscardView>
     {
         private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
+        private ModelListener m_DicesInDiscardRefreshListener;
 
         protected override void OnUiInit()
+        {
+            m_View.EventListener.OnPointerClick += OnClick;
+            m_DicesInDiscardRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Show, CombatDeckRawComponent.EUiEvent.DicesInDiscardRefresh, OnDiscardRefresh);
+        }
+
+        protected override void OnUiOpen()
         {
             // 这里是直接从singleton拿的数据，属于玩家操控系统还没做出来的临时做法，后期应该需要优化
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
             var character = combatInfoComp.Character;
             m_CombatDeckComp = character.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
-            m_View.EventListener.OnPointerClick += OnClick;
-            ModelWrapper.AddUiModelListener(EControllerLifeCycle.Show, m_CombatDeckComp.Obj, CombatDeckRawComponent.EUiEvent.DicesInDiscardRefresh, OnDiscardRefresh);
+            m_DicesInDiscardRefreshListener.RebindModelItem(m_CombatDeckComp.Obj);
             OnDiscardRefresh(m_CombatDeckComp.Obj);
         }
 

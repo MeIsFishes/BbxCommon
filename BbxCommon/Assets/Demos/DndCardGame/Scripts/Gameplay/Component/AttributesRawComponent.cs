@@ -74,28 +74,29 @@ namespace Dcg
                     attributeValue = Wisdom;
                     break;
             }
-            while (attributeValue > 0)
+            var value = (attributeValue - 1) % 5 + 1;
+            for (int i = 0; i < (attributeValue - value) / 5; i++)
             {
-                var value = (attributeValue - 1) % 5 + 1;
-                attributeValue -= 5;
-                switch (value)
-                {
-                    case 1:
-                        res.Add(Dice.Create(EDiceType.D4));
-                        break;
-                    case 2:
-                        res.Add(Dice.Create(EDiceType.D6));
-                        break;
-                    case 3:
-                        res.Add(Dice.Create(EDiceType.D8));
-                        break;
-                    case 4:
-                        res.Add(Dice.Create(EDiceType.D10));
-                        break;
-                    case 5:
-                        res.Add(Dice.Create(EDiceType.D12));
-                        break;
-                }
+                res.Add(Dice.Create(EDiceType.D12));    // 每5点属性填充1个d12
+            }
+            // 计算剩下的属性
+            switch (value)
+            {
+                case 1:
+                    res.Add(Dice.Create(EDiceType.D4));
+                    break;
+                case 2:
+                    res.Add(Dice.Create(EDiceType.D6));
+                    break;
+                case 3:
+                    res.Add(Dice.Create(EDiceType.D8));
+                    break;
+                case 4:
+                    res.Add(Dice.Create(EDiceType.D10));
+                    break;
+                case 5:
+                    res.Add(Dice.Create(EDiceType.D12));
+                    break;
             }
         }
 

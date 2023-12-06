@@ -1,4 +1,3 @@
-using Codice.CM.SEIDInfo;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
@@ -22,6 +21,9 @@ namespace BbxCommon.Ui
         {
             private UiControllerBase<TView> m_Ref;
             public ControllerWpData(UiControllerBase<TView> obj) { m_Ref = obj; }
+            public bool IsInited() => m_Ref.IsInited();
+            public bool IsOpened() => m_Ref.IsOpened();
+            public bool IsShown() => m_Ref.IsShown();
             public void Show() => m_Ref.Show();
             public void Hide() => m_Ref.Hide();
             public void Close() => m_Ref.Close();
@@ -45,11 +47,17 @@ namespace BbxCommon.Ui
         {
             private UiControllerBase<TView> m_Ref;
             public ModelWpData(UiControllerBase<TView> obj) { m_Ref = obj; }
-            public ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener CreateVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+                => m_Ref.CreateUiModelVariableListener(enableDuring, listeningEvent, callback);
+            public ModelListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageDataBase> callback)
+                => m_Ref.CreateUiModelListener(enableDuring, listeningEvent, callback);
+            public ModelListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction<MessageDataBase> callback)
+                => m_Ref.CreateUiModelListener(enableDuring, listeningEvent.GetHashCode(), callback);
+            public ModelListener AddVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
                 => m_Ref.AddUiModelVariableListener(enableDuring, modelItem, listeningEvent, callback);
-            public ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener AddListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
                 => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent, callback);
-            public ModelItemListenerInfo AddUiModelListener<TEnum>(EControllerLifeCycle enableDuring, IUiModelItem modelItem, TEnum listeningEvent, UnityAction<MessageDataBase> callback) where TEnum : Enum
+            public ModelListener AddListener<TEnum>(EControllerLifeCycle enableDuring, IUiModelItem modelItem, TEnum listeningEvent, UnityAction<MessageDataBase> callback) where TEnum : Enum
                 => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent.GetHashCode(), callback);
         }
         #endregion
@@ -91,15 +99,19 @@ namespace BbxCommon.Ui
         protected bool m_Opened { get; private set; }
         protected bool m_Shown { get; private set; }
 
+        public bool IsInited() { return m_Inited; }
+        public bool IsOpened() { return m_Opened; }
+        public bool IsShown() { return m_Shown; }
+
         internal override sealed void Init()
         {
             ControllerWrapper = new ControllerWpData(this);
             ModelWrapper = new ModelWpData(this);
             if (m_Inited == false)
             {
-                m_InitListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
-                m_OpenListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
-                m_ShowListeners = SimplePool<List<ModelItemListenerInfo>>.Alloc();
+                m_InitListeners = SimplePool<List<ModelListener>>.Alloc();
+                m_OpenListeners = SimplePool<List<ModelListener>>.Alloc();
+                m_ShowListeners = SimplePool<List<ModelListener>>.Alloc();
 
                 InitUiModelListeners();
 
@@ -241,7 +253,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Model Listener
-        protected struct ModelItemListenerInfo
+        protected struct ModelListener
         {
             /// <summary>
             /// Stores <see cref="IUiModelItem"/> in fact. As the model item may be collected during listening, and interfaces cannot be
@@ -256,7 +268,7 @@ namespace BbxCommon.Ui
             /// </summary>
             private SimpleMessageListener<int> m_Listener;
 
-            public ModelItemListenerInfo(IUiModelItem modelItem, int messageKey, UnityAction<MessageDataBase> callback)
+            public ModelListener(IUiModelItem modelItem, int messageKey, UnityAction<MessageDataBase> callback)
             {
                 ModelItem = ((PooledObject)modelItem).AsObjRef();
                 MessageKey = messageKey;
@@ -267,10 +279,7 @@ namespace BbxCommon.Ui
             public void AddListener()
             {
                 if (ModelItem.IsNull())
-                {
-                    Debug.LogError("The ModelItem is not set or has been collected.");
                     return;
-                }
                 ((IUiModelItem)ModelItem.Obj).MessageDispatcher.AddListener(MessageKey, m_Listener);
             }
 
@@ -296,17 +305,31 @@ namespace BbxCommon.Ui
             }
         }
 
-        protected ModelItemListenerInfo AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener CreateUiModelVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
         {
-            var info = new ModelItemListenerInfo(modelItem, (int)listeningEvent, callback);
+            var info = new ModelListener(null, (int)listeningEvent, callback);
+            StoreUiModelListener(enableDuring, info);
+            return info;
+        }
+
+        protected ModelListener CreateUiModelListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageDataBase> callback)
+        {
+            var info = new ModelListener(null, listeningEvent, callback);
+            StoreUiModelListener(enableDuring, info);
+            return info;
+        }
+
+        protected ModelListener AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+        {
+            var info = new ModelListener(modelItem, (int)listeningEvent, callback);
             AddListenerIfConditionMeets(info, enableDuring);
             StoreUiModelListener(enableDuring, info);
             return info;
         }
 
-        protected ModelItemListenerInfo AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
         {
-            var info = new ModelItemListenerInfo(modelItem, listeningEvent, callback);
+            var info = new ModelListener(modelItem, listeningEvent, callback);
             AddListenerIfConditionMeets(info, enableDuring);
             StoreUiModelListener(enableDuring, info);
             return info;
@@ -314,7 +337,7 @@ namespace BbxCommon.Ui
 
         protected virtual void InitUiModelListeners() { }
 
-        private void AddListenerIfConditionMeets(ModelItemListenerInfo info, EControllerLifeCycle enableDuring)
+        private void AddListenerIfConditionMeets(ModelListener info, EControllerLifeCycle enableDuring)
         {
             switch (enableDuring)
             {
@@ -334,11 +357,11 @@ namespace BbxCommon.Ui
         }
 
         // Listeners below will be unload when the controller is uninited, closed or hidden automatically.
-        private List<ModelItemListenerInfo> m_InitListeners;
-        private List<ModelItemListenerInfo> m_OpenListeners;
-        private List<ModelItemListenerInfo> m_ShowListeners;
+        private List<ModelListener> m_InitListeners;
+        private List<ModelListener> m_OpenListeners;
+        private List<ModelListener> m_ShowListeners;
 
-        private void StoreUiModelListener(EControllerLifeCycle enableDuring, ModelItemListenerInfo info)
+        private void StoreUiModelListener(EControllerLifeCycle enableDuring, ModelListener info)
         {
             switch (enableDuring)
             {

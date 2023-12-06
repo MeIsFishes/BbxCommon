@@ -36,8 +36,6 @@ namespace BbxCommon
             }
             set
             {
-                if (m_ExtraInfo != null && m_ExtraInfo is PooledObject pooled)
-                    pooled.CollectToPool();
                 m_ExtraInfo = value;
             }
         }

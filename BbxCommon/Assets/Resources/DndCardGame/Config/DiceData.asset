@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6aa3b405d912c4346a0f3b6da9433c7d, type: 3}
+  m_Name: DiceData
+  m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
+  RewardD4Weight: 5
+  RewardD6Weight: 15
+  RewardD8Weight: 25
+  RewardD10Weight: 20
+  RewardD12Weight: 10
+  RewardD20Weight: 2

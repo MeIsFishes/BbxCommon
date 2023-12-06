@@ -56,6 +56,7 @@ namespace Dcg.Ui
             m_DiceController = UiApi.OpenUiController<UiDiceController>(m_View.transform);
             m_DiceController.InitDicesInHand();
             m_DiceController.Show();
+            m_DiceController.OnInteractWith += OnInteractWith;
         }
 
         public void Init(int index, CombatDeckRawComponent combatDeckComp)
@@ -64,7 +65,6 @@ namespace Dcg.Ui
             m_InteractorInfo.Index = index;
             m_InteractorInfo.CombatDeckComp = combatDeckComp.AsObjRef();
             m_DiceController.InteractorInfo = m_InteractorInfo;
-            m_DiceController.OnInteractWith += OnInteractWith;
         }
 
         public void Uninit()
@@ -72,7 +72,6 @@ namespace Dcg.Ui
             m_InteractorInfo.CollectToPool();
             m_InteractorInfo = null;
             m_DiceController.InteractorInfo = null;
-            m_DiceController.OnInteractWith -= OnInteractWith;
         }
 
         public void Bind(Dice dice)

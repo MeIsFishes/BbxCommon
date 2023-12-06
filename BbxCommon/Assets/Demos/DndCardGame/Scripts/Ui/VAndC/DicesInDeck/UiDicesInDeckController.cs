@@ -11,15 +11,21 @@ namespace Dcg.Ui
     public class UiDicesInDeckController : UiControllerBase<UiDicesInDeckView>
     {
         private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
+        ModelListener m_DicesInDeckRefreshListener;
 
         protected override void OnUiInit()
+        {
+            m_View.EventListener.OnPointerClick += OnClick;
+            m_DicesInDeckRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Show, CombatDeckRawComponent.EUiEvent.DicesInDeckRefresh, OnDeckRefresh);
+        }
+
+        protected override void OnUiOpen()
         {
             // 这里是直接从singleton拿的数据，属于玩家操控系统还没做出来的临时做法，后期应该需要优化
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
             var character = combatInfoComp.Character;
             m_CombatDeckComp = character.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
-            m_View.EventListener.OnPointerClick += OnClick;
-            ModelWrapper.AddUiModelListener(EControllerLifeCycle.Show, m_CombatDeckComp.Obj, CombatDeckRawComponent.EUiEvent.DicesInDeckRefresh, OnDeckRefresh);
+            m_DicesInDeckRefreshListener.RebindModelItem(m_CombatDeckComp.Obj);
             OnDeckRefresh(m_CombatDeckComp.Obj);
         }
 

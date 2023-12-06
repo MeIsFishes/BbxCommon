@@ -10,12 +10,21 @@ namespace Dcg.Ui
 {
     public class HudCharacterStatusController : HudControllerBase<HudCharacterStatusView>
     {
+        private ModelListener m_MaxHpListener;
+        private ModelListener m_CurHpListener;
+
+        protected override void OnHudInit()
+        {
+            m_MaxHpListener = ModelWrapper.CreateVariableListener(EControllerLifeCycle.Open, EUiModelVariableEvent.Dirty, OnMaxHpDirty);
+            m_CurHpListener = ModelWrapper.CreateVariableListener(EControllerLifeCycle.Open, EUiModelVariableEvent.Dirty, OnCurHpDirty);
+        }
+
         protected override void OnHudBind(Entity entity)
         {
             var attributesComp = entity.GetRawComponent<AttributesRawComponent>();
             RefreshHpInfo(attributesComp.MaxHp, attributesComp.CurHp);
-            AddUiModelVariableListener(EControllerLifeCycle.Open, attributesComp.MaxHpVariable, EUiModelVariableEvent.Dirty, OnMaxHpDirty);
-            AddUiModelVariableListener(EControllerLifeCycle.Open, attributesComp.CurHpVariable, EUiModelVariableEvent.Dirty, OnCurHpDirty);
+            m_MaxHpListener.RebindModelItem(attributesComp.MaxHpVariable);
+            m_CurHpListener.RebindModelItem(attributesComp.CurHpVariable);
         }
 
         private void OnMaxHpDirty(MessageDataBase messageData)

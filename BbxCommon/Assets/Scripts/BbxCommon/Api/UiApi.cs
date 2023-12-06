@@ -227,7 +227,7 @@ namespace BbxCommon.Ui
             {
                 foreach (var hud in hudComp.HudControllers)
                 {
-                    hud.Close();
+                    hud?.Close();
                 }
                 hudComp.ClearHudControllers();
             }

@@ -21,5 +21,6 @@ MonoBehaviour:
         - Assets/Resources/DndCardGame/Config/CameraData.asset
         - Assets/Resources/DndCardGame/Config/PrefabData.asset
         - Assets/Resources/DndCardGame/Config/RoomData.asset
+        - Assets/Resources/DndCardGame/Config/DiceData.asset
         - Assets/Resources/DndCardGame/Config/Monster/FemaleCData.asset
-        - Assets/Resources/DndCardGame/Config/Monster/FemaleCData.asset
+        - Assets/Resources/DndCardGame/Config/Monster/MaleAData.asset

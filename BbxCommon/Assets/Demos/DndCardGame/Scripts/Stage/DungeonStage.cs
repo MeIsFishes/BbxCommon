@@ -15,7 +15,6 @@ namespace Dcg
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonScene"));
 
             stage.AddLoadItem(new InitPlayerAndCharacter());
-            stage.AddLoadItem(new InitRoomData());
 
             stage.AddLateLoadItem(new InitDungeon());
 
@@ -44,19 +43,6 @@ namespace Dcg
             }
         }
 
-        private class InitRoomData : IStageLoad
-        {
-            void IStageLoad.Load(GameStage stage)
-            {
-                EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
-            }
-
-            void IStageLoad.Unload(GameStage stage)
-            {
-                EcsApi.RemoveSingletonRawComponent<DungeonRoomSingletonRawComponent>();
-            }
-        }
-
         /// <summary>
         /// 初始化地牢关卡
         /// </summary>
@@ -66,7 +52,7 @@ namespace Dcg
             {
                 // 创建初始房间
                 var roomData = DataApi.GetData<RoomData>();
-                var roomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
+                var roomComp = EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
                 var room = EntityCreator.CreateRoomEntity(Vector3.zero);
                 roomComp.AddRoom(room);
 
@@ -79,6 +65,7 @@ namespace Dcg
             void IStageLoad.Unload(GameStage stage)
             {
                 EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>().DestroyAllRooms();
+                EcsApi.RemoveSingletonRawComponent<DungeonRoomSingletonRawComponent>();
             }
         }
     }

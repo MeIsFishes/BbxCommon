@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.Events;
 using Unity.Entities;
 using System.Collections;
+using Codice.Client.BaseCommands.BranchExplorer;
+using System;
 
 namespace BbxCommon
 {
@@ -40,13 +42,17 @@ namespace BbxCommon
         internal static void DestroyEntity(Entity entity)
         {
             var group = GetAndRefreshGroup(entity);
-            foreach (var comp in group.RawComponents)
+            for (int i = 0; i < group.RawComponents.Count; i++)
             {
-                if (comp != null)
+                if (group.RawComponents[i] != null)
+                {
+                    group.RemoveRawComponent(i, out var comp);
                     comp.CollectToPool();
+                }
             }
-            foreach (var aspect in group.RawAspects)
+            for (int i = group.RawAspects.Count - 1; i >= 0; i--)
             {
+                group.RemoveRawAspect(i, out var aspect);
                 aspect.CollectToPool();
             }
             group.CollectToPool();
@@ -200,8 +206,15 @@ namespace BbxCommon
         {
             if (data is IEcsSingletonData && m_EcsDatas.Count > 0)
             {
-                Debug.LogError("You are creating a duplicated EcsSingletonRawComponent " + typeof(T).FullName + "! The operation is invalid!");
-                return;
+                if (m_EcsDatas[0].Obj == null)
+                {
+                    RemoveData(0);
+                }
+                else
+                {
+                    Debug.LogError("You are creating a duplicated EcsSingletonRawComponent " + typeof(T).FullName + "! The operation is invalid!");
+                    return;
+                }
             }
             m_EcsDatas.Add(data.AsObjRef());
             data.Index = m_EcsDatas.Count - 1;
@@ -239,7 +252,7 @@ namespace BbxCommon
             }
 
             m_EcsDatas.UnorderedRemoveAt(index);
-            if (m_EcsDatas.Count > 0 && index < m_EcsDatas.Count)
+            if (m_EcsDatas.Count > 0 && index < m_EcsDatas.Count && m_EcsDatas[index].IsNotNull())
                 m_EcsDatas[index].Obj.Index = index;     // swap the last one to the removed slot, then set its index as new
         }
 
@@ -258,7 +271,7 @@ namespace BbxCommon
         {
             for (int i = m_DeletedDatas.Count - 1; i >= 0; i--)
             {
-                RemoveData(i);
+                RemoveData(m_DeletedDatas[i]);
             }
             m_DeletedDatas.Clear();
         }

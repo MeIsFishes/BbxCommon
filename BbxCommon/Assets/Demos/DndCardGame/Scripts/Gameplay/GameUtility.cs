@@ -146,6 +146,7 @@ namespace Dcg
         #region RandomPool
         public static class RandomPool
         {
+            #region MonsterPool
             private static RandomPool<MonsterData> m_MonsterDataPool;
 
             public static void BuildMonsterDataPool()
@@ -161,6 +162,28 @@ namespace Dcg
             {
                 return m_MonsterDataPool.Rand();
             }
+            #endregion
+
+            #region DicePool
+            private static RandomPool<EDiceType> m_RewardDiceTypePool;
+
+            public static void BuildDicePool()
+            {
+                ObjectPool.Alloc(out m_RewardDiceTypePool);
+                var diceData = DataApi.GetData<DiceData>();
+                m_RewardDiceTypePool.SetWeight(EDiceType.D4, diceData.RewardD4Weight);
+                m_RewardDiceTypePool.SetWeight(EDiceType.D6, diceData.RewardD6Weight);
+                m_RewardDiceTypePool.SetWeight(EDiceType.D8, diceData.RewardD8Weight);
+                m_RewardDiceTypePool.SetWeight(EDiceType.D10, diceData.RewardD10Weight);
+                m_RewardDiceTypePool.SetWeight(EDiceType.D12, diceData.RewardD12Weight);
+                m_RewardDiceTypePool.SetWeight(EDiceType.D20, diceData.RewardD20Weight);
+            }
+
+            public static EDiceType GetRandomRewardDiceType()
+            {
+                return m_RewardDiceTypePool.Rand();
+            }
+            #endregion
         }
         #endregion
     }

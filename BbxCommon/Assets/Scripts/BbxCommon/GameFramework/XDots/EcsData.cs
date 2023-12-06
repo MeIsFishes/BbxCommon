@@ -90,6 +90,14 @@ namespace BbxCommon
             comp = (T)removed;
         }
 
+        internal void RemoveRawComponent(int typeId, out EcsRawComponent comp)
+        {
+            RefreshCapacity();
+            var removed = RawComponents[typeId];
+            RawComponents[typeId] = null;
+            comp = removed;
+        }
+
         private void RefreshCapacity()
         {
             if (RawComponents.Count > TypeIdCounter<EcsRawComponent>.CurId)
@@ -146,6 +154,12 @@ namespace BbxCommon
                 }
             }
             aspect = null;
+        }
+
+        internal void RemoveRawAspect(int index, out EcsRawAspect aspect)
+        {
+            aspect = RawAspects[index];
+            RawAspects.UnorderedRemoveAt(index);
         }
         #endregion
     }

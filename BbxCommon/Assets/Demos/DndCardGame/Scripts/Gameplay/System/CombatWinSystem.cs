@@ -15,12 +15,12 @@ namespace Dcg
         protected override void OnUpdate()
         {
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
-            var characterEntity = combatInfoComp.Character;
-            var attributesComp = characterEntity.GetRawComponent<AttributesRawComponent>();
+            var monsterEntity = combatInfoComp.Monster;
+            var attributesComp = monsterEntity.GetRawComponent<AttributesRawComponent>();
             // 满足条件
             if (attributesComp.CurHp <= 0)
             {
-
+                DcgGameEngine.Instance.CombatWin();
             }
         }
     }

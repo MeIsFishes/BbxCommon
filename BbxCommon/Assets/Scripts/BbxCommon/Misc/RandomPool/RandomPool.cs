@@ -51,17 +51,17 @@ namespace BbxCommon
                 Debug.LogWarning("There is no item in the RandomPool. Returned a default value.");
                 return default;
             }
-            var rand = Random.Range(1, m_TotalWeight);
+            var rand = Random.Range(0, m_TotalWeight);
             for (int i = 0; i < m_RandomItems.Count; i++)
             {
                 rand -= m_RandomItems[i].Weight;
-                if (rand <= 0)
+                if (rand < 0)
                     return m_RandomItems[i].Item;
             }
             for (int i = 0; i <= m_RandomPools.Count; i++)
             {
                 rand -= m_RandomPools[i].Weight;
-                if (rand <= 0)
+                if (rand < 0)
                     return m_RandomPools[i].Item.Rand();
             }
             return default;

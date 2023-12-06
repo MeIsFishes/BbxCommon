@@ -34,8 +34,8 @@ namespace Dcg
 
             // ≥ı ºªØ Ù–‘
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
-            attributesComp.MaxHp = 24;
-            attributesComp.CurHp = 24;
+            attributesComp.MaxHp = 28;
+            attributesComp.CurHp = 28;
             attributesComp.ArmorClass.Add(EDiceType.D8);
             attributesComp.ArmorClassVariable.SetDirty();
             attributesComp.Strength = 3;

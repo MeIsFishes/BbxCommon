@@ -861,7 +861,8 @@ MonoBehaviour:
   UiShows: []
   UiUpdates: []
   UiHides: []
-  UiCloses: []
+  UiCloses:
+  - {fileID: 5598470363711208242}
   UiDestroys:
   - {fileID: 5598470363711208242}
   AttackButton: {fileID: 2662966575150368258}

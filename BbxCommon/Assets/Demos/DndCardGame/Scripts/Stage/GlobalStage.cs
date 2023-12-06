@@ -56,6 +56,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 GameUtility.RandomPool.BuildMonsterDataPool();
+                GameUtility.RandomPool.BuildDicePool();
             }
 
             void IStageLoad.Unload(GameStage stage)

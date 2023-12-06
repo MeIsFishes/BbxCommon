@@ -1,4 +1,5 @@
 using UnityEngine;
+using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
 using Dcg.Ui;
@@ -24,6 +25,8 @@ namespace Dcg
             stage.AddUpdateSystem<CombatMonsterTurnSystem>();
             stage.AddUpdateSystem<CombatBeginTurnSystem>();
             stage.AddUpdateSystem<CombatEndTurnSystem>();
+            stage.AddUpdateSystem<CombatWinSystem>();
+            stage.AddUpdateSystem<CombatDefeatedSystem>();
 
             return stage;
         }
@@ -56,6 +59,8 @@ namespace Dcg
 
         private class CombatStageInitCombatInfo : IStageLoad
         {
+            private Entity m_MonsterEntity;
+
             void IStageLoad.Load(GameStage stage)
             {
                 // 创建怪物
@@ -63,14 +68,14 @@ namespace Dcg
                 var roomData = DataApi.GetData<RoomData>();
                 var roomPos = dungeonRoomComp.CurRoom.GetGameObject().transform.position;
                 var spawnPos = roomPos + roomData.MonsterOffset;
-                var monster = EntityCreator.CreateMonsterEntity(GameUtility.RandomPool.GetRandomMonster(), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
+                m_MonsterEntity = EntityCreator.CreateMonsterEntity(GameUtility.RandomPool.GetRandomMonster(), spawnPos, Quaternion.LookRotation((roomPos - spawnPos).SetY(0)));
 
                 // 初始化战场信息
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 var combatRoundComp = EcsApi.AddSingletonRawComponent<CombatRoundSingletonRawComponent>();
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 combatInfoComp.Character = playerComp.Characters[0];
-                combatInfoComp.Monster = monster;
+                combatInfoComp.Monster = m_MonsterEntity;
                 combatRoundComp.EnterCombat = true;
             }
 
@@ -78,6 +83,7 @@ namespace Dcg
             {
                 EcsApi.RemoveSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 EcsApi.RemoveSingletonRawComponent<CombatRoundSingletonRawComponent>();
+                m_MonsterEntity.Destroy();
             }
         }
 

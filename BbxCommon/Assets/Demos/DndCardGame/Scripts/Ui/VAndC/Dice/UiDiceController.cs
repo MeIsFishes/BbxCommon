@@ -32,6 +32,12 @@ namespace Dcg.Ui
             set { m_View.UiInteractor.Wrapper.ExtraInfo = value; }
         }
 
+        public UnityAction<PointerEventData> OnClick
+        {
+            get { return m_View.UiEventListener.OnPointerClick; }
+            set { m_View.UiEventListener.OnPointerClick = value; }
+        }
+
         public void Bind(Dice dice)
         {
             m_View.DiceTittle.text = dice.GetDiceTittle();

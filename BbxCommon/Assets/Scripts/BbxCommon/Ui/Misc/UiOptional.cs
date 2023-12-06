@@ -9,7 +9,7 @@ using Castle.Core;
 
 namespace BbxCommon.Ui
 {
-    public class UiOptional : MonoBehaviour, IUiPreInit, IUiInit, IUiDestroy
+    public class UiOptional : MonoBehaviour, IUiPreInit, IUiInit, IUiClose, IUiDestroy
     {
         #region Wrapper
         /// <summary>
@@ -116,6 +116,14 @@ namespace BbxCommon.Ui
         void IUiInit.OnUiInit(UiControllerBase uiController)
         {
             OnUiInitSelection();
+        }
+
+        void IUiClose.OnUiClose(UiControllerBase uiController)
+        {
+            foreach (var pair in ButtonDic)
+            {
+                UnselectName(pair.Key);
+            }
         }
 
         void IUiDestroy.OnUiDestroy(UiControllerBase uiController)

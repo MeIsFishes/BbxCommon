@@ -1,4 +1,5 @@
-﻿using System;
+﻿using UnityEngine;
+using System;
 
 namespace BbxCommon
 {
@@ -7,12 +8,20 @@ namespace BbxCommon
     {
         internal IObjectPoolHandler ObjectPoolBelongs;
         internal ulong UniqueId;
+        internal bool IsCollected;
 
         /// <summary>
         /// Call OnCollect() and tell the object pool this object is ready to be reuse.
         /// </summary>
         public void CollectToPool()
         {
+#if UNITY_EDITOR
+            if (IsCollected == true)
+            {
+                Debug.LogError("The object has been collected!");
+                return;
+            }
+#endif
             if (ObjectPoolBelongs != null)
                 ObjectPoolBelongs.Collect(this);
         }
