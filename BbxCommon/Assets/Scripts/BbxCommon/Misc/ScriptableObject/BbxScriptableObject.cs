@@ -8,6 +8,7 @@ namespace BbxCommon
     public abstract class BbxScriptableObject : ScriptableObject
     {
         #region Static
+#if UNITY_EDITOR
         public static void ExportAssetPath(BbxScriptableObject asset, string path)
         {
             var soAssets = ResourceApi.LoadOrCreateAssetInResources<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
@@ -19,6 +20,7 @@ namespace BbxCommon
             AssetDatabase.TryGetGUIDAndLocalFileIdentifier(soAssets, out string guid, out long localId);
             AssetDatabase.SaveAssetIfDirty(new GUID(guid));
         }
+#endif
         #endregion
 
         public enum ELoadingType

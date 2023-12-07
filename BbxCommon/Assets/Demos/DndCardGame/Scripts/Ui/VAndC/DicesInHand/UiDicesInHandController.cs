@@ -20,6 +20,7 @@ namespace Dcg.Ui
             {
                 m_View.DicesList.ItemWrapper.GetItem<UiDicesInHandItemController>(i).Uninit();
             }
+            m_View.DicesList.ClearItems();
         }
 
         /// <summary>

@@ -6,6 +6,15 @@ namespace BbxCommon
 {
     public static class ResourceApi
     {
+        public static string PathToResourcesPath(string path)
+        {
+            path = path.TryRemoveStart("Assets/Resources/");
+            var dotIndex = path.LastIndexOf('.');
+            if (dotIndex != -1)
+                path = path.Substring(0, dotIndex);
+            return path;
+        }
+
 #if UNITY_EDITOR
         public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
         {

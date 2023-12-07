@@ -62,6 +62,7 @@ namespace Dcg
             StageWrapper.UnloadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);
+            UiApi.GetUiController<UiGameFailedController>().Show();
         }
     }
 }

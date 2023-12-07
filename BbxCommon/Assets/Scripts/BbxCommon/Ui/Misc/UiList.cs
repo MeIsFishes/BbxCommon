@@ -137,7 +137,6 @@ namespace BbxCommon.Ui
 
         void IUiClose.OnUiClose(UiControllerBase uiController)
         {
-            ClearItems();
             m_InTranslationItemIndexs.CollectToPool();
         }
 

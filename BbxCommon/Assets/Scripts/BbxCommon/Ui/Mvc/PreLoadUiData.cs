@@ -40,6 +40,7 @@ namespace BbxCommon
 
         internal void SetUi(UiViewBase uiView)
         {
+#if UNITY_EDITOR
             var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(uiView.gameObject).TryRemoveStart("Assets/Resources/").TryRemoveEnd(".prefab");
             if (path.IsNullOrEmpty())
                 Debug.LogError("Export UI failed. You shoul export it from the GameObject in folder, but not from an opened instance!" +
@@ -47,6 +48,7 @@ namespace BbxCommon
             else
                 Debug.Log("Exported path: " + path);
             UiDatas[uiView.GetControllerType().FullName] = new UiData(path);
+#endif
         }
 
         internal UiViewBase GetUiPrefabBy<TController>() where TController : UiControllerBase

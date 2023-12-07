@@ -35,3 +35,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.UiRewardDiceItemController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Dice/UiRewardDiceItem
+    - Key: Dcg.Ui.UiTipListItemController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/TipList/UiTipListItem

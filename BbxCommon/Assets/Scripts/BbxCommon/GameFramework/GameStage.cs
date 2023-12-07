@@ -309,7 +309,7 @@ namespace BbxCommon
 
         private void OnLoadStageData()
         {
-            var soAssets = ResourceApi.LoadOrCreateAssetInResources<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
+            var soAssets = Resources.Load<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
             for (int i = 0; i < m_LoadDataGroups.Count; i++)
             {
                 var group = m_LoadDataGroups[i];
@@ -317,7 +317,7 @@ namespace BbxCommon
                 {
                     foreach (var path in paths)
                     {
-                        var target = AssetDatabase.LoadMainAssetAtPath(path);
+                        var target = Resources.Load(ResourceApi.PathToResourcesPath(path));
                         if (target is BbxScriptableObject asset)
                         {
                             Object.Instantiate(asset).Load();

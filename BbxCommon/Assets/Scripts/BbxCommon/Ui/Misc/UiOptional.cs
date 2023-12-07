@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Sirenix.OdinInspector;
-using System.Linq;
 using UnityEngine.Events;
-using Castle.Core;
 
 namespace BbxCommon.Ui
 {
@@ -375,8 +373,10 @@ namespace BbxCommon.Ui
         #region Button
         private void OnUiPreInitButton()
         {
+#if UNITY_EDITOR
             if (AutoSearchButtons)
                 SearchButton();
+#endif
         }
 
 #if UNITY_EDITOR

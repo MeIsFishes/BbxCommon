@@ -1,7 +1,4 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using Sirenix.OdinInspector.Editor;
 using Sirenix.OdinInspector;
 
 namespace BbxCommon.Ui

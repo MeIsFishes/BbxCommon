@@ -115,16 +115,16 @@ namespace BbxCommon.Ui
 
                 InitUiModelListeners();
 
-                foreach (var listener in m_InitListeners)
-                {
-                    listener.AddListener();
-                }
-
-                OnUiInit();
                 foreach (var uiItem in m_View.UiInits)
                 {
                     if (uiItem is IUiInit uiInit)
                         uiInit.OnUiInit(this);
+                }
+
+                OnUiInit();
+                foreach (var listener in m_InitListeners)
+                {
+                    listener.AddListener();
                 }
                 m_Inited = true;
             }
@@ -134,16 +134,16 @@ namespace BbxCommon.Ui
         {
             if (m_Opened == false)
             {
-                foreach (var listener in m_OpenListeners)
-                {
-                    listener.AddListener();
-                }
-
-                OnUiOpen();
                 foreach (var uiItem in m_View.UiOpens)
                 {
                     if (uiItem is IUiOpen uiOpen)
                         uiOpen.OnUiOpen(this);
+                }
+
+                OnUiOpen();
+                foreach (var listener in m_OpenListeners)
+                {
+                    listener.AddListener();
                 }
                 m_Opened = true;
                 UiControllerManager.OnUiOpen(this);
@@ -154,17 +154,17 @@ namespace BbxCommon.Ui
         {
             if (m_Shown == false)
             {
-                foreach (var listener in m_ShowListeners)
-                {
-                    listener.AddListener();
-                }
-
-                m_View.gameObject.SetActive(true);
-                OnUiShow();
                 foreach (var uiItem in m_View.UiShows)
                 {
                     if (uiItem is IUiShow uiShow)
                         uiShow.OnUiShow(this);
+                }
+
+                m_View.gameObject.SetActive(true);
+                OnUiShow();
+                foreach (var listener in m_ShowListeners)
+                {
+                    listener.AddListener();
                 }
                 m_Shown = true;
             }
