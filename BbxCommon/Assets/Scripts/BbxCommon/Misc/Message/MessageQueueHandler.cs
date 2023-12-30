@@ -16,12 +16,12 @@ namespace BbxCommon
         public struct Message
         {
             public TMessageKey MessageKey;
-            public MessageDataBase MessageData;
+            public MessageData MessageData;
         }
 
         private Queue<Message> m_MessageQueue = new();
 
-        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageDataBase messageData)
+        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageData messageData)
         {
             var message = new Message();
             message.MessageKey = messageKey;

@@ -50,7 +50,7 @@ namespace Dcg.Ui
             RefreshWildList(m_CastSkillComp.Obj);
         }
 
-        private void RefreshWildList(MessageDataBase message)
+        private void RefreshWildList(MessageData message)
         {
             RefreshWildList(message.GetData<CastSkillRawComponent>());
         }

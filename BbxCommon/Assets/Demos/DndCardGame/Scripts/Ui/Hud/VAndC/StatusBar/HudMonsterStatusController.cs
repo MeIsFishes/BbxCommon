@@ -27,7 +27,7 @@ namespace Dcg.Ui
             m_CurHpListener.RebindModelItem(attributesComp.CurHpVariable);
         }
 
-        private void OnMaxHpDirty(MessageDataBase messageData)
+        private void OnMaxHpDirty(MessageData messageData)
         {
             if (messageData is UiModelVariableDirtyMessageData<int> data)
             {
@@ -35,7 +35,7 @@ namespace Dcg.Ui
             }
         }
 
-        private void OnCurHpDirty(MessageDataBase messageData)
+        private void OnCurHpDirty(MessageData messageData)
         {
             if (messageData is UiModelVariableDirtyMessageData<int> data)
             {

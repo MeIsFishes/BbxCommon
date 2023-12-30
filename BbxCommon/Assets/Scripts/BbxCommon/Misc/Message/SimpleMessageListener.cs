@@ -7,9 +7,9 @@ namespace BbxCommon
     /// </summary>
     public class SimpleMessageListener<TMessageKey> : PooledObject, IMessageListener<TMessageKey>
     {
-        public UnityAction<MessageDataBase> Callback;
+        public UnityAction<MessageData> Callback;
 
-        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageDataBase messageData)
+        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageData messageData)
         {
             Callback?.Invoke(messageData);
         }

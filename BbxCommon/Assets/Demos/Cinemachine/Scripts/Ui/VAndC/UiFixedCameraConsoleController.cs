@@ -13,7 +13,7 @@ namespace Cin.Ui
         protected override void InitUiModelListeners()
         {
             AddUiModelVariableListener(EControllerLifeCycle.Open, EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().CurCamera, EUiModelVariableEvent.Dirty,
-                (MessageDataBase messageData) =>
+                (MessageData messageData) =>
                 {
                     var data = (UiModelVariableDirtyMessageData<Entity>)messageData;
                     ShowIfChooseCamera(data.CurValue);

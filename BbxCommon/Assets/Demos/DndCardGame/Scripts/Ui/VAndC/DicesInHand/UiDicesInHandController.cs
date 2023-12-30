@@ -33,7 +33,7 @@ namespace Dcg.Ui
             RefreshDices(combatDeckComp);
         }
 
-        private void RefreshDices(MessageDataBase messageData)
+        private void RefreshDices(MessageData messageData)
         {
             RefreshDices(messageData.GetData<CombatDeckRawComponent>());
         }

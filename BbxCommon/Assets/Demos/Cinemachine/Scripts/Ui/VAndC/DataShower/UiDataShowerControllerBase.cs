@@ -150,7 +150,7 @@ namespace Cin.Ui
             AddUiModelVariableListener(EControllerLifeCycle.Open, target, EUiModelVariableEvent.Dirty, OnListeningTargetDirty);
         }
 
-        private void OnListeningTargetDirty(MessageDataBase messageData)
+        private void OnListeningTargetDirty(MessageData messageData)
         {
             var value = ((UiModelVariableDirtyMessageData<float>)messageData).CurValue;
             AddPoint(new PointData(Time.realtimeSinceStartup, value));

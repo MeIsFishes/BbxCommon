@@ -5,6 +5,7 @@ using UnityEngine.UI;
 using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
+using UnityEngine.Networking;
 
 namespace Dcg.Ui
 {

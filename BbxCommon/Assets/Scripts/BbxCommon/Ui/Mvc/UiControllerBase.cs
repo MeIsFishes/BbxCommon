@@ -47,17 +47,17 @@ namespace BbxCommon.Ui
         {
             private UiControllerBase<TView> m_Ref;
             public ModelWpData(UiControllerBase<TView> obj) { m_Ref = obj; }
-            public ModelListener CreateVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener CreateVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.CreateUiModelVariableListener(enableDuring, listeningEvent, callback);
-            public ModelListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.CreateUiModelListener(enableDuring, listeningEvent, callback);
-            public ModelListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.CreateUiModelListener(enableDuring, listeningEvent.GetHashCode(), callback);
-            public ModelListener AddVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener AddVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.AddUiModelVariableListener(enableDuring, modelItem, listeningEvent, callback);
-            public ModelListener AddListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
+            public ModelListener AddListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent, callback);
-            public ModelListener AddListener<TEnum>(EControllerLifeCycle enableDuring, IUiModelItem modelItem, TEnum listeningEvent, UnityAction<MessageDataBase> callback) where TEnum : Enum
+            public ModelListener AddListener<TEnum>(EControllerLifeCycle enableDuring, IUiModelItem modelItem, TEnum listeningEvent, UnityAction<MessageData> callback) where TEnum : Enum
                 => m_Ref.AddUiModelListener(enableDuring, modelItem, listeningEvent.GetHashCode(), callback);
         }
         #endregion
@@ -268,7 +268,7 @@ namespace BbxCommon.Ui
             /// </summary>
             private SimpleMessageListener<int> m_Listener;
 
-            public ModelListener(IUiModelItem modelItem, int messageKey, UnityAction<MessageDataBase> callback)
+            public ModelListener(IUiModelItem modelItem, int messageKey, UnityAction<MessageData> callback)
             {
                 ModelItem = ((PooledObject)modelItem).AsObjRef();
                 MessageKey = messageKey;
@@ -305,21 +305,21 @@ namespace BbxCommon.Ui
             }
         }
 
-        protected ModelListener CreateUiModelVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener CreateUiModelVariableListener(EControllerLifeCycle enableDuring, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelListener(null, (int)listeningEvent, callback);
             StoreUiModelListener(enableDuring, info);
             return info;
         }
 
-        protected ModelListener CreateUiModelListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener CreateUiModelListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelListener(null, listeningEvent, callback);
             StoreUiModelListener(enableDuring, info);
             return info;
         }
 
-        protected ModelListener AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener AddUiModelVariableListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, EUiModelVariableEvent listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelListener(modelItem, (int)listeningEvent, callback);
             AddListenerIfConditionMeets(info, enableDuring);
@@ -327,7 +327,7 @@ namespace BbxCommon.Ui
             return info;
         }
 
-        protected ModelListener AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageDataBase> callback)
+        protected ModelListener AddUiModelListener(EControllerLifeCycle enableDuring, IUiModelItem modelItem, int listeningEvent, UnityAction<MessageData> callback)
         {
             var info = new ModelListener(modelItem, listeningEvent, callback);
             AddListenerIfConditionMeets(info, enableDuring);

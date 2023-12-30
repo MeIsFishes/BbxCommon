@@ -9,7 +9,7 @@ namespace BbxCommon.Ui
         Destroy,
     }
 
-    public class UiModelVariableDirtyMessageData<T> : MessageDataBase
+    public class UiModelVariableDirtyMessageData<T> : MessageData
     {
         public T CurValue;
     }

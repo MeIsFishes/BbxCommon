@@ -25,7 +25,7 @@ namespace Dcg.Ui
             OnDicesRefresh(rewardDiceComp);
         }
 
-        private void OnDicesRefresh(MessageDataBase messageData)
+        private void OnDicesRefresh(MessageData messageData)
         {
             var rewardDiceComp = messageData.GetData<RewardDicesSingletonRawComponent>();
             if (rewardDiceComp != null)

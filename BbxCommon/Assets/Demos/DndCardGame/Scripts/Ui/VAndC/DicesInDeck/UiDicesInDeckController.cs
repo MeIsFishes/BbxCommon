@@ -41,7 +41,7 @@ namespace Dcg.Ui
             UiApi.GetUiController<UiDiceDisplayController>().Display("抽牌堆", m_CombatDeckComp.Obj.DicesInDeck);
         }
 
-        private void OnDeckRefresh(MessageDataBase message)
+        private void OnDeckRefresh(MessageData message)
         {
             var combatDeckComp = message.GetData<CombatDeckRawComponent>();
             OnDeckRefresh(combatDeckComp);

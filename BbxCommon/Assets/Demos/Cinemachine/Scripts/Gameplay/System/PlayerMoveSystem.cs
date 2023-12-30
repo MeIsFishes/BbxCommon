@@ -11,7 +11,7 @@ namespace Cin
     {
         protected override void OnUpdate()
         {
-            // not baken
+            // hasn't been baken
             var mainCameraComp = EcsApi.GetSingletonRawComponent<MainCameraSingletonRawComponent>();
             if (mainCameraComp == null)
                 return;

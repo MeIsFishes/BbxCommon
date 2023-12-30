@@ -17,31 +17,31 @@ namespace BbxCommon
     public class MessageHandler<TMessageKey> : PooledObject, IMessageDispatcher<TMessageKey>, IMessageListener<TMessageKey>
     {
         #region Callback
-        private Dictionary<TMessageKey, UnityAction<MessageDataBase>> m_Callbacks = new();
+        private Dictionary<TMessageKey, UnityAction<MessageData>> m_Callbacks = new();
 
-        public void AddCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
+        public void AddCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
         {
             m_Callbacks[messageKey] += callback;
         }
 
-        public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageDataBase> callback)
+        public void RemoveCallback(TMessageKey messageKey, UnityAction<MessageData> callback)
         {
             m_Callbacks[messageKey] -= callback;
         }
 
         /// <summary>
-        /// You can easily store an object into <see href="messageKey"/>, but notice that it still be past through a <see cref="MessageDataBase"/>
-        /// instance, and the listener should get it with the function <see cref="MessageDataBase.Get{T}"/>.
+        /// You can easily store an object into <see href="messageKey"/>, but notice that it still be past through a <see cref="MessageData"/>
+        /// instance, and the listener should get it with the function <see cref="MessageData.Get{T}"/>.
         /// </summary>
         public void Dispatch(TMessageKey messageKey, object data)
         {
-            var messageData = ObjectPool<MessageDataBase>.Alloc();
+            var messageData = ObjectPool<MessageData>.Alloc();
             messageData.Data = data;
             Dispatch(messageKey, messageData);
             messageData.CollectToPool();
         }
 
-        public void Dispatch(TMessageKey messageKey, MessageDataBase messageData = null)
+        public void Dispatch(TMessageKey messageKey, MessageData messageData = null)
         {
             if (m_Callbacks.TryGetValue(messageKey, out var callback))
             {
@@ -56,7 +56,7 @@ namespace BbxCommon
             }
         }
 
-        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageDataBase messageData)
+        void IMessageListener<TMessageKey>.OnRespond(TMessageKey messageKey, MessageData messageData)
         {
             m_Callbacks[messageKey].Invoke(messageData);
             if (Listeners.TryGetValue(messageKey, out var set))
