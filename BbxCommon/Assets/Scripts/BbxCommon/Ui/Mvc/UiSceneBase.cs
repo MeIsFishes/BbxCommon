@@ -20,7 +20,6 @@ namespace BbxCommon.Ui
         #region Wrappers
         public UiControllerWpData UiControllerWrapper;
         public UiGroupWpData UiGroupWrapper;
-        public UiModelWpData UiModelWrapper;
 
         public struct UiControllerWpData
         {
@@ -39,22 +38,17 @@ namespace BbxCommon.Ui
             public UiGroupWpData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
 
             public Canvas CreateUiGroupRoot(TGroupKey uiGroup, string name = "") => m_Ref.CreateUiGroupRoot(uiGroup, name);
-            public void SetUiGroup(List<TGroupKey> groups) => m_Ref.SetUiGroup(groups);
-            public void SetUiGroup(params TGroupKey[] groups) => m_Ref.SetUiGroup(groups);
+            /// <summary>
+            /// Set specific groups active, and other groups inactive.
+            /// </summary>
+            public void SetUiGroupActive(List<TGroupKey> groups) => m_Ref.SetUiGroupActive(groups);
+            /// <summary>
+            /// Set specific groups active, and other groups inactive.
+            /// </summary>
+            public void SetUiGroupActive(params TGroupKey[] groups) => m_Ref.SetUiGroupActive(groups);
             public Canvas GetUiGroupCanvas(TGroupKey group) => m_Ref.GetUiGroupCanvas(group);
             public void SetUiToGroup(GameObject uiGameObject, TGroupKey group) => m_Ref.SetUiToGroup(uiGameObject, group);
             public void SetUiToGroup(UiControllerBase uiController, TGroupKey group) => m_Ref.SetUiToGroup(uiController.gameObject, group);
-        }
-
-        public struct UiModelWpData
-        {
-            private UiSceneBase<TGroupKey> m_Ref;
-
-            public UiModelWpData(UiSceneBase<TGroupKey> uiScene) { m_Ref = uiScene; }
-
-            public void AddUiModel<T>(T model) where T : UiModelBase => m_Ref.AddUiModel(model);
-            public void TryGetUiModel<T>(out T model) where T : UiModelBase => m_Ref.TryGetUiModel(out model);
-            public T TryGetUiModel<T>() where T : UiModelBase => m_Ref.TryGetUiModel<T>();
         }
         #endregion
 
@@ -63,7 +57,6 @@ namespace BbxCommon.Ui
         {
             UiControllerWrapper = new UiControllerWpData(this);
             UiGroupWrapper = new UiGroupWpData(this);
-            UiModelWrapper = new UiModelWpData(this);
 
             CanvasProto = canvasProto;
             OnSceneInit();
@@ -123,7 +116,7 @@ namespace BbxCommon.Ui
             return rootCanvas;
         }
 
-        public void SetUiGroup(List<TGroupKey> groups)
+        public void SetUiGroupActive(List<TGroupKey> groups)
         {
             foreach (var pair in m_UiGroups)
             {
@@ -135,11 +128,11 @@ namespace BbxCommon.Ui
             }
         }
 
-        public void SetUiGroup(params TGroupKey[] groups)
+        public void SetUiGroupActive(params TGroupKey[] groups)
         {
             var list = SimplePool<List<TGroupKey>>.Alloc();
             list.AddArray(groups);
-            SetUiGroup(list);
+            SetUiGroupActive(list);
             list.CollectToPool();
         }
 
@@ -155,31 +148,6 @@ namespace BbxCommon.Ui
             uiGameObject.gameObject.SetActive(false);
             uiGameObject.transform.SetParent(uiGroupRoot);
             uiGameObject.gameObject.SetActive(originalActive);
-        }
-        #endregion
-
-        #region UiModel
-        protected Dictionary<Type, UiModelBase> m_UiModels = new Dictionary<Type, UiModelBase>();
-
-        public void AddUiModel<T>(T model) where T : UiModelBase
-        {
-            m_UiModels.Add(typeof(T), model);
-        }
-
-        public void TryGetUiModel<T>(out T model) where T : UiModelBase
-        {
-            var t = typeof(T);
-            if (m_UiModels.ContainsKey(t))
-
-                model = (T)m_UiModels[t];
-            else
-                model = null;
-        }
-
-        public T TryGetUiModel<T>() where T : UiModelBase
-        {
-            TryGetUiModel(out T res);
-            return res;
         }
         #endregion
     }

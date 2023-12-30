@@ -190,8 +190,8 @@ MonoBehaviour:
       m_Calls: []
   m_text: "\u542F\u7528\u8DDF\u968F\u76F8\u673A"
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: 81e19669b5cb32d4592272171e445ad0, type: 2}
-  m_sharedMaterial: {fileID: 4584938258990731419, guid: 81e19669b5cb32d4592272171e445ad0, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
+  m_sharedMaterial: {fileID: 6906481135215602584, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -317,4 +317,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
+  UiInits: []
+  UiOpens: []
+  UiShows: []
+  UiUpdates: []
+  UiHides: []
+  UiCloses: []
+  UiDestroys: []
   Button: {fileID: 8597493709906153428}
