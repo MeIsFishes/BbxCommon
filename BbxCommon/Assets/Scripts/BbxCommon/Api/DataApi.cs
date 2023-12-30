@@ -94,6 +94,14 @@ namespace BbxCommon
         {
             return DataManager<T>.GetEnumerator();
         }
+
+        /// <summary>
+        /// Force data to store with the specific strategy.
+        /// </summary>
+        public static void SetKeyDistribution<T>(EDataDistribution distribution) where T : new()
+        {
+            DataManager<T>.SetDistribution(distribution);
+        }
     }
 
     /// <summary>
@@ -144,7 +152,8 @@ namespace BbxCommon
                         m_DataList[key] = data;
                     else
                     {
-                        m_DataList.ModifyCount(key);
+                        if (key + 1 >= m_DataList.Count)
+                            m_DataList.ModifyCount(key + 1);
                         m_DataList[key] = data;
                     }
                     break;
