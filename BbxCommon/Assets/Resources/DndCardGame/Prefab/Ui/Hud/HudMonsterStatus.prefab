@@ -67,13 +67,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits: []
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys: []
+  BbxUiItems: []
   AutoUpdatePos: 1
   HudOffset: {x: 0, y: 2, z: 0}
   HpFill: {fileID: 1737894930723084642}

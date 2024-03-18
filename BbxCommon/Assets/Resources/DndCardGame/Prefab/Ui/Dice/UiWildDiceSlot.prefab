@@ -60,14 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
-  - {fileID: 1870107059958084583}
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys:
+  BbxUiItems:
   - {fileID: 1870107059958084583}
   DiceScale: 1
   DiceRoot: {fileID: 1592944272852590307}

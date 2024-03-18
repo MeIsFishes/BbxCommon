@@ -112,13 +112,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits: []
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys: []
+  BbxUiItems: []
   EventListener: {fileID: 5199388607593057817}
   NumberText: {fileID: 4832820079162246407}
 --- !u!1 &4230534425288762252

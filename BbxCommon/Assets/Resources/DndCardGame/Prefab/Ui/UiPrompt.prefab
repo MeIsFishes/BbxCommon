@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 2723325536304974546}
   - component: {fileID: 2845296638401778632}
   - component: {fileID: 8613245977274486413}
-  - component: {fileID: 7413278490437455196}
+  - component: {fileID: 8992923011671177298}
   m_Layer: 5
   m_Name: UiPrompt
   m_TagString: Untagged
@@ -67,34 +67,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
+  BbxUiItems:
   - {fileID: 6605064264092861232}
   - {fileID: 5849741440561029465}
-  UiOpens:
-  - {fileID: 7413278490437455196}
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
-  UiShows:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
-  UiUpdates:
-  - {fileID: 7413278490437455196}
+  - {fileID: 8992923011671177298}
   - {fileID: 766255277583642320}
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
-  UiHides:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
-  UiCloses:
-  - {fileID: 7413278490437455196}
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
-  UiDestroys:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5849741440561029465}
   TweenGroup: {fileID: 766255277583642320}
   Text: {fileID: 5335956966537029578}
---- !u!114 &7413278490437455196
+--- !u!114 &8992923011671177298
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -107,7 +87,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PosWrapper:
-    m_Ref: {fileID: 7413278490437455196}
+    m_Ref: {fileID: 8992923011671177298}
   DontRemove: 0
 --- !u!1 &3373221520673495835
 GameObject:
@@ -573,7 +553,7 @@ MonoBehaviour:
   AutoSearch: 1
   TransformRootOverride: {fileID: 2723325536304974546}
   TweenTargets:
-  - {fileID: 7413278490437455196}
+  - {fileID: 8992923011671177298}
   m_MinTime: 0
   m_MaxTime: 1
   MinValue: {x: 0, y: -15, z: 0}

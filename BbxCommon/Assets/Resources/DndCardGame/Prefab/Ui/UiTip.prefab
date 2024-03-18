@@ -188,28 +188,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
+  BbxUiItems:
   - {fileID: 7470335374781118468}
   - {fileID: 9213891715556109576}
-  UiOpens:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
-  UiShows:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
-  UiUpdates:
   - {fileID: 4410180852821027031}
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
-  UiHides:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
-  UiCloses:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
-  UiDestroys:
-  - {fileID: 7470335374781118468}
-  - {fileID: 9213891715556109576}
   Title: {fileID: 5335956966537029578}
   Description: {fileID: 5622861013973276352}
   FinishButton: {fileID: 785375695501004287}

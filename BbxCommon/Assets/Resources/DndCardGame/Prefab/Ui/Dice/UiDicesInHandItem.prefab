@@ -59,10 +59,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits: []
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys: []
+  BbxUiItems: []

@@ -70,7 +70,7 @@ namespace BbxCommon.Ui
                 return;
             foreach (var data in asset.UiObjectDatas)
             {
-                // if this is the first time of opening
+                // if this is the first time to open
                 if (data.PrefabGameObject == null)
                 {
                     data.PrefabGameObject = Resources.Load<GameObject>(data.PrefabPath);

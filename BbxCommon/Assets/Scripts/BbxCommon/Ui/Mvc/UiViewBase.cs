@@ -14,19 +14,15 @@ namespace BbxCommon.Ui
 
         [NonSerialized]
         public UiControllerBase UiController;
+
         [SerializeField]
+        internal List<Component> BbxUiItems = new();
         internal List<Component> UiInits = new();
-        [SerializeField]
         internal List<Component> UiOpens = new();
-        [SerializeField]
         internal List<Component> UiShows = new();
-        [SerializeField]
         internal List<Component> UiUpdates = new();
-        [SerializeField]
         internal List<Component> UiHides = new();
-        [SerializeField]
         internal List<Component> UiCloses = new();
-        [SerializeField]
         internal List<Component> UiDestroys = new();
 
 #if UNITY_EDITOR
@@ -64,52 +60,52 @@ namespace BbxCommon.Ui
             }
 
             var uiInits = GetComponentsInChildren<IUiInit>();
-            UiInits.Clear();
             foreach (var item in uiInits)
             {
-                UiInits.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiOpens = GetComponentsInChildren<IUiOpen>();
-            UiOpens.Clear();
             foreach (var item in uiOpens)
             {
-                UiOpens.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiShows = GetComponentsInChildren<IUiShow>();
-            UiShows.Clear();
             foreach (var item in uiShows)
             {
-                UiShows.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiUpdates = GetComponentsInChildren<IUiUpdate>();
-            UiUpdates.Clear();
             foreach (var item in uiUpdates)
             {
-                UiUpdates.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiHides = GetComponentsInChildren<IUiHide>();
-            UiHides.Clear();
             foreach (var item in uiHides)
             {
-                UiHides.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiCloses = GetComponentsInChildren<IUiClose>();
-            UiCloses.Clear();
             foreach (var item in uiCloses)
             {
-                UiCloses.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
 
             var uiDestroys = GetComponentsInChildren<IUiDestroy>();
-            UiDestroys.Clear();
             foreach (var item in uiDestroys)
             {
-                UiDestroys.Add((Component)item);
+                if (BbxUiItems.Contains((Component)item) == false)
+                    BbxUiItems.Add((Component)item);
             }
         }
 
@@ -119,6 +115,30 @@ namespace BbxCommon.Ui
             UiApi.ExportPreLoadUiController(this);
         }
 #endif
+
+        /// <summary>
+        /// Cache all components by their calling timing.
+        /// </summary>
+        internal void InitBbxUiItem()
+        {
+            foreach (var item in BbxUiItems)
+            {
+                if (item is IUiInit)
+                    UiInits.Add(item);
+                if (item is IUiOpen)
+                    UiOpens.Add(item);
+                if (item is IUiShow)
+                    UiShows.Add(item);
+                if (item is IUiUpdate)
+                    UiUpdates.Add(item);
+                if (item is IUiHide)
+                    UiHides.Add(item);
+                if (item is IUiClose)
+                    UiCloses.Add(item);
+                if (item is IUiDestroy)
+                    UiDestroys.Add(item);
+            }
+        }
 
         public abstract Type GetControllerType();
         #endregion

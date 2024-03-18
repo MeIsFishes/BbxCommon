@@ -359,13 +359,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits: []
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys: []
+  BbxUiItems: []
   Name: {fileID: 1109905231031828809}
   MaxHp: {fileID: 595987200631303095}
   Strength: {fileID: 2320754330452694819}

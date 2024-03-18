@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 7537345267828701629}
   - component: {fileID: 7220269692404147734}
   - component: {fileID: 1153564080249549915}
-  - component: {fileID: 1654272333361216175}
+  - component: {fileID: 7509136225136601156}
   m_Layer: 5
   m_Name: UiDice
   m_TagString: Untagged
@@ -139,21 +139,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
+  BbxUiItems:
   - {fileID: 3682755452414818849}
   - {fileID: 2358620174404244115}
-  UiOpens:
-  - {fileID: 1654272333361216175}
-  UiShows: []
-  UiUpdates:
-  - {fileID: 1654272333361216175}
-  - {fileID: 3682755452414818849}
-  UiHides: []
-  UiCloses:
-  - {fileID: 1654272333361216175}
-  UiDestroys:
-  - {fileID: 3682755452414818849}
-  - {fileID: 2358620174404244115}
+  - {fileID: 7509136225136601156}
   DiceTittle: {fileID: 8976375316928351554}
   UiEventListener: {fileID: 1153564080249549915}
   UiDragable: {fileID: 3682755452414818849}
@@ -172,7 +161,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9ecf60e366a2681429ea8dde277a537d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1654272333361216175
+--- !u!114 &7509136225136601156
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -185,7 +174,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PosWrapper:
-    m_Ref: {fileID: 1654272333361216175}
+    m_Ref: {fileID: 7509136225136601156}
   DontRemove: 0
 --- !u!1 &2362882392947419803
 GameObject:
@@ -251,7 +240,7 @@ MonoBehaviour:
   EventListener: {fileID: 1153564080249549915}
   EventBeginDrag: 0
   EventEndDrag: 1
-  m_TransformSetter: {fileID: 1654272333361216175}
+  m_TransformSetter: {fileID: 7509136225136601156}
 --- !u!114 &2358620174404244115
 MonoBehaviour:
   m_ObjectHideFlags: 0

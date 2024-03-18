@@ -66,34 +66,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
+  BbxUiItems:
   - {fileID: 6605064264092861232}
   - {fileID: 5113420737226431298}
-  UiOpens:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
-  - {fileID: 9111773107012999486}
-  - {fileID: 89793797630061780}
-  UiShows:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
-  UiUpdates:
+  - {fileID: 7582638904233414528}
+  - {fileID: 2834875778162183840}
   - {fileID: 766255277583642320}
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
-  - {fileID: 9111773107012999486}
-  - {fileID: 89793797630061780}
-  UiHides:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
-  UiCloses:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
-  - {fileID: 9111773107012999486}
-  - {fileID: 89793797630061780}
-  UiDestroys:
-  - {fileID: 6605064264092861232}
-  - {fileID: 5113420737226431298}
   TweenGroup: {fileID: 766255277583642320}
 --- !u!1 &2115685684011996177
 GameObject:
@@ -190,7 +168,7 @@ MonoBehaviour:
   AutoSearch: 1
   TransformRootOverride: {fileID: 5072024809838250722}
   TweenTargets:
-  - {fileID: 89793797630061780}
+  - {fileID: 2834875778162183840}
   m_MinTime: 0
   m_MaxTime: 1
   MinValue: {x: -1920, y: 0, z: 0}
@@ -357,7 +335,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8342436717111788134}
-  - component: {fileID: 9111773107012999486}
+  - component: {fileID: 7582638904233414528}
   m_Layer: 5
   m_Name: Frame
   m_TagString: Untagged
@@ -388,7 +366,7 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &9111773107012999486
+--- !u!114 &7582638904233414528
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -401,7 +379,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PosWrapper:
-    m_Ref: {fileID: 9111773107012999486}
+    m_Ref: {fileID: 7582638904233414528}
   DontRemove: 0
 --- !u!1 &6404616730426576409
 GameObject:
@@ -470,7 +448,7 @@ GameObject:
   - component: {fileID: 5072024809838250722}
   - component: {fileID: 2377672797416857409}
   - component: {fileID: 5335956966537029578}
-  - component: {fileID: 89793797630061780}
+  - component: {fileID: 2834875778162183840}
   m_Layer: 5
   m_Name: Text (TMP)
   m_TagString: Untagged
@@ -595,7 +573,7 @@ MonoBehaviour:
   m_hasFontAssetChanged: 0
   m_baseMaterial: {fileID: 0}
   m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
---- !u!114 &89793797630061780
+--- !u!114 &2834875778162183840
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -608,7 +586,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   PosWrapper:
-    m_Ref: {fileID: 89793797630061780}
+    m_Ref: {fileID: 2834875778162183840}
   DontRemove: 0
 --- !u!1 &7338686295235862057
 GameObject:
@@ -781,7 +759,7 @@ MonoBehaviour:
   AutoSearch: 1
   TransformRootOverride: {fileID: 8342436717111788134}
   TweenTargets:
-  - {fileID: 9111773107012999486}
+  - {fileID: 7582638904233414528}
   m_MinTime: 0
   m_MaxTime: 1
   MinValue: {x: -1920, y: 0, z: 0}

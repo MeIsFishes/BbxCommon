@@ -60,13 +60,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits: []
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses: []
-  UiDestroys: []
+  BbxUiItems: []
   Button: {fileID: 4548057105126970691}
   Title: {fileID: 8505698063707514041}
 --- !u!1 &3183834402911237086

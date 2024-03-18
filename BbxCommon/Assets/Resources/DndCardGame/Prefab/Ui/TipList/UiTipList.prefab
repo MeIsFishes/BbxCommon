@@ -51,19 +51,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
-  - {fileID: 4419953065054020138}
-  UiOpens:
-  - {fileID: 4419953065054020138}
-  UiShows:
-  - {fileID: 4419953065054020138}
-  UiUpdates:
-  - {fileID: 4419953065054020138}
-  UiHides:
-  - {fileID: 4419953065054020138}
-  UiCloses:
-  - {fileID: 4419953065054020138}
-  UiDestroys:
+  BbxUiItems:
   - {fileID: 4419953065054020138}
   UiList: {fileID: 4419953065054020138}
 --- !u!1 &5334914559760536115

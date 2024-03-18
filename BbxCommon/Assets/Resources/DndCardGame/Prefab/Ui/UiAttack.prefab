@@ -855,15 +855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  UiInits:
-  - {fileID: 5598470363711208242}
-  UiOpens: []
-  UiShows: []
-  UiUpdates: []
-  UiHides: []
-  UiCloses:
-  - {fileID: 5598470363711208242}
-  UiDestroys:
+  BbxUiItems:
   - {fileID: 5598470363711208242}
   AttackButton: {fileID: 2662966575150368258}
   WeaponOptions: {fileID: 5598470363711208242}

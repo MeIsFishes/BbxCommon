@@ -115,6 +115,7 @@ namespace BbxCommon.Ui
 
                 InitUiModelListeners();
 
+                m_View.InitBbxUiItem();
                 foreach (var uiItem in m_View.UiInits)
                 {
                     if (uiItem is IUiInit uiInit)
