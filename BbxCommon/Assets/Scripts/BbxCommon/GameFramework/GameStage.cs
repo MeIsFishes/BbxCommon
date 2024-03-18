@@ -310,6 +310,8 @@ namespace BbxCommon
         private void OnLoadStageData()
         {
             var soAssets = Resources.Load<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
+            if (soAssets == null)
+                return;
             for (int i = 0; i < m_LoadDataGroups.Count; i++)
             {
                 var group = m_LoadDataGroups[i];

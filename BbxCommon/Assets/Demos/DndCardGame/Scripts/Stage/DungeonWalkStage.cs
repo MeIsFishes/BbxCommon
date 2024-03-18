@@ -1,6 +1,8 @@
 using UnityEngine;
 using BbxCommon;
 using BbxCommon.Ui;
+using System.Runtime.CompilerServices;
+using System;
 
 namespace Dcg
 {
@@ -14,7 +16,7 @@ namespace Dcg
 
             stage.AddUpdateSystem<WalkToSystem>();
             stage.AddUpdateSystem<EnterRoomSystem>();
-
+            
             return stage;
         }
     }

@@ -100,6 +100,11 @@ namespace BbxCommon
             obj = ObjectPool<T>.Alloc();
         }
 
+        public static void Alloc<T>(out ObjRef<T> objRef) where T : PooledObject, new()
+        {
+            objRef = new ObjRef<T>(ObjectPool<T>.Alloc());
+        }
+
         /// <summary>
         /// Check the given reference, allocate and return a pooled object if it is null.
         /// Example: obj = AllocIfNull(obj);

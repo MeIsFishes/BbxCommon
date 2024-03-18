@@ -61,7 +61,7 @@ namespace BbxCommon
         public override void OnCollect()
         {
             HasExited = false;
-            m_TaskTimelineBelongs.Release();
+            m_TaskTimelineBelongs.ReleaseRef();
         }
     }
 }

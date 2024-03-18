@@ -73,7 +73,7 @@ namespace BbxCommon
             return m_Obj == null || m_Obj.UniqueId != m_InstanceId;
         }
 
-        public void Release()
+        public void ReleaseRef()
         {
             m_Obj = null;
         }
