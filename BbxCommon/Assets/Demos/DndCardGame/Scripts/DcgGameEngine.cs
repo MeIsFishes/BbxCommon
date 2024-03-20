@@ -40,6 +40,7 @@ namespace Dcg
         {
             StageWrapper.UnloadStage(m_DungeonWalkStage);
             StageWrapper.LoadStage(m_CombatStage);
+            ClearAllTips();
         }
 
         public void CombatWin()
@@ -63,6 +64,13 @@ namespace Dcg
             StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);
             UiApi.GetUiController<UiGameFailedController>().Show();
+            ClearAllTips();
+        }
+
+        public void ClearAllTips()
+        {
+            UiApi.GetUiController<UiTipController>().ClearTips();
+            UiApi.GetUiController<UiPromptController>().Hide();
         }
     }
 }

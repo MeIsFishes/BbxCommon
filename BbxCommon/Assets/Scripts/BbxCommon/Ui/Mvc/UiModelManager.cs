@@ -17,7 +17,7 @@ namespace BbxCommon.Ui
         internal static T GetUiModel<T>() where T : UiModelBase
         {
             var typeId = ClassTypeId<UiModelBase, T>.Id;
-            if (m_UiModels.Count <= typeId + 1)
+            if (m_UiModels.Count <= typeId)
                 return null;
             return (T)m_UiModels[typeId];
         }
@@ -25,7 +25,7 @@ namespace BbxCommon.Ui
         internal static void RemoveUiModel<T>() where T : UiModelBase
         {
             var typeId = ClassTypeId<UiModelBase, T>.Id;
-            if (m_UiModels.Count <= typeId + 1)
+            if (m_UiModels.Count <= typeId)
                 return;
             m_UiModels[typeId].CollectToPool();
             m_UiModels[typeId] = null;

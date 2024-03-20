@@ -114,9 +114,16 @@ namespace BbxCommon.Ui
             UiModelManager.AddUiModel<T>();
         }
 
-        public static T GetUiModel<T>() where T : UiModelBase
+        public static T GetUiModel<T>() where T : UiModelBase, new()
         {
-            return UiModelManager.GetUiModel<T>();
+            //return UiModelManager.GetUiModel<T>();
+            T model = UiModelManager.GetUiModel<T>();
+            if (model == null)
+            {
+                UiModelManager.AddUiModel<T>();
+                model = UiModelManager.GetUiModel<T>();
+            }
+            return model;
         }
 
         public static void RemoveUiModel<T>() where T : UiModelBase
