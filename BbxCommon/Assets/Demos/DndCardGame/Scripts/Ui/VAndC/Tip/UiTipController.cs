@@ -22,6 +22,7 @@ namespace Dcg.Ui
         }
 
         private Queue<TipInfo> m_TipInfos = new();
+        private ModelListener m_TipsVisibleListener;
 
         public void ShowTip(string title, string description)
         {
@@ -32,6 +33,9 @@ namespace Dcg.Ui
         {
             m_View.FinishButton.onClick.AddListener(OnFinishButton);
             m_View.TweenGroup.Wrapper.OnPlayReverseFinishes += () => { Hide(); };
+            m_TipsVisibleListener = ModelWrapper.CreateVariableListener(EControllerLifeCycle.Open, EUiModelVariableEvent.Dirty, OnVisibleChange);
+            var modelUserOption = UiApi.GetUiModel<UiModelUserOption>();
+            m_TipsVisibleListener.RebindModelItem(modelUserOption.TipsNeedShowVariable);
         }
 
         protected override void OnUiShow()
@@ -58,6 +62,23 @@ namespace Dcg.Ui
         private void OnFinishButton()
         {
             m_View.TweenGroup.Wrapper.PlayReverse();
+        }
+        
+        private void OnVisibleChange(MessageData messageData)
+        {
+            if (messageData is UiModelVariableDirtyMessageData<bool> data)
+            {
+                if (!data.CurValue)
+                {
+                    ClearTips();
+                }
+            }
+        }
+
+        public void ClearTips()
+        {
+            m_TipInfos.Clear();
+            Hide();
         }
     }
 }

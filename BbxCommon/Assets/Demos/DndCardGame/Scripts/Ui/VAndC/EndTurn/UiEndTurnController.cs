@@ -25,6 +25,7 @@ namespace Dcg.Ui
         private void OnClick()
         {
             m_Entity.GetRawComponent<CombatTurnRawComponent>().RequestEnd = true;
+            DcgGameEngine.Instance.ClearAllTips();
         }
     }
 }

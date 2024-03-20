@@ -48,7 +48,18 @@ namespace Dcg
                 }
                 var diceGroupString = sb.ToString();
                 sb.Clear();
-                UiApi.GetUiController<UiTipController>().ShowTip("攻击掷骰结果", diceGroupString);
+
+                bool needShowTips = true;
+                var gameSetting = UiApi.GetUiModel<UiModelUserOption>();
+                if (gameSetting != null)
+                {
+                    needShowTips = gameSetting.TipsNeedShow;
+                }
+
+                if (needShowTips)
+                {
+                    UiApi.GetUiController<UiTipController>().ShowTip("攻击掷骰结果", diceGroupString);
+                }
 
                 if (hit)
                 {
@@ -65,7 +76,10 @@ namespace Dcg
                     GenerateDiceGroupString(sb, damageGroup, damageResult);
                     var damageGroupString = sb.ToString();
                     sb.Clear();
-                    UiApi.GetUiController<UiTipController>().ShowTip("伤害结果", damageGroupString);
+                    if (needShowTips)
+                    {
+                        UiApi.GetUiController<UiTipController>().ShowTip("伤害结果", damageGroupString);
+                    }
                     damageGroup.CollectToPool();
 
                     var attackableComp = attacker.GetRawComponent<AttackableRawComponent>();
