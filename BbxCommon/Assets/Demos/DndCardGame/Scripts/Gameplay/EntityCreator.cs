@@ -59,6 +59,42 @@ namespace Dcg
 
             return entity;
         }
+        public static Entity CreateCombatEntity()
+        {
+            var entity = EcsApi.CreateEntity();
+            // 创建初始卡组
+            var combatDeckComp = entity.AddRawComponent<CombatDeckRawComponent>();
+            combatDeckComp.DicesInDeck.Clear();
+            // 初始化属性
+            var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
+            attributesComp.MaxHp = 28;
+            attributesComp.CurHp = 28;
+            attributesComp.ArmorClass.Add(EDiceType.D8);
+            attributesComp.ArmorClassVariable.SetDirty();
+            attributesComp.Strength = 3;
+            attributesComp.Dexterity = 3;
+            attributesComp.Constitution = 3;
+            attributesComp.Intelligence = 3;
+            attributesComp.Wisdom = 3;
+
+            // 添加其他component
+            entity.AddRawComponent<WalkToRawComponent>();
+            entity.AddRawComponent<AttackableRawComponent>();
+            entity.AddRawComponent<CastSkillRawComponent>();
+
+            // 关联到GameObject
+            var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
+            var gameObject = Object.Instantiate(prefab);
+            entity.BindGameObject(gameObject);
+            //绑定回合
+            entity.AddRawComponent<CombatTurnRawComponent>();
+            // 创建aspect
+            entity.CreateRawAspect<WalkToRawAspect>();
+            //UI
+            entity.BindHud<HudCharacterStatusController>();
+
+            return entity;
+        }
 
         public static Entity CreateMonsterEntity(MonsterData monsterData, Vector3 position, Quaternion rotation)
         {
