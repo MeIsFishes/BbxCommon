@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5f0e18b2d261e954b91f2bc9c06f1a8b, type: 3}
+  m_Name: UIGameStart
+  m_EditorClassIdentifier: 
+  UiObjectDatas:
+  - PrefabPath: DndCardGame/Prefab/Ui/UIGameStart
+    UiGroup: 0
+    DefaultShow: 1
+    Position: {x: 0, y: 0, z: 0}
+    Scale: {x: 1, y: 1, z: 1}
+    Pivot: {x: 0.5, y: 0.5}

@@ -38,3 +38,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.UiTipListItemController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/TipList/UiTipListItem
+    - Key: Dcg.Ui.GameStartController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/UIGameStart
