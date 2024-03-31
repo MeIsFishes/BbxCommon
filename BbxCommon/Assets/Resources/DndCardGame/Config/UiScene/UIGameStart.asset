@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UIGameStart
   m_EditorClassIdentifier: 
   UiObjectDatas:
-  - PrefabPath: DndCardGame/Prefab/Ui/UIGameStart
+  - PrefabPath: DndCardGame/Prefab/Ui/UiGameStart
     UiGroup: 0
     DefaultShow: 1
     Position: {x: 0, y: 0, z: 0}

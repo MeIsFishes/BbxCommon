@@ -132,7 +132,7 @@ GameObject:
   - component: {fileID: 8692752083458829186}
   - component: {fileID: 4798181688321424573}
   m_Layer: 5
-  m_Name: UIGameStart
+  m_Name: UiGameStart
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

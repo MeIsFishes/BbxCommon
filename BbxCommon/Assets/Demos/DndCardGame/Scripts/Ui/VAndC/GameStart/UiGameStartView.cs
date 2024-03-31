@@ -7,14 +7,14 @@ using UnityEngine.UI;
 
 namespace Dcg.Ui
 {
-    public class GameStartView : UiViewBase
+    public class UiGameStartView : UiViewBase
     {
         public Image BackGround;
         public RectTransform Rect;
         public Button Button;
         public override Type GetControllerType()
         {
-            return typeof(GameStartController);
+            return typeof(UiGameStartController);
         }
     }
 }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace Dcg.Ui
 {
-    public class GameStartController: UiControllerBase<GameStartView>
+    public class UiGameStartController: UiControllerBase<UiGameStartView>
     {
         protected override void OnUiInit()
         {
