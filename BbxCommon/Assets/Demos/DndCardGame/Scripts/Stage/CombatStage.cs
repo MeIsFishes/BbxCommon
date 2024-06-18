@@ -3,6 +3,7 @@ using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
 using Dcg.Ui;
+using System.Collections.Generic;
 
 namespace Dcg
 {
@@ -39,15 +40,9 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                // var charcterDeckComp = playerComp.Characters[0].GetRawComponent<CharacterDeckRawComponent>();
-                // var combatDeckComp = playerComp.Characters[0].AddRawComponent<CombatDeckRawComponent>();
-                // playerComp.Characters[0].AddRawComponent<CombatTurnRawComponent>();
-                // combatDeckComp.DicesInDeck.Clear();
-                // combatDeckComp.DicesInDeck.AddList(charcterDeckComp.Dices);
-                // combatDeckComp.DicesInDeck.Shuffle();
-                // playerComp.Characters[0].BindHud<HudCharacterStatusController>();
                 combatEntity=EntityCreator.CreateCombatEntity();
                 ConvertCharacterToCombatEntity(playerComp.Characters[0],combatEntity);
+                playerComp.DestroyCharacterEntities();
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 combatInfoComp.Character = combatEntity;
             }
@@ -55,21 +50,25 @@ namespace Dcg
             void IStageLoad.Unload(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                // var characterEntity = playerComp.Characters[0];
-                // characterEntity.RemoveRawComponent<CombatDeckRawComponent>();
-                // characterEntity.RemoveRawComponent<CombatTurnRawComponent>();
-                // characterEntity.UnbindHud<HudCharacterStatusController>();
-                
-                ConvertCombatEntityToCharacter(combatEntity,playerComp.Characters[0]);
+                var character = EntityCreator.CreateCharacterEntity();
+                ConvertCombatEntityToCharacter(combatEntity, character);
+                playerComp.AddCharacter(character);
                 DestroyCombatEntity(combatEntity);
             }
 
             void ConvertCharacterToCombatEntity(Entity character,Entity combatEntity)
             {
+                var charObj=character.GetGameObject();
+                var comBatObj= combatEntity.GetGameObject();
+                comBatObj.transform.localPosition = charObj.transform.localPosition;
                 // 创建初始卡组
                 var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
                 var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
-                combatDeckComp.DicesInDeck=characterDeckComp.Dices;
+                combatDeckComp.DicesInDeck = new List<Dice>();
+                foreach (var dice in characterDeckComp.Dices)
+                {
+                    combatDeckComp.DicesInDeck.Add(Dice.Create(dice.DiceType));
+                }
                 combatDeckComp.DicesInDeck.Shuffle();
                 // 初始化属性
                 var characterAttributesComp = character.GetRawComponent<AttributesRawComponent>();
@@ -77,7 +76,21 @@ namespace Dcg
             }
             void ConvertCombatEntityToCharacter(Entity combatEntity,Entity character)
             {
-                
+                var charObj = character.GetGameObject();
+                var comBatObj = combatEntity.GetGameObject();
+                charObj.transform.localPosition = comBatObj.transform.localPosition;
+                // 创建初始卡组
+                var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
+                var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
+                characterDeckComp.Dices = new List<Dice>();
+                foreach (var dice in combatDeckComp.DicesInDeck)
+                {
+                    characterDeckComp.Dices.Add(Dice.Create(dice.DiceType));
+                }
+                characterDeckComp.Dices.Shuffle();
+                // 初始化属性
+                var characterAttributesComp = character.GetRawComponent<AttributesRawComponent>();
+                var combatAttributesComp = combatEntity.GetRawComponent<AttributesRawComponent>();
             }
 
             void DestroyCombatEntity(Entity combatEntity)
