@@ -38,24 +38,28 @@ namespace BbxCommon
         /// Destroy <see cref="Entity"/> and remove its <see cref="EcsData"/>s.
         /// For how to remove <see cref="EcsData"/>s, see <see cref="EcsDataList{T}.RemoveDeletedDatas"/>.
         /// </summary>
-        internal static void DestroyEntity(Entity entity)
+        internal static void DestroyEntity(string entityID)
         {
-            var group = GetAndRefreshGroup(entity);
-            for (int i = 0; i < group.RawComponents.Count; i++)
+            if (EcsEntityManager.GetEntityByID(entityID, out var entity))
             {
-                if (group.RawComponents[i] != null)
+                var group = GetAndRefreshGroup(entity);
+                for (int i = 0; i < group.RawComponents.Count; i++)
                 {
-                    group.RemoveRawComponent(i, out var comp);
-                    comp.CollectToPool();
+                    if (group.RawComponents[i] != null)
+                    {
+                        group.RemoveRawComponent(i, out var comp);
+                        comp.CollectToPool();
+                    }
                 }
+                for (int i = group.RawAspects.Count - 1; i >= 0; i--)
+                {
+                    group.RemoveRawAspect(i, out var aspect);
+                    aspect.CollectToPool();
+                }
+                group.CollectToPool();
+                m_EcsDataGroups[entity.Index] = null;
             }
-            for (int i = group.RawAspects.Count - 1; i >= 0; i--)
-            {
-                group.RemoveRawAspect(i, out var aspect);
-                aspect.CollectToPool();
-            }
-            group.CollectToPool();
-            m_EcsDataGroups[entity.Index] = null;
+            
         }
 
         /// <summary>

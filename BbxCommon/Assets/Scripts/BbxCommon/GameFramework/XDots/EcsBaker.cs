@@ -12,7 +12,8 @@ namespace BbxCommon
 
         private void Awake()
         {
-            Entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out Entity);
+            //Entity = EcsApi.CreateEntity();
             InternalBake();
         }
 

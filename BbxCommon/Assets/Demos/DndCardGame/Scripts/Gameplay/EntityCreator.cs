@@ -10,7 +10,7 @@ namespace Dcg
     {
         public static Entity CreatePlayerEntity()
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueID,out var entity);
 
             entity.AddRawComponent<LocalPlayerSingletonRawComponent>();
 
@@ -19,7 +19,7 @@ namespace Dcg
 
         public static Entity CreateCharacterEntity()
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out var entity);
 
             // 创建初始卡组
             var playerDeckComp = entity.AddRawComponent<CharacterDeckRawComponent>();
@@ -61,7 +61,7 @@ namespace Dcg
         }
         public static Entity CreateCombatEntity()
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out var entity);
             // 创建初始卡组
             var combatDeckComp = entity.AddRawComponent<CombatDeckRawComponent>();
             combatDeckComp.DicesInDeck.Clear();
@@ -98,7 +98,7 @@ namespace Dcg
 
         public static Entity CreateMonsterEntity(MonsterData monsterData, Vector3 position, Quaternion rotation)
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out var entity);
 
             // 初始化属性
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
@@ -139,7 +139,7 @@ namespace Dcg
 
         public static Entity CreateMainCameraEntity()
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out var entity);
 
             var cameraData = DataApi.GetData<CameraData>();
 
@@ -153,7 +153,7 @@ namespace Dcg
 
         public static Entity CreateRoomEntity(Vector3 position)
         {
-            var entity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out var entity);
 
             var roomData = DataApi.GetData<RoomData>();
 

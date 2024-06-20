@@ -142,7 +142,8 @@ namespace BbxCommon
         {
             m_EcsWorld = World.DefaultGameObjectInjectionWorld;
             m_EcsWorld.CreateSystem<UpdateSystemGroup>();
-            m_SingletonEntity = EcsApi.CreateEntity();
+            EcsApi.CreateEntity(out var uniqueId, out m_SingletonEntity);
+            //m_SingletonEntity = EcsApi.CreateEntity();
             EcsDataManager.SetSingletonRawComponentEntity(m_SingletonEntity);
             InitSingletonComponents();
         }

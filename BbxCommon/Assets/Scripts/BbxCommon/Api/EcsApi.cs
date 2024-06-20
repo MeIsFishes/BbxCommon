@@ -1,28 +1,44 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon.Ui;
+using Debug = UnityEngine.Debug;
 
 namespace BbxCommon
 {
     public static class EcsApi
     {
         #region Common
-        public static Entity CreateEntity()
+        public static void CreateEntity(out string uniqueId, out Entity entity)
         {
-            var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
-            ecsDataGroup.Init(entity);
-            EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
-            return entity;
+            
+            uniqueId = EcsEntityManager.CreateEntity(out entity, GetStackMethodName(1));
+            //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
+            //return entity;
+            // var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
+            // var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
+            // ecsDataGroup.Init(entity);
+            // EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
+            // return entity;
+            
         }
 
-        public static void DestroyEntity(Entity entity)
+        public static string GetStackMethodName(int depth)
         {
-            entity.ClearHud();
-            entity.GetGameObject().Destroy();
-            EcsDataManager.DestroyEntity(entity);
-            World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
+            depth++;
+            var stack = new StackTrace(true);
+            var method = stack.GetFrame(depth).GetMethod();
+            return method.Name;
+        }
+
+        public static void DestroyEntity(string entityID)
+        {
+            EcsEntityManager.DestroyEntity(entityID);
+            // entity.ClearHud();
+            // entity.GetGameObject().Destroy();
+            // EcsDataManager.DestroyEntity(entity);
+            // World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
 
         public static void BindEntityWithGameObject(Entity entity, GameObject gameObject)
@@ -155,9 +171,15 @@ namespace BbxCommon
             return goComp.GameObject;
         }
 
+        public static string GetUniqueID(this Entity entity)
+        {
+            var entityIDComp = entity.GetRawComponent<EntityIDComponent>();
+            return entityIDComp.EntityUniqueID;
+        }
+
         public static void Destroy(this Entity entity)
         {
-            DestroyEntity(entity);
+            DestroyEntity(entity.GetUniqueID());
         }
         #endregion
 
