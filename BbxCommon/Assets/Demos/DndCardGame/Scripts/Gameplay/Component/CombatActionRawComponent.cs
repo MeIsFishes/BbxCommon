@@ -36,8 +36,8 @@ namespace Dcg
 
         public override void OnCollect()
         {
-            ActionVariable.DispatchInvalid();
-            BonusActionVariable.DispatchInvalid();
+            ActionVariable.MakeInvalid();
+            BonusActionVariable.MakeInvalid();
         }
     }
 }

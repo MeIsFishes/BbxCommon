@@ -102,14 +102,14 @@ namespace Dcg
 
         public override void OnCollect()
         {
-            MaxHpVariable.DispatchInvalid();
-            CurHpVariable.DispatchInvalid();
-            ArmorClassVariable.DispatchInvalid();
-            StrengthVariable.DispatchInvalid();
-            DexterityVariable.DispatchInvalid();
-            ConstitutionVariable.DispatchInvalid();
-            IntelligenceVariable.DispatchInvalid();
-            WisdomVariable.DispatchInvalid();
+            MaxHpVariable.MakeInvalid();
+            CurHpVariable.MakeInvalid();
+            ArmorClassVariable.MakeInvalid();
+            StrengthVariable.MakeInvalid();
+            DexterityVariable.MakeInvalid();
+            ConstitutionVariable.MakeInvalid();
+            IntelligenceVariable.MakeInvalid();
+            WisdomVariable.MakeInvalid();
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();

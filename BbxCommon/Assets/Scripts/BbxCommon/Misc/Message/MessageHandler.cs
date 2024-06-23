@@ -86,6 +86,15 @@ namespace BbxCommon
         {
             Listeners[messageKey].Remove(listener);
         }
+
+        public void RemoveAllListeners()
+        {
+            foreach (var pair in Listeners)
+            {
+                if (pair.Value != null)
+                    pair.Value.Clear();
+            }
+        }
         #endregion
 
         #region Collect to Pool

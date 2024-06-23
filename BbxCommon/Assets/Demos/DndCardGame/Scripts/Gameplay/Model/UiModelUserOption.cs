@@ -28,6 +28,6 @@ public class UiModelUserOption : UiModelBase
 
     public override void OnCollect()
     {
-        TipsNeedShowVariable.DispatchInvalid();
+        TipsNeedShowVariable.MakeInvalid();
     }
 }

@@ -67,10 +67,12 @@ namespace BbxCommon
         /// <summary>
         /// You should manually call this function to announce listeners that this <see cref="ListenableVariable{T}"/> is invalid,
         /// for the <see cref="ListenableVariable{T}"/> may not collect or destruct itself when its owner is collected.
+        /// As this function calls, all listeners will be removed.
         /// </summary>
-        public void DispatchInvalid()
+        public void MakeInvalid()
         {
             m_MessageHandler.Dispatch((int)EListenableVariableEvent.Invalid, null);
+            m_MessageHandler.RemoveAllListeners();
         }
     }
 }
