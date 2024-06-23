@@ -38,7 +38,7 @@ namespace BbxCommon
         /// Destroy <see cref="Entity"/> and remove its <see cref="EcsData"/>s.
         /// For how to remove <see cref="EcsData"/>s, see <see cref="EcsDataList{T}.RemoveDeletedDatas"/>.
         /// </summary>
-        internal static void DestroyEntity(string entityID)
+        internal static void DestroyEntity(EntityID entityID)
         {
             if (EcsEntityManager.GetEntityByID(entityID, out var entity))
             {
