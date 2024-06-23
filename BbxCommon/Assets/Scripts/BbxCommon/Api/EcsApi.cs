@@ -10,10 +10,10 @@ namespace BbxCommon
     public static class EcsApi
     {
         #region Common
-        public static void CreateEntity(out string uniqueId, out Entity entity)
+        public static void CreateEntity(out EntityID uniqueId, out Entity entity)
         {
             
-            uniqueId = EcsEntityManager.CreateEntity(out entity, GetStackMethodName(1));
+            uniqueId = EcsEntityManager.CreateEntity(out entity);
             //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
             //return entity;
             // var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
@@ -24,17 +24,9 @@ namespace BbxCommon
             
         }
 
-        public static string GetStackMethodName(int depth)
+        public static void DestroyEntity(Entity entity)
         {
-            depth++;
-            var stack = new StackTrace(true);
-            var method = stack.GetFrame(depth).GetMethod();
-            return method.Name;
-        }
-
-        public static void DestroyEntity(string entityID)
-        {
-            EcsEntityManager.DestroyEntity(entityID);
+            EcsEntityManager.DestroyEntity(entity);
             // entity.ClearHud();
             // entity.GetGameObject().Destroy();
             // EcsDataManager.DestroyEntity(entity);
@@ -171,15 +163,20 @@ namespace BbxCommon
             return goComp.GameObject;
         }
 
-        public static string GetUniqueID(this Entity entity)
+        public static EntityID GetUniqueID(this Entity entity)
         {
             var entityIDComp = entity.GetRawComponent<EntityIDComponent>();
-            return entityIDComp.EntityUniqueID;
+            if (entityIDComp != null)
+            {
+                return entityIDComp.EntityUniqueID;
+            }
+            
+            return EntityID.INVALID;
         }
 
         public static void Destroy(this Entity entity)
         {
-            DestroyEntity(entity.GetUniqueID());
+            DestroyEntity(entity);
         }
         #endregion
 
