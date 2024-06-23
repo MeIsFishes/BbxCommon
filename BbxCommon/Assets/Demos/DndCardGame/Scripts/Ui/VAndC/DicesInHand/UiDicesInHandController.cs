@@ -7,7 +7,7 @@ namespace Dcg.Ui
 {
     public class UiDicesInHandController : UiControllerBase<UiDicesInHandView>
     {
-        private ModelListener m_DicesInHandRefreshListener;
+        private ListenableItemListener m_DicesInHandRefreshListener;
 
         protected override void OnUiInit()
         {
@@ -29,7 +29,7 @@ namespace Dcg.Ui
         public void Bind(Entity characterEntity)
         {
             var combatDeckComp = characterEntity.GetRawComponent<CombatDeckRawComponent>();
-            m_DicesInHandRefreshListener.RebindModelItem(combatDeckComp);
+            m_DicesInHandRefreshListener.RebindTarget(combatDeckComp);
             RefreshDices(combatDeckComp);
         }
 

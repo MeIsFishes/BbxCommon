@@ -18,7 +18,7 @@ namespace BbxCommon
         internal static string CreateEntity(out Entity entity, string methodName)
         {
             entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            var uniqueId =  methodName +  m_IdGenerator.GenerateId();
+            var uniqueId = methodName + m_IdGenerator.GenerateId();
             var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
             ecsDataGroup.Init(entity);
             EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);

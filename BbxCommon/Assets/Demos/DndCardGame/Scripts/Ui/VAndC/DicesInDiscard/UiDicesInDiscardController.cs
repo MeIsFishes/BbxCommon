@@ -12,7 +12,7 @@ namespace Dcg.Ui
     public class UiDicesInDiscardController : UiControllerBase<UiDicesInDiscardView>
     {
         private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
-        private ModelListener m_DicesInDiscardRefreshListener;
+        private ListenableItemListener m_DicesInDiscardRefreshListener;
 
         protected override void OnUiInit()
         {
@@ -26,7 +26,7 @@ namespace Dcg.Ui
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
             var character = combatInfoComp.Character;
             m_CombatDeckComp = character.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
-            m_DicesInDiscardRefreshListener.RebindModelItem(m_CombatDeckComp.Obj);
+            m_DicesInDiscardRefreshListener.RebindTarget(m_CombatDeckComp.Obj);
             OnDiscardRefresh(m_CombatDeckComp.Obj);
         }
 

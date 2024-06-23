@@ -10,7 +10,7 @@ namespace Dcg.Ui
 {
     public class UiRewardDiceListController : UiControllerBase<UiRewardDiceListView>
     {
-        private ModelListener m_ModelListener;
+        private ListenableItemListener m_ModelListener;
 
         protected override void OnUiInit()
         {
@@ -21,7 +21,7 @@ namespace Dcg.Ui
         protected override void OnUiOpen()
         {
             var rewardDiceComp = EcsApi.GetSingletonRawComponent<RewardDicesSingletonRawComponent>();
-            m_ModelListener.RebindModelItem(rewardDiceComp);
+            m_ModelListener.RebindTarget(rewardDiceComp);
             OnDicesRefresh(rewardDiceComp);
         }
 

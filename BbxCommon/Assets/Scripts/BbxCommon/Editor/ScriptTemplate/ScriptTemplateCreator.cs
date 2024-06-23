@@ -55,6 +55,15 @@ namespace BbxCommon.Editor
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/EcsMixSystemTemplate.txt");
         }
 
+        [MenuItem("Assets/Create/BbxCommon/Script/StageListener", false)]
+        public static void CreateStageListener()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TestListener.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/StageListenerTemplate.txt");
+        }
+
         [MenuItem("Assets/Create/BbxCommon/Script/Ui/UiModel", false)]
         public static void CreateUiModel()
         {

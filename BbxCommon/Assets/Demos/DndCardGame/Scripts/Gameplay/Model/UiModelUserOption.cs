@@ -7,7 +7,7 @@ using BbxCommon.Ui;
 
 public class UiModelUserOption : UiModelBase
 {
-    public UiModelVariable<bool> TipsNeedShowVariable = new();
+    public ListenableVariable<bool> TipsNeedShowVariable = new();
     public bool TipsNeedShow
     {
         get
@@ -25,5 +25,9 @@ public class UiModelUserOption : UiModelBase
     {
         TipsNeedShow = PlayerPrefs.GetInt("NeedShowTips", 0) == 1;
     }
-    
+
+    public override void OnCollect()
+    {
+        TipsNeedShowVariable.DispatchInvalid();
+    }
 }

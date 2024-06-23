@@ -145,14 +145,14 @@ namespace Cin.Ui
         #endregion
 
         #region Register Listener
-        public void RegisterDataShowerListener(IUiModelItem target)
+        public void RegisterDataShowerListener(IListenable target)
         {
-            AddUiModelVariableListener(EControllerLifeCycle.Open, target, EUiModelVariableEvent.Dirty, OnListeningTargetDirty);
+            AddVariableListener(EControllerLifeCycle.Open, target, EListenableVariableEvent.Dirty, OnListeningTargetDirty);
         }
 
         private void OnListeningTargetDirty(MessageData messageData)
         {
-            var value = ((UiModelVariableDirtyMessageData<float>)messageData).CurValue;
+            var value = ((ListenableVariableDirtyMessageData<float>)messageData).CurValue;
             AddPoint(new PointData(Time.realtimeSinceStartup, value));
             m_AddedPoint = true;
         }

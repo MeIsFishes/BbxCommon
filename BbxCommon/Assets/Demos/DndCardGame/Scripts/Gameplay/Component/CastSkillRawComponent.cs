@@ -11,7 +11,7 @@ namespace Dcg
     /// <summary>
     /// 用来存放玩家在战斗阶段输入的地方，如使用哪个技能、选择了哪些自由骰
     /// </summary>
-    public class CastSkillRawComponent : EcsRawComponent, IUiModelItem
+    public class CastSkillRawComponent : EcsRawComponent, IListenable
     {
         public enum EUiEvent
         {
@@ -46,7 +46,7 @@ namespace Dcg
         }
 
         private MessageHandler<int> m_MessageHandler = new();
-        IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;
+        IMessageDispatcher<int> IListenable.MessageDispatcher => m_MessageHandler;
 
         public void DispatchEvent(EUiEvent e)
         {

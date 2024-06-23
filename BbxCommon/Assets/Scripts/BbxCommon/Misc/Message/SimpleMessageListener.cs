@@ -3,7 +3,7 @@ using UnityEngine.Events;
 namespace BbxCommon
 {
     /// <summary>
-    /// A listener for listening maybe just one message.
+    /// A listener for listening just one event.
     /// </summary>
     public class SimpleMessageListener<TMessageKey> : PooledObject, IMessageListener<TMessageKey>
     {

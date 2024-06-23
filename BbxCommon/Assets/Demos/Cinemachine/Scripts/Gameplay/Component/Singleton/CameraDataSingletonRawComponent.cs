@@ -10,7 +10,7 @@ namespace Cin
 {
     public class CameraDataSingletonRawComponent : EcsSingletonRawComponent
     {
-        public UiModelVariable<Entity> CurCamera = new();
+        public ListenableVariable<Entity> CurCamera = new();
         public List<Entity> CamerasInScene = new();
 
         public void SetActiveCamera(Entity camera)

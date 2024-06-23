@@ -4,7 +4,7 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
-    public class CharacterDeckRawComponent : EcsRawComponent, IUiModelItem
+    public class CharacterDeckRawComponent : EcsRawComponent, IListenable
     {
         public enum EUiEvent
         {
@@ -14,7 +14,7 @@ namespace Dcg
         public List<Dice> Dices = new();
 
         private MessageHandler<int> m_MessageHandler = new();
-        IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;
+        IMessageDispatcher<int> IListenable.MessageDispatcher => m_MessageHandler;
 
         public void DispatchEvent(EUiEvent uiEvent)
         {

@@ -9,12 +9,12 @@ namespace Cin
 {
     public class MainCameraSingletonRawComponent : EcsSingletonRawComponent
     {
-        public UiModelVariable<float> PosX = new();
-        public UiModelVariable<float> PosY = new();
-        public UiModelVariable<float> PosZ = new();
-        public UiModelVariable<float> RotX = new();
-        public UiModelVariable<float> RotY = new();
-        public UiModelVariable<float> RotZ = new();
-        public UiModelVariable<float> RotW = new();
+        public ListenableVariable<float> PosX = new();
+        public ListenableVariable<float> PosY = new();
+        public ListenableVariable<float> PosZ = new();
+        public ListenableVariable<float> RotX = new();
+        public ListenableVariable<float> RotY = new();
+        public ListenableVariable<float> RotZ = new();
+        public ListenableVariable<float> RotW = new();
     }
 }

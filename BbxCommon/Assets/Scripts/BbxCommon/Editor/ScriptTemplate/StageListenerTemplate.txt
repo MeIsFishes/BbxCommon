@@ -1,0 +1,25 @@
+using System.Collections.Generic;
+using UnityEngine;
+using Unity.Entities;
+using BbxCommon;
+
+public class #SCRIPT_NAME# : StageListenerBase
+{
+    protected override void InitListener()
+    {
+        /*
+        AddListener(listenTarget, listenEvent, (MessageData messageData) =>
+        {
+            
+        });
+        AddVariableDirtyListener(listenTarget, (T value) =>
+        {
+	
+        });
+        AddVariableInvalidListener(listenTarget, () =>
+        {
+            
+        });
+        */
+    }
+}

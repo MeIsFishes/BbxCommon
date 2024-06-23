@@ -26,8 +26,9 @@ namespace Dcg
             stage.AddUpdateSystem<CombatMonsterTurnSystem>();
             stage.AddUpdateSystem<CombatBeginTurnSystem>();
             stage.AddUpdateSystem<CombatEndTurnSystem>();
-            stage.AddUpdateSystem<CombatWinSystem>();
-            stage.AddUpdateSystem<CombatDefeatedSystem>();
+
+            stage.AddStageListener<CombatWinListener>();
+            stage.AddStageListener<CombatDefeatedListener>();
 
             return stage;
         }
@@ -35,12 +36,10 @@ namespace Dcg
         private class CombatStageInitPlayerData : IStageLoad
         {
             private Entity combatEntity;
-            // 目前这种临时加上component的做法暂时是可以的，不过考虑了一下未来可能出现召唤物等情况，
-            // 所以最好的做法应该是把战斗中的entity和地图中的entity分为两个entity写在EntityCreator里面
             void IStageLoad.Load(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                combatEntity=EntityCreator.CreateCombatEntity();
+                combatEntity = EntityCreator.CreateCombatEntity();
                 ConvertCharacterToCombatEntity(playerComp.Characters[0],combatEntity);
                 playerComp.DestroyCharacterEntities();
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
@@ -64,16 +63,14 @@ namespace Dcg
                 // 创建初始卡组
                 var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
                 var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
-                combatDeckComp.DicesInDeck = new List<Dice>();
+                combatDeckComp.DicesInDeck.Clear();
                 foreach (var dice in characterDeckComp.Dices)
                 {
                     combatDeckComp.DicesInDeck.Add(Dice.Create(dice.DiceType));
                 }
                 combatDeckComp.DicesInDeck.Shuffle();
-                // 初始化属性
-                var characterAttributesComp = character.GetRawComponent<AttributesRawComponent>();
-                var combatAttributesComp = combatEntity.GetRawComponent<AttributesRawComponent>();
             }
+
             void ConvertCombatEntityToCharacter(Entity combatEntity,Entity character)
             {
                 var charObj = character.GetGameObject();
@@ -82,15 +79,12 @@ namespace Dcg
                 // 创建初始卡组
                 var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
                 var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
-                characterDeckComp.Dices = new List<Dice>();
+                characterDeckComp.Dices.Clear();
                 foreach (var dice in combatDeckComp.DicesInDeck)
                 {
                     characterDeckComp.Dices.Add(Dice.Create(dice.DiceType));
                 }
                 characterDeckComp.Dices.Shuffle();
-                // 初始化属性
-                var characterAttributesComp = character.GetRawComponent<AttributesRawComponent>();
-                var combatAttributesComp = combatEntity.GetRawComponent<AttributesRawComponent>();
             }
 
             void DestroyCombatEntity(Entity combatEntity)
@@ -99,10 +93,9 @@ namespace Dcg
                 {
                     var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
                     combatDeckComp.DicesInDeck = null;
-                    combatEntity.Destroy();
                     combatEntity.UnbindHud<HudCharacterStatusController>();
+                    combatEntity.Destroy();
                 }
-               
             }
         }
 

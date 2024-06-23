@@ -44,14 +44,14 @@ namespace Dcg
         public int Intelligence { get { return IntelligenceVariable.Value; } set { IntelligenceVariable.SetValue(value); } }
         public int Wisdom { get { return WisdomVariable.Value; } set { WisdomVariable.SetValue(value); } }
 
-        public UiModelVariable<int> MaxHpVariable = new();
-        public UiModelVariable<int> CurHpVariable = new();
-        public UiModelVariable<List<EDiceType>> ArmorClassVariable = new();
-        public UiModelVariable<int> StrengthVariable = new();
-        public UiModelVariable<int> DexterityVariable = new();
-        public UiModelVariable<int> ConstitutionVariable = new();
-        public UiModelVariable<int> IntelligenceVariable = new();
-        public UiModelVariable<int> WisdomVariable = new();
+        public ListenableVariable<int> MaxHpVariable = new();
+        public ListenableVariable<int> CurHpVariable = new();
+        public ListenableVariable<List<EDiceType>> ArmorClassVariable = new(new());
+        public ListenableVariable<int> StrengthVariable = new();
+        public ListenableVariable<int> DexterityVariable = new();
+        public ListenableVariable<int> ConstitutionVariable = new();
+        public ListenableVariable<int> IntelligenceVariable = new();
+        public ListenableVariable<int> WisdomVariable = new();
 
         public void GetModifierDiceList(EAbility attribute, List<Dice> res)
         {
@@ -100,19 +100,20 @@ namespace Dcg
             }
         }
 
-        public override void OnAllocate()
-        {
-            ArmorClassVariable = ObjectPool<UiModelVariable<List<EDiceType>>>.Alloc();
-            ArmorClassVariable.SetValue(SimplePool<List<EDiceType>>.Alloc());
-        }
-
         public override void OnCollect()
         {
+            MaxHpVariable.DispatchInvalid();
+            CurHpVariable.DispatchInvalid();
+            ArmorClassVariable.DispatchInvalid();
+            StrengthVariable.DispatchInvalid();
+            DexterityVariable.DispatchInvalid();
+            ConstitutionVariable.DispatchInvalid();
+            IntelligenceVariable.DispatchInvalid();
+            WisdomVariable.DispatchInvalid();
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();
             ArmorClassVariable.SetDirty();
-            ArmorClassVariable.CollectToPool();
             Strength = 0;
             Dexterity = 0;
             Constitution = 0;

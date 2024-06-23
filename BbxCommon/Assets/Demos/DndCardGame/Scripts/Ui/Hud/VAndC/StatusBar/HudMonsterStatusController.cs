@@ -10,37 +10,31 @@ namespace Dcg.Ui
 {
     public class HudMonsterStatusController : HudControllerBase<HudMonsterStatusView>
     {
-        private ModelListener m_MaxHpListener;
-        private ModelListener m_CurHpListener;
+        private ListenableItemListener m_MaxHpListener;
+        private ListenableItemListener m_CurHpListener;
 
         protected override void OnHudInit()
         {
-            m_MaxHpListener = ModelWrapper.CreateVariableListener(EControllerLifeCycle.Open, EUiModelVariableEvent.Dirty, OnMaxHpDirty);
-            m_CurHpListener = ModelWrapper.CreateVariableListener(EControllerLifeCycle.Open, EUiModelVariableEvent.Dirty, OnCurHpDirty);
+            m_MaxHpListener = ModelWrapper.CreateVariableDirtyListener<int>(EControllerLifeCycle.Open, OnMaxHpDirty);
+            m_CurHpListener = ModelWrapper.CreateVariableDirtyListener<int>(EControllerLifeCycle.Open, OnCurHpDirty);
         }
 
         protected override void OnHudBind(Entity entity)
         {
             var attributesComp = entity.GetRawComponent<AttributesRawComponent>();
             RefreshHpInfo(attributesComp.MaxHp, attributesComp.CurHp);
-            m_MaxHpListener.RebindModelItem(attributesComp.MaxHpVariable);
-            m_CurHpListener.RebindModelItem(attributesComp.CurHpVariable);
+            m_MaxHpListener.RebindTarget(attributesComp.MaxHpVariable);
+            m_CurHpListener.RebindTarget(attributesComp.CurHpVariable);
         }
 
-        private void OnMaxHpDirty(MessageData messageData)
+        private void OnMaxHpDirty(int value)
         {
-            if (messageData is UiModelVariableDirtyMessageData<int> data)
-            {
-                RefreshHpInfo(data.CurValue, Entity.GetRawComponent<AttributesRawComponent>().CurHp);
-            }
+            RefreshHpInfo(value, Entity.GetRawComponent<AttributesRawComponent>().CurHp);
         }
 
-        private void OnCurHpDirty(MessageData messageData)
+        private void OnCurHpDirty(int value)
         {
-            if (messageData is UiModelVariableDirtyMessageData<int> data)
-            {
-                RefreshHpInfo(Entity.GetRawComponent<AttributesRawComponent>().MaxHp, data.CurValue);
-            }
+            RefreshHpInfo(Entity.GetRawComponent<AttributesRawComponent>().MaxHp, value);
         }
 
         private void RefreshHpInfo(int maxHp, int curHp)

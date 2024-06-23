@@ -10,7 +10,7 @@ namespace Dcg
     /// <summary>
     /// 存储奖励页面的骰子
     /// </summary>
-    public class RewardDicesSingletonRawComponent : EcsSingletonRawComponent, IUiModelItem
+    public class RewardDicesSingletonRawComponent : EcsSingletonRawComponent, IListenable
     {
         public enum EUiEvent
         {
@@ -21,7 +21,7 @@ namespace Dcg
         public bool Chosen;
 
         private MessageHandler<int> m_MessageHandler = new();
-        IMessageDispatcher<int> IUiModelItem.MessageDispatcher => m_MessageHandler;
+        IMessageDispatcher<int> IListenable.MessageDispatcher => m_MessageHandler;
 
         public void DispatchEvent(EUiEvent uiEvent)
         {

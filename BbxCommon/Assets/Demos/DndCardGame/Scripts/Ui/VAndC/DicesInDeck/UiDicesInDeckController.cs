@@ -11,7 +11,7 @@ namespace Dcg.Ui
     public class UiDicesInDeckController : UiControllerBase<UiDicesInDeckView>
     {
         private ObjRef<CombatDeckRawComponent> m_CombatDeckComp;
-        ModelListener m_DicesInDeckRefreshListener;
+        ListenableItemListener m_DicesInDeckRefreshListener;
 
         protected override void OnUiInit()
         {
@@ -25,7 +25,7 @@ namespace Dcg.Ui
             var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
             var character = combatInfoComp.Character;
             m_CombatDeckComp = character.GetRawComponent<CombatDeckRawComponent>().AsObjRef();
-            m_DicesInDeckRefreshListener.RebindModelItem(m_CombatDeckComp.Obj);
+            m_DicesInDeckRefreshListener.RebindTarget(m_CombatDeckComp.Obj);
             OnDeckRefresh(m_CombatDeckComp.Obj);
         }
 

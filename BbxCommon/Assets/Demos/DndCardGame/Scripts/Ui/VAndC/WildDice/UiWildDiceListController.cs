@@ -26,7 +26,7 @@ namespace Dcg.Ui
 
         private Entity Entity;
         private ObjRef<CastSkillRawComponent> m_CastSkillComp;
-        private ModelListener m_WildDicesRefreshListener;
+        private ListenableItemListener m_WildDicesRefreshListener;
 
         protected override void OnUiInit()
         {
@@ -46,7 +46,7 @@ namespace Dcg.Ui
         {
             Entity = entity;
             m_CastSkillComp = entity.GetRawComponent<CastSkillRawComponent>().AsObjRef();
-            m_WildDicesRefreshListener.RebindModelItem(m_CastSkillComp.Obj);
+            m_WildDicesRefreshListener.RebindTarget(m_CastSkillComp.Obj);
             RefreshWildList(m_CastSkillComp.Obj);
         }
 

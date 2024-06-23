@@ -58,6 +58,7 @@ namespace BbxCommon
             OnLoadStageUiScene();
             OnLoadStageData();
             OnLoadStageTick();
+            OnLoadStageListener();
             OnLoadStageLateLoad();
             m_Loaded = true;
             PostLoadStage?.Invoke();
@@ -70,6 +71,7 @@ namespace BbxCommon
 
             PreUnloadStage?.Invoke();
             OnUnloadStageLateLoad();
+            OnUnloadStageListener();
             OnUnloadStageTick();
             OnUnloadStageData();
             OnUnloadStageUiScene();
@@ -294,6 +296,32 @@ namespace BbxCommon
             {
                 var systemGroup = m_EcsWorld.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
                 systemGroup.RemoveSystemFromUpdateList(system);
+            }
+        }
+        #endregion
+
+        #region StageListener
+        private List<StageListenerBase> m_StageListeners = new();
+
+        public void AddStageListener<T>() where T : StageListenerBase, new()
+        {
+            var listener = new T();
+            m_StageListeners.Add(listener);
+        }
+
+        private void OnLoadStageListener()
+        {
+            foreach (var listener in m_StageListeners)
+            {
+                listener.OnLoad();
+            }
+        }
+
+        private void OnUnloadStageListener()
+        {
+            foreach (var listener in m_StageListeners)
+            {
+                listener.OnUnload();
             }
         }
         #endregion

@@ -10,12 +10,12 @@ namespace Cin.Ui
 {
     public class UiFixedCameraConsoleController : UiControllerBase<UiFixedCameraConsoleView>
     {
-        protected override void InitUiModelListeners()
+        protected override void InitListeners()
         {
-            AddUiModelVariableListener(EControllerLifeCycle.Open, EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().CurCamera, EUiModelVariableEvent.Dirty,
+            AddVariableListener(EControllerLifeCycle.Open, EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().CurCamera, EListenableVariableEvent.Dirty,
                 (MessageData messageData) =>
                 {
-                    var data = (UiModelVariableDirtyMessageData<Entity>)messageData;
+                    var data = (ListenableVariableDirtyMessageData<Entity>)messageData;
                     ShowIfChooseCamera(data.CurValue);
                 });
         }

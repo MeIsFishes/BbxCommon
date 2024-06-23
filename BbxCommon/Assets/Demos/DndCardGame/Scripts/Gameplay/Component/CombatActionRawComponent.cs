@@ -28,10 +28,16 @@ namespace Dcg
         /// <summary>
         /// 剩余标准动作数量
         /// </summary>
-        public UiModelVariable<int> ActionVariable;
+        public ListenableVariable<int> ActionVariable;
         /// <summary>
         /// 剩余附赠动作数量
         /// </summary>
-        public UiModelVariable<int> BonusActionVariable;
+        public ListenableVariable<int> BonusActionVariable;
+
+        public override void OnCollect()
+        {
+            ActionVariable.DispatchInvalid();
+            BonusActionVariable.DispatchInvalid();
+        }
     }
 }
