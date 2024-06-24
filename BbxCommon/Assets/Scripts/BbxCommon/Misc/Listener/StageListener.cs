@@ -9,7 +9,7 @@ namespace BbxCommon
     {
         private List<ListenableItemListener> m_Listeners = new();
 
-        public void OnLoad()
+        internal void OnLoad()
         {
             InitListener();
             for (int i = 0; i < m_Listeners.Count; i++)
@@ -18,7 +18,7 @@ namespace BbxCommon
             }
         }
 
-        public void OnUnload()
+        internal void OnUnload()
         {
             for (int i = 0; i < m_Listeners.Count; i++)
             {

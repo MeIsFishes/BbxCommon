@@ -15,7 +15,6 @@ namespace Dcg
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonWalkScene"));
 
             stage.AddUpdateSystem<WalkToSystem>();
-            stage.AddUpdateSystem<EnterRoomSystem>();
             
             return stage;
         }
