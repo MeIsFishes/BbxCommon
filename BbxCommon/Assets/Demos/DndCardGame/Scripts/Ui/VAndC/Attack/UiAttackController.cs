@@ -13,13 +13,16 @@ namespace Dcg.Ui
         #region Operation
         public class OperationSelectSkill : FreeOperationBase
         {
-            public Entity Entity;
+            public EntityID EntityID;
             public string Skill;
 
             protected override void OnEnter()
             {
-                var castSkillComp = Entity.GetRawComponent<CastSkillRawComponent>();
-                castSkillComp.ChosenSkill = Skill;
+                if (EcsApi.GetEntityByID(EntityID, out var entity))
+                {
+                    var castSkillComp = entity.GetRawComponent<CastSkillRawComponent>();
+                    castSkillComp.ChosenSkill = Skill;
+                }
             }
         }
         #endregion
@@ -43,7 +46,7 @@ namespace Dcg.Ui
         {
             m_View.Description.text = "掷出1个自由骰+1d4的攻击骰\n造成1个自由骰+1d4的伤害";
             var operation = ObjectPool<OperationSelectSkill>.Alloc();
-            operation.Entity = m_Entity;
+            operation.EntityID = m_Entity.GetUniqueID();
             operation.Skill = "Sword";
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
         }
@@ -52,7 +55,7 @@ namespace Dcg.Ui
         {
             m_View.Description.text = "掷出2个自由骰的攻击骰\n造成2d4的伤害";
             var operation = ObjectPool<OperationSelectSkill>.Alloc();
-            operation.Entity = m_Entity;
+            operation.EntityID = m_Entity.GetUniqueID();
             operation.Skill = "Dagger";
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
         }

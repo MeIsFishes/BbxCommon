@@ -10,10 +10,9 @@ namespace BbxCommon
     public static class EcsApi
     {
         #region Common
-        public static void CreateEntity(out EntityID uniqueId, out Entity entity)
+        public static Entity CreateEntity(ulong entityID = 0xFFFFFFFFFFFFFFFF)
         {
-            
-            uniqueId = EcsEntityManager.CreateEntity(out entity);
+            return EcsEntityManager.CreateEntity(entityID);
             //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
             //return entity;
             // var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
@@ -23,7 +22,7 @@ namespace BbxCommon
             // return entity;
             
         }
-
+        
         public static void DestroyEntity(Entity entity)
         {
             EcsEntityManager.DestroyEntity(entity);
@@ -32,6 +31,17 @@ namespace BbxCommon
             // EcsDataManager.DestroyEntity(entity);
             // World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
+        
+        public static bool GetEntityByID(EntityID uniqueId, out Entity entity)
+        {
+            return EcsEntityManager.GetEntityByID(uniqueId, out entity);
+        }
+        
+        public static void DestroyEntity(EntityID entityID)
+        {
+            EcsEntityManager.DestroyEntity(entityID);
+        }
+
 
         public static void BindEntityWithGameObject(Entity entity, GameObject gameObject)
         {

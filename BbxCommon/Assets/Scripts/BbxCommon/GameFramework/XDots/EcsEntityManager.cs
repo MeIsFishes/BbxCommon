@@ -12,21 +12,32 @@ namespace BbxCommon
 {
     internal static class EcsEntityManager
     {
-        private static UniqueIdGenerator m_IdGenerator = new UniqueIdGenerator();
+        //本地的entityID从0xFFFFFFFF处开始，主机传过来的entityID从1开始
+        private static UniqueIdGenerator m_IdGenerator = new UniqueIdGenerator(0xFFFFFFFF);
         private static Dictionary<EntityID, Entity> m_DictionaryEntitys = new Dictionary<EntityID, Entity>();
         
-        internal static EntityID CreateEntity(out Entity entity)
+        internal static Entity CreateEntity(EntityID entityID)
         {
+            if (m_DictionaryEntitys.TryGetValue(entityID, out var entity))
+            {
+                Debug.LogError("entityID conflict!!!");
+                return Entity.Null;
+            }
+            
             entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            var uniqueId =  m_IdGenerator.GenerateId();
+            if (entityID == EntityID.INVALID)
+            {
+                entityID = m_IdGenerator.GenerateId();
+            }
+            
             var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
             ecsDataGroup.Init(entity);
             EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
-            m_DictionaryEntitys[uniqueId] = entity;
+            m_DictionaryEntitys[entityID] = entity;
             
             var entityIDComp = entity.AddRawComponent<EntityIDComponent>();
-            entityIDComp.EntityUniqueID = uniqueId;
-            return uniqueId;
+            entityIDComp.EntityUniqueID = entityID;
+            return entity;
         }
 
         internal static bool GetEntityByID(EntityID uniqueId, out Entity entity)

@@ -14,20 +14,24 @@ namespace Dcg.Ui
         #region Operation
         public class OperationChooseRewardDice : FreeOperationBase
         {
-            public Entity Entity;
+            public EntityID EntityID;
             public int IndexOfReward;
 
             protected override void OnEnter()
             {
-                var deckComp = Entity.GetRawComponent<CharacterDeckRawComponent>();
-                var rewardDicesComp = EcsApi.GetSingletonRawComponent<RewardDicesSingletonRawComponent>();
-                if (rewardDicesComp == null || rewardDicesComp.Chosen == true)
-                    return;
-                deckComp.Dices.Add(rewardDicesComp.Dices[IndexOfReward]);
-                deckComp.DispatchEvent(CharacterDeckRawComponent.EUiEvent.DeckRefresh);
-                rewardDicesComp.Dices[IndexOfReward] = null;
-                rewardDicesComp.Chosen = true;
-                rewardDicesComp.DispatchEvent(RewardDicesSingletonRawComponent.EUiEvent.DicesRefresh);
+                if (EcsApi.GetEntityByID(EntityID, out var entity))
+                {
+                    var deckComp = entity.GetRawComponent<CharacterDeckRawComponent>();
+                    var rewardDicesComp = EcsApi.GetSingletonRawComponent<RewardDicesSingletonRawComponent>();
+                    if (rewardDicesComp == null || rewardDicesComp.Chosen == true)
+                        return;
+                    deckComp.Dices.Add(rewardDicesComp.Dices[IndexOfReward]);
+                    deckComp.DispatchEvent(CharacterDeckRawComponent.EUiEvent.DeckRefresh);
+                    rewardDicesComp.Dices[IndexOfReward] = null;
+                    rewardDicesComp.Chosen = true;
+                    rewardDicesComp.DispatchEvent(RewardDicesSingletonRawComponent.EUiEvent.DicesRefresh);
+                }
+                
             }
         }
         #endregion
@@ -73,7 +77,7 @@ namespace Dcg.Ui
             if (m_DeckComp.IsNull())
                 return;
             var operation = ObjectPool<OperationChooseRewardDice>.Alloc();
-            operation.Entity = m_DeckComp.Obj.GetEntity();
+            operation.EntityID = m_DeckComp.Obj.GetEntity().GetUniqueID();
             operation.IndexOfReward = m_IndexOfReward;
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
             m_TweenDiceController.Show();

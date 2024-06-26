@@ -13,13 +13,16 @@ namespace Dcg.Ui
         #region Operation
         public class OperationRequestCastSkill : BlockedOperationBase
         {
-            public Entity Entity;
+            public EntityID EntityID;
 
             protected override void OnEnter()
             {
-                var castSkillComp = Entity.GetRawComponent<CastSkillRawComponent>();
-                castSkillComp.RequestCast = true;
-                castSkillComp.Target = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>().Monster;
+                if (EcsApi.GetEntityByID(EntityID, out var entity))
+                {
+                    var castSkillComp = entity.GetRawComponent<CastSkillRawComponent>();
+                    castSkillComp.RequestCast = true;
+                    castSkillComp.Target = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>().Monster;
+                }
             }
         }
         #endregion
@@ -90,7 +93,7 @@ namespace Dcg.Ui
             }
 
             var operation = ObjectPool<OperationRequestCastSkill>.Alloc();
-            operation.Entity = m_CastSkillComp.Obj.GetEntity();
+            operation.EntityID = m_CastSkillComp.Obj.GetEntity().GetUniqueID();
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddBlockedOperation(operation);
             ControllerWrapper.Hide();
         }

@@ -26,24 +26,28 @@ namespace Dcg.Ui
         // 把Operation写在每个UI内部，每个人就只需要维护自己的逻辑就行了
         public class OperationSwitchDiceInHandWithWild : FreeOperationBase
         {
-            public Entity Entity;
+            public EntityID EntityID;
             public int DicesInHandIndex;
             public int WildDiceIndex;
 
             protected override void OnEnter()
             {
-                var castSkillComp = Entity.GetRawComponent<CastSkillRawComponent>();
-                var combatDeckComp = Entity.GetRawComponent<CombatDeckRawComponent>();
-                // 记录自由骰位原本的骰子，以备假如要发生替换的情况
-                var originalWildDice = castSkillComp.WildDices[WildDiceIndex];
-                // 将自由骰的槽位替换成当前手牌
-                castSkillComp.WildDices[WildDiceIndex] = combatDeckComp.DicesInHand[DicesInHandIndex];
-                castSkillComp.DispatchEvent(CastSkillRawComponent.EUiEvent.WildDicesRefresh);
-                // 清除当前手牌，若原本自由骰槽位上已有骰子，则将它替换下来
-                combatDeckComp.DicesInHand.RemoveAt(DicesInHandIndex);
-                if (originalWildDice != null)
-                    combatDeckComp.DicesInHand.Add(originalWildDice);
-                combatDeckComp.DispatchEvent(CombatDeckRawComponent.EUiEvent.DicesInHandRefresh);
+                if (EcsApi.GetEntityByID(EntityID, out var entity))
+                {
+                    var castSkillComp = entity.GetRawComponent<CastSkillRawComponent>();
+                    var combatDeckComp = entity.GetRawComponent<CombatDeckRawComponent>();
+                    // 记录自由骰位原本的骰子，以备假如要发生替换的情况
+                    var originalWildDice = castSkillComp.WildDices[WildDiceIndex];
+                    // 将自由骰的槽位替换成当前手牌
+                    castSkillComp.WildDices[WildDiceIndex] = combatDeckComp.DicesInHand[DicesInHandIndex];
+                    castSkillComp.DispatchEvent(CastSkillRawComponent.EUiEvent.WildDicesRefresh);
+                    // 清除当前手牌，若原本自由骰槽位上已有骰子，则将它替换下来
+                    combatDeckComp.DicesInHand.RemoveAt(DicesInHandIndex);
+                    if (originalWildDice != null)
+                        combatDeckComp.DicesInHand.Add(originalWildDice);
+                    combatDeckComp.DispatchEvent(CombatDeckRawComponent.EUiEvent.DicesInHandRefresh);
+                }
+                
             }
         }
         #endregion
@@ -91,7 +95,7 @@ namespace Dcg.Ui
                     return;
                 var entity = m_InteractorInfo.CombatDeckComp.Obj.GetEntity();
                 var operation = ObjectPool<OperationSwitchDiceInHandWithWild>.Alloc();
-                operation.Entity = entity;
+                operation.EntityID = entity.GetUniqueID();
                 operation.DicesInHandIndex = m_InteractorInfo.Index;
                 operation.WildDiceIndex = wildDiceInfo.Index;
                 EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
