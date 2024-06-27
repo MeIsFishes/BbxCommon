@@ -1,4 +1,5 @@
-﻿using Unity.Entities;
+﻿using System;
+using Unity.Entities;
 
 namespace BbxCommon
 {
@@ -7,11 +8,11 @@ namespace BbxCommon
         public EntityID EntityUniqueID;
     }
 
-    public struct EntityID
+    public struct EntityID: IEquatable<EntityID>
     {
         private readonly ulong m_EntityID;
-        public static readonly EntityID INVALID = 0xFFFFFFFFFFFFFFFF;
-        
+        public static EntityID INVALID => new EntityID();
+
         private EntityID(ulong id)
         {
             m_EntityID = id;

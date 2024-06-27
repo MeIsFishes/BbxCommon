@@ -40,7 +40,8 @@ namespace BbxCommon
         /// </summary>
         internal static void DestroyEntity(EntityID entityID)
         {
-            if (EcsEntityManager.GetEntityByID(entityID, out var entity))
+            var entity = entityID.GetEntity();
+            if (entity != Entity.Null)
             {
                 var group = GetAndRefreshGroup(entity);
                 for (int i = 0; i < group.RawComponents.Count; i++)

@@ -10,7 +10,7 @@ namespace BbxCommon
     public static class EcsApi
     {
         #region Common
-        public static Entity CreateEntity(ulong entityID = 0xFFFFFFFFFFFFFFFF)
+        public static Entity CreateEntity(EntityID entityID = new EntityID())
         {
             return EcsEntityManager.CreateEntity(entityID);
             //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
@@ -182,6 +182,15 @@ namespace BbxCommon
             }
             
             return EntityID.INVALID;
+        }
+
+        public static Entity GetEntity(this EntityID entityID)
+        {
+            if (EcsEntityManager.GetEntityByID(entityID, out var entity))
+            {
+                return entity;
+            }
+            return Entity.Null;
         }
 
         public static void Destroy(this Entity entity)
