@@ -42,7 +42,7 @@ namespace Dcg
                 combatEntity = EntityCreator.CreateCombatEntity();
                 ConvertCharacterToCombatEntity(playerComp.Characters[0],combatEntity);
                 playerComp.Characters[0].Destroy();
-                playerComp.AddCharacter(combatEntity);
+                playerComp.Characters[0]= combatEntity;
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 combatInfoComp.Character = combatEntity;
             }
@@ -52,7 +52,7 @@ namespace Dcg
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var character = EntityCreator.CreateCharacterEntity();
                 ConvertCombatEntityToCharacter(combatEntity, character);
-                playerComp.AddCharacter(character);
+                playerComp.Characters[0] = character;
                 DestroyCombatEntity(combatEntity);
             }
 

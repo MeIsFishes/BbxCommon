@@ -25,6 +25,7 @@ namespace Dcg
             {
                 entity.Destroy();
             }
+            Characters.Clear();
         }
 
         public override void OnCollect()
