@@ -41,7 +41,8 @@ namespace Dcg
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 combatEntity = EntityCreator.CreateCombatEntity();
                 ConvertCharacterToCombatEntity(playerComp.Characters[0],combatEntity);
-                playerComp.Characters[0].Destroy();
+                playerComp.DungenEntity= playerComp.Characters[0];
+                playerComp.DungenEntity.GetGameObject().SetActive(false);
                 playerComp.Characters[0]= combatEntity;
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 combatInfoComp.Character = combatEntity;
@@ -50,7 +51,8 @@ namespace Dcg
             void IStageLoad.Unload(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                var character = EntityCreator.CreateCharacterEntity();
+                var character = playerComp.DungenEntity;
+                character.GetGameObject().SetActive(true);
                 ConvertCombatEntityToCharacter(combatEntity, character);
                 playerComp.Characters[0] = character;
                 DestroyCombatEntity(combatEntity);

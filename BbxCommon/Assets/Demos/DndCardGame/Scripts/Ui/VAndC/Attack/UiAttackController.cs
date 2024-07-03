@@ -21,7 +21,10 @@ namespace Dcg.Ui
                 if (EcsApi.GetEntityByID(EntityID, out var entity))
                 {
                     var castSkillComp = entity.GetRawComponent<CastSkillRawComponent>();
-                    castSkillComp.ChosenSkill = Skill;
+                    if (castSkillComp!=null)
+                    {
+                        castSkillComp.ChosenSkill = Skill;
+                    }
                 }
             }
         }
