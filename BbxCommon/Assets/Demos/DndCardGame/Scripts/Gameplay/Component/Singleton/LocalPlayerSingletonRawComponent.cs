@@ -8,6 +8,7 @@ namespace Dcg
     public class LocalPlayerSingletonRawComponent : EcsSingletonRawComponent
     {
         public List<Entity> Characters = new();
+        public Entity DungenEntity;
 
         public void AddCharacter(Entity entity)
         {
