@@ -31,7 +31,6 @@ namespace Dcg.Ui
 
         protected override void OnUiInit()
         {
-            m_Entity = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>().Character;
             m_View.WeaponOptions.NameWrapper.AddOnSelectedCallback("Sword", OnSwordButton);
             m_View.WeaponOptions.NameWrapper.AddOnSelectedCallback("Dagger", OnDaggerButton);
             m_View.AttackButton.onClick.AddListener(OnAttackButton);
@@ -39,6 +38,7 @@ namespace Dcg.Ui
 
         protected override void OnUiOpen()
         {
+            m_Entity = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>().Character;
             m_View.WeaponOptions.NameWrapper.Select("Sword");
         }
 
