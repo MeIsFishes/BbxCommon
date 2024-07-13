@@ -173,7 +173,7 @@ namespace BbxCommon
             return goComp.GameObject;
         }
 
-        public static EntityID GetUniqueID(this Entity entity)
+        public static EntityID GetUniqueId(this Entity entity)
         {
             var entityIDComp = entity.GetRawComponent<EntityIDComponent>();
             if (entityIDComp != null)

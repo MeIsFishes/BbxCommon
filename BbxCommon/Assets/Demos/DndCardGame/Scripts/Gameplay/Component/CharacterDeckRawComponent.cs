@@ -4,6 +4,9 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
+    /// <summary>
+    /// 记录玩家持有的骰子卡组信息，在局外一直存在
+    /// </summary>
     public class CharacterDeckRawComponent : EcsRawComponent, IListenable
     {
         public enum EUiEvent

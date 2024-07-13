@@ -18,9 +18,9 @@ namespace Dcg
             if (cameraData == null)
                 return;
             var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-            if (playerComp.Characters.Count == 0)
+            if (playerComp.DungeonEntities.Count == 0)
                 return;
-            var character = playerComp.Characters[0];
+            var character = playerComp.DungeonEntities[0];
             if (character == null)
                 return;
 

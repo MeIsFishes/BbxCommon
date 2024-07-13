@@ -49,7 +49,7 @@ namespace Dcg.Ui
         {
             m_View.Description.text = "掷出1个自由骰+1d4的攻击骰\n造成1个自由骰+1d4的伤害";
             var operation = ObjectPool<OperationSelectSkill>.Alloc();
-            operation.EntityID = m_Entity.GetUniqueID();
+            operation.EntityID = m_Entity.GetUniqueId();
             operation.Skill = "Sword";
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
         }
@@ -58,7 +58,7 @@ namespace Dcg.Ui
         {
             m_View.Description.text = "掷出2个自由骰的攻击骰\n造成2d4的伤害";
             var operation = ObjectPool<OperationSelectSkill>.Alloc();
-            operation.EntityID = m_Entity.GetUniqueID();
+            operation.EntityID = m_Entity.GetUniqueId();
             operation.Skill = "Dagger";
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
         }

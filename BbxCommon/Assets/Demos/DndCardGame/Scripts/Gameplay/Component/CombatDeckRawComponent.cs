@@ -4,6 +4,9 @@ using BbxCommon.Ui;
 
 namespace Dcg
 {
+    /// <summary>
+    /// 记录战斗中的骰子卡组数据
+    /// </summary>
     public class CombatDeckRawComponent : EcsRawComponent, IListenable
     {
         public enum EUiEvent

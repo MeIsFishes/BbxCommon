@@ -7,31 +7,45 @@ namespace Dcg
 {
     public class LocalPlayerSingletonRawComponent : EcsSingletonRawComponent
     {
-        public List<Entity> Characters = new();
-        public Entity DungenEntity;
+        public List<Entity> DungeonEntities = new();
+        public List<Entity> CombatEntities = new();
 
-        public void AddCharacter(Entity entity)
+        public void AddDungeonCharacter(Entity entity)
         {
-            if (Characters.Contains(entity))
+            if (DungeonEntities.Contains(entity))
             {
                 Debug.Log("The character has existed in the player's list!");
                 return;
             }
-            Characters.Add(entity);
+            DungeonEntities.Add(entity);
+        }
+
+        public void AddCombatCharacter(Entity entity)
+        {
+            if (CombatEntities.Contains(entity))
+            {
+                Debug.Log("The character has existed in the player's list!");
+                return;
+            }
+            CombatEntities.Add(entity);
         }
 
         public void DestroyCharacterEntities()
         {
-            foreach (var entity in Characters)
+            foreach (var entity in DungeonEntities)
             {
                 entity.Destroy();
             }
-            Characters.Clear();
+            foreach (var entity in CombatEntities)
+            {
+                entity.Destroy();
+            }
+            DungeonEntities.Clear();
         }
 
         public override void OnCollect()
         {
-            Characters.Clear();
+            DungeonEntities.Clear();
         }
     }
 }

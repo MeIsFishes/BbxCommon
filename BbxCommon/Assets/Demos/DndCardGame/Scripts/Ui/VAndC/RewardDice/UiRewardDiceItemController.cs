@@ -76,8 +76,11 @@ namespace Dcg.Ui
         {
             if (m_DeckComp.IsNull())
                 return;
+            var rewardDicesComp = EcsApi.GetSingletonRawComponent<RewardDicesSingletonRawComponent>();
+            if (rewardDicesComp == null || rewardDicesComp.Chosen == true)
+                return;
             var operation = ObjectPool<OperationChooseRewardDice>.Alloc();
-            operation.EntityID = m_DeckComp.Obj.GetEntity().GetUniqueID();
+            operation.EntityID = m_DeckComp.Obj.GetEntity().GetUniqueId();
             operation.IndexOfReward = m_IndexOfReward;
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);
             m_TweenDiceController.Show();

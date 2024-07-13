@@ -64,7 +64,7 @@ namespace BbxCommon
         
         internal static void DestroyEntity(Entity entity)
         {
-            var entityID = entity.GetUniqueID();
+            var entityID = entity.GetUniqueId();
             entity.ClearHud();
             entity.GetGameObject().Destroy();
             if (entityID != EntityID.INVALID)

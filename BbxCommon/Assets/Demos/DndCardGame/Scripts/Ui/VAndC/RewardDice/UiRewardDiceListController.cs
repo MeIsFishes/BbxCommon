@@ -36,7 +36,7 @@ namespace Dcg.Ui
         {
             // 找到当前玩家的DeckComp
             var localPlayerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-            var deckComp = localPlayerComp.Characters[0].GetRawComponent<CharacterDeckRawComponent>();
+            var deckComp = localPlayerComp.DungeonEntities[0].GetRawComponent<CharacterDeckRawComponent>();
             // 重置UiList
             m_View.UiList.ItemWrapper.ModifyCount<UiRewardDiceItemController>(rewardDicesComp.Dices.Count);
             for (int i = 0; i < rewardDicesComp.Dices.Count; i++)

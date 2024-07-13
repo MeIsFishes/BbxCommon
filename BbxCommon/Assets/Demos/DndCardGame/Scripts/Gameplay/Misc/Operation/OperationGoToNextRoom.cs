@@ -29,7 +29,7 @@ namespace Dcg
                 var dungeonRoomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var roomData = DataApi.GetData<RoomData>();
-                foreach (var character in playerComp.Characters)
+                foreach (var character in playerComp.DungeonEntities)
                 {
                     var walkToComp = character.GetRawComponent<WalkToRawComponent>();
                     walkToComp.AddRequest(dungeonRoomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset);

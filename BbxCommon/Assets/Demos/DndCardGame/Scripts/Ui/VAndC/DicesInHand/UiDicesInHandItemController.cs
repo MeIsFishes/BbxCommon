@@ -95,7 +95,7 @@ namespace Dcg.Ui
                     return;
                 var entity = m_InteractorInfo.CombatDeckComp.Obj.GetEntity();
                 var operation = ObjectPool<OperationSwitchDiceInHandWithWild>.Alloc();
-                operation.EntityID = entity.GetUniqueID();
+                operation.EntityID = entity.GetUniqueId();
                 operation.DicesInHandIndex = m_InteractorInfo.Index;
                 operation.WildDiceIndex = wildDiceInfo.Index;
                 EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddFreeOperation(operation);

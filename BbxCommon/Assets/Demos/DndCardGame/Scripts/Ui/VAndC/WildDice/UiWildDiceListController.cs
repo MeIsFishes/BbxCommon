@@ -93,7 +93,7 @@ namespace Dcg.Ui
             }
 
             var operation = ObjectPool<OperationRequestCastSkill>.Alloc();
-            operation.EntityID = m_CastSkillComp.Obj.GetEntity().GetUniqueID();
+            operation.EntityID = m_CastSkillComp.Obj.GetEntity().GetUniqueId();
             EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>().AddBlockedOperation(operation);
             ControllerWrapper.Hide();
         }

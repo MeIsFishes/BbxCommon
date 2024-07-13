@@ -32,7 +32,7 @@ namespace Dcg
             {
                 var player = EntityCreator.CreatePlayerEntity();
                 var character = EntityCreator.CreateCharacterEntity();
-                player.GetRawComponent<LocalPlayerSingletonRawComponent>().AddCharacter(character);
+                player.GetRawComponent<LocalPlayerSingletonRawComponent>().AddDungeonCharacter(character);
             }
 
             void IStageLoad.Unload(GameStage stage)
@@ -58,7 +58,7 @@ namespace Dcg
 
                 // 将玩家拉过来
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                var character = playerComp.Characters[0];
+                var character = playerComp.DungeonEntities[0];
                 character.GetGameObject().transform.position = roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset;
             }
 
