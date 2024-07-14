@@ -29,6 +29,7 @@ namespace Dcg
 
             stage.AddStageListener<CombatWinListener>();
             stage.AddStageListener<CombatDefeatedListener>();
+            stage.AddStageListener<CombatHpSyncListener>();
 
             return stage;
         }
@@ -56,9 +57,9 @@ namespace Dcg
 
             private void DungeonEntityToCombatEntity(Entity dungeonEntity, Entity combatEntity)
             {
-                var charObj = dungeonEntity.GetGameObject();
-                var comBatObj = combatEntity.GetGameObject();
-                comBatObj.transform.localPosition = charObj.transform.localPosition;
+                var dungeonObj = dungeonEntity.GetGameObject();
+                var combatObj = combatEntity.GetGameObject();
+                combatObj.transform.localPosition = dungeonObj.transform.localPosition;
                 // 创建初始卡组
                 var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
                 var characterDeckComp = dungeonEntity.GetRawComponent<CharacterDeckRawComponent>();
@@ -68,9 +69,13 @@ namespace Dcg
                     combatDeckComp.DicesInDeck.Add(Dice.Create(dice.DiceType));
                 }
                 combatDeckComp.DicesInDeck.Shuffle();
+                // 同步血量
+                var combatAttrComp = combatEntity.GetRawComponent<AttributesRawComponent>();
+                var dungeonAttrComp = dungeonEntity.GetRawComponent<AttributesRawComponent>();
+                combatAttrComp.CurHp = dungeonAttrComp.CurHp;
             }
 
-            void DestroyCombatEntity(Entity combatEntity)
+            private void DestroyCombatEntity(Entity combatEntity)
             {
                 combatEntity.Destroy();
             }
