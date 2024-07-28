@@ -13,6 +13,16 @@ namespace Dcg
         public Entity Attacker;
         public Entity Target;
         public int Damage;
+        public DamageType DamageType;
+    }
+
+    public enum DamageType
+    {
+        None = 0,
+        MagicalDamge,
+        PhysicalDamge,
+        Healing,
+        UpperLimit,
     }
 
     public class AttackableRawComponent : EcsRawComponent

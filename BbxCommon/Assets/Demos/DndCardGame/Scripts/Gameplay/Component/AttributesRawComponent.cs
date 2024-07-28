@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using BbxCommon;
 using BbxCommon.Ui;
@@ -52,6 +53,9 @@ namespace Dcg
         public ListenableVariable<int> ConstitutionVariable = new();
         public ListenableVariable<int> IntelligenceVariable = new();
         public ListenableVariable<int> WisdomVariable = new();
+         
+        public Action<int> BeforeTakeDamage;
+        public Action<int> AfterTakeDamge;
 
         public void GetModifierDiceList(EAbility attribute, List<Dice> res)
         {
@@ -102,14 +106,14 @@ namespace Dcg
 
         public override void OnCollect()
         {
-            MaxHpVariable.MakeInvalid();
-            CurHpVariable.MakeInvalid();
-            ArmorClassVariable.MakeInvalid();
-            StrengthVariable.MakeInvalid();
-            DexterityVariable.MakeInvalid();
-            ConstitutionVariable.MakeInvalid();
-            IntelligenceVariable.MakeInvalid();
-            WisdomVariable.MakeInvalid();
+            MaxHpVariable.DispatchInvalid();
+            CurHpVariable.DispatchInvalid();
+            ArmorClassVariable.DispatchInvalid();
+            StrengthVariable.DispatchInvalid();
+            DexterityVariable.DispatchInvalid();
+            ConstitutionVariable.DispatchInvalid();
+            IntelligenceVariable.DispatchInvalid();
+            WisdomVariable.DispatchInvalid();
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();
@@ -119,6 +123,41 @@ namespace Dcg
             Constitution = 0;
             Intelligence = 0;
             Wisdom = 0;
+        }
+
+        public void BindTakeDamage(Action<int> before, Action<int> after)
+        {
+            if (before != null)
+            {
+                BeforeTakeDamage += before;
+            }
+            if (after != null)
+            {
+                AfterTakeDamge += before;
+            }
+        }
+
+        public void UnbindTakeDamage(Action<int> before, Action<int> after)
+        {
+            if (before != null)
+            {
+                BeforeTakeDamage -= before;
+            }
+            if (after != null)
+            {
+                AfterTakeDamge -= before;
+            }
+        }
+
+
+        public void OnTakeDamage(int damge)
+        {
+            BeforeTakeDamage?.Invoke(damge);
+
+            CurHp -= damge;
+
+            AfterTakeDamge?.Invoke(damge);
+
         }
     }
 }
