@@ -29,20 +29,19 @@ namespace Dcg
 
             stage.AddStageListener<CombatWinListener>();
             stage.AddStageListener<CombatDefeatedListener>();
-            stage.AddStageListener<CombatHpSyncListener>();
 
             return stage;
         }
 
         private class CombatStageInitPlayerData : IStageLoad
         {
+            private Entity combatEntity;
             void IStageLoad.Load(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                var combatEntity = EntityCreator.CreateCombatEntity();
-                DungeonEntityToCombatEntity(playerComp.DungeonEntities[0], combatEntity);
-                playerComp.DungeonEntities[0].GetGameObject().SetActive(false);
-                playerComp.AddCombatCharacter(combatEntity);
+                combatEntity = EntityCreator.CreateCombatEntity();
+                ConvertCharacterToCombatEntity(playerComp.Characters[0],combatEntity);
+                playerComp.DestroyCharacterEntities();
                 var combatInfoComp = EcsApi.AddSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 combatInfoComp.Character = combatEntity;
             }
@@ -50,34 +49,54 @@ namespace Dcg
             void IStageLoad.Unload(GameStage stage)
             {
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
-                playerComp.DungeonEntities[0].GetGameObject().SetActive(true);
-                DestroyCombatEntity(playerComp.CombatEntities[0]);
-                playerComp.CombatEntities.Clear();
+                var character = EntityCreator.CreateCharacterEntity();
+                ConvertCombatEntityToCharacter(combatEntity, character);
+                playerComp.AddCharacter(character);
+                DestroyCombatEntity(combatEntity);
             }
 
-            private void DungeonEntityToCombatEntity(Entity dungeonEntity, Entity combatEntity)
+            void ConvertCharacterToCombatEntity(Entity character,Entity combatEntity)
             {
-                var dungeonObj = dungeonEntity.GetGameObject();
-                var combatObj = combatEntity.GetGameObject();
-                combatObj.transform.localPosition = dungeonObj.transform.localPosition;
+                var charObj=character.GetGameObject();
+                var comBatObj= combatEntity.GetGameObject();
+                comBatObj.transform.localPosition = charObj.transform.localPosition;
                 // 创建初始卡组
                 var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
-                var characterDeckComp = dungeonEntity.GetRawComponent<CharacterDeckRawComponent>();
+                var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
                 combatDeckComp.DicesInDeck.Clear();
                 foreach (var dice in characterDeckComp.Dices)
                 {
                     combatDeckComp.DicesInDeck.Add(Dice.Create(dice.DiceType));
                 }
                 combatDeckComp.DicesInDeck.Shuffle();
-                // 同步血量
-                var combatAttrComp = combatEntity.GetRawComponent<AttributesRawComponent>();
-                var dungeonAttrComp = dungeonEntity.GetRawComponent<AttributesRawComponent>();
-                combatAttrComp.CurHp = dungeonAttrComp.CurHp;
             }
 
-            private void DestroyCombatEntity(Entity combatEntity)
+            void ConvertCombatEntityToCharacter(Entity combatEntity,Entity character)
             {
-                combatEntity.Destroy();
+                var charObj = character.GetGameObject();
+                var comBatObj = combatEntity.GetGameObject();
+                charObj.transform.localPosition = comBatObj.transform.localPosition;
+                // 创建初始卡组
+                var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
+                var characterDeckComp = character.GetRawComponent<CharacterDeckRawComponent>();
+                characterDeckComp.Dices.Clear();
+                foreach (var dice in combatDeckComp.DicesInDeck)
+                {
+                    characterDeckComp.Dices.Add(Dice.Create(dice.DiceType));
+                }
+                characterDeckComp.Dices.Shuffle();
+            }
+
+            void DestroyCombatEntity(Entity combatEntity)
+            {
+                if (combatEntity!=null)
+                {
+                    var combatDeckComp = combatEntity.GetRawComponent<CombatDeckRawComponent>();
+                    combatDeckComp.DicesInDeck = null;
+                    combatEntity.UnbindHud<HudCharacterStatusController>();
+                    combatEntity.UnbindHud<HudDamageTweenTipController>();
+                    combatEntity.Destroy();
+                }
             }
         }
 
