@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cin", "Cin.csproj", "{587F0
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BbxCommon.Editor", "BbxCommon.Editor.csproj", "{B738E54C-13FD-1B59-183B-DE09F8B5D835}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CrossLibrary", "CrossLibrary.csproj", "{7FC2D914-E85C-87B4-FAB2-C00E653F9867}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sirenix.OdinInspector.CompatibilityLayer", "Sirenix.OdinInspector.CompatibilityLayer.csproj", "{0BF7E94C-3BCA-E14C-42D2-6FE10E910D2E}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{E1199B03-8F7B-CA0B-7A93-9CB241EAD4EA}"
@@ -55,6 +57,10 @@ Global
 		{B738E54C-13FD-1B59-183B-DE09F8B5D835}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B738E54C-13FD-1B59-183B-DE09F8B5D835}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B738E54C-13FD-1B59-183B-DE09F8B5D835}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FC2D914-E85C-87B4-FAB2-C00E653F9867}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FC2D914-E85C-87B4-FAB2-C00E653F9867}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FC2D914-E85C-87B4-FAB2-C00E653F9867}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FC2D914-E85C-87B4-FAB2-C00E653F9867}.Release|Any CPU.Build.0 = Release|Any CPU
 		{0BF7E94C-3BCA-E14C-42D2-6FE10E910D2E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{0BF7E94C-3BCA-E14C-42D2-6FE10E910D2E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0BF7E94C-3BCA-E14C-42D2-6FE10E910D2E}.Release|Any CPU.ActiveCfg = Release|Any CPU

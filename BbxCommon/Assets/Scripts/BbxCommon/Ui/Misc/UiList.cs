@@ -110,7 +110,7 @@ namespace BbxCommon.Ui
 
         void IUiOpen.OnUiOpen(UiControllerBase uiController)
         {
-            SimplePool.Alloc(out m_InTranslationItemIndexs);
+            SimplePool.Alloc(out m_InTranslationItemIndexes);
         }
 
         void IUiShow.OnUiShow(UiControllerBase uiController)
@@ -137,7 +137,8 @@ namespace BbxCommon.Ui
 
         void IUiClose.OnUiClose(UiControllerBase uiController)
         {
-            m_InTranslationItemIndexs.CollectToPool();
+            m_InTranslationItemIndexes.CollectToPool();
+            ClearItems();
         }
 
         void IUiDestroy.OnUiDestroy(UiControllerBase uiController)
@@ -193,7 +194,7 @@ namespace BbxCommon.Ui
             else
                 m_UiItems[index].GameObject.Destroy();
             m_UiItems.RemoveAt(index);
-            m_InTranslationItemIndexs.Remove(index);
+            m_InTranslationItemIndexes.Remove(index);
             RefreshLayout();
         }
 
@@ -451,7 +452,7 @@ namespace BbxCommon.Ui
         #endregion
 
         #region Translation
-        private List<int> m_InTranslationItemIndexs;
+        private List<int> m_InTranslationItemIndexes;
         private float m_TranslationCurveTime;
 
         /// <summary>
@@ -466,7 +467,7 @@ namespace BbxCommon.Ui
                 item.ToPosition = toPosition;
                 if (item.IsInTranslation == false)
                 {
-                    m_InTranslationItemIndexs.Add(index);
+                    m_InTranslationItemIndexes.Add(index);
                     item.IsInTranslation = true;
                 }
                 item.TranslationElapsedTime = 0;
@@ -483,9 +484,9 @@ namespace BbxCommon.Ui
         {
             var translationEndIndexs = SimplePool<List<int>>.Alloc();
             // translate position
-            for (int i = 0; i < m_InTranslationItemIndexs.Count; i++)
+            for (int i = 0; i < m_InTranslationItemIndexes.Count; i++)
             {
-                var index = m_InTranslationItemIndexs[i];
+                var index = m_InTranslationItemIndexes[i];
                 var item = m_UiItems[index];
                 item.TranslationElapsedTime += deltaTime;
                 if (item.TranslationElapsedTime >= TranslationTime)
@@ -502,10 +503,10 @@ namespace BbxCommon.Ui
             // remove finished items
             for (int i = translationEndIndexs.Count - 1; i >= 0; i--)
             {
-                var item = m_UiItems[m_InTranslationItemIndexs[translationEndIndexs[i]]];
+                var item = m_UiItems[m_InTranslationItemIndexes[translationEndIndexs[i]]];
                 item.IsInTranslation = false;
-                m_UiItems[m_InTranslationItemIndexs[translationEndIndexs[i]]] = item;
-                m_InTranslationItemIndexs.UnorderedRemoveAt(translationEndIndexs[i]);
+                m_UiItems[m_InTranslationItemIndexes[translationEndIndexs[i]]] = item;
+                m_InTranslationItemIndexes.UnorderedRemoveAt(translationEndIndexs[i]);
             }
         }
         #endregion
