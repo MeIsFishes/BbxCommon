@@ -6,28 +6,28 @@ using BbxCommon.Ui;
 namespace Dcg
 {
     /// <summary>
-    /// ÈÎÎñ»ù´¡ÊôĞÔ£¬DND°ÑÁ¦Á¿Ãô½İÕâÖÖÊôĞÔ½Ğ×öability
+    /// ä»»åŠ¡åŸºç¡€å±æ€§ï¼ŒDNDæŠŠåŠ›é‡æ•æ·è¿™ç§å±æ€§å«åšability
     /// </summary>
     public enum EAbility
     {
         /// <summary>
-        /// Á¦Á¿
+        /// åŠ›é‡
         /// </summary>
         Strength,
         /// <summary>
-        /// Ãô½İ
+        /// æ•æ·
         /// </summary>
         Dexterity,
         /// <summary>
-        /// ÌåÖÊ
+        /// ä½“è´¨
         /// </summary>
         Consititution,
         /// <summary>
-        /// ÖÇÁ¦
+        /// æ™ºåŠ›
         /// </summary>
         Intelligence,
         /// <summary>
-        /// ¸ĞÖª
+        /// æ„ŸçŸ¥
         /// </summary>
         Wisdom,
     }
@@ -81,9 +81,9 @@ namespace Dcg
             var value = (attributeValue - 1) % 5 + 1;
             for (int i = 0; i < (attributeValue - value) / 5; i++)
             {
-                res.Add(Dice.Create(EDiceType.D12));    // Ã¿5µãÊôĞÔÌî³ä1¸öd12
+                res.Add(Dice.Create(EDiceType.D12));    // æ¯5ç‚¹å±æ€§å¡«å……1ä¸ªd12
             }
-            // ¼ÆËãÊ£ÏÂµÄÊôĞÔ
+            // è®¡ç®—å‰©ä¸‹çš„å±æ€§
             switch (value)
             {
                 case 1:
@@ -106,14 +106,14 @@ namespace Dcg
 
         public override void OnCollect()
         {
-            MaxHpVariable.DispatchInvalid();
-            CurHpVariable.DispatchInvalid();
-            ArmorClassVariable.DispatchInvalid();
-            StrengthVariable.DispatchInvalid();
-            DexterityVariable.DispatchInvalid();
-            ConstitutionVariable.DispatchInvalid();
-            IntelligenceVariable.DispatchInvalid();
-            WisdomVariable.DispatchInvalid();
+            MaxHpVariable.MakeInvalid();
+            CurHpVariable.MakeInvalid();
+            ArmorClassVariable.MakeInvalid();
+            StrengthVariable.MakeInvalid();
+            DexterityVariable.MakeInvalid();
+            ConstitutionVariable.MakeInvalid();
+            IntelligenceVariable.MakeInvalid();
+            WisdomVariable.MakeInvalid();
             MaxHp = 0;
             CurHp = 0;
             ArmorClass.Clear();
