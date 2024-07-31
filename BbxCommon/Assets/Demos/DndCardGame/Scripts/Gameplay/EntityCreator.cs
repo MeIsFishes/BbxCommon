@@ -10,7 +10,7 @@ namespace Dcg
     {
         public static Entity CreatePlayerEntity()
         {
-            EcsApi.CreateEntity(out var uniqueID,out var entity);
+            var entity = EcsApi.CreateEntity();
 
             entity.AddRawComponent<LocalPlayerSingletonRawComponent>();
 
@@ -19,9 +19,10 @@ namespace Dcg
 
         public static Entity CreateCharacterEntity()
         {
-            EcsApi.CreateEntity(out var uniqueId, out var entity);
+            var entity = EcsApi.CreateEntity();
 
-            // ´´½¨³õÊ¼¿¨×é
+
+            // åˆ›å»ºåˆå§‹å¡ç»„
             var playerDeckComp = entity.AddRawComponent<CharacterDeckRawComponent>();
             for (int i = 0; i < 6; i++)
             {
@@ -32,7 +33,7 @@ namespace Dcg
                 playerDeckComp.AddDice(Dice.Create(EDiceType.D6));
             }
 
-            // ³õÊ¼»¯ÊôĞÔ
+            // åˆå§‹åŒ–å±æ€§
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
             attributesComp.MaxHp = 28;
             attributesComp.CurHp = 28;
@@ -44,28 +45,28 @@ namespace Dcg
             attributesComp.Intelligence = 3;
             attributesComp.Wisdom = 3;
 
-            // Ìí¼ÓÆäËûcomponent
+            // æ·»åŠ å…¶ä»–component
             entity.AddRawComponent<WalkToRawComponent>();
             entity.AddRawComponent<AttackableRawComponent>();
             entity.AddRawComponent<CastSkillRawComponent>();
 
-            // ¹ØÁªµ½GameObject
+            // å…³è”åˆ°GameObject
             var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
             var gameObject = Object.Instantiate(prefab);
             entity.BindGameObject(gameObject);
 
-            // ´´½¨aspect
+            // åˆ›å»ºaspect
             entity.CreateRawAspect<WalkToRawAspect>();
 
             return entity;
         }
         public static Entity CreateCombatEntity()
         {
-            EcsApi.CreateEntity(out var uniqueId, out var entity);
-            // ´´½¨³õÊ¼¿¨×é
+            var entity = EcsApi.CreateEntity();
+            // åˆ›å»ºåˆå§‹å¡ç»„
             var combatDeckComp = entity.AddRawComponent<CombatDeckRawComponent>();
             combatDeckComp.DicesInDeck.Clear();
-            // ³õÊ¼»¯ÊôĞÔ
+            // åˆå§‹åŒ–å±æ€§
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
             attributesComp.MaxHp = 28;
             attributesComp.CurHp = 28;
@@ -77,18 +78,18 @@ namespace Dcg
             attributesComp.Intelligence = 3;
             attributesComp.Wisdom = 3;
 
-            // Ìí¼ÓÆäËûcomponent
+            // æ·»åŠ å…¶ä»–component
             entity.AddRawComponent<WalkToRawComponent>();
             entity.AddRawComponent<AttackableRawComponent>();
             entity.AddRawComponent<CastSkillRawComponent>();
 
-            // ¹ØÁªµ½GameObject
+            // å…³è”åˆ°GameObject
             var prefab = DataApi.GetData<PrefabData>().PrefabDic["Player"];
             var gameObject = Object.Instantiate(prefab);
             entity.BindGameObject(gameObject);
-            //°ó¶¨»ØºÏ
+            //ç»‘å®šå›åˆ
             entity.AddRawComponent<CombatTurnRawComponent>();
-            // ´´½¨aspect
+            // åˆ›å»ºaspect
             entity.CreateRawAspect<WalkToRawAspect>();
             //UI
             entity.BindHud<HudCharacterStatusController>();
@@ -100,9 +101,9 @@ namespace Dcg
 
         public static Entity CreateMonsterEntity(MonsterData monsterData, Vector3 position, Quaternion rotation)
         {
-            EcsApi.CreateEntity(out var uniqueId, out var entity);
+            var entity = EcsApi.CreateEntity();
 
-            // ³õÊ¼»¯ÊôĞÔ
+            // åˆå§‹åŒ–å±æ€§
             var attributesComp = entity.AddRawComponent<AttributesRawComponent>();
             attributesComp.MaxHp = monsterData.HitPoints;
             attributesComp.CurHp = monsterData.HitPoints;
@@ -114,26 +115,26 @@ namespace Dcg
             attributesComp.Intelligence = monsterData.Intelligence;
             attributesComp.Wisdom = monsterData.Wisdom;
 
-            // ³õÊ¼»¯¹ÖÎïÊôĞÔ
+            // åˆå§‹åŒ–æ€ªç‰©å±æ€§
             var monsterComp = entity.AddRawComponent<MonsterRawComponent>();
             monsterComp.Name = monsterData.Name;
             monsterComp.AttackDices.AddList(monsterData.AttackDices);
             monsterComp.DamageDices.AddList(monsterData.DamageDices);
             monsterComp.Modifier = monsterData.AttackModifier;
 
-            // Ìí¼ÓÆäËûcomponent
+            // æ·»åŠ å…¶ä»–component
             entity.AddRawComponent<AttackableRawComponent>();
             entity.AddRawComponent<CombatTurnRawComponent>();
             entity.AddRawComponent<AiBehaviourRawComponent>();
             entity.AddRawComponent<CastSkillRawComponent>();
 
-            // ¹ØÁªµ½GameObject
+            // å…³è”åˆ°GameObject
             var gameObject = Object.Instantiate(monsterData.Prefab);
             entity.BindGameObject(gameObject);
             gameObject.transform.position = position;
             gameObject.transform.rotation = rotation;
 
-            // °ó¶¨HUD
+            // ç»‘å®šHUD
             entity.BindHud<HudMonsterStatusController>();
             entity.BindHud<HudDamageTweenTipController>();
 
@@ -143,7 +144,7 @@ namespace Dcg
 
         public static Entity CreateMainCameraEntity()
         {
-            EcsApi.CreateEntity(out var uniqueId, out var entity);
+            var entity = EcsApi.CreateEntity();
 
             var cameraData = DataApi.GetData<CameraData>();
 
@@ -157,7 +158,7 @@ namespace Dcg
 
         public static Entity CreateRoomEntity(Vector3 position)
         {
-            EcsApi.CreateEntity(out var uniqueId, out var entity);
+            var entity = EcsApi.CreateEntity();
 
             var roomData = DataApi.GetData<RoomData>();
 
