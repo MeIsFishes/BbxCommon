@@ -125,38 +125,12 @@ namespace Dcg
             Wisdom = 0;
         }
 
-        public void BindTakeDamage(Action<int> before, Action<int> after)
-        {
-            if (before != null)
-            {
-                BeforeTakeDamage += before;
-            }
-            if (after != null)
-            {
-                AfterTakeDamge += before;
-            }
-        }
-
-        public void UnbindTakeDamage(Action<int> before, Action<int> after)
-        {
-            if (before != null)
-            {
-                BeforeTakeDamage -= before;
-            }
-            if (after != null)
-            {
-                AfterTakeDamge -= before;
-            }
-        }
 
 
         public void OnTakeDamage(int damge)
         {
-            BeforeTakeDamage?.Invoke(damge);
 
             CurHp -= damge;
-
-            AfterTakeDamge?.Invoke(damge);
 
         }
     }

@@ -30,7 +30,16 @@ namespace Dcg.Ui
             }
         }
 
+        private ListenableItemListener m_DamageRequestListener;
+
+
         Coroutine m_Coroutine;
+
+        protected override void OnHudInit()
+        {
+            base.OnHudInit();
+            m_DamageRequestListener = ModelWrapper.CreateVariableDirtyListener<DamageRequest>(EControllerLifeCycle.Open, OnDamageOccured);
+        }
 
         private void ShowTip(DamageTipData data)
         {
@@ -48,17 +57,16 @@ namespace Dcg.Ui
         protected override void OnHudBind(Entity entity)
         {
             base.OnHudBind(entity);
-            var attributesComp = entity.GetRawComponent<AttributesRawComponent>();
-            attributesComp.BindTakeDamage(OnDamageOccured, null);
-
+            var attackComp = entity.GetRawComponent<AttackableRawComponent>();
+            m_DamageRequestListener.RebindTarget(attackComp.DamageVar);
         }
 
-        public void OnDamageOccured(int damge)
+        public void OnDamageOccured(DamageRequest damge)
         {
             ShowTip(new DamageTipData
             {
-                DamageType = DamageType.None,
-                DamageValue = damge,
+                DamageType = damge.DamageType,
+                DamageValue = damge.Damage,
                 DurationTime = 1
             }) ;
         }
@@ -66,13 +74,6 @@ namespace Dcg.Ui
         public void UpdatePos(Vector3 pos)
         {
             transform.localPosition = pos;
-        }
-
-        protected override void OnHudDestroy()
-        {
-            base.OnHudDestroy();
-            var attributesComp = Entity.GetRawComponent<AttributesRawComponent>();
-            attributesComp.UnbindTakeDamage(OnDamageOccured, null);
         }
 
         IEnumerator HideTip()

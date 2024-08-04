@@ -19,19 +19,23 @@ namespace Dcg
     public enum DamageType
     {
         None = 0,
-        MagicalDamge,
-        PhysicalDamge,
+        Slash,
         Healing,
         UpperLimit,
     }
 
-    public class AttackableRawComponent : EcsRawComponent
+    public class AttackableRawComponent : EcsRawComponent, IListenable
     {
         public List<DamageRequest> CauseDamageRequests;
         public List<DamageRequest> TakeDamageRequests;
 
         public UnityAction<DamageRequest> OnCauseDamage;
         public UnityAction<DamageRequest> OnTakeDamage;
+
+        public ListenableVariable<DamageRequest> DamageVar = new();
+
+        private MessageHandler<int> m_MessageHandler = new();
+        IMessageDispatcher<int> IListenable.MessageDispatcher => m_MessageHandler;
 
         public void AddCauseDamageRequest(Entity attacker, Entity target, int damage)
         {
@@ -40,6 +44,7 @@ namespace Dcg
             request.Target = target;
             request.Damage = damage;
             CauseDamageRequests.Add(request);
+            DamageVar.SetValue(request);
         }
 
         public void AddTakeDamageRequest(DamageRequest request)
@@ -55,6 +60,7 @@ namespace Dcg
 
         public override void OnCollect()
         {
+            DamageVar.MakeInvalid();
             CauseDamageRequests.CollectAndClearElements(true);
             TakeDamageRequests.CollectAndClearElements(true);
         }
