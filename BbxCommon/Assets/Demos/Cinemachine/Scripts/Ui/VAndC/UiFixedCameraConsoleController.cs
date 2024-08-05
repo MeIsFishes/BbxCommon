@@ -12,12 +12,13 @@ namespace Cin.Ui
     {
         protected override void InitListeners()
         {
-            AddVariableListener(EControllerLifeCycle.Open, EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().CurCamera, EListenableVariableEvent.Dirty,
+            var listener = CreateVariableListener(EControllerLifeCycle.Open, EListenableVariableEvent.Dirty,
                 (MessageData messageData) =>
                 {
                     var data = (ListenableVariableDirtyMessageData<Entity>)messageData;
                     ShowIfChooseCamera(data.CurValue);
                 });
+            listener.RebindTarget(EcsApi.GetSingletonRawComponent<CameraDataSingletonRawComponent>().CurCamera);
         }
 
         protected override void OnUiInit()

@@ -147,7 +147,8 @@ namespace Cin.Ui
         #region Register Listener
         public void RegisterDataShowerListener(IListenable target)
         {
-            AddVariableListener(EControllerLifeCycle.Open, target, EListenableVariableEvent.Dirty, OnListeningTargetDirty);
+            var listener = CreateVariableListener(EControllerLifeCycle.Open, EListenableVariableEvent.Dirty, OnListeningTargetDirty);
+            listener.RebindTarget(target);
         }
 
         private void OnListeningTargetDirty(MessageData messageData)

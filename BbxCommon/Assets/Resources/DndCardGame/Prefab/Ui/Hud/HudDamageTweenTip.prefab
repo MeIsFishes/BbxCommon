@@ -182,9 +182,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DefaultShow: 1
-  BbxUiItems:
-  - {fileID: 0}
-  AutoUpdatePos: 0
+  BbxUiItems: []
+  AutoUpdatePos: 1
   HudOffset: {x: 0, y: 0, z: 0}
   Title: {fileID: 4776801492771920564}
 --- !u!225 &5315226007939924406

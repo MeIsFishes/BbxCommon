@@ -24,6 +24,7 @@ namespace BbxCommon
             {
                 m_Listeners[i].TryRemoveListener();
             }
+            m_Listeners.Clear();
         }
 
         protected abstract void InitListener();
@@ -49,6 +50,16 @@ namespace BbxCommon
         protected ListenableItemListener AddVariableInvalidListener<T>(ListenableVariable<T> listenTarget, UnityAction callback)
         {
             var info = new ListenableItemListener(listenTarget, (int)EListenableVariableEvent.Invalid, (messageData) =>
+            {
+                callback();
+            });
+            m_Listeners.Add(info);
+            return info;
+        }
+
+        protected ListenableItemListener AddListener(IListenable listenTarget, int listeningEvent, UnityAction callback)
+        {
+            var info = new ListenableItemListener(listenTarget, listeningEvent, (messageData) =>
             {
                 callback();
             });

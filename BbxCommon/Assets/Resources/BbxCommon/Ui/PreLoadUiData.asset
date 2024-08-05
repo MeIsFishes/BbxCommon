@@ -41,3 +41,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.GameStartController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/UIGameStart
+    - Key: Dcg.Ui.HudDamageTweenTipController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudDamageTweenTip

@@ -53,20 +53,14 @@ namespace BbxCommon.Ui
                 => m_Ref.CreateVariableDirtyListener(enableDuring, callback);
             public ListenableItemListener CreateVariableInvalidListener(EControllerLifeCycle enableDuring, UnityAction callback)
                 => m_Ref.CreateVariableInvalidListener(enableDuring, callback);
+            public ListenableItemListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction callback)
+                => m_Ref.CreateListener(enableDuring, listeningEvent, callback);
+            public ListenableItemListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction callback) where TEnum : Enum
+                => m_Ref.CreateListener(enableDuring, listeningEvent.GetHashCode(), callback);
             public ListenableItemListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageData> callback)
                 => m_Ref.CreateListener(enableDuring, listeningEvent, callback);
-            public ListenableItemListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction<MessageData> callback)
+            public ListenableItemListener CreateListener<TEnum>(EControllerLifeCycle enableDuring, TEnum listeningEvent, UnityAction<MessageData> callback) where TEnum : Enum
                 => m_Ref.CreateListener(enableDuring, listeningEvent.GetHashCode(), callback);
-            public ListenableItemListener AddVariableListener(EControllerLifeCycle enableDuring, IListenable modelItem, EListenableVariableEvent listeningEvent, UnityAction<MessageData> callback)
-                => m_Ref.AddVariableListener(enableDuring, modelItem, listeningEvent, callback);
-            public ListenableItemListener AddVariableDirtyListener<T>(EControllerLifeCycle enableDuring, ListenableVariable<T> listenTarget, UnityAction<T> callback)
-                => m_Ref.AddVariableDirtyListener(enableDuring, listenTarget, callback);
-            public ListenableItemListener AddVariableInvalidListener<T>(EControllerLifeCycle enableDuring, ListenableVariable<T> listenTarget, UnityAction callback)
-                => m_Ref.AddVariableInvalidListener(enableDuring, listenTarget, callback);
-            public ListenableItemListener AddListener(EControllerLifeCycle enableDuring, IListenable modelItem, int listeningEvent, UnityAction<MessageData> callback)
-                => m_Ref.AddListener(enableDuring, modelItem, listeningEvent, callback);
-            public ListenableItemListener AddListener<TEnum>(EControllerLifeCycle enableDuring, IListenable modelItem, TEnum listeningEvent, UnityAction<MessageData> callback) where TEnum : Enum
-                => m_Ref.AddListener(enableDuring, modelItem, listeningEvent.GetHashCode(), callback);
         }
         #endregion
 
@@ -293,48 +287,19 @@ namespace BbxCommon.Ui
             return info;
         }
 
-        protected ListenableItemListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageData> callback)
+        protected ListenableItemListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction callback)
         {
-            var info = new ListenableItemListener(null, listeningEvent, callback);
-            StoreListener(enableDuring, info);
-            return info;
-        }
-
-        protected ListenableItemListener AddVariableListener(EControllerLifeCycle enableDuring, IListenable listenTarget, EListenableVariableEvent listeningEvent, UnityAction<MessageData> callback)
-        {
-            var info = new ListenableItemListener(listenTarget, (int)listeningEvent, callback);
-            AddListenerIfConditionMeets(info, enableDuring);
-            StoreListener(enableDuring, info);
-            return info;
-        }
-
-        protected ListenableItemListener AddVariableDirtyListener<T>(EControllerLifeCycle enableDuring, ListenableVariable<T> listenTarget, UnityAction<T> callback)
-        {
-            var info = new ListenableItemListener(listenTarget, (int)EListenableVariableEvent.Invalid, (messageData) =>
-            {
-                if (messageData is ListenableVariableDirtyMessageData<T> variableDirtyMessage)
-                    callback(variableDirtyMessage.CurValue);
-            });
-            AddListenerIfConditionMeets(info, enableDuring);
-            StoreListener(enableDuring, info);
-            return info;
-        }
-
-        protected ListenableItemListener AddVariableInvalidListener<T>(EControllerLifeCycle enableDuring, ListenableVariable<T> listenTarget, UnityAction callback)
-        {
-            var info = new ListenableItemListener(listenTarget, (int)EListenableVariableEvent.Invalid, (messageData) =>
+            var info = new ListenableItemListener(null, listeningEvent, (messageData) =>
             {
                 callback();
             });
-            AddListenerIfConditionMeets(info, enableDuring);
             StoreListener(enableDuring, info);
             return info;
         }
 
-        protected ListenableItemListener AddListener(EControllerLifeCycle enableDuring, IListenable listenTarget, int listeningEvent, UnityAction<MessageData> callback)
+        protected ListenableItemListener CreateListener(EControllerLifeCycle enableDuring, int listeningEvent, UnityAction<MessageData> callback)
         {
-            var info = new ListenableItemListener(listenTarget, listeningEvent, callback);
-            AddListenerIfConditionMeets(info, enableDuring);
+            var info = new ListenableItemListener(null, listeningEvent, callback);
             StoreListener(enableDuring, info);
             return info;
         }

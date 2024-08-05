@@ -26,16 +26,24 @@ namespace Dcg
 
     public class AttackableRawComponent : EcsRawComponent, IListenable
     {
+        public enum EEvent
+        {
+            DamageRequestProcessed,
+        }
+
         public List<DamageRequest> CauseDamageRequests;
         public List<DamageRequest> TakeDamageRequests;
 
         public UnityAction<DamageRequest> OnCauseDamage;
         public UnityAction<DamageRequest> OnTakeDamage;
 
-        public ListenableVariable<DamageRequest> DamageVar = new();
-
         private MessageHandler<int> m_MessageHandler = new();
         IMessageDispatcher<int> IListenable.MessageDispatcher => m_MessageHandler;
+
+        public void DispatchEvent(EEvent e, object extraData)
+        {
+            m_MessageHandler.Dispatch((int)e, extraData);
+        }
 
         public void AddCauseDamageRequest(Entity attacker, Entity target, int damage)
         {
@@ -44,7 +52,6 @@ namespace Dcg
             request.Target = target;
             request.Damage = damage;
             CauseDamageRequests.Add(request);
-            DamageVar.SetValue(request);
         }
 
         public void AddTakeDamageRequest(DamageRequest request)
@@ -60,7 +67,6 @@ namespace Dcg
 
         public override void OnCollect()
         {
-            DamageVar.MakeInvalid();
             CauseDamageRequests.CollectAndClearElements(true);
             TakeDamageRequests.CollectAndClearElements(true);
         }

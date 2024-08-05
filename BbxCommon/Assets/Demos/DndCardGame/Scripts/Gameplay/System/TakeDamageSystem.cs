@@ -34,6 +34,7 @@ namespace Dcg
                 {
                     attributesRawComponent.CurHp = 0;
                 }
+                attackableComp.DispatchEvent(AttackableRawComponent.EEvent.DamageRequestProcessed, damageRequest);
 
                 // 回收
                 damageRequest.CollectToPool();
