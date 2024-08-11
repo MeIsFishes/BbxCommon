@@ -112,7 +112,7 @@ namespace BbxCommon.Ui
                 UiDragableRef = TransformOverride.GetComponentInChildren<UiDragable>();
             if (UiDragableRef == null)
             {
-                Debug.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
+                DebugApi.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
                 return;
             }
             // init
@@ -128,7 +128,7 @@ namespace BbxCommon.Ui
                 UiDragableRef = TransformOverride.GetComponentInChildren<UiDragable>();
             if (UiDragableRef == null)
             {
-                Debug.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
+                DebugApi.LogError("You set AutoInitUiDragable but there is not such a component on the GameObject!");
                 return;
             }
             // uninit

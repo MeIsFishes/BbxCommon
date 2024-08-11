@@ -48,7 +48,7 @@ namespace BbxCommon
         {
             if (m_TotalWeight <= 0)
             {
-                Debug.LogWarning("There is no item in the RandomPool. Returned a default value.");
+                DebugApi.LogWarning("There is no item in the RandomPool. Returned a default value.");
                 return default;
             }
             var rand = Random.Range(0, m_TotalWeight);
@@ -71,7 +71,7 @@ namespace BbxCommon
         {
             if (weight <= 0)
             {
-                Debug.LogError("Weight must be at least 1!");
+                DebugApi.LogError("Weight must be at least 1!");
                 return;
             }
             if (m_ItemIndexes.TryGetValue(item, out var index))
@@ -95,7 +95,7 @@ namespace BbxCommon
         {
             if (weight <= 0)
             {
-                Debug.LogError("Weight must be at least 1!");
+                DebugApi.LogError("Weight must be at least 1!");
                 return;
             }
             if (m_PoolIndexes.TryGetValue(pool, out var index))

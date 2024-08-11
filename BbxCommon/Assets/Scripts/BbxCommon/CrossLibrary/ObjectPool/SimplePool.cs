@@ -32,14 +32,14 @@ namespace BbxCommon
 #if UNITY_EDITOR
             if (m_Pool.Contains(obj))
             {
-                Debug.LogError("The object " + obj.GetType().Name + " has already been collected");
+                DebugApi.LogError("The object " + obj.GetType().Name + " has already been collected");
                 return;
             }
 #endif
             if (m_Pool.Count > GlobalStaticVariable.SimplePoolLimit)
             {
 #if UNITY_EDITOR
-                Debug.LogWarning("Pooled objects count exceeds limit.");
+                DebugApi.LogWarning("Pooled objects count exceeds limit.");
 #endif
                 return;
             }
@@ -65,7 +65,7 @@ namespace BbxCommon
             SimplePool<T>.Collect(obj);
 #if UNITY_EDITOR
             if (obj is ICollection)
-                Debug.LogWarning("You called SimplePool.Collect() to collect a collector, which will not clear elements in it." +
+                DebugApi.LogWarning("You called SimplePool.Collect() to collect a collector, which will not clear elements in it." +
                     "Use collector.CollectToPool instead!");
 #endif
         }

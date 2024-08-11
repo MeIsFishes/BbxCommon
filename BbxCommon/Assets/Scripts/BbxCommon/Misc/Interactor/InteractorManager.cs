@@ -46,7 +46,7 @@ namespace BbxCommon
             }
             else
             {
-                Debug.LogWarning("There is no such a requestor existed. It is no need to unregister!");
+                DebugApi.LogWarning("There is no such a requestor existed. It is no need to unregister!");
             }
         }
 
@@ -55,7 +55,7 @@ namespace BbxCommon
             if (m_InteractingDatas.TryGetValue(requestor, out var hash))
                 hash.Clear();
             else
-                Debug.LogWarning("There is no such a requestor existed. It is no need to unregister!");
+                DebugApi.LogWarning("There is no such a requestor existed. It is no need to unregister!");
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace BbxCommon
         {
             if (m_Awaken.Count > 0)
             {
-                Debug.LogError("There has been awaken interactors. It's invalid to awake multiple objects at a time!");
+                DebugApi.LogError("There has been awaken interactors. It's invalid to awake multiple objects at a time!");
                 return;
             }
             m_Awaken.Add(interactor);

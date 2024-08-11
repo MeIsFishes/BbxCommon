@@ -1,13 +1,13 @@
 {
-    "name": "BbxCommon.Editor",
+    "name": "Serialize",
     "rootNamespace": "",
     "references": [
         "GUID:cc1c485fd10a74e48a637d86f3c6df19",
-        "GUID:801f745e31b57ba4081dae08f1e70ff2"
+        "GUID:801f745e31b57ba4081dae08f1e70ff2",
+        "GUID:734d92eba21c94caba915361bd5ac177",
+        "GUID:d8b63aba1907145bea998dd612889d6b"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": false,

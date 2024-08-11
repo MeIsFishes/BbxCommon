@@ -92,7 +92,7 @@ namespace BbxCommon.Ui
             var uiView = uiGameObject.GetComponent<UiViewBase>();
             if (uiView == null)
             {
-                Debug.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
+                DebugApi.LogError("If you want to create a UI item through prefab, there must be a UiViewBase on the GameObject.");
                 return null;
             }
             var controllerGo = new GameObject(uiGameObject.name.TryRemoveEnd("(Clone)") + "Controller");

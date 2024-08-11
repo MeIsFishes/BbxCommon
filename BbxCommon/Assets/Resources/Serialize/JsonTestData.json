@@ -1,0 +1,17 @@
+
+{
+    "Default.FullType" : "Ser.JsonTestData",
+    "BoolValue"        : false,
+    "IntValue"         : 8,
+    "FloatValue"       : 5.5,
+    "Class"            : {
+        "Default.FullType" : "Ser.JsonTestData+InternalClass",
+        "Value"            : "abcd"
+    },
+    "AbsolutePath"     : "D:\\Git\\BbxCommon\\BbxCommon\\Assets\\Resources\\Serialize\\JsonTestData.json",
+    "LoadingType"      : {
+        "Default.FullType" : "BbxCommon.BbxScriptableObject+ELoadingType",
+        "Value"            : "AutoLoading"
+    },
+    "GroupName"        : ""
+}

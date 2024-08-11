@@ -20,7 +20,7 @@ namespace BbxCommon
         {
             if (m_DictionaryEntitys.TryGetValue(entityID, out var entity))
             {
-                Debug.LogError("entityID conflict!!!");
+                DebugApi.LogError("entityID conflict!!!");
                 return Entity.Null;
             }
             

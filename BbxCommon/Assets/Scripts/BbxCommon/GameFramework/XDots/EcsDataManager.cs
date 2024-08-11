@@ -146,7 +146,7 @@ namespace BbxCommon
             if (m_SingletonRawComponentEntity == Entity.Null)
                 m_SingletonRawComponentEntity = entity;
             else
-                Debug.LogError("SingletonRawComponentEntity can be only set once!");
+                DebugApi.LogError("SingletonRawComponentEntity can be only set once!");
         }
         #endregion
 
@@ -216,7 +216,7 @@ namespace BbxCommon
                 }
                 else
                 {
-                    Debug.LogError("You are creating a duplicated EcsSingletonRawComponent " + typeof(T).FullName + "! The operation is invalid!");
+                    DebugApi.LogError("You are creating a duplicated EcsSingletonRawComponent " + typeof(T).FullName + "! The operation is invalid!");
                     return;
                 }
             }

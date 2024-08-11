@@ -122,7 +122,7 @@ namespace BbxCommon
         {
             if (m_IntDic.Count > 0)
             {
-                Debug.LogError("There has been elements in IntDic. You cannot set distribution type then.");
+                DebugApi.LogError("There has been elements in IntDic. You cannot set distribution type then.");
                 return;
             }
             m_Distribution = distribution;

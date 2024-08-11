@@ -11,8 +11,5 @@ namespace BbxCommon
         /// Relative path of <see cref="ScriptableObjectAssets"/> in Resources folder.
         /// </summary>
         public static string ExportScriptableObjectPathInResource = "BbxCommon/ScriptableObjectAssets";
-
-        public static int SimplePoolLimit = 100;
-        public static int ObjectPoolLimit = 100;
     }
 }

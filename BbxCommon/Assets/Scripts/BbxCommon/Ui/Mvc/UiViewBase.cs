@@ -54,7 +54,7 @@ namespace BbxCommon.Ui
                 loop++;
                 if (loop > 8)
                 {
-                    Debug.LogError("UiPreInit has run too many loops! Is there something wrong?");
+                    DebugApi.LogError("UiPreInit has run too many loops! Is there something wrong?");
                     break;
                 }
             }

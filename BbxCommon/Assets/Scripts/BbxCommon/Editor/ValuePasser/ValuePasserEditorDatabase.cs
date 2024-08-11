@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Linq;
 using System.Reflection;
 using System.Collections.Generic;
-using UnityEngine;
 
 namespace BbxCommon.ValuePasserInternal
 {
@@ -37,7 +35,7 @@ namespace BbxCommon.ValuePasserInternal
                         foreach (var variableType in dataAttr.VariableTypes)
                         {
                             if (typeDic.ContainsKey(variableType))
-                                Debug.LogError("ValuePasserDataBase: Trying register " + classType.Name + " to " + variableType.Name + " has failed!" +
+                                DebugApi.LogError("ValuePasserDataBase: Trying register " + classType.Name + " to " + variableType.Name + " has failed!" +
                                     " The VariableData " + typeDic[variableType].Name + " has already registered!");
                             else
                                 typeDic.Add(variableType, classType);

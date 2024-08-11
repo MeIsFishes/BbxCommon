@@ -14,7 +14,7 @@ namespace Dcg
         {
             if (DungeonEntities.Contains(entity))
             {
-                Debug.Log("The character has existed in the player's list!");
+                DebugApi.Log("The character has existed in the player's list!");
                 return;
             }
             DungeonEntities.Add(entity);
@@ -24,7 +24,7 @@ namespace Dcg
         {
             if (CombatEntities.Contains(entity))
             {
-                Debug.Log("The character has existed in the player's list!");
+                DebugApi.Log("The character has existed in the player's list!");
                 return;
             }
             CombatEntities.Add(entity);

@@ -75,7 +75,7 @@ namespace BbxCommon
             {
                 obj.UniqueId = m_IdGenerator.GenerateId();
 #if UNITY_EDITOR
-                Debug.LogWarning("Pooled objects count exceeds limit.");
+                DebugApi.LogWarning("Pooled objects count exceeds limit.");
 #endif
                 return;
             }

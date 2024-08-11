@@ -41,7 +41,7 @@ namespace BbxCommon
             {
 #if UNITY_EDITOR
                 if (m_Keys.Contains(key.Key) == false)
-                    Debug.LogWarning("Current key " + key.Key + " has already been removed! That's unexpected!");
+                    DebugApi.LogWarning("Current key " + key.Key + " has already been removed! That's unexpected!");
                 else
 #endif
                     m_Keys.Remove(key.Key);

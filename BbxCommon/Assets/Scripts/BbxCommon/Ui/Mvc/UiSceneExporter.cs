@@ -55,7 +55,7 @@ namespace BbxCommon.Ui
             {
                 UiGroups.RemoveBack();
             }
-            Debug.Log("Generating finished!");
+            DebugApi.Log("Generating finished!");
         }
 
         [Button]
@@ -81,7 +81,7 @@ namespace BbxCommon.Ui
             }
             EditorUtility.SetDirty(asset);
             AssetDatabase.SaveAssets();
-            Debug.Log("Exported UiSceneAsset to " + path + ".");
+            DebugApi.Log("Exported UiSceneAsset to " + path + ".");
         }
     }
 }

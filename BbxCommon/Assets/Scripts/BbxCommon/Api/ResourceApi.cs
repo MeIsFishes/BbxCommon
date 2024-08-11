@@ -50,24 +50,14 @@ namespace BbxCommon
 
         public static void CreateDirectory(string path)
         {
-            if (path.EndsWith("/") == false)
-            {
-                int index = path.LastIndexOf("/");
-                path = path.Remove(index + 1);
-            }
             path = Application.dataPath + "/" + path.TryRemoveStart("Assets/");
-            Directory.CreateDirectory(path);
+            FileApi.CreateAbsoluteDirectory(path);
         }
 
         public static void CreateDirectoryInResources(string path)
         {
-            if (path.EndsWith("/") == false)
-            {
-                int index = path.LastIndexOf("/");
-                path = path.Remove(index + 1);
-            }
             path = Application.dataPath + "/Resources/" + path;
-            Directory.CreateDirectory(path);
+            FileApi.CreateAbsoluteDirectory(path);
         }
 #endif
     }

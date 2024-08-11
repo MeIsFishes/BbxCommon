@@ -43,10 +43,10 @@ namespace BbxCommon
 #if UNITY_EDITOR
             var path = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(uiView.gameObject).TryRemoveStart("Assets/Resources/").TryRemoveEnd(".prefab");
             if (path.IsNullOrEmpty())
-                Debug.LogError("Export UI failed. You shoul export it from the GameObject in folder, but not from an opened instance!" +
+                DebugApi.LogError("Export UI failed. You shoul export it from the GameObject in folder, but not from an opened instance!" +
                     " In Unity, a prefab in folder and the opened are different ones!");
             else
-                Debug.Log("Exported path: " + path);
+                DebugApi.Log("Exported path: " + path);
             UiDatas[uiView.GetControllerType().FullName] = new UiData(path);
 #endif
         }
@@ -55,7 +55,7 @@ namespace BbxCommon
         {
 #if UNITY_EDITOR
             if (UiDatas.ContainsKey(typeof(TController).FullName) == false)
-                Debug.LogError("The UiController " + typeof(TController).FullName +
+                DebugApi.LogError("The UiController " + typeof(TController).FullName +
                     " has not been pre-loaded. You should export it from its UiView by clicking the button on inspector first.");
 #endif
             var prefab = Resources.Load<GameObject>(UiDatas[typeof(TController).FullName].UiViewPrefabPath);

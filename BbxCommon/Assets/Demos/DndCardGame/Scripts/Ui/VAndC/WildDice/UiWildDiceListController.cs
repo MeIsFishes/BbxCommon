@@ -83,7 +83,7 @@ namespace Dcg.Ui
         {
             if (m_CastSkillComp.IsNull())
             {
-                Debug.LogError("CastSkillRawComponent已被回收，疑似角色实体已销毁");
+                DebugApi.LogError("CastSkillRawComponent已被回收，疑似角色实体已销毁");
                 return;
             }
             if (m_CastSkillComp.Obj.AllSlotFilled() == false)

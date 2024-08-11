@@ -163,7 +163,7 @@ namespace BbxCommon.Ui
             if (uiController == null)
             {
 #if UNITY_EDITOR
-                Debug.LogError("You are creating a UiController has not been pre-loaded.");
+                DebugApi.LogError("You are creating a UiController has not been pre-loaded.");
 #endif
                 return null;
             }

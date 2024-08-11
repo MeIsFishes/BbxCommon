@@ -24,3 +24,4 @@ MonoBehaviour:
         - Assets/Resources/DndCardGame/Config/DiceData.asset
         - Assets/Resources/DndCardGame/Config/Monster/FemaleCData.asset
         - Assets/Resources/DndCardGame/Config/Monster/MaleAData.asset
+        - Assets/Resources/Serialize/JsonTestData.asset

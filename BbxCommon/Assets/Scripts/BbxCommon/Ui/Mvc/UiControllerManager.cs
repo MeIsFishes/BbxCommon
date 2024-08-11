@@ -123,7 +123,7 @@ namespace BbxCommon.Ui
                 return m_UiControllers[0];
             else if (m_UiControllers.Count > 1)
             {
-                Debug.LogError("There are more than 1 " + m_UiControllers[0].GetType().Name + " in the UiScene. In that case you cannot get the UiController in this way!");
+                DebugApi.LogError("There are more than 1 " + m_UiControllers[0].GetType().Name + " in the UiScene. In that case you cannot get the UiController in this way!");
                 return null;
             }
             return null;

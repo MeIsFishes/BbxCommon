@@ -115,7 +115,7 @@ namespace BbxCommon
             {
                 if (stage.Parent.Loaded == false)
                 {
-                    Debug.LogWarning("You are requiring the GameStage " + StageName + " to load while its parent " + stage.StageName + " has not been loaded!");
+                    DebugApi.LogWarning("You are requiring the GameStage " + StageName + " to load while its parent " + stage.StageName + " has not been loaded!");
                     return false;
                 }
                 stage = stage.Parent;
@@ -187,7 +187,7 @@ namespace BbxCommon
         {
             if (m_UiScene != null)
             {
-                Debug.LogError("Current stage \"" + StageName + "\" has got a UiScene, you can only call SetUiScene once!");
+                DebugApi.LogError("Current stage \"" + StageName + "\" has got a UiScene, you can only call SetUiScene once!");
                 return;
             }
             m_UiScene = uiScene;

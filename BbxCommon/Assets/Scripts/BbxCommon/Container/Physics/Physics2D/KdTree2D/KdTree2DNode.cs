@@ -185,7 +185,7 @@ namespace BbxCommon.Container
             var anotherNode = AnotherChild(childNode);
             if (anotherNode == null)
             {
-                Debug.LogError("Unexpected child Node!");
+                DebugApi.LogError("Unexpected child Node!");
                 return;
             }
             // Merge the child node to the another one, and set the another one to parent's child in place of

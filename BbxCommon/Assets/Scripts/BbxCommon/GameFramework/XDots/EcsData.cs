@@ -114,7 +114,7 @@ namespace BbxCommon
 #if ASPECT_DUPLICATE_CHECK
             if (HasRawAspect<T>())
             {
-                UnityEngine.Debug.LogWarning("There has been a duplicate EcsRawAspect " + typeof(T).FullName + " in Entity " + Entity + "!");
+                UnityEngine.DebugApi.LogWarning("There has been a duplicate EcsRawAspect " + typeof(T).FullName + " in Entity " + Entity + "!");
                 return aspect;
             }
 #endif

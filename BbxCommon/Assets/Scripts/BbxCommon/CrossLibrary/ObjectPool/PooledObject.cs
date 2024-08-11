@@ -18,7 +18,7 @@ namespace BbxCommon
 #if UNITY_EDITOR
             if (IsCollected == true)
             {
-                Debug.LogError("The object has been collected!");
+                DebugApi.LogError("The object has been collected!");
                 return;
             }
 #endif

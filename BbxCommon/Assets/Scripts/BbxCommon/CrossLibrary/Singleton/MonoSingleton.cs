@@ -16,7 +16,7 @@ namespace BbxCommon
         {
             if (m_SingleInstance != null && m_SingleInstance != this)
             {
-                Debug.LogWarning("Find the second instance of a singleton!");
+                DebugApi.LogWarning("Find the second instance of a singleton!");
                 Destroy(this.gameObject);
                 SingletonManager.Instance.AddSingleton(m_SingleInstance);
                 return;
