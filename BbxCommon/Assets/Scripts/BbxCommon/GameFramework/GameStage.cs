@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -5,6 +6,8 @@ using UnityEngine.SceneManagement;
 using UnityEditor;
 using Unity.Entities;
 using BbxCommon.Ui;
+using Cysharp.Threading.Tasks;
+using Object = UnityEngine.Object;
 
 namespace BbxCommon
 {
@@ -45,26 +48,45 @@ namespace BbxCommon
         // 2023.4.8:
         // Keep core functions to be inernal instead of public virtual. That is for loading stage in GameEngine via Update().
         // Also worrying about that is GameStage enough for development without extension?
-        internal void LoadStage()
+        internal async UniTask LoadStage(IProgress<float> progress)
         {
             if (m_Loaded)
                 return;
             if (AllParentsLoaded() == false)
                 return;
 
+            m_Loaded = true;
             PreLoadStage?.Invoke();
-            OnLoadStageLoad();
+            await OnLoadStageLoad(progress);
             OnLoadStageScene();
             OnLoadStageUiScene();
             OnLoadStageData();
             OnLoadStageTick();
             OnLoadStageListener();
-            OnLoadStageLateLoad();
-            m_Loaded = true;
+            await OnLoadStageLateLoad(progress);
             PostLoadStage?.Invoke();
+
+            if (progress != null)
+            {
+                await FakeLoadingProgress(progress);
+            }
         }
 
-        internal void UnloadStage()
+        public float StageLoadingWeight = 0.5f;
+        
+        private async UniTask FakeLoadingProgress(IProgress<float> progress)
+        {
+            float w = 0.1f;
+            while (StageLoadingWeight > 0)
+            {
+                await UniTask.Delay(TimeSpan.FromSeconds(0.1f));
+                progress.Report(w);
+                StageLoadingWeight -= w;
+            }
+            
+        }
+        
+        internal async UniTask UnloadStage()
         {
             if (m_Loaded == false)
                 return;
@@ -216,14 +238,25 @@ namespace BbxCommon
             m_StageLoadItems.Add(item);
         }
 
-        protected void OnLoadStageLoad()
+        protected async UniTask OnLoadStageLoad(IProgress<float> progress)
         {
             foreach (var item in m_StageLoadItems)
             {
-                item.Load(this);
+                var itemWeight = await AsyncLoadStageItem(item);
+                //progress?.Report(itemWeight);
+                //item.Load(this);
             }
+            
         }
 
+        private async UniTask<float> AsyncLoadStageItem(IStageLoad item)
+        {
+            await UniTask.NextFrame();
+            item.Load(this);
+            return 1f;
+
+        }
+        
         protected void OnUnloadStageLoad()
         {
             for (int i = m_StageLoadItems.Count - 1; i >= 0; i--)
@@ -237,11 +270,13 @@ namespace BbxCommon
             m_StageLateLoadItems.Add(item);
         }
 
-        protected void OnLoadStageLateLoad()
+        protected async UniTask OnLoadStageLateLoad(IProgress<float> progress)
         {
             foreach (var item in m_StageLateLoadItems)
             {
-                item.Load(this);
+                var itemWeight = await AsyncLoadStageItem(item);
+                //progress?.Report(p);
+                //item.Load(this);
             }
         }
 

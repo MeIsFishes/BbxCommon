@@ -31,6 +31,8 @@ namespace Dcg
 
             StageWrapper.LoadStage(m_GlobalStage);
             StageWrapper.LoadStage(m_GameStartStage);
+            
+            StageWrapper.StartLoading();
         }
 
         public void StartGame()
@@ -43,6 +45,7 @@ namespace Dcg
 
             StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);
+            StageWrapper.StartLoading(LoadingType.Progress);
         }
         
         public void EnterCombat()
@@ -50,11 +53,15 @@ namespace Dcg
             StageWrapper.UnloadStage(m_DungeonWalkStage);
             StageWrapper.LoadStage(m_CombatStage);
             ClearAllTips();
+            
+            StageWrapper.StartLoading();
         }
 
         public void CombatWin()
         {
             StageWrapper.LoadStage(m_RewardStage);
+            
+            StageWrapper.StartLoading();
         }
 
         public void ChooseRewardComplete()
@@ -62,6 +69,8 @@ namespace Dcg
             StageWrapper.UnloadStage(m_RewardStage);
             StageWrapper.UnloadStage(m_CombatStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);
+            
+            StageWrapper.StartLoading();
         }
 
         public void RestartGame()
@@ -74,12 +83,19 @@ namespace Dcg
             StageWrapper.LoadStage(m_DungeonWalkStage);
             UiApi.GetUiController<UiGameFailedController>().Show();
             ClearAllTips();
+            
+            StageWrapper.StartLoading();
         }
 
         public void ClearAllTips()
         {
             UiApi.GetUiController<UiTipController>().ClearTips();
             UiApi.GetUiController<UiPromptController>().Hide();
+        }
+
+        public override IUiLoadingController GetLoadingUi()
+        {
+            return UiApi.GetUiController<UiLoadingController>();
         }
     }
 }
