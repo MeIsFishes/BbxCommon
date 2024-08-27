@@ -45,7 +45,7 @@ namespace BbxCommon.Ui
         public List<Component> TweenTargets = new();
         #endregion
 
-        #region Variables Unserialized
+        #region Variables Hiden
         public bool Finished => m_Finished;
         private bool m_Finished;
         protected bool m_Enabled;

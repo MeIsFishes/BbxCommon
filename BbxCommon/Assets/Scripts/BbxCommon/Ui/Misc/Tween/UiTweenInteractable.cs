@@ -8,7 +8,7 @@ namespace BbxCommon.Ui
 {
     public class UiTweenInteractable : UiTweenBase
     {
-        [InfoBox("Set CanvasGroup.interactable as true while the AnimationCurve evaluates 1 or greater, else false.")]
+        [InfoBox("Set CanvasGroup.interactable as true while the AnimationCurve evaluates 0.99 or greater, and as false while evaluates 0.01 or less.")]
         [ReadOnly]
         public string Description;
 
@@ -18,7 +18,7 @@ namespace BbxCommon.Ui
             {
                 if (evaluate > 0.99f)
                     canvasGroup.interactable = true;
-                else
+                else if (evaluate < 0.01f)
                     canvasGroup.interactable = false;
             }
         }

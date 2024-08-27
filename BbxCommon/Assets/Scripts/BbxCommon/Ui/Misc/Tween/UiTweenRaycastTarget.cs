@@ -14,7 +14,7 @@ namespace BbxCommon.Ui
             Graphic,
         }
 
-        [InfoBox("Set Graphic.raycastTarget or CanvasGroup.blockRaycast as true while the AnimationCurve evaluates 1 or greater, else false.")]
+        [InfoBox("Set Graphic.raycastTarget or CanvasGroup.blockRaycast as true while the AnimationCurve evaluates 1 or greater, and as false while evaluates 0.01 or less.")]
         public ESearchType SearchType;
 
         protected override void ApplyTween(Component component, float evaluate)
@@ -26,7 +26,7 @@ namespace BbxCommon.Ui
                     {
                         if (evaluate > 0.99f)
                             canvasGroup.blocksRaycasts = true;
-                        else
+                        else if (evaluate < 0.01f)
                             canvasGroup.blocksRaycasts = false;
                     }
                     break;
@@ -35,7 +35,7 @@ namespace BbxCommon.Ui
                     {
                         if (evaluate > 0.99f)
                             graphic.raycastTarget = true;
-                        else
+                        else if (evaluate < 0.01f)
                             graphic.raycastTarget = false;
                     }
                     break;
