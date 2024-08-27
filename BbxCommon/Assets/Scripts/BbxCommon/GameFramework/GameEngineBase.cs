@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon.Ui;
+using Cysharp.Threading.Tasks;
 
 namespace BbxCommon
 {
@@ -43,6 +44,7 @@ namespace BbxCommon
             public GameStage CreateStage<T>(string stageName) where T : GameStage, new() => m_Ref.CreateStage<T>(stageName);
             public void LoadStage(GameStage stage) => m_Ref.LoadStage(stage);
             public void UnloadStage(GameStage stage) => m_Ref.UnloadStage(stage);
+            public void StartLoading(LoadingType loadingType = LoadingType.None) => m_Ref.StartLoading(loadingType);
         }
         #endregion
 
@@ -182,12 +184,12 @@ namespace BbxCommon
             return stage;
         }
 
-        public void LoadStage(GameStage stage)
+        private void LoadStage(GameStage stage)
         {
             m_OperateStages.Add(new OperateStage(stage, EOperateStage.Load));
         }
 
-        public void UnloadStage(GameStage stage)
+        private void UnloadStage(GameStage stage)
         {
             m_OperateStages.Add(new OperateStage(stage, EOperateStage.Unload));
         }
@@ -195,23 +197,75 @@ namespace BbxCommon
         private void OnAwakeStage()
         {
             LoadStage(CreateGameEngineStage());
+            LoadStage(CreateUiLoadingStage());
+            StartLoading(LoadingType.None);
         }
 
-        private void OnUpdateStage()
+        private GameStage CreateUiLoadingStage()
         {
-            foreach (var operate in m_OperateStages)
+            var stage = StageWrapper.CreateStage("Ui Loading Stage");
+            stage.SetUiScene(UiApi.GetUiGameEngineScene(), Resources.Load<UiSceneAsset>("BbxCommon/Ui/UiLoadingScene"));
+            return stage;
+        }
+        
+        public enum LoadingType
+        {
+            None,
+            Progress,
+        }
+
+        private async void StartLoading(LoadingType loadingType)
+        {
+            IProgress<float> progress = null;
+            var loadingUi = GetLoadingUi();
+            if (loadingType == LoadingType.Progress)
             {
-                switch (operate.OperateType)
+                progress = Progress.Create<float>(x =>
+                {
+                    loadingUi?.OnLoading(x);
+                });
+                
+                loadingUi?.SetVisible(true);
+            }
+
+            for (int i = 0; i < m_OperateStages.Count; i++)
+            {
+                switch (m_OperateStages[i].OperateType)
+                
                 {
                     case EOperateStage.Load:
-                        operate.Stage.LoadStage();
-                        break;
+                    await m_OperateStages[i].Stage.LoadStage(progress);
+                    break;
                     case EOperateStage.Unload:
-                        operate.Stage.UnloadStage();
-                        break;
+                    await  m_OperateStages[i].Stage.UnloadStage();
+                    break;
                 }
+                
             }
+            
             m_OperateStages.Clear();
+            loadingUi?.SetVisible(false);
+        }
+
+        public virtual IUiLoadingController GetLoadingUi()
+        {
+            return null;
+        }
+        private void OnUpdateStage()
+        {
+            // foreach (var operate in m_OperateStages)
+            // {
+            //     switch (operate.OperateType)
+            //     {
+            //         case EOperateStage.Load:
+            //             operate.Stage.LoadStage();
+            //             break;
+            //         case EOperateStage.Unload:
+            //             operate.Stage.UnloadStage();
+            //             break;
+            //     }
+            // }
+            // m_OperateStages.Clear();
         }
         #endregion
     }
