@@ -96,10 +96,10 @@ namespace BbxCommon.Ui
                         foreach (var type in types)
                         {
                             var component = TransformRootOverride.GetComponentInChildren(type);
-                            if (TweenTargets.Contains(component) == false && component != null)
+                            if (TweenTargets.Count == 0 && component != null)
                                 TweenTargets.Add(component);
                         }
-                        if (TweenTargets.Count == 0 && types.Count == 1 && AllowAutoCreate())
+                        if (TweenTargets.Count == 0 && AllowAutoCreate())
                         {
                             TweenTargets.Add(TransformRootOverride.gameObject.AddComponent(types[0]));
                             res = false;
