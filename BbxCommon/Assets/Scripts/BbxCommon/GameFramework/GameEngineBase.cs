@@ -224,7 +224,8 @@ namespace BbxCommon
                 {
                     loadingUi?.OnLoading(x);
                 });
-                
+
+                SetStageLoadingWeight();
                 loadingUi?.SetVisible(true);
             }
 
@@ -237,7 +238,7 @@ namespace BbxCommon
                     await m_OperateStages[i].Stage.LoadStage(progress);
                     break;
                     case EOperateStage.Unload:
-                    await  m_OperateStages[i].Stage.UnloadStage();
+                    await  m_OperateStages[i].Stage.UnloadStage(progress);
                     break;
                 }
                 
@@ -245,6 +246,21 @@ namespace BbxCommon
             
             m_OperateStages.Clear();
             loadingUi?.SetVisible(false);
+        }
+
+        private void SetStageLoadingWeight()
+        {
+            if (m_OperateStages.Count == 0)
+            {
+                return;
+            }
+
+            float loadingWeight = 1f / m_OperateStages.Count;
+            foreach (var operate in m_OperateStages)
+            {
+                operate.Stage.StageLoadingWeight = loadingWeight;
+            }
+            
         }
 
         public virtual IUiLoadingController GetLoadingUi()
