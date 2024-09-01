@@ -12,6 +12,7 @@ namespace Dcg.Ui
     public class HudDamageTweenTipView : HudViewBase
     {
         public TMP_Text Title;
+        public UiTweenAlpha TweenAlpha;
 
         public override Type GetControllerType()
         {

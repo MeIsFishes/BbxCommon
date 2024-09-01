@@ -39,6 +39,7 @@ namespace Dcg.Ui
         {
             base.OnHudInit();
             m_DamageRequestListener = ModelWrapper.CreateListener(EControllerLifeCycle.Open, AttackableRawComponent.EEvent.DamageRequestProcessed, OnDamageOccured);
+            Hide();
         }
 
         private void ShowTip(DamageTipData data)
@@ -51,6 +52,8 @@ namespace Dcg.Ui
             Show();
             m_IsShowing = true;
             m_View.Title.text = m_Data.DamageValue.ToString();
+            m_View.TweenAlpha.Duration = m_Data.DurationTime;
+            m_View.TweenAlpha.Play();
             m_Coroutine =  StartCoroutine(HideTip());
         }
 
@@ -68,7 +71,7 @@ namespace Dcg.Ui
             {
                 DamageType = damage.DamageType,
                 DamageValue = damage.Damage,
-                DurationTime = 1
+                DurationTime = 2
             });
         }
 

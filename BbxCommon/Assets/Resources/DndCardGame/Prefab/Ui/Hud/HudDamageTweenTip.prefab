@@ -66,7 +66,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\u63D0\u793A\u63CF\u8FF0\u6587\u672C"
+  m_text: cccccc
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
   m_sharedMaterial: {fileID: 6906481135215602584, guid: 50b9c68a2bdc0da438f1b682295ba80c, type: 2}
@@ -146,6 +146,7 @@ GameObject:
   - component: {fileID: 4453297498156456314}
   - component: {fileID: 6869136680371597049}
   - component: {fileID: 5315226007939924406}
+  - component: {fileID: 4262611250855068967}
   m_Layer: 0
   m_Name: HudDamageTweenTip
   m_TagString: Untagged
@@ -186,6 +187,7 @@ MonoBehaviour:
   AutoUpdatePos: 1
   HudOffset: {x: 0, y: 0, z: 0}
   Title: {fileID: 4776801492771920564}
+  TweenAlpha: {fileID: 4262611250855068967}
 --- !u!225 &5315226007939924406
 CanvasGroup:
   m_ObjectHideFlags: 0
@@ -198,3 +200,86 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &4262611250855068967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4939387669610328697}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0b667d7eaceb2df499f70b9d2ca529d0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Duration: 0
+  Curve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 6.2380724
+      outSlope: 6.2380724
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.0328354
+      value: 0.20482962
+      inSlope: 5.6117935
+      outSlope: 5.6117935
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.12575299
+      value: 0.66807157
+      inSlope: 2.8387396
+      outSlope: 2.8387396
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.5186768
+      value: 0.9399611
+      inSlope: -0.028710157
+      outSlope: -0.028710157
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.8812358
+      value: 0.66826475
+      inSlope: -3.2124271
+      outSlope: -3.2124271
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 0.99798584
+      value: 0.0056533813
+      inSlope: -5.675469
+      outSlope: -5.675469
+      tangentMode: 34
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  AutoSearch: 1
+  TransformRootOverride: {fileID: 4453297498156456314}
+  TweenTargets:
+  - {fileID: 5315226007939924406}
+  m_MinTime: 0
+  m_MaxTime: 0
+  MinValue: 0
+  MaxValue: 1
+  SearchType: 0
+  SearchTarget: 0
