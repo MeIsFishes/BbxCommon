@@ -36,7 +36,7 @@ namespace BbxCommon
                 return;
             }
 #endif
-            if (m_Pool.Count > GlobalStaticVariable.SimplePoolLimit)
+            if (m_Pool.Count > BbxCrossVar.SimplePoolLimit)
             {
 #if UNITY_EDITOR
                 DebugApi.LogWarning("Pooled objects count exceeds limit.");

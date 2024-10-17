@@ -27,10 +27,26 @@ namespace Ser
             DataApi.SetData(this);
         }
 
+        public override string ToString()
+        {
+            return "BoolValue = " + BoolValue +
+                "\nIntValue = " + IntValue +
+                "\nFloatValue = " + FloatValue +
+                "\nInternalClass.Value = " + Class.Value +
+                "\nAbsulutePath = " + AbsolutePath;
+        }
+
         [Button]
         private void Serialize()
         {
             JsonApi.Serialize(this, AbsolutePath);
+        }
+
+        [Button]
+        private void Deserialize()
+        {
+            var data = JsonApi.Deserialize<JsonTestData>(AbsolutePath);
+            DebugApi.Log(data);
         }
     }
 }

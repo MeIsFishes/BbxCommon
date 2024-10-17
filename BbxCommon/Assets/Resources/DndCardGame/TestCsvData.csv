@@ -1,0 +1,5 @@
+﻿IntValue,FloatValue,EnumValue,BoolArrayValue
+// this is comment,,,
+1,2.37,CeShi,true
+5,3.58,Test,True; False; TRUE; 0
+-3,0.00001,1,0; 1; 2; 3

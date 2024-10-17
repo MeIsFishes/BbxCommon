@@ -4,6 +4,7 @@ using UnityEngine;
 using Unity.Entities;
 using BbxCommon.Ui;
 using Cysharp.Threading.Tasks;
+using BbxCommon.Internal;
 
 namespace BbxCommon
 {
@@ -48,7 +49,7 @@ namespace BbxCommon
         }
         #endregion
 
-        #region UnityCallbacks
+        #region Unity Callbacks
         protected sealed override void Awake()
         {
             base.Awake();
@@ -58,6 +59,7 @@ namespace BbxCommon
             InitWrapper();
 
             OnAwakeEcsWorld();
+            OnAwakeReflectionAndResource();
             OnAwakeUiScene();
             OnAwakeStage();
 
@@ -128,6 +130,11 @@ namespace BbxCommon
             var uiGameEngineScene = CreateUiScene<UiGameEngineScene>();
             UiApi.SetUiGameEngineScene(uiGameEngineScene);
             m_UiSceneRoot = customUiSceneRoot;  // keep custom UiScenes hang on a separate root to ensure GameEngine can show its UI items above other all
+
+            // initialize UI prefab data
+            var data = Resources.Load<PreLoadUiData>(BbxVar.ExportPreLoadUiPathInResources);
+            data = Instantiate(data);   // create a copy
+            DataApi.SetData(data);
         }
         #endregion
 
@@ -148,6 +155,37 @@ namespace BbxCommon
             //m_SingletonEntity = EcsApi.CreateEntity();
             EcsDataManager.SetSingletonRawComponentEntity(m_SingletonEntity);
             InitSingletonComponents();
+        }
+        #endregion
+
+        #region Reflection and Resource
+        private void OnAwakeReflectionAndResource()
+        {
+            // reflect types
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (int i = 0; i < assemblies.Length; i++)
+            {
+                var types = assemblies[i].GetTypes();
+                for (int j = 0; j < types.Length; j++)
+                {
+                    var type = types[j];
+                    if (type.IsAbstract == false && type.IsSubclassOf(typeof(CsvDataBase)))
+                    {
+                        var constructor = type.GetConstructor(Type.EmptyTypes);
+                        var csvObj = (CsvDataBase)constructor.Invoke(null);
+                        var dataGroup = csvObj.GetDataGroup();
+                        if (dataGroup != null)
+                        {
+                            if (ResourceApi.DataGroupCsvPairs.ContainsKey(dataGroup) == false)
+                                ResourceApi.DataGroupCsvPairs[dataGroup] = new();
+                            ResourceApi.DataGroupCsvPairs[dataGroup].Add(csvObj);
+                        }
+                    }
+                }
+            }
+            // init resource
+            ResourceManager.Init();
+            DebugApi.Log(ResourceManager.ToString());
         }
         #endregion
 
@@ -232,7 +270,6 @@ namespace BbxCommon
             for (int i = 0; i < m_OperateStages.Count; i++)
             {
                 switch (m_OperateStages[i].OperateType)
-                
                 {
                     case EOperateStage.Load:
                     await m_OperateStages[i].Stage.LoadStage(progress);
@@ -241,7 +278,6 @@ namespace BbxCommon
                     await  m_OperateStages[i].Stage.UnloadStage(progress);
                     break;
                 }
-                
             }
             
             m_OperateStages.Clear();

@@ -1,7 +1,7 @@
 
 namespace BbxCommon
 {
-    public static class GlobalStaticVariable
+    public static class BbxVar
     {
         /// <summary>
         /// Relative path of <see cref="PreLoadUiData"/> in Resources folder.

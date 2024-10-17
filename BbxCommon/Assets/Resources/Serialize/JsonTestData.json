@@ -1,16 +1,16 @@
 
 {
-    "Default.FullType" : "Ser.JsonTestData",
+    "Default.FullType" : "Ser.JsonTestData, Serialize, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
     "BoolValue"        : false,
     "IntValue"         : 8,
     "FloatValue"       : 5.5,
     "Class"            : {
-        "Default.FullType" : "Ser.JsonTestData+InternalClass",
+        "Default.FullType" : "Ser.JsonTestData+InternalClass, Serialize, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
         "Value"            : "abcd"
     },
     "AbsolutePath"     : "D:\\Git\\BbxCommon\\BbxCommon\\Assets\\Resources\\Serialize\\JsonTestData.json",
     "LoadingType"      : {
-        "Default.FullType" : "BbxCommon.BbxScriptableObject+ELoadingType",
+        "Default.FullType" : "BbxCommon.BbxScriptableObject+ELoadingType, BbxCommon, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
         "Value"            : "AutoLoading"
     },
     "GroupName"        : ""

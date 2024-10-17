@@ -71,7 +71,7 @@ namespace BbxCommon
         /// </summary>
         public void Collect(T obj)
         {
-            if (m_Pool.Count > GlobalStaticVariable.ObjectPoolLimit)
+            if (m_Pool.Count > BbxCrossVar.ObjectPoolLimit)
             {
                 obj.UniqueId = m_IdGenerator.GenerateId();
 #if UNITY_EDITOR

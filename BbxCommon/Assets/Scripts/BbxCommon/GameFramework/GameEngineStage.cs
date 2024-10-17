@@ -9,25 +9,9 @@ namespace BbxCommon
         {
             var stage = StageWrapper.CreateStage("Game Engine Stage");
 
-            stage.AddLoadItem(new PreLoadUi());
             stage.AddDataGroup("GameEngineDefault");
 
             return stage;
-        }
-
-        private class PreLoadUi : IStageLoad
-        {
-            void IStageLoad.Load(GameStage stage)
-            {
-                var data = Resources.Load<PreLoadUiData>(GlobalStaticVariable.ExportPreLoadUiPathInResources);
-                data = Instantiate(data);   // create a copy
-                DataApi.SetData(data);
-            }
-
-            void IStageLoad.Unload(GameStage stage)
-            {
-                
-            }
         }
     }
 }

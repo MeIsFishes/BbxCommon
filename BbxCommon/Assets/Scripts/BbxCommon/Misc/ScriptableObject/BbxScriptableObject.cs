@@ -11,7 +11,7 @@ namespace BbxCommon
 #if UNITY_EDITOR
         public static void ExportAssetPath(BbxScriptableObject asset, string path)
         {
-            var soAssets = ResourceApi.LoadOrCreateAssetInResources<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
+            var soAssets = ResourceApi.EditorOperation.LoadOrCreateAssetInResources<ScriptableObjectAssets>(BbxVar.ExportScriptableObjectPathInResource);
             string groupName = "GameEngineDefault";
             if (asset.LoadingType == ELoadingType.GroupedByName)
                 groupName = asset.GroupName;

@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.SceneManagement;
-using UnityEditor;
 using Unity.Entities;
 using BbxCommon.Ui;
+using BbxCommon.Internal;
 using Cysharp.Threading.Tasks;
 using Object = UnityEngine.Object;
 
@@ -365,7 +365,7 @@ namespace BbxCommon
 
         private void OnLoadStageData()
         {
-            var soAssets = Resources.Load<ScriptableObjectAssets>(GlobalStaticVariable.ExportScriptableObjectPathInResource);
+            var soAssets = Resources.Load<ScriptableObjectAssets>(BbxVar.ExportScriptableObjectPathInResource);
             if (soAssets == null)
                 return;
             for (int i = 0; i < m_LoadDataGroups.Count; i++)
@@ -375,11 +375,28 @@ namespace BbxCommon
                 {
                     foreach (var path in paths)
                     {
-                        var target = Resources.Load(ResourceApi.PathToResourcesPath(path));
+                        var target = Resources.Load(ResourceApi.EditorOperation.RelativePathToResourcesPath(path));
                         if (target is BbxScriptableObject asset)
                         {
                             Object.Instantiate(asset).Load();
                             m_ScriptableObjects.TryAdd(asset);
+                        }
+                    }
+                }
+                if (ResourceApi.DataGroupCsvPairs.TryGetValue(group, out var csvDataList))
+                {
+                    foreach (var csvObj in csvDataList)
+                    {
+                        var tableNames = csvObj.GetTableNames();
+                        bool foundTable = false;
+                        foreach (var name in tableNames)
+                        {
+                            if (ResourceManager.LoadCsv(name, csvObj) == true)
+                                foundTable = true;
+                        }
+                        if (foundTable == false)
+                        {
+                            DebugApi.LogWarning("There is no CSV file fits " + csvObj.GetType().FullName + " requires. It requires " + csvObj.GetTableNames());
                         }
                     }
                 }
