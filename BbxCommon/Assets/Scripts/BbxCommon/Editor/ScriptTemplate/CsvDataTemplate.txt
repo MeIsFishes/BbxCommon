@@ -1,0 +1,13 @@
+using System.Collections.Generic;
+using BbxCommon;
+
+public class #SCRIPT_NAME# : CsvDataBase<#SCRIPT_NAME#>
+{
+    public override EDataLoad GetDataLoadType() => EDataLoad.Addition;
+    public override string[] GetTableNames() => new string[] { "#SCRIPT_NAME#" };
+
+    protected override void ReadLine()
+    {
+        //IntValue = ParseIntFromKey("IntValue");
+    }
+}

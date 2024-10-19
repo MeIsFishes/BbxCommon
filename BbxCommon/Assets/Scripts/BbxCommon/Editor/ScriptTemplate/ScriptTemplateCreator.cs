@@ -109,13 +109,22 @@ namespace BbxCommon.Editor
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/HudControllerTemplate.txt");
         }
 
-        [MenuItem("Assets/Create/BbxCommon/Script/ScriptableObject", false)]
+        [MenuItem("Assets/Create/BbxCommon/Script/Config/ScriptableObject", false)]
         public static void CreateScriptableObject()
         {
             ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
                 new SimpleScriptReplacer(), "TestData.cs",
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/ScriptableObjectTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Config/CsvData", false)]
+        public static void CreateCsvData()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TestData.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/CsvDataTemplate.txt");
         }
     }
 
