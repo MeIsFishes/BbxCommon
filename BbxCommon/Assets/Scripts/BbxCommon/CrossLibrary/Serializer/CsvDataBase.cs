@@ -93,8 +93,7 @@ namespace BbxCommon.Internal
             CurrentPath = FileApi.AddExtensionIfNot(filePath, ".csv");
             CsvKeys.Clear();
             KeyValuePairs.Clear();
-            content = content.Replace("\r", "");
-            var lines = content.Split('\n');
+            var lines = content.SplitIntoLines();
             if (lines.Length == 0)
             {
                 DebugApi.LogError("Invalid CSV string! The file path you pass in is " +  filePath);

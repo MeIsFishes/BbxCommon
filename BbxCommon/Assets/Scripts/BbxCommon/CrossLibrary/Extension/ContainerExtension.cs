@@ -606,6 +606,12 @@ namespace BbxCommon
         {
             return str != null && str.Length > 0;
         }
+
+        private static char[] m_LineSeparators = new char[] { '\r', '\n' };
+        public static string[] SplitIntoLines(this string str)
+        {
+            return str.Split(m_LineSeparators, System.StringSplitOptions.RemoveEmptyEntries);
+        }
         #endregion
 
         #region StringBuilder
