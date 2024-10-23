@@ -242,7 +242,7 @@ namespace BbxCommon.Internal
         #endregion
 
         #region Load TextAsset
-        internal static TextAsset LoadFirstTextAsset(string key)
+        internal static TextAsset LoadTextAsset(string key)
         {
             TextAsset res = null;
             if (m_FileDic.TryGetValue(key, out var fileInfos))
@@ -315,7 +315,7 @@ namespace BbxCommon.Internal
                     }
                     return true;
                 case CsvDataBase.EDataLoad.Override:
-                    var textAsset = LoadFirstTextAsset(key);
+                    var textAsset = LoadTextAsset(key);
                     csvObj.ReadFromString(fileInfos[0].FileSource == EFileSource.Resources ? "Resources/" + fileInfos[0].Path : fileInfos[0].Path,
                             textAsset.text);
                     return true;
@@ -341,7 +341,7 @@ namespace BbxCommon.Internal
                     }
                     return true;
                 case CsvDataBase.EDataLoad.Override:
-                    var textAsset = LoadFirstTextAsset(key);
+                    var textAsset = LoadTextAsset(key);
                     csvObj.ReadFromString(fileInfos[0].FileSource == EFileSource.Resources ? "Resources\\" + fileInfos[0].Path : fileInfos[0].Path,
                             textAsset.text);
                     return true;

@@ -12,19 +12,19 @@ namespace BbxCommon
         #endregion
 
         #region Resource Manager
-        public static ResourceManager.FileInfo GetFirstFile(string key)
+        public static ResourceManager.FileInfo GetFile(string key)
         {
             return ResourceManager.GetFirstFile(key);
         }
 
-        public static List<ResourceManager.FileInfo> GetFileList(string key)
+        public static List<ResourceManager.FileInfo> GetAllFile(string key)
         {
             return ResourceManager.GetFileList(key);
         }
 
-        public static TextAsset LoadFirstTextAsset(string key)
+        public static TextAsset LoadTextAsset(string key)
         {
-            return ResourceManager.LoadFirstTextAsset(key);
+            return ResourceManager.LoadTextAsset(key);
         }
 
         public static List<TextAsset> LoadTextAssets(string key)
