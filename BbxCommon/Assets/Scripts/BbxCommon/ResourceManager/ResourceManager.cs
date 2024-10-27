@@ -25,7 +25,7 @@ namespace BbxCommon.Internal
         /// <summary>
         /// Mods sorted by priority
         /// </summary>
-        private static List<ModInfo> m_ModList = new List<ModInfo>();
+        private static List<ModInfo> m_ModList = new();
 
         private static void CollectMods()
         {
