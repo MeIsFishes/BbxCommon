@@ -283,8 +283,10 @@ namespace BbxCommon
         #endregion
 
         #region StageTick
-        protected List<EcsSystemBase> m_UpdateSystems = new List<EcsSystemBase>();
-        protected List<EcsSystemBase> m_FixedUpdateSystems = new List<EcsSystemBase>();
+        protected List<EcsSystemBase> m_UpdateSystems = new();
+        protected List<EcsSystemBase> m_FixedUpdateSystems = new();
+        protected List<EcsSystemBase> m_GameEngineEarlySystems = new();
+        protected List<EcsSystemBase> m_GameEngineLateSystems = new();
 
         public void AddUpdateSystem<T>() where T : EcsSystemBase, new()
         {
@@ -298,6 +300,18 @@ namespace BbxCommon
             m_FixedUpdateSystems.Add(system);
         }
 
+        internal void AddGameEngineEarlyUpdateSystem<T>() where T : EcsSystemBase, new()
+        {
+            var system = m_EcsWorld.CreateSystemManaged<T>();
+            m_GameEngineEarlySystems.Add(system);
+        }
+
+        internal void AddGameEngineLateUpdateSystem<T>() where T : EcsSystemBase, new()
+        {
+            var system = m_EcsWorld.CreateSystemManaged<T>();
+            m_GameEngineLateSystems.Add(system);
+        }
+
         private void OnLoadStageTick()
         {
             foreach (var system in m_UpdateSystems)
@@ -308,6 +322,16 @@ namespace BbxCommon
             foreach (var system in m_FixedUpdateSystems)
             {
                 var systemGroup = m_EcsWorld.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
+                systemGroup.AddSystemToUpdateList(system);
+            }
+            foreach (var system in m_GameEngineEarlySystems)
+            {
+                var systemGroup = m_EcsWorld.GetExistingSystemManaged<GameEngineEarlyUpdateSystemGroup>();
+                systemGroup.AddSystemToUpdateList(system);
+            }
+            foreach (var system in m_GameEngineLateSystems)
+            {
+                var systemGroup = m_EcsWorld.GetExistingSystemManaged<GameEngineLateUpdateSystemGroup>();
                 systemGroup.AddSystemToUpdateList(system);
             }
         }
@@ -323,6 +347,16 @@ namespace BbxCommon
             foreach (var system in m_FixedUpdateSystems)
             {
                 var systemGroup = m_EcsWorld.GetExistingSystemManaged<FixedStepSimulationSystemGroup>();
+                systemGroup.RemoveSystemFromUpdateList(system);
+            }
+            foreach (var system in m_GameEngineEarlySystems)
+            {
+                var systemGroup = m_EcsWorld.GetExistingSystemManaged<GameEngineEarlyUpdateSystemGroup>();
+                systemGroup.RemoveSystemFromUpdateList(system);
+            }
+            foreach (var system in m_GameEngineLateSystems)
+            {
+                var systemGroup = m_EcsWorld.GetExistingSystemManaged<GameEngineLateUpdateSystemGroup>();
                 systemGroup.RemoveSystemFromUpdateList(system);
             }
         }

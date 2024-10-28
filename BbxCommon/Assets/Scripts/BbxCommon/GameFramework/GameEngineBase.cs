@@ -9,7 +9,11 @@ using BbxCommon.Internal;
 namespace BbxCommon
 {
     #region SystemGroup
-    public partial class UpdateSystemGroup : ComponentSystemGroup { }
+    internal partial class UpdateSystemGroup : ComponentSystemGroup { }
+    [UpdateBefore(typeof(UpdateSystemGroup))]
+    internal partial class GameEngineEarlyUpdateSystemGroup : ComponentSystemGroup { }
+    [UpdateAfter(typeof(UpdateSystemGroup))]
+    internal partial class GameEngineLateUpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
     public abstract partial class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
@@ -151,8 +155,9 @@ namespace BbxCommon
         {
             m_EcsWorld = World.DefaultGameObjectInjectionWorld;
             m_EcsWorld.CreateSystem<UpdateSystemGroup>();
+            m_EcsWorld.CreateSystem<GameEngineEarlyUpdateSystemGroup>();
+            m_EcsWorld.CreateSystem<GameEngineLateUpdateSystemGroup>();
             m_SingletonEntity = EcsApi.CreateEntity();
-            //m_SingletonEntity = EcsApi.CreateEntity();
             EcsDataManager.SetSingletonRawComponentEntity(m_SingletonEntity);
             InitSingletonComponents();
         }
