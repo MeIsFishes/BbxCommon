@@ -9,7 +9,7 @@ namespace Dcg
     [DisableAutoCreation, UpdateBefore(typeof(CombatRoundSystem))]
     public class CombatEndTurnSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var combatTurnComp in GetEnumerator<CombatTurnRawComponent>())
             {

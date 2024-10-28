@@ -7,7 +7,7 @@ using BbxCommon;
 [DisableAutoCreation]
 public partial class #SCRIPT_NAME# : EcsMixSystemBase
 {
-    protected override void OnUpdate()
+    protected override void OnSystemUpdate()
     {
 
     }

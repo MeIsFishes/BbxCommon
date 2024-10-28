@@ -9,7 +9,7 @@ namespace Cin
     [DisableAutoCreation]
     public partial class SyncCameraInfoSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var mainCameraComp = EcsApi.GetSingletonRawComponent<MainCameraSingletonRawComponent>();
             if (mainCameraComp == null)

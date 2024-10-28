@@ -7,7 +7,7 @@ namespace Dcg
     [DisableAutoCreation, UpdateAfter(typeof(SpawnRoomSystem))]
     public partial class SpawnRoomShowSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var aspect in GetEnumerator<SpawnRoomShowRawAspect>())
             {

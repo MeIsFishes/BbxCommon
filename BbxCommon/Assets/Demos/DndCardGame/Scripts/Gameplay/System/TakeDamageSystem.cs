@@ -7,7 +7,7 @@ namespace Dcg
     [DisableAutoCreation, UpdateAfter(typeof(CauseDamageSystem))]
     public partial class TakeDamageSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var attackableComp in GetEnumerator<AttackableRawComponent>())
             {

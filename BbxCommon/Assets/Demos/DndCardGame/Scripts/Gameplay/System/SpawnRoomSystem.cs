@@ -9,7 +9,7 @@ namespace Dcg
     [DisableAutoCreation]
     public partial class SpawnRoomSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var dungeonRoomComp = EcsApi.GetSingletonRawComponent<DungeonRoomSingletonRawComponent>();
             if (dungeonRoomComp == null)

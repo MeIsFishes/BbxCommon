@@ -621,12 +621,5 @@ namespace BbxCommon
             SimplePool<StringBuilder>.Collect(sb);
         }
         #endregion
-
-        #region Object
-        public static string GetTypeName<T>(this T obj)
-        {
-            return typeof(T).Name;
-        }
-        #endregion
     }
 }

@@ -9,7 +9,7 @@ namespace Cin
     [DisableAutoCreation]
     public partial class PlayerMoveSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             // hasn't been baken
             var mainCameraComp = EcsApi.GetSingletonRawComponent<MainCameraSingletonRawComponent>();

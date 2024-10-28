@@ -9,7 +9,7 @@ namespace Dcg
     [DisableAutoCreation]
     public partial class WalkToSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var aspect in GetEnumerator<WalkToRawAspect>())
             {

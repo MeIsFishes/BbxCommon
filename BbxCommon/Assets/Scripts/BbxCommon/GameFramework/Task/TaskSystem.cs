@@ -6,7 +6,7 @@ namespace BbxCommon
     [DisableAutoCreation]
     internal partial class TaskSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var taskManager = TaskManager.Instance;
             if (taskManager.NewEnterTasks.Count == 0 && taskManager.RunningTasks.Count == 0)

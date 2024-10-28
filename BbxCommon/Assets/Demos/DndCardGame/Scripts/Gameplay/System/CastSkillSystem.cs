@@ -12,7 +12,7 @@ namespace Dcg
     [DisableAutoCreation]
     public partial class CastSkillSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var castSkillComp in GetEnumerator<CastSkillRawComponent>())
             {

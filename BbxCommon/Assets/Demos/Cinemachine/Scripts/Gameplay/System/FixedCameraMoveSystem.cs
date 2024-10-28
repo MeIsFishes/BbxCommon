@@ -9,7 +9,7 @@ namespace Cin
     [DisableAutoCreation]
     public partial class FixedCameraMoveSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var fixedCameraComp = EcsApi.GetSingletonRawComponent<FixedCameraSingletonRawComponent>();
             if (fixedCameraComp == null)

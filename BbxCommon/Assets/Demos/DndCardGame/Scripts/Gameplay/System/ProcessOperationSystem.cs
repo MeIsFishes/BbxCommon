@@ -7,7 +7,7 @@ namespace Dcg
     [DisableAutoCreation]
     public partial class ProcessOperationSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             var operationComp = EcsApi.GetSingletonRawComponent<OperationRequestSingletonRawComponent>();
             // 每帧只处理一条操作请求，以给出完整的一帧，令其他system tick的时候可以请求阻塞

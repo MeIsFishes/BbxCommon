@@ -12,7 +12,7 @@ namespace Dcg
     [DisableAutoCreation, UpdateBefore(typeof(CombatEndTurnSystem))]
     public partial class CombatMonsterTurnSystem : EcsMixSystemBase
     {
-        protected override void OnUpdate()
+        protected override void OnSystemUpdate()
         {
             foreach (var monsterComp in GetEnumerator<MonsterRawComponent>())
             {
