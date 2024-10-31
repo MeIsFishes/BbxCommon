@@ -6,6 +6,12 @@ namespace BbxCommon
     [DisableAutoCreation]
     internal partial class TaskSystem : EcsMixSystemBase
     {
+        private struct TaskFinishInfo
+        {
+            public int Index;
+            public bool Succeeded;
+        }
+
         protected override void OnSystemUpdate()
         {
             var taskManager = TaskManager.Instance;
@@ -22,39 +28,46 @@ namespace BbxCommon
             taskManager.RunningTasks.Clear();
 
             // update
-            var succeededTasks = SimplePool<List<TaskBase>>.Alloc();
-            var finishedTaskIndexes = SimplePool<List<int>>.Alloc();
+            var finishInfos = SimplePool<List<TaskFinishInfo>>.Alloc();
             for (int i = 0; i < taskManager.RunningTasks.Count; i++)
             {
                 var task = taskManager.RunningTasks[i];
                 var taskState = task.Update();
+                var finishInfo = new TaskFinishInfo();
                 switch (taskState)
                 {
                     case ETaskRunState.Succeeded:
-                        succeededTasks.Add(task);
-                        finishedTaskIndexes.Add(i);
+                        finishInfo.Index = i;
+                        finishInfo.Succeeded = true;
+                        finishInfos.Add(finishInfo);
                         break;
                     case ETaskRunState.Failed:
-                        finishedTaskIndexes.Add(i);
+                        finishInfo.Index = i;
+                        finishInfo.Succeeded = false;
+                        finishInfos.Add(finishInfo);
                         break;
                 }
             }
 
             // exit
-            for (int i = 0; i < succeededTasks.Count; i++)
+            // Since in some extreme cases, running order may cause bugs, we promise that tasks always run in the order of adding.
+            for (int i = 0; i <= finishInfos.Count; i++)
             {
-                succeededTasks[i].Exit();
+                var finishInfo = finishInfos[i];
+                var task = taskManager.RunningTasks[finishInfo.Index];
+                if (finishInfo.Succeeded)
+                    task.OnNodeSucceeded();
+                else
+                    task.OnNodeFailed();
+                task.Exit();
             }
-            for (int i = finishedTaskIndexes.Count - 1; i >= 0; i--)
+            for (int i = finishInfos.Count - 1; i >= 0; i--)
             {
-                // We don't use the method taskManager.RunningTasks.UnorderedRemoveAt(), to ensure tasks always run in the order of adding,
-                // since in some extreme cases, running order may cause bugs.
-                taskManager.RunningTasks.RemoveAt(finishedTaskIndexes[i]);
+                taskManager.RunningTasks.RemoveAt(finishInfos[i].Index);
             }
 
             // collect collections
-            succeededTasks.CollectToPool();
-            finishedTaskIndexes.CollectToPool();
+            finishInfos.CollectToPool();
         }
     }
 }

@@ -221,7 +221,7 @@ namespace BbxCommon.Internal
             }
         }
 
-        protected uint ParseUIntFromKey(string key, uint defaultValue = 0)
+        protected uint ParseUintFromKey(string key, uint defaultValue = 0)
         {
             var str = KeyValuePairs[key];
             if (str == "")
@@ -257,7 +257,7 @@ namespace BbxCommon.Internal
             }
         }
 
-        protected ulong ParseULongFromKey(string key, ulong defaultValue = 0)
+        protected ulong ParseUlongFromKey(string key, ulong defaultValue = 0)
         {
             var str = KeyValuePairs[key];
             if (str == "")
@@ -398,7 +398,7 @@ namespace BbxCommon.Internal
             return ParseIntArrayFromKey(key, true, ';');
         }
 
-        protected uint[] ParseUIntArrayFromKey(string key, bool ignoreSpace, params char[] separators)
+        protected uint[] ParseUintArrayFromKey(string key, bool ignoreSpace, params char[] separators)
         {
             var strs = SplitFromKey(key, ignoreSpace, separators);
             uint[] result = new uint[strs.Length];
@@ -417,9 +417,9 @@ namespace BbxCommon.Internal
             return result;
         }
 
-        protected uint[] ParseUIntArrayFromKey(string key)
+        protected uint[] ParseUintArrayFromKey(string key)
         {
-            return ParseUIntArrayFromKey(key, true, ';');
+            return ParseUintArrayFromKey(key, true, ';');
         }
 
         protected long[] ParseLongArrayFromKey(string key, bool ignoreSpace, params char[] separators)
@@ -446,7 +446,7 @@ namespace BbxCommon.Internal
             return ParseLongArrayFromKey(key, true, ';');
         }
 
-        protected ulong[] ParseULongArrayFromKey(string key, bool ignoreSpace, params char[] separators)
+        protected ulong[] ParseUlongArrayFromKey(string key, bool ignoreSpace, params char[] separators)
         {
             var strs = SplitFromKey(key, ignoreSpace, separators);
             ulong[] result = new ulong[strs.Length];
@@ -465,9 +465,9 @@ namespace BbxCommon.Internal
             return result;
         }
 
-        protected ulong[] ParseULongArrayFromKey(string key)
+        protected ulong[] ParseUlongArrayFromKey(string key)
         {
-            return ParseULongArrayFromKey(key, true, ';');
+            return ParseUlongArrayFromKey(key, true, ';');
         }
 
         protected float[] ParseFloatArrayFromKey(string key, bool ignoreSpace, params char[] separators)

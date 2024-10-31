@@ -93,8 +93,7 @@ namespace Dcg
             entity.CreateRawAspect<WalkToRawAspect>();
             //UI
             entity.BindHud<HudCharacterStatusController>();
-            entity.BindHud<HudDamageTweenTipController>(); 
-        
+            entity.BindHud<HudCommonStatusController>(); 
 
             return entity;
         }
@@ -136,8 +135,7 @@ namespace Dcg
 
             // 绑定HUD
             entity.BindHud<HudMonsterStatusController>();
-            entity.BindHud<HudDamageTweenTipController>();
-
+            entity.BindHud<HudCommonStatusController>();
 
             return entity;
         }

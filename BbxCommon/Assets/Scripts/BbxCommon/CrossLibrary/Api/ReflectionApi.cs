@@ -43,5 +43,50 @@ namespace BbxCommon
         {
             typeof(TClass).GetField(fieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public).SetValue(obj, value);
         }
+
+        /// <summary>
+        /// To ensure find out the unique result, you should pass in "BbxCommon.MyClass", but not "MyClass".
+        /// </summary>
+        public static Type GetType(string typeFullName)
+        {
+            var type = Type.GetType(typeFullName);
+            if (type == null)
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
+                {
+                    type = assembly.GetType(typeFullName);
+                    if (type != null)
+                        break;
+                }
+            }
+            return type;
+        }
+
+        /// <summary>
+        /// This function will check assemblyQualifiedName first. Considering that assembly's name may be changed,
+        /// it keeps typeFullName as an option.
+        /// </summary>
+        /// <param name="typeFullName"> typeof(T).FullName </param>
+        /// <param name="assemblyQualifiedName"> typeof(T).AssemblyQualifiedName </param>
+        public static Type GetType(string typeFullName, string assemblyQualifiedName)
+        {
+            var type = Type.GetType(assemblyQualifiedName);
+            if (type == null)
+            {
+                type = Type.GetType(typeFullName);
+            }
+            if (type == null)
+            {
+                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
+                {
+                    type = assembly.GetType(typeFullName);
+                    if (type != null)
+                        break;
+                }
+            }
+            return type;
+        }
     }
 }

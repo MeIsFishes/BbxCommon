@@ -44,3 +44,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.HudDamageTweenTipController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudDamageTweenTip
+    - Key: Dcg.Ui.HudCommonStatusController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudCommonStatus
