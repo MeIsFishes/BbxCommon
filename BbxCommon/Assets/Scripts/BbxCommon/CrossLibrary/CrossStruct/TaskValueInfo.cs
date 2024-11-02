@@ -42,6 +42,7 @@ namespace BbxCommon.Internal
         public List<TaskRefrenceInfo> TaskRefrenceDic = new();
         public List<TaskTimelineItemInfo> TimelineItemInfos = new();
 
+        #region Add Field Info
         public void AddFieldInfo(string fieldName, ETaskFieldValueSource valueSource, string value)
         {
             var fieldInfo = new TaskFieldInfo();
@@ -170,6 +171,16 @@ namespace BbxCommon.Internal
             fieldInfo.Value = contextFieldEnum.ToString();
             FieldInfos.Add(fieldInfo);
         }
+
+        public void AddTimelineInfo(float startTime, float duration, int referenceId)
+        {
+            var timelineInfo = new TaskTimelineItemInfo();
+            timelineInfo.StartTime = startTime;
+            timelineInfo.Duration = duration;
+            timelineInfo.Id = referenceId;
+            TimelineItemInfos.Add(timelineInfo);
+        }
+        #endregion
     }
 
     public class TaskGroupInfo
@@ -177,15 +188,6 @@ namespace BbxCommon.Internal
         public int RootTaskId;
         public string BindingContextFullType;
         public Dictionary<int, TaskValueInfo> TaskInfos = new();
-
-        public TaskValueInfo CreateTaskValueInfo<T>(int id)
-        {
-            var info = new TaskValueInfo();
-            info.FullTypeName = typeof(T).FullName;
-            info.AssemblyQualifiedName = typeof(T).AssemblyQualifiedName;
-            TaskInfos[id] = info;
-            return info;
-        }
 
         public void SetRootTaskId(int taskId)
         {

@@ -32,12 +32,21 @@ namespace Dcg
             {
                 // generate
                 var taskTest = TaskApi.CreateTaskInfo<TaskTestContext>("Test", 0);
-                var taskDebugLogNode = taskTest.CreateTaskValueInfo<TaskDebugLogNode>(0);
-                taskDebugLogNode.AddFieldInfo(TaskDebugLogNode.EField.Content, "Task log succeeded!");
+                var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5);
+                timelineInfo.AddTimelineInfo(0, 0, 1);
+                timelineInfo.AddTimelineInfo(5, 0, 2);
+
+                var debugLogInfo1 = taskTest.CreateTaskValueInfo<TaskDebugLogNode>(1);
+                debugLogInfo1.AddFieldInfo(TaskDebugLogNode.EField.Content, TaskTestContext.EField.DebugContent);
+
+                var debugLogInfo2 = taskTest.CreateTaskValueInfo<TaskDebugLogNode>(2);
+                debugLogInfo2.AddFieldInfo(TaskDebugLogNode.EField.Content, "5s later!");
+
                 TaskApi.RegisterTask("Test", taskTest);
 
                 // run task
                 var context = new TaskTestContext();
+                context.DebugContent = "Task log succeeded!";
                 TaskApi.RunTask("Test", context);
             }
 

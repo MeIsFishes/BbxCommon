@@ -14,14 +14,40 @@ namespace BbxCommon
     public abstract class TaskBase : PooledObject
     {
         #region Lifecycle
+        public bool IsRunning { get; private set; }
+
+        private bool m_RequiredStop = false;
+
         public void Run()
         {
+            m_RequiredStop = false;
             TaskManager.Instance.RunTask(this);
         }
 
-        internal void Enter() { OnEnter(); }
-        internal ETaskRunState Update(float deltaTime) { return OnUpdate(deltaTime); }
-        internal void Exit() { OnExit(); }
+        /// <summary>
+        /// Force the task to stop and return <see cref="ETaskRunState.Succeeded"/>.
+        /// </summary>
+        public void Stop()
+        {
+            m_RequiredStop = true;
+        }
+
+        internal void Enter()
+        {
+            IsRunning = true;
+            OnEnter();
+        }
+        internal ETaskRunState Update(float deltaTime)
+        {
+            if (m_RequiredStop)
+                return ETaskRunState.Succeeded;
+            return OnUpdate(deltaTime);
+        }
+        internal void Exit()
+        {
+            IsRunning = false;
+            OnExit();
+        }
         internal void OnNodeSucceeded() { OnSucceeded(); }
         internal void OnNodeFailed() { OnFailed(); }
 
@@ -32,8 +58,12 @@ namespace BbxCommon
         protected virtual void OnFailed() { }
         #endregion
 
-        #region Initialization
-        public abstract Type GetFieldEnumType();
+        #region Read Field Info
+        public virtual void GetFieldEnumTypes(List<Type> res)
+        {
+            res.Add(GetFieldEnumType());
+        }
+        protected abstract Type GetFieldEnumType();
         public abstract void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context);
         /// <summary>
         /// Read task refrences for child nodes. Most frequently used in low-level drive nodes, such as Sequence, Selector in
@@ -206,5 +236,67 @@ namespace BbxCommon
             return res;
         }
         #endregion
+
+        #region Register Field Info
+        internal struct RegisteredField
+        {
+            internal string Name;
+            internal int EnumValue;
+            internal string FullType;
+        }
+
+        private List<RegisteredField> m_TempFieldList;
+
+        /// <summary>
+        /// Registering entry.
+        /// </summary>
+        internal void RegisterField(List<RegisteredField> res)
+        {
+            m_TempFieldList = res;
+            RegisterField();
+            m_TempFieldList = null;
+        }
+
+        protected abstract void RegisterField();
+
+        protected void RegisterField<TEnum, TObj>(TEnum fieldEnum, TObj obj)
+        {
+            var field = new RegisteredField();
+            field.Name = fieldEnum.ToString();
+            field.EnumValue = fieldEnum.GetHashCode();
+            field.FullType = typeof(TObj).FullName;
+            m_TempFieldList.Add(field);
+        }
+
+        protected void RegisterField<TEnum>(TEnum fieldEnum, Type type)
+        {
+            var field = new RegisteredField();
+            field.Name = fieldEnum.ToString();
+            field.EnumValue = fieldEnum.GetHashCode();
+            field.FullType = type.FullName;
+            m_TempFieldList.Add(field);
+        }
+        #endregion
     }
+
+    #region Task Extension
+    public static class TaskExtension
+    {
+        public static TaskValueInfo CreateTaskValueInfo<T>(this TaskGroupInfo groupInfo, int id)
+        {
+            var info = new TaskValueInfo();
+            info.FullTypeName = typeof(T).FullName;
+            info.AssemblyQualifiedName = typeof(T).AssemblyQualifiedName;
+            groupInfo.TaskInfos[id] = info;
+            return info;
+        }
+
+        public static TaskValueInfo CreateTaskTimelineValueInfo(this TaskGroupInfo groupInfo, int id, float duration)
+        {
+            var info = groupInfo.CreateTaskValueInfo<TaskTimeline>(id);
+            info.AddFieldInfo(TaskTimeline.EField.Duration, duration);
+            return info;
+        }
+    }
+    #endregion
 }

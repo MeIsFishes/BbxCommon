@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BbxCommon.Internal;
+using UnityEditor.Graphs;
 
 namespace BbxCommon
 {
@@ -36,6 +37,7 @@ namespace BbxCommon
                 return;
             }
             // generate tasks
+            context.Init();
             var taskDic = SimplePool<Dictionary<int, TaskBase>>.Alloc();
             foreach (var pair in taskGroupInfo.TaskInfos)
             {
@@ -48,24 +50,45 @@ namespace BbxCommon
                 var taskInfo = pair.Value;
                 foreach (var refrenceInfo in taskInfo.TaskRefrenceDic)
                 {
-                    var enumType = task.GetFieldEnumType();
-                    var enumValue = Enum.Parse(enumType, refrenceInfo.FieldName);
-                    var taskList = SimplePool<List<TaskBase>>.Alloc();
-                    for (int i = 0; i < refrenceInfo.Ids.Count; i++)
+                    var enumTypes = new List<Type>();
+                    task.GetFieldEnumTypes(enumTypes);
+                    foreach (var enumType in enumTypes)
                     {
-                        taskList.Add(taskDic[refrenceInfo.Ids[i]]);
+                        var enumValue = Enum.Parse(enumType, refrenceInfo.FieldName);
+                        var taskList = SimplePool<List<TaskBase>>.Alloc();
+                        for (int i = 0; i < refrenceInfo.Ids.Count; i++)
+                        {
+                            taskList.Add(taskDic[refrenceInfo.Ids[i]]);
+                        }
+                        task.ReadRefrenceInfo(enumValue.GetHashCode(), taskList, context);
+                        taskList.CollectToPool();
                     }
-                    task.ReadRefrenceInfo(enumValue.GetHashCode(), taskList, context);
-                    taskList.CollectToPool();
+                    enumTypes.CollectToPool();
+                }
+                // read timeline info
+                if (task is TaskTimeline taskTimeline)
+                {
+                    for (int i = 0; i < taskInfo.TimelineItemInfos.Count; i++)
+                    {
+                        var timelineItemInfo = taskInfo.TimelineItemInfos[i];
+                        if (taskDic.TryGetValue(timelineItemInfo.Id, out var childTask) == false)
+                        {
+                            DebugApi.LogError("Timeline required child key not found! Id: " + timelineItemInfo.Id + ", task key: " + key);
+                        }
+                        taskTimeline.ReadTimelineItem(timelineItemInfo, childTask);
+                    }
+                    taskTimeline.SortItems();
                 }
             }
             // get root task and run
             if (taskDic.TryGetValue(taskGroupInfo.RootTaskId, out var root) == false)
             {
                 DebugApi.LogError("Cannot find root task! id: " + taskGroupInfo.RootTaskId + ", task key: " + key);
+                taskDic.CollectToPool();
                 return;
             }
             RunTask(root);
+            taskDic.CollectToPool();
         }
 
         /// <summary>
@@ -83,9 +106,17 @@ namespace BbxCommon
             for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
             {
                 var fieldInfo = taskValueInfo.FieldInfos[i];
-                var enumType = task.GetFieldEnumType();
-                var enumValue = Enum.Parse(enumType, fieldInfo.FieldName);
-                task.ReadFieldInfo(enumValue.GetHashCode(), fieldInfo, context);
+                var enumTypes = new List<Type>();
+                task.GetFieldEnumTypes(enumTypes);
+                foreach (var enumType in enumTypes)
+                {
+                    var ok = Enum.TryParse(enumType, fieldInfo.FieldName, out var enumValue);
+                    if (ok)
+                    {
+                        task.ReadFieldInfo(enumValue.GetHashCode(), fieldInfo, context);
+                        break;
+                    }
+                }
             }
             return task;
         }

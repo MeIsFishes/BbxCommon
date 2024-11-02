@@ -10,7 +10,7 @@ namespace Dcg
 
         protected override void OnEnter()
         {
-            DebugApi.Log(Content);
+            DebugApi.Log(TimeApi.Time.ToString() + ": " + Content);
         }
 
         public enum EField
@@ -18,14 +18,24 @@ namespace Dcg
             Content,
         }
 
-        public override Type GetFieldEnumType()
+        protected override Type GetFieldEnumType()
         {
             return typeof(EField);
         }
 
+        protected override void RegisterField()
+        {
+            RegisterField(EField.Content, Content);
+        }
+
         public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
         {
-            Content = ReadString(fieldInfo, context);
+            switch (fieldEnum)
+            {
+                case (int)EField.Content:
+                    Content = ReadString(fieldInfo, context);
+                    break;
+            }
         }
     }
 }
