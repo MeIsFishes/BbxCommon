@@ -25,14 +25,14 @@ namespace BbxCommon
                 task.Enter();
                 taskManager.RunningTasks.Add(task);
             }
-            taskManager.RunningTasks.Clear();
+            taskManager.NewEnterTasks.Clear();
 
             // update
             var finishInfos = SimplePool<List<TaskFinishInfo>>.Alloc();
             for (int i = 0; i < taskManager.RunningTasks.Count; i++)
             {
                 var task = taskManager.RunningTasks[i];
-                var taskState = task.Update();
+                var taskState = task.Update(TimeApi.DeltaTime);
                 var finishInfo = new TaskFinishInfo();
                 switch (taskState)
                 {
@@ -51,7 +51,7 @@ namespace BbxCommon
 
             // exit
             // Since in some extreme cases, running order may cause bugs, we promise that tasks always run in the order of adding.
-            for (int i = 0; i <= finishInfos.Count; i++)
+            for (int i = 0; i < finishInfos.Count; i++)
             {
                 var finishInfo = finishInfos[i];
                 var task = taskManager.RunningTasks[finishInfo.Index];

@@ -3,8 +3,20 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
-    public abstract class TaskContextBase
+    public abstract class TaskContextBase : PooledObject
     {
+        #region Interfaces
+        internal void Init()
+        {
+            RegisterFields();
+        }
+        #endregion
+
+        #region Virtual Functions
+        public abstract Type GetFieldEnumType();
+        protected abstract void RegisterFields();
+        #endregion
+
         #region Register and Get Field
         private Dictionary<string, object> m_Fields = new();
 

@@ -1,6 +1,6 @@
-using BbxCommon.Internal;
-using Codice.CM.SEIDInfo;
 using System;
+using System.Collections.Generic;
+using BbxCommon.Internal;
 
 namespace BbxCommon
 {
@@ -11,22 +11,22 @@ namespace BbxCommon
         Failed,
     }
 
-    public abstract class TaskBase
+    public abstract class TaskBase : PooledObject
     {
         #region Lifecycle
         public void Run()
         {
-            TaskManager.Instance.RunningTasks.Add(this);
+            TaskManager.Instance.RunTask(this);
         }
 
         internal void Enter() { OnEnter(); }
-        internal ETaskRunState Update() { return OnUpdate(); }
+        internal ETaskRunState Update(float deltaTime) { return OnUpdate(deltaTime); }
         internal void Exit() { OnExit(); }
         internal void OnNodeSucceeded() { OnSucceeded(); }
         internal void OnNodeFailed() { OnFailed(); }
 
         protected virtual void OnEnter() { }
-        protected virtual ETaskRunState OnUpdate() { return ETaskRunState.Succeeded; }
+        protected virtual ETaskRunState OnUpdate(float deltaTime) { return ETaskRunState.Succeeded; }
         protected virtual void OnExit() { }
         protected virtual void OnSucceeded() { }
         protected virtual void OnFailed() { }
@@ -39,7 +39,7 @@ namespace BbxCommon
         /// Read task refrences for child nodes. Most frequently used in low-level drive nodes, such as Sequence, Selector in
         /// behavior tree.
         /// </summary>
-        public virtual void ReadRefrenceInfo(int fieldEnum, TaskRefrenceInfo refrenceInfo, TaskContextBase context) { }
+        public virtual void ReadRefrenceInfo(int fieldEnum, List<TaskBase> tasks, TaskContextBase context) { }
 
         protected T ReadValue<T>(TaskFieldInfo fieldInfo, TaskContextBase context)
         {

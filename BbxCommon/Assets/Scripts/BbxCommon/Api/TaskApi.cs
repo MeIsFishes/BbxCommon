@@ -5,36 +5,31 @@ namespace BbxCommon
 {
     public static class TaskApi
     {
-        #region Create Task by Code
-        public static TaskGroupInfo CreateTaskGroupInfo<T>() where T : TaskContextBase
+        #region Task Store
+        public static void RegisterTask(string key, TaskGroupInfo value)
         {
-            var groupInfo = new TaskGroupInfo();
-            groupInfo.BindingContextFullType = typeof(T).FullName;
-            return groupInfo;
+            TaskManager.Instance.RegisterTask(key, value);
+        }
+
+        public static void RunTask(TaskBase task)
+        {
+            TaskManager.Instance.RunTask(task);
+        }
+
+        public static void RunTask(string key, TaskContextBase context)
+        {
+            TaskManager.Instance.RunTask(key, context);
         }
         #endregion
 
-        #region Internal
-        /// <summary>
-        /// Deserialize from <see cref="TaskValueInfo"/>.
-        /// </summary>
-        internal static TaskBase DeserializeTask(TaskValueInfo taskValueInfo, TaskContextBase taskContext)
+        #region Create Task by Code
+        public static TaskGroupInfo CreateTaskInfo<T>(string key, int rootId) where T : TaskContextBase
         {
-            var type = ReflectionApi.GetType(taskValueInfo.FullTypeName, taskValueInfo.AssemblyQualifiedName);
-            if (type == null)
-            {
-                DebugApi.LogError("Invalid Task Type, FullTypeName = " + taskValueInfo.FullTypeName + ", AssemblyQualifiedName = " + taskValueInfo.AssemblyQualifiedName);
-                return null;
-            }
-            var task = Activator.CreateInstance(type) as TaskBase;
-            for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
-            {
-                var fieldInfo = taskValueInfo.FieldInfos[i];
-                var enumType = task.GetFieldEnumType();
-                var enumValue = Enum.Parse(enumType, fieldInfo.Value);
-                task.ReadFieldInfo(enumValue.GetHashCode(), fieldInfo, taskContext);
-            }
-            return task;
+            var groupInfo = new TaskGroupInfo();
+            groupInfo.BindingContextFullType = typeof(T).FullName;
+            groupInfo.RootTaskId = rootId;
+            TaskManager.Instance.RegisterTask(key, groupInfo);
+            return groupInfo;
         }
         #endregion
     }
