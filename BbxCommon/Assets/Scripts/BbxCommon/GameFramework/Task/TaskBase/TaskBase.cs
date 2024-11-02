@@ -37,17 +37,20 @@ namespace BbxCommon
             IsRunning = true;
             OnEnter();
         }
+
         internal ETaskRunState Update(float deltaTime)
         {
             if (m_RequiredStop)
                 return ETaskRunState.Succeeded;
             return OnUpdate(deltaTime);
         }
+
         internal void Exit()
         {
             IsRunning = false;
             OnExit();
         }
+
         internal void OnNodeSucceeded() { OnSucceeded(); }
         internal void OnNodeFailed() { OnFailed(); }
 
