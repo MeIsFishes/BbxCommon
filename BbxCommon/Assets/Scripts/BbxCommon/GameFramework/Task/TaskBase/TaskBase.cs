@@ -1,6 +1,5 @@
 using System;
 using System.Collections.Generic;
-using BbxCommon.Internal;
 
 namespace BbxCommon
 {
@@ -17,10 +16,17 @@ namespace BbxCommon
         public bool IsRunning { get; private set; }
 
         private bool m_RequiredStop = false;
+        private bool m_BlockEnter = false;
+
+        // EnterCondition: Check once when task executes Enter().
+        // Condition: Check every frame. If failed, the task will be stopped and return failed.
+        // ExitCondition: Check every frame. If succeeded, the task will be stopped and return succeeded.
+        private List<TaskConditionBase> m_EnterCondition = new();
+        private List<TaskConditionBase> m_Conditions = new();
+        private List<TaskConditionBase> m_ExitConditions = new();
 
         public void Run()
         {
-            m_RequiredStop = false;
             TaskManager.Instance.RunTask(this);
         }
 
@@ -32,9 +38,42 @@ namespace BbxCommon
             m_RequiredStop = true;
         }
 
+        public void AddEnterCondition(TaskConditionBase condition)
+        {
+            m_EnterCondition.Add(condition);
+        }
+
+        public void AddCondition(TaskConditionBase condition)
+        {
+            m_Conditions.Add(condition);
+        }
+
+        public void AddExitCondition(TaskConditionBase condition)
+        {
+            m_ExitConditions.Add(condition);
+        }
+
         internal void Enter()
         {
             IsRunning = true;
+            m_RequiredStop = false;
+            m_BlockEnter = false;
+            for (int i = 0; i < m_EnterCondition.Count; i++)
+            {
+                var condition = m_EnterCondition[i];
+                condition.Enter();
+                var state = condition.Update(0);
+                condition.Exit();
+                if (state == ETaskRunState.Failed)
+                {
+                    m_BlockEnter = true;
+                    return;
+                }
+            }
+            for (int i = 0; i < m_Conditions.Count; i++)
+            {
+                m_Conditions[i].Enter();
+            }
             OnEnter();
         }
 
@@ -42,12 +81,38 @@ namespace BbxCommon
         {
             if (m_RequiredStop)
                 return ETaskRunState.Succeeded;
+            if (m_BlockEnter)
+                return ETaskRunState.Failed;
+            for (int i = 0; i < m_Conditions.Count; i++)
+            {
+                if (m_Conditions[i].Update(deltaTime) == ETaskRunState.Failed)
+                {
+                    return ETaskRunState.Failed;
+                }
+            }
+            for (int i = 0; i < m_ExitConditions.Count; i++)
+            {
+                if (m_ExitConditions[i].Update(deltaTime) == ETaskRunState.Succeeded)
+                {
+                    return ETaskRunState.Succeeded;
+                }
+            }
             return OnUpdate(deltaTime);
         }
 
         internal void Exit()
         {
             IsRunning = false;
+            if (m_BlockEnter)
+                return;
+            for (int i = 0; i < m_Conditions.Count; i++)
+            {
+                m_Conditions[i].Exit();
+            }
+            for (int i = 0; i < m_ExitConditions.Count; i++)
+            {
+                m_ExitConditions[i].Exit();
+            }
             OnExit();
         }
 

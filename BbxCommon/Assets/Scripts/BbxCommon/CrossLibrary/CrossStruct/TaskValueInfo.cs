@@ -10,10 +10,7 @@ namespace BbxCommon
         Context,
         Blackboard,
     }
-}
 
-namespace BbxCommon.Internal
-{
     public struct TaskFieldInfo
     {
         public string FieldName;
@@ -39,6 +36,9 @@ namespace BbxCommon.Internal
         public string FullTypeName;
         public string AssemblyQualifiedName;
         public List<TaskFieldInfo> FieldInfos = new();
+        public List<int> EnterConditionReferences = new();
+        public List<int> ConditionReferences = new();
+        public List<int> ExitConditionReferences = new();
         public List<TaskRefrenceInfo> TaskRefrenceDic = new();
         public List<TaskTimelineItemInfo> TimelineItemInfos = new();
 
@@ -179,6 +179,21 @@ namespace BbxCommon.Internal
             timelineInfo.Duration = duration;
             timelineInfo.Id = referenceId;
             TimelineItemInfos.Add(timelineInfo);
+        }
+
+        public void AddEnterCondition(params int[] ids)
+        {
+            EnterConditionReferences.AddArray(ids);
+        }
+
+        public void AddCondition(params int[] ids)
+        {
+            ConditionReferences.AddArray(ids);
+        }
+
+        public void AddExitCondition(params int[] ids)
+        {
+            ExitConditionReferences.AddArray(ids);
         }
         #endregion
     }

@@ -47,6 +47,9 @@ namespace BbxCommon
         #endregion
 
         #region Body
+        /// <summary>
+        /// If negative, the timeline will never end.
+        /// </summary>
         public float Duration;
 
         private float m_ElapsedTime;

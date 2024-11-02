@@ -1,0 +1,23 @@
+using System;
+using System.Collections.Generic;
+using BbxCommon;
+
+public class #SCRIPT_NAME# : TaskContextBase
+{
+    public int IntValue;
+
+    public enum EField
+    {
+        IntValue,
+    }
+
+    public override Type GetFieldEnumType()
+    {
+        return typeof(EField);
+    }
+
+    protected override void RegisterFields()
+    {
+        RegisterInt(EField.IntValue, IntValue);
+    }
+}

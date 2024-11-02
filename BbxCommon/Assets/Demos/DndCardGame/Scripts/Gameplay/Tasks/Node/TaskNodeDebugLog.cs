@@ -1,17 +1,11 @@
-using BbxCommon;
-using BbxCommon.Internal;
 using System;
+using BbxCommon;
 
 namespace Dcg
 {
-    public class TaskDebugLogNode : TaskBase
+    public class TaskNodeDebugLog : TaskBase
     {
         public string Content;
-
-        protected override void OnEnter()
-        {
-            DebugApi.Log(TimeApi.Time.ToString() + ": " + Content);
-        }
 
         public enum EField
         {
@@ -36,6 +30,11 @@ namespace Dcg
                     Content = ReadString(fieldInfo, context);
                     break;
             }
+        }
+
+        protected override void OnEnter()
+        {
+            DebugApi.Log(TimeApi.Time.ToString() + ": " + Content);
         }
     }
 }

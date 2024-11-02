@@ -12,6 +12,7 @@ namespace BbxCommon
             public bool Succeeded;
         }
 
+        // A new-entered task will execute OnEnter(), and then execute OnUpdate(deltaTime) once with deltaTime = 0, and turn to normal next frame.
         protected override void OnSystemUpdate()
         {
             var taskManager = TaskManager.Instance;
@@ -23,7 +24,7 @@ namespace BbxCommon
             {
                 var task = taskManager.NewEnterTasks[i];
                 task.Enter();
-                taskManager.RunningTasks.Add(task);
+                taskManager.RunningTasks.Add(new TaskManager.RunningTaskInfo(task, TaskManager.ERunningTaskState.NewEnter));
             }
             taskManager.NewEnterTasks.Clear();
 
@@ -31,8 +32,18 @@ namespace BbxCommon
             var finishInfos = SimplePool<List<TaskFinishInfo>>.Alloc();
             for (int i = 0; i < taskManager.RunningTasks.Count; i++)
             {
-                var task = taskManager.RunningTasks[i];
-                var taskState = task.Update(TimeApi.DeltaTime);
+                var taskInfo = taskManager.RunningTasks[i];
+                var taskState = ETaskRunState.Running;
+                switch (taskInfo.State)
+                {
+                    case TaskManager.ERunningTaskState.NewEnter:
+                        taskState = taskInfo.Task.Update(0);
+                        taskManager.RunningTasks[i] = new TaskManager.RunningTaskInfo(taskInfo.Task, TaskManager.ERunningTaskState.Keep);
+                        break;
+                    case TaskManager.ERunningTaskState.Keep:
+                        taskState = taskInfo.Task.Update(TimeApi.DeltaTime);
+                        break;
+                }
                 var finishInfo = new TaskFinishInfo();
                 switch (taskState)
                 {
@@ -54,12 +65,12 @@ namespace BbxCommon
             for (int i = 0; i < finishInfos.Count; i++)
             {
                 var finishInfo = finishInfos[i];
-                var task = taskManager.RunningTasks[finishInfo.Index];
+                var taskInfo = taskManager.RunningTasks[finishInfo.Index];
                 if (finishInfo.Succeeded)
-                    task.OnNodeSucceeded();
+                    taskInfo.Task.OnNodeSucceeded();
                 else
-                    task.OnNodeFailed();
-                task.Exit();
+                    taskInfo.Task.OnNodeFailed();
+                taskInfo.Task.Exit();
             }
             for (int i = finishInfos.Count - 1; i >= 0; i--)
             {

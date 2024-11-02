@@ -1,15 +1,17 @@
-using BbxCommon;
 using System;
+using BbxCommon;
 
 namespace Dcg
 {
-    public class TaskTestContext : TaskContextBase
+    public class TaskContextTest : TaskContextBase
     {
         public string DebugContent;
+        public int Num;
 
         public enum EField
         {
             DebugContent,
+            Num,
         }
 
         public override Type GetFieldEnumType()
@@ -20,6 +22,7 @@ namespace Dcg
         protected override void RegisterFields()
         {
             RegisterString(EField.DebugContent, DebugContent);
+            RegisterInt(EField.Num, Num);
         }
     }
 }

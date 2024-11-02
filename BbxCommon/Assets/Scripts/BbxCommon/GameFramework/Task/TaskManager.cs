@@ -8,8 +8,26 @@ namespace BbxCommon
 {
     internal class TaskManager : Singleton<TaskManager>
     {
+        internal enum ERunningTaskState
+        {
+            NewEnter,
+            Keep,
+        }
+
+        internal struct RunningTaskInfo
+        {
+            public TaskBase Task;
+            public ERunningTaskState State;
+
+            public RunningTaskInfo(TaskBase task, ERunningTaskState state)
+            {
+                Task = task;
+                State = state;
+            }
+        }
+
         internal List<TaskBase> NewEnterTasks = new();
-        internal List<TaskBase> RunningTasks = new();
+        internal List<RunningTaskInfo> RunningTasks = new();
 
         private Dictionary<string, TaskGroupInfo> m_Tasks = new();
 
@@ -78,6 +96,43 @@ namespace BbxCommon
                         taskTimeline.ReadTimelineItem(timelineItemInfo, childTask);
                     }
                     taskTimeline.SortItems();
+                }
+                // read conditions
+                for (int i = 0; i < taskInfo.EnterConditionReferences.Count; i++)
+                {
+                    var taskRef = taskDic[taskInfo.EnterConditionReferences[i]];
+                    if (taskRef is TaskConditionBase condition)
+                    {
+                        task.AddEnterCondition(condition);
+                    }
+                    else
+                    {
+                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.EnterConditionReferences[i] + ", task key: " + key);
+                    }
+                }
+                for (int i = 0; i < taskInfo.ConditionReferences.Count; i++)
+                {
+                    var taskRef = taskDic[taskInfo.ConditionReferences[i]];
+                    if (taskRef is TaskConditionBase condition)
+                    {
+                        task.AddCondition(condition);
+                    }
+                    else
+                    {
+                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ConditionReferences[i] + ", task key: " + key);
+                    }
+                }
+                for (int i = 0; i < taskInfo.ExitConditionReferences.Count; i++)
+                {
+                    var taskRef = taskDic[taskInfo.ExitConditionReferences[i]];
+                    if (taskRef is TaskConditionBase condition)
+                    {
+                        task.AddExitCondition(condition);
+                    }
+                    else
+                    {
+                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ExitConditionReferences[i] + ", task key: " + key);
+                    }
                 }
             }
             // get root task and run

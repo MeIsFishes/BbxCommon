@@ -126,6 +126,33 @@ namespace BbxCommon.Editor
                 EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/CsvDataTemplate.txt");
         }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskNode", false)]
+        public static void CreateTaskNode()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TaskNodeTest.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskNodeTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskCondition", false)]
+        public static void CreateTaskCondition()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TaskConditionTest.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskConditionTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskContext", false)]
+        public static void CreateTaskContext()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TaskContextTest.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskContextTemplate.txt");
+        }
     }
 
     internal class SimpleScriptReplacer : EndNameEditAction
