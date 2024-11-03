@@ -32,9 +32,9 @@ namespace Dcg
             {
                 // generate
                 var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("Test", 0);
-                var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5);
-                timelineInfo.AddTimelineInfo(0, 0, 1);
-                timelineInfo.AddTimelineInfo(5, 0, 2);
+                var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5f);
+                timelineInfo.AddTimelineInfo(0f, 0f, 1);
+                timelineInfo.AddTimelineInfo(5f, 0f, 2);
 
                 var debugLogInfo1 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(1);
                 debugLogInfo1.AddFieldInfo(TaskNodeDebugLog.EField.Content, TaskContextTest.EField.DebugContent);
@@ -48,7 +48,7 @@ namespace Dcg
                 greaterInfo1.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, TaskContextTest.EField.Num);
 
                 var greaterInfo2 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(4);
-                greaterInfo2.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, TaskContextTest.EField.Num);
+                greaterInfo2.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, 1);
 
                 TaskApi.RegisterTask("Test", taskTest);
 

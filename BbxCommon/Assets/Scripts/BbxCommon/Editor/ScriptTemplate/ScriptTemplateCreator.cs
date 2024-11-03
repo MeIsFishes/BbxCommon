@@ -136,6 +136,24 @@ namespace BbxCommon.Editor
                 "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskNodeTemplate.txt");
         }
 
+        [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskOnce", false)]
+        public static void CreateTaskOnce()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TaskOnceTest.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskOnceTemplate.txt");
+        }
+
+        [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskDuration", false)]
+        public static void CreateTaskDuration()
+        {
+            ProjectWindowUtil.StartNameEditingIfProjectWindowExists(0,
+                new SimpleScriptReplacer(), "TaskDurationTest.cs",
+                EditorGUIUtility.IconContent("cs Script Icon").image as Texture2D,
+                "Assets/Scripts/BbxCommon/Editor/ScriptTemplate/TaskDurationTemplate.txt");
+        }
+
         [MenuItem("Assets/Create/BbxCommon/Script/Task/TaskCondition", false)]
         public static void CreateTaskCondition()
         {
