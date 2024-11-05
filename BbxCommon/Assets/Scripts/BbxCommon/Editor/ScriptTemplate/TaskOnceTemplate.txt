@@ -31,6 +31,11 @@ public class #SCRIPT_NAME# : TaskOnceBase
         }
     }
 
+    public override void OnCollect()
+    {
+        IntValue = 0;
+    }
+
     protected override EOnceState OnExecute()
     {
         return EOnceState.Succeeded;

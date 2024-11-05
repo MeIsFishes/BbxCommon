@@ -24,5 +24,11 @@ namespace Dcg
             RegisterString(EField.DebugContent, DebugContent);
             RegisterInt(EField.Num, Num);
         }
+
+        public override void OnCollect()
+        {
+            DebugContent = string.Empty;
+            Num = 0;
+        }
     }
 }

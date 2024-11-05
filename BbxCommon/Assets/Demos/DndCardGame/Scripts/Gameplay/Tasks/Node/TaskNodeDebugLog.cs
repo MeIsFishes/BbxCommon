@@ -22,6 +22,11 @@ namespace Dcg
             RegisterField(EField.Content, Content);
         }
 
+        public override void OnCollect()
+        {
+            Content = string.Empty;
+        }
+
         public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
         {
             switch (fieldEnum)

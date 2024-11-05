@@ -27,6 +27,11 @@ namespace Dcg
             Num = ReadInt(fieldInfo, context);
         }
 
+        public override void OnCollect()
+        {
+            Num = 0;
+        }
+
         protected override EConditionState OnConditionUpdate(float deltaTime)
         {
             if (Num > 5)

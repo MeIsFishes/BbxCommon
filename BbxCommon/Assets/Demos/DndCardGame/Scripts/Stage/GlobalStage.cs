@@ -53,10 +53,11 @@ namespace Dcg
                 TaskApi.RegisterTask("Test", taskTest);
 
                 // run task
-                var context = new TaskContextTest();
+                var context = ObjectPool<TaskContextTest>.Alloc();
                 context.DebugContent = "Task log succeeded!";
                 context.Num = 4;
                 TaskApi.RunTask("Test", context);
+                context.CollectToPool();
             }
 
             void IStageLoad.Unload(GameStage stage)
