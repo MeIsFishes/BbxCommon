@@ -41,14 +41,9 @@ public class #SCRIPT_NAME# : TaskDurationBase
         
     }
 
-    protected override EDurationState OnTaskUpdate(float deltaTime)
+    protected override EDurationState OnInterval()
     {
         return EDurationState.Running;
-    }
-
-    protected override void OnInterval()
-    {
-        
     }
 
     protected override void OnTaskExit()

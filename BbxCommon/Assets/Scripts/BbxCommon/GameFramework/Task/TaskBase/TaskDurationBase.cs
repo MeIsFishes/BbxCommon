@@ -68,20 +68,22 @@ namespace BbxCommon
         private float m_ElapsedTime = 0;
         private float m_LastOnInterval = 0;
 
-        protected override void OnEnter()
+        protected sealed override void OnEnter()
         {
             m_ElapsedTime = 0;
             m_LastOnInterval = 0;
             OnTaskEnter();
         }
 
-        protected override ETaskRunState OnUpdate(float deltaTime)
+        protected sealed override ETaskRunState OnUpdate(float deltaTime)
         {
             m_ElapsedTime += deltaTime;
             var state = ETaskRunState.Succeeded;
-            if (Duration < 0)
+
+            float onIntervalCutOff = m_ElapsedTime > Duration ? Duration : m_ElapsedTime;
+            if (Interval == 0)
             {
-                var durationState = OnTaskUpdate(deltaTime);
+                var durationState = OnInterval();
                 switch (durationState)
                 {
                     case EDurationState.Running:
@@ -92,15 +94,11 @@ namespace BbxCommon
                         break;
                 }
             }
-            else
+            else if (Interval > 0)
             {
-                if (m_ElapsedTime > Duration)
+                while (m_LastOnInterval + Interval <= onIntervalCutOff)
                 {
-                    state = ETaskRunState.Succeeded;
-                }
-                else
-                {
-                    var durationState = OnTaskUpdate(deltaTime);
+                    var durationState = OnInterval();
                     switch (durationState)
                     {
                         case EDurationState.Running:
@@ -110,29 +108,25 @@ namespace BbxCommon
                             state = ETaskRunState.Failed;
                             break;
                     }
+                    m_LastOnInterval = m_LastOnInterval + Interval;
                 }
             }
 
-            float onIntervalCutOff = m_ElapsedTime > Duration ? Duration : m_ElapsedTime;
-            if (Interval == 0)
+            if (Duration > 0 && m_ElapsedTime > Duration && state != ETaskRunState.Failed)
             {
-                OnInterval();
-            }
-            else if (Interval > 0)
-            {
-                while (m_LastOnInterval + Interval <= onIntervalCutOff)
-                {
-                    OnInterval();
-                    m_LastOnInterval = m_LastOnInterval + Interval;
-                }
+                state = ETaskRunState.Succeeded;
             }
 
             return state;
         }
 
-        protected virtual void OnInterval() { }
+        protected sealed override void OnExit()
+        {
+            OnTaskExit();
+        }
+
+        protected virtual EDurationState OnInterval() { return EDurationState.Running; }
         protected virtual void OnTaskEnter() { }
-        protected virtual EDurationState OnTaskUpdate(float deltaTime) { return EDurationState.Running; }
         protected virtual void OnTaskExit() { }
         #endregion
     }

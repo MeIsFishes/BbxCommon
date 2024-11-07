@@ -50,8 +50,6 @@ namespace Dcg
                 var greaterInfo2 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(4);
                 greaterInfo2.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, 1);
 
-                TaskApi.RegisterTask("Test", taskTest);
-
                 // run task
                 var context = ObjectPool<TaskContextTest>.Alloc();
                 context.DebugContent = "Task log succeeded!";
