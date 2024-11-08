@@ -45,6 +45,8 @@ namespace Dcg
         public int Intelligence { get { return IntelligenceVariable.Value; } set { IntelligenceVariable.SetValue(value); } }
         public int Wisdom { get { return WisdomVariable.Value; } set { WisdomVariable.SetValue(value); } }
 
+        public List<string> UnitTags => UnitTagsVariable.Value;
+
         public ListenableVariable<int> MaxHpVariable = new();
         public ListenableVariable<int> CurHpVariable = new();
         public ListenableVariable<List<EDiceType>> ArmorClassVariable = new(new());
@@ -53,7 +55,8 @@ namespace Dcg
         public ListenableVariable<int> ConstitutionVariable = new();
         public ListenableVariable<int> IntelligenceVariable = new();
         public ListenableVariable<int> WisdomVariable = new();
-         
+        public ListenableVariable<List<string>> UnitTagsVariable = new(new());
+
         public Action<int> BeforeTakeDamage;
         public Action<int> AfterTakeDamge;
 

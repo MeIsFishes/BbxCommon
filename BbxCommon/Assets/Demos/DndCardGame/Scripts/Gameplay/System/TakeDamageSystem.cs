@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
+using Unity.VisualScripting.YamlDotNet.Core.Tokens;
 
 namespace Dcg
 {
@@ -24,6 +25,11 @@ namespace Dcg
                 attackableComp.TakeDamageRequests.RemoveAt(0);
                 // 处理造成伤害时的增益
                 attackableComp.OnTakeDamage?.Invoke(damageRequest);
+
+                //处理护甲和类型tag的伤害修正
+                ProcessDamageByArmorTag(damageRequest);
+                
+
                 // 伤害和治疗公用逻辑
                 attributesRawComponent.CurHp -= damageRequest.Damage;
                 if (attributesRawComponent.CurHp > attributesRawComponent.MaxHp)
@@ -39,6 +45,25 @@ namespace Dcg
                 // 回收
                 damageRequest.CollectToPool();
             }
+        }
+
+        private void ProcessDamageByArmorTag(DamageRequest damageRequest)
+        {
+            //根据伤害类型DamageType与受伤者标签Tag类型，修正伤害
+            var rawComponent = damageRequest.Target.GetRawComponent<AttributesRawComponent>();
+            float damageCoefficient = 1f;
+            if (rawComponent != null && rawComponent.UnitTags != null)
+            {
+                foreach (var tag in rawComponent.UnitTags)
+                {
+                    var coefficient = DataApi.GetData<UnitTagCsvData>(tag);
+                    if (coefficient != null)
+                    {
+                        damageCoefficient *= coefficient.GetCoefficientByDamageType(damageRequest.DamageType);
+                    }
+                }
+            }
+            damageRequest.Damage = (int)(damageRequest.Damage * damageCoefficient);
         }
     }
 }

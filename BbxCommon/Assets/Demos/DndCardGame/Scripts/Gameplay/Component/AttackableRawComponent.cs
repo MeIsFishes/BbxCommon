@@ -19,9 +19,27 @@ namespace Dcg
     public enum DamageType
     {
         None = 0,
-        Slash,
-        Healing,
-        UpperLimit,
+        Slash = 1,
+        Piercing = 2,
+        Bludgeoning = 3,
+        Exploding = 4,
+        Fire = 5,
+        Cold = 6,
+        Lightning = 7,
+        Force = 8,
+        Radiant = 9,
+        Poison = 10,
+        Psychic = 11,
+        Healing = 12,
+        UpperLimit = 99,
+    }
+
+
+    public enum ArmorTagType
+    {
+        Armor = 0,
+        Property = 1,
+
     }
 
     public class AttackableRawComponent : EcsRawComponent, IListenable
@@ -45,12 +63,13 @@ namespace Dcg
             m_MessageHandler.Dispatch((int)e, extraData);
         }
 
-        public void AddCauseDamageRequest(Entity attacker, Entity target, int damage)
+        public void AddCauseDamageRequest(Entity attacker, Entity target, int damage, DamageType damageType)
         {
             var request = ObjectPool<DamageRequest>.Alloc();
             request.Attacker = attacker;
             request.Target = target;
             request.Damage = damage;
+            request.DamageType = damageType;
             CauseDamageRequests.Add(request);
         }
 

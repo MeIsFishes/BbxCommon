@@ -27,3 +27,6 @@ MonoBehaviour:
   Constitution: 2
   Intelligence: 2
   Wisdom: 4
+  DamageType: 0
+  ArmorTags:
+  - Beast

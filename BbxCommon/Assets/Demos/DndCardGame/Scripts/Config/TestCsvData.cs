@@ -35,6 +35,7 @@ namespace Dcg
                 }
             }
             DebugApi.Log(this.ToString());
+            DataApi.SetData<TestCsvData>(this);
         }
 
         public override string ToString()

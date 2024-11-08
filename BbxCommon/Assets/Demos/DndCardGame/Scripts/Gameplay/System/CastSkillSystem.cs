@@ -83,7 +83,7 @@ namespace Dcg
                     damageGroup.CollectToPool();
 
                     var attackableComp = attacker.GetRawComponent<AttackableRawComponent>();
-                    attackableComp.AddCauseDamageRequest(attacker, defender, damageResult.Amount);
+                    attackableComp.AddCauseDamageRequest(attacker, defender, damageResult.Amount, DamageType.Slash);
                 }
 
                 // 数据回收

@@ -44,6 +44,7 @@ namespace Dcg
             attributesComp.Constitution = 3;
             attributesComp.Intelligence = 3;
             attributesComp.Wisdom = 3;
+            attributesComp.UnitTags.Add("NoArmor");
 
             // 添加其他component
             entity.AddRawComponent<WalkToRawComponent>();
@@ -113,6 +114,7 @@ namespace Dcg
             attributesComp.Constitution = monsterData.Constitution;
             attributesComp.Intelligence = monsterData.Intelligence;
             attributesComp.Wisdom = monsterData.Wisdom;
+            attributesComp.UnitTags.AddList(monsterData.ArmorTags);
 
             // 初始化怪物属性
             var monsterComp = entity.AddRawComponent<MonsterRawComponent>();

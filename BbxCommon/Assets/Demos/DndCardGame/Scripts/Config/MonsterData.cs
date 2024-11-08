@@ -18,6 +18,7 @@ namespace Dcg
         public List<EDiceType> ArmorClass;
         public List<EDiceType> AttackDices;
         public List<EDiceType> DamageDices;
+
         public EAbility AttackModifier;
 
         public int Strength;
@@ -25,6 +26,8 @@ namespace Dcg
         public int Constitution;
         public int Intelligence;
         public int Wisdom;
+        public DamageType DamageType;
+        public List<string> ArmorTags;
 
         protected override void OnLoad()
         {
