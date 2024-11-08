@@ -23,7 +23,7 @@ namespace Dcg
         public float Healing;
 
         public override EDataLoad GetDataLoadType() => EDataLoad.Addition; 
-        public override string[] GetTableNames() => new string[] { "UnitTagCsvData" };
+        public override string[] GetTableNames() => new string[] { "UnitTagData" };
 
         protected override void ReadLine()
         {
