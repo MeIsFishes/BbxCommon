@@ -3,24 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using UnityEngine;
-using static Dcg.TestCsvData;
 
 namespace Dcg
 {
-    public enum UintTag
-    {
-        None = 0,
-        NoArmor = 1,
-        BuArmor = 2,
-        PiArmor = 3,
-        LinArmor = 4,
-        LianArmor = 5,
-        JiaBanArmor = 6,
-
-        Undead = 101,
-        Beasts = 102,
-    }
-
     public class UnitTagCsvData : CsvDataBase<UnitTagCsvData>
     {
         public string Tag;
@@ -56,8 +41,8 @@ namespace Dcg
             Psychic = ParseFloatFromKey("Psychic");
             Healing = ParseFloatFromKey("Healing");
 
-
-            DataApi.SetData<UnitTagCsvData>(Tag, this);
+            if (DataApi.GetData<UnitTagCsvData>(Tag) == null)
+                DataApi.SetData<UnitTagCsvData>(Tag, this);
         }
 
         public float GetCoefficientByDamageType(DamageType damageType)
@@ -92,8 +77,5 @@ namespace Dcg
                     return 1f;
             }
         }
-
-
     }
-
 }
