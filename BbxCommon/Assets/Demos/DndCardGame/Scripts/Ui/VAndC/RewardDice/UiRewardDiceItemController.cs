@@ -12,7 +12,7 @@ namespace Dcg.Ui
     public class UiRewardDiceItemController : UiControllerBase<UiRewardDiceItemView>
     {
         #region Operation
-        public class OperationChooseRewardDice : FreeOperationBase
+        public class OperationChooseRewardDice : OrderedOperationBase
         {
             public EntityID EntityID;
             public int IndexOfReward;

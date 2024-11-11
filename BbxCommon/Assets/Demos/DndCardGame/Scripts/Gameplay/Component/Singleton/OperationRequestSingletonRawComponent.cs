@@ -47,17 +47,17 @@ namespace Dcg
 
         #region Free Operation
         // 自由操作。每帧都会被执行一个的操作。
-        public Queue<FreeOperationBase> FreeOperations = new();
+        public Queue<OrderedOperationBase> FreeOperations = new();
 
         // 使用这个函数添加请求而不要直接操作Queue，这是为未来联网做的预留
-        public void AddFreeOperation(FreeOperationBase operation)
+        public void AddFreeOperation(OrderedOperationBase operation)
         {
             FreeOperations.Enqueue(operation);
         }
         #endregion
 
         #region Updating Operation
-        public List<FreeOperationBase> UpdatingOperations = new();
+        public List<OrderedOperationBase> UpdatingOperations = new();
         #endregion
 
         #region Common

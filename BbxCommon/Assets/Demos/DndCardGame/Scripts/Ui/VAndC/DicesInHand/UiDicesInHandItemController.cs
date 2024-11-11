@@ -24,7 +24,7 @@ namespace Dcg.Ui
     {
         #region Operation
         // 把Operation写在每个UI内部，每个人就只需要维护自己的逻辑就行了
-        public class OperationSwitchDiceInHandWithWild : FreeOperationBase
+        public class OperationSwitchDiceInHandWithWild : OrderedOperationBase
         {
             public EntityID EntityID;
             public int DicesInHandIndex;

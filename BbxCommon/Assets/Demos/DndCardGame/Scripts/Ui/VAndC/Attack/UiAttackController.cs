@@ -11,7 +11,7 @@ namespace Dcg.Ui
     public class UiAttackController : UiControllerBase<UiAttackView>
     {
         #region Operation
-        public class OperationSelectSkill : FreeOperationBase
+        public class OperationSelectSkill : OrderedOperationBase
         {
             public EntityID EntityID;
             public string Skill;

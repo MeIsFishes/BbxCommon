@@ -8,7 +8,7 @@ namespace Dcg
         Finished,
     }
 
-    public abstract class FreeOperationBase : PooledObject
+    public abstract class OrderedOperationBase : PooledObject
     {
         private LockItemKey m_BlockKey;
 
@@ -41,7 +41,7 @@ namespace Dcg
         protected virtual bool IsBlocked() { return false; }
     }
 
-    public abstract class BlockedOperationBase : FreeOperationBase
+    public abstract class BlockedOperationBase : OrderedOperationBase
     {
         protected sealed override bool IsBlocked()
         {
