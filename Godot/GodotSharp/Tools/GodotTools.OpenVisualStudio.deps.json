@@ -1,0 +1,60 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v6.0/win-x86",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v6.0": {},
+    ".NETCoreApp,Version=v6.0/win-x86": {
+      "GodotTools.OpenVisualStudio/1.0.0": {
+        "dependencies": {
+          "envdte": "17.8.37221"
+        },
+        "runtime": {
+          "GodotTools.OpenVisualStudio.dll": {}
+        }
+      },
+      "envdte/17.8.37221": {
+        "dependencies": {
+          "Microsoft.VisualStudio.Interop": "17.8.37221"
+        },
+        "runtime": {
+          "lib/net6.0/envdte.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.8.37221.59677"
+          }
+        }
+      },
+      "Microsoft.VisualStudio.Interop/17.8.37221": {
+        "runtime": {
+          "lib/net6.0/Microsoft.VisualStudio.Interop.dll": {
+            "assemblyVersion": "17.0.0.0",
+            "fileVersion": "17.8.37221.59677"
+          }
+        }
+      }
+    }
+  },
+  "libraries": {
+    "GodotTools.OpenVisualStudio/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "envdte/17.8.37221": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-oUUkRaXeLltxviRlPdbb36qZyBvAGRsEIRx1JmKlOUh5kquxBV87i1Gs9IFLkK3fQkTr1OmLftLV8/jtnMtPLQ==",
+      "path": "envdte/17.8.37221",
+      "hashPath": "envdte.17.8.37221.nupkg.sha512"
+    },
+    "Microsoft.VisualStudio.Interop/17.8.37221": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-24I1zWVFAC1H8OXV7R4n3c/e2lg8zYnpYUtid5JmQL6SsE98KAK+D4OQfbYYDn5l3KazDxwovNqQVCMdL78z+A==",
+      "path": "microsoft.visualstudio.interop/17.8.37221",
+      "hashPath": "microsoft.visualstudio.interop.17.8.37221.nupkg.sha512"
+    }
+  }
+}
