@@ -7,3 +7,45 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
+
+[node name="Inspector" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Frame" type="ColorRect" parent="Inspector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1150.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1, 0.5)
+color = Color(0, 0, 0, 1)
+
+[node name="Border" type="ColorRect" parent="Inspector"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 1155.0
+offset_top = 5.0
+offset_right = -5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1, 0.5)
+color = Color(0.158472, 0.158472, 0.158472, 1)
+
+[node name="Label" type="Label" parent="Inspector"]
+layout_mode = 0
+offset_left = 1163.0
+offset_top = 13.0
+offset_right = 1363.0
+offset_bottom = 53.0
+theme_override_font_sizes/font_size = 36
+text = "Inspector"

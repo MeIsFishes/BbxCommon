@@ -16,7 +16,7 @@ public class #SCRIPT_NAME# : TaskDurationBase
         return typeof(EField);
     }
 
-    protected override void RegisterTaskField()
+    protected override void RegisterTaskFields()
     {
         RegisterField(EField.IntValue, IntValue);
     }

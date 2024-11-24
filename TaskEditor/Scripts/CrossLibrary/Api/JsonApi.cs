@@ -1,9 +1,9 @@
 using System;
 using System.Text;
 using System.IO;
+using System.Collections;
+using System.Collections.Generic;
 using LitJson;
-using System.Runtime.Serialization;
-using System.Reflection;
 
 namespace BbxCommon
 {
@@ -22,8 +22,8 @@ namespace BbxCommon
             }
             catch (Exception e)
             {
-                DebugApi.LogError(e);
                 DebugApi.LogError("Json serialization of " + obj.GetType().FullName + " failed!");
+                DebugApi.LogException(e);
                 return null;
             }
         }
@@ -48,8 +48,8 @@ namespace BbxCommon
             }
             catch (Exception e)
             {
-                DebugApi.LogError(e);
                 DebugApi.LogError("Json serialization exports " + obj.GetType().FullName + " to " + absolutePath + " failed!");
+                DebugApi.LogException(e);
                 return null;
             }
             finally
@@ -64,6 +64,10 @@ namespace BbxCommon
 
         private static JsonData ConvertObjectToJsonData(object obj)
         {
+            if (obj == null)
+            {
+                return new JsonData("null");
+            }
             if (obj is Boolean booleanObj)
             {
                 return new JsonData((bool)booleanObj);
@@ -96,9 +100,24 @@ namespace BbxCommon
                 enumJsonData["Value"] = new JsonData(Enum.GetName(enumObj.GetType(), obj));
                 return enumJsonData;
             }
+            // special types
+            var type = obj.GetType();
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+            {
+                var listJsonData = new JsonData();
+                listJsonData[FullTypeKey] = new JsonData(obj.GetType().FullName);
+                listJsonData[TypeWithAssembly] = new JsonData(obj.GetType().AssemblyQualifiedName);
+                var enumerator = obj as IEnumerable;
+                int index = 0;
+                foreach (var item in enumerator)
+                {
+                    listJsonData[index.ToString()] = ConvertObjectToJsonData(item);
+                    index++;
+                }
+                return listJsonData;
+            }
             // serialize class
             var jsonData = new JsonData();
-            var type = obj.GetType();
             jsonData[FullTypeKey] = new JsonData(type.FullName);
             jsonData[TypeWithAssembly] = new JsonData(type.AssemblyQualifiedName);
             foreach (var field in type.GetFields())
@@ -121,8 +140,8 @@ namespace BbxCommon
             }
             catch (Exception e)
             {
-                DebugApi.LogError(e);
                 DebugApi.LogError("Json deserialization failed!");
+                DebugApi.LogException(e);
                 return null;
             }
         }
@@ -142,7 +161,7 @@ namespace BbxCommon
             }
             catch (Exception e)
             {
-                DebugApi.LogError(e);
+                DebugApi.LogException(e);
                 return null;
             }
             finally

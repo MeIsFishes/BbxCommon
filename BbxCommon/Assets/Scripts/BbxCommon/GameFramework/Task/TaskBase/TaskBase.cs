@@ -1,5 +1,7 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using BbxCommon.Internal;
 
 namespace BbxCommon
 {
@@ -306,42 +308,39 @@ namespace BbxCommon
         #endregion
 
         #region Register Field Info
-        internal struct RegisteredField
+        internal class RegisteredField
         {
             internal string Name;
             internal int EnumValue;
-            internal string FullType;
+            internal TaskExportTypeInfo TypeInfo;
         }
 
         private List<RegisteredField> m_TempFieldList;
 
-        /// <summary>
-        /// Registering entry.
-        /// </summary>
-        internal void RegisterField(List<RegisteredField> res)
+        internal TaskExportInfo GenerateExportInfo()
         {
-            m_TempFieldList = res;
-            RegisterField();
-            m_TempFieldList = null;
+            m_TempFieldList = new();
+            RegisterFields();
+            var res = new TaskExportInfo();
+            res.TaskTypeName = this.GetType().Name;
+            foreach (var field in m_TempFieldList)
+            {
+                var exportFieldInfo = new TaskExportFieldInfo();
+                exportFieldInfo.FieldName = field.Name;
+                exportFieldInfo.TypeInfo = field.TypeInfo;
+                res.FieldInfos.Add(exportFieldInfo);
+            }
+            return res;
         }
 
-        protected abstract void RegisterField();
+        protected abstract void RegisterFields();
 
-        protected void RegisterField<TEnum, TObj>(TEnum fieldEnum, TObj obj)
+        protected void RegisterField<TEnum, TObj>(TEnum fieldEnum, TObj obj) where TEnum : Enum
         {
             var field = new RegisteredField();
             field.Name = fieldEnum.ToString();
             field.EnumValue = fieldEnum.GetHashCode();
-            field.FullType = typeof(TObj).FullName;
-            m_TempFieldList.Add(field);
-        }
-
-        protected void RegisterField<TEnum>(TEnum fieldEnum, Type type)
-        {
-            var field = new RegisteredField();
-            field.Name = fieldEnum.ToString();
-            field.EnumValue = fieldEnum.GetHashCode();
-            field.FullType = type.FullName;
+            field.TypeInfo = TaskApi.GenerateTaskTypeInfo(typeof(TObj));
             m_TempFieldList.Add(field);
         }
         #endregion

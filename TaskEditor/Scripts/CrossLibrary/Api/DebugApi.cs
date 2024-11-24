@@ -1,4 +1,5 @@
-﻿#if UNITY_2017_1_OR_NEWER
+﻿using System;
+#if UNITY_2017_1_OR_NEWER
 using UnityEngine;
 #endif
 #if GODOT
@@ -37,6 +38,13 @@ namespace BbxCommon
 #if GODOT
             GD.PushError(args);
 #endif  
+        }
+
+        public static void LogException(Exception e)
+        {
+#if UNITY_2017_1_OR_NEWER
+            Debug.LogException(e);
+#endif
         }
     }
 }

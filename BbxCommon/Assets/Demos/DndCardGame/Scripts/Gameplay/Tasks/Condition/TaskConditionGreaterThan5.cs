@@ -17,7 +17,7 @@ namespace Dcg
             return typeof(EField);
         }
 
-        protected override void RegisterField()
+        protected override void RegisterFields()
         {
             RegisterField(EField.Num, Num);
         }

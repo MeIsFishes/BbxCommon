@@ -15,6 +15,13 @@ run/main_scene="res://Scene/MainScene.tscn"
 config/features=PackedStringArray("4.3", "C#", "Mobile")
 config/icon="res://icon.svg"
 
+[display]
+
+window/size/viewport_width=1600
+window/size/viewport_height=900
+window/stretch/mode="viewport"
+window/stretch/aspect="ignore"
+
 [dotnet]
 
 project/assembly_name="TaskEditor"

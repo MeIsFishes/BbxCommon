@@ -28,13 +28,13 @@ namespace BbxCommon
             res.Add(GetFieldEnumType());
         }
 
-        protected sealed override void RegisterField()
+        protected sealed override void RegisterFields()
         {
             RegisterField(EDurationField.Duration, Duration);
             RegisterField(EDurationField.Interval, Interval);
-            RegisterTaskField();
+            RegisterTaskFields();
         }
-        protected abstract void RegisterTaskField();
+        protected abstract void RegisterTaskFields();
 
         public sealed override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
         {

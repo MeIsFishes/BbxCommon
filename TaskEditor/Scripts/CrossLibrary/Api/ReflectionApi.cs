@@ -87,5 +87,16 @@ namespace BbxCommon
             }
             return type;
         }
+
+        public static IEnumerable<Type> GetAllTypesEnumerator()
+        {
+            foreach (var assembly in AppDomain.CurrentDomain.GetAssemblies())
+            {
+                foreach (var type in assembly.GetTypes())
+                {
+                    yield return type;
+                }
+            }
+        }
     }
 }

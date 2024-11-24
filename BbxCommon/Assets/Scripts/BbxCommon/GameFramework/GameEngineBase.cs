@@ -167,24 +167,18 @@ namespace BbxCommon
         private void OnAwakeReflectionAndResource()
         {
             // reflect types
-            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-            for (int i = 0; i < assemblies.Length; i++)
+            foreach (var type in ReflectionApi.GetAllTypesEnumerator())
             {
-                var types = assemblies[i].GetTypes();
-                for (int j = 0; j < types.Length; j++)
+                if (type.IsAbstract == false && type.IsSubclassOf(typeof(CsvDataBase)))
                 {
-                    var type = types[j];
-                    if (type.IsAbstract == false && type.IsSubclassOf(typeof(CsvDataBase)))
+                    var constructor = type.GetConstructor(Type.EmptyTypes);
+                    var csvObj = (CsvDataBase)constructor.Invoke(null);
+                    var dataGroup = csvObj.GetDataGroup();
+                    if (dataGroup != null)
                     {
-                        var constructor = type.GetConstructor(Type.EmptyTypes);
-                        var csvObj = (CsvDataBase)constructor.Invoke(null);
-                        var dataGroup = csvObj.GetDataGroup();
-                        if (dataGroup != null)
-                        {
-                            if (ResourceApi.DataGroupCsvPairs.ContainsKey(dataGroup) == false)
-                                ResourceApi.DataGroupCsvPairs[dataGroup] = new();
-                            ResourceApi.DataGroupCsvPairs[dataGroup].Add(csvObj);
-                        }
+                        if (ResourceApi.DataGroupCsvPairs.ContainsKey(dataGroup) == false)
+                            ResourceApi.DataGroupCsvPairs[dataGroup] = new();
+                        ResourceApi.DataGroupCsvPairs[dataGroup].Add(csvObj);
                     }
                 }
             }
