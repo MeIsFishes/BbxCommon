@@ -6,7 +6,7 @@ using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
 
-public class UiLoadingController : UiControllerBase<UiLoadingView>, IUiLoadingController
+public class UiLoadingController : UiControllerBase<UiLoadingView>, ILoadingProgress
 {
     protected override void OnUiInit()
     {

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon.Ui;
@@ -49,7 +50,6 @@ namespace BbxCommon
             public GameStage CreateStage<T>(string stageName) where T : GameStage, new() => m_Ref.CreateStage<T>(stageName);
             public void LoadStage(GameStage stage) => m_Ref.LoadStage(stage);
             public void UnloadStage(GameStage stage) => m_Ref.UnloadStage(stage);
-            public void StartLoading(LoadingType loadingType = LoadingType.None) => m_Ref.StartLoading(loadingType);
         }
         #endregion
 
@@ -89,6 +89,7 @@ namespace BbxCommon
 
         private GameObject m_UiSceneRoot;
         private Dictionary<Type, UiSceneBase> m_UiScenes = new Dictionary<Type, UiSceneBase>();
+        private Type m_LoadingType;
 
         public T CreateUiScene<T>() where T : UiSceneBase
         {
@@ -221,50 +222,35 @@ namespace BbxCommon
             return stage;
         }
 
+        private bool m_StageIsDirty;
         private void LoadStage(GameStage stage)
         {
             m_OperateStages.Add(new OperateStage(stage, EOperateStage.Load));
+            m_StageIsDirty = true;
         }
 
         private void UnloadStage(GameStage stage)
         {
             m_OperateStages.Add(new OperateStage(stage, EOperateStage.Unload));
+            m_StageIsDirty = true;
         }
 
         private void OnAwakeStage()
         {
             LoadStage(CreateGameEngineStage());
-            LoadStage(CreateUiLoadingStage());
-            StartLoading(LoadingType.None);
         }
 
-        private GameStage CreateUiLoadingStage()
+        private async void StartLoading()
         {
-            var stage = StageWrapper.CreateStage("Ui Loading Stage");
-            stage.SetUiScene(UiApi.GetUiGameEngineScene(), Resources.Load<UiSceneAsset>("BbxCommon/Ui/UiLoadingScene"));
-            return stage;
-        }
-        
-        public enum LoadingType
-        {
-            None,
-            Progress,
-        }
-
-        private async void StartLoading(LoadingType loadingType)
-        {
+            var loadUiCtrl = CreateLoadingUi();
             IProgress<float> progress = null;
-            var loadingUi = GetLoadingUi();
-            if (loadingType == LoadingType.Progress)
+            progress = Progress.Create<float>(x =>
             {
-                progress = Progress.Create<float>(x =>
-                {
-                    loadingUi?.OnLoading(x);
-                });
-
-                SetStageLoadingWeight();
-                loadingUi?.SetVisible(true);
-            }
+                loadUiCtrl?.OnLoading(x);
+            });
+            
+            SetStageLoadingWeight();
+            loadUiCtrl?.SetVisible(true);
 
             for (int i = 0; i < m_OperateStages.Count; i++)
             {
@@ -280,7 +266,7 @@ namespace BbxCommon
             }
             
             m_OperateStages.Clear();
-            loadingUi?.SetVisible(false);
+            loadUiCtrl?.Close();
         }
 
         private void SetStageLoadingWeight()
@@ -297,13 +283,34 @@ namespace BbxCommon
             }
             
         }
-
-        public virtual IUiLoadingController GetLoadingUi()
+        
+        public void SetLoadingUi<T>() where T :UiControllerBase,ILoadingProgress
         {
-            return null;
+            m_LoadingType = typeof(T);
         }
+
+        private ILoadingProgress CreateLoadingUi()
+        {
+            if (m_LoadingType == null)
+            {
+                return null;
+            }
+            
+            var uiGroupRoot = UiApi.GetUiGameEngineScene().GetUiGroupCanvas(EUiGameEngine.Loading).transform;
+            
+            var method = typeof(UiApi).GetMethod("OpenUiController",new Type[] { typeof(Transform) });
+            var controllerObj = method?.MakeGenericMethod(m_LoadingType).Invoke(null, new object[] { uiGroupRoot });
+            var uiControllerBase = controllerObj as UiControllerBase;
+            return uiControllerBase as ILoadingProgress;
+        }
+        
         private void OnUpdateStage()
         {
+            if (m_StageIsDirty)
+            {
+                m_StageIsDirty = false;
+                StartLoading();
+            }
             // foreach (var operate in m_OperateStages)
             // {
             //     switch (operate.OperateType)
