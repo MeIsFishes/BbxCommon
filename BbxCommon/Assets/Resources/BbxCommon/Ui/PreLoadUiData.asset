@@ -47,3 +47,6 @@ MonoBehaviour:
     - Key: Dcg.Ui.HudCommonStatusController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/Hud/HudCommonStatus
+    - Key: UiLoadingController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/UiLoading
