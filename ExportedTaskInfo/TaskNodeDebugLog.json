@@ -1,21 +1,32 @@
 
 {
-    "Default.FullType" : "BbxCommon.Internal.TaskExportInfo",
-    "Default.AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-    "TaskTypeName"                  : "TaskNodeDebugLog",
-    "FieldInfos"                    : {
-        "Default.FullType" : "System.Collections.Generic.List`1[[BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]]",
-        "Default.AssemblyQualifiedName" : "System.Collections.Generic.List`1[[BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null]], mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089",
-        "0"                             : {
-            "Default.FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
-            "Default.AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-            "FieldName"                     : "Content",
-            "TypeInfo"                      : {
-                "Default.FullType" : "BbxCommon.Internal.TaskExportTypeInfo",
-                "Default.AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportTypeInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null",
-                "TypeName"                      : "String",
-                "GenericType1"                  : "null",
-                "GenericType2"                  : "null"
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskExportInfo",
+        "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+    },
+    "TaskTypeName"     : "TaskNodeDebugLog",
+    "FieldInfos"       : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
+                "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+            }
+        },
+        "0"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
+                "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+            },
+            "FieldName"        : "Content",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo",
+                    "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportTypeInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                },
+                "TypeName"         : "string",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
             }
         }
     }

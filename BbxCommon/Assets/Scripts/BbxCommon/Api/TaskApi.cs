@@ -58,6 +58,8 @@ namespace BbxCommon
                 res.TypeName = "float";
             else if (type == typeof(double))
                 res.TypeName = "double";
+            else if (type == typeof(string))
+                res.TypeName = "string";
             else if (type.IsSubclassOf(typeof(List<>)))
             {
                 res.TypeName = "List";

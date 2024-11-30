@@ -125,5 +125,10 @@ namespace BbxCommon
             }
             return res;
         }
+
+        public static string GetAbsolutePath(string path)
+        {
+            return Path.GetFullPath(path);
+        }
     }
 }

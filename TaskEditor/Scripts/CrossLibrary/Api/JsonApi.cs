@@ -9,10 +9,16 @@ namespace BbxCommon
 {
     public static class JsonApi
     {
-        public static string FullTypeKey = "Default.FullType";
-        public static string TypeWithAssembly = "Default.AssemblyQualifiedName";
+        private static string m_TypeInfoKey = "Default.TypeInfo";
+        private static string m_FullTypeKey = "FullType";
+        private static string m_TypeWithAssemblyKey = "AssemblyQualifiedName";
+        private static string m_SpecialTypeKey = "SpecialType";
+        private static string m_GenericType1Key = "GenericType1";
+        private static string m_GenericType2Key = "GenericType2";
 
         #region Serialize
+
+        #region Body
         public static JsonData Serialize(object obj)
         {
             try
@@ -95,8 +101,9 @@ namespace BbxCommon
             if (obj is Enum enumObj)
             {
                 var enumJsonData = new JsonData();
-                enumJsonData[FullTypeKey] = new JsonData(enumObj.GetType().FullName);
-                enumJsonData[TypeWithAssembly] = new JsonData(enumObj.GetType().AssemblyQualifiedName);
+                enumJsonData[m_TypeInfoKey] = new JsonData();
+                enumJsonData[m_TypeInfoKey][m_FullTypeKey] = new JsonData(enumObj.GetType().FullName);
+                enumJsonData[m_TypeInfoKey][m_TypeWithAssemblyKey] = new JsonData(enumObj.GetType().AssemblyQualifiedName);
                 enumJsonData["Value"] = new JsonData(Enum.GetName(enumObj.GetType(), obj));
                 return enumJsonData;
             }
@@ -104,22 +111,11 @@ namespace BbxCommon
             var type = obj.GetType();
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
             {
-                var listJsonData = new JsonData();
-                listJsonData[FullTypeKey] = new JsonData(obj.GetType().FullName);
-                listJsonData[TypeWithAssembly] = new JsonData(obj.GetType().AssemblyQualifiedName);
-                var enumerator = obj as IEnumerable;
-                int index = 0;
-                foreach (var item in enumerator)
-                {
-                    listJsonData[index.ToString()] = ConvertObjectToJsonData(item);
-                    index++;
-                }
-                return listJsonData;
+                return ConvertListToJsonData(obj, type);
             }
             // serialize class
             var jsonData = new JsonData();
-            jsonData[FullTypeKey] = new JsonData(type.FullName);
-            jsonData[TypeWithAssembly] = new JsonData(type.AssemblyQualifiedName);
+            jsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
             foreach (var field in type.GetFields())
             {
                 var value = field.GetValue(obj);
@@ -129,7 +125,74 @@ namespace BbxCommon
         }
         #endregion
 
+        #region Special Types
+        private static JsonData ConvertListToJsonData(object obj, Type type)
+        {
+            var listJsonData = new JsonData();
+            listJsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
+            var enumerator = obj as IEnumerable;
+            int index = 0;
+            foreach (var item in enumerator)
+            {
+                listJsonData[index.ToString()] = ConvertObjectToJsonData(item);
+                index++;
+            }
+            return listJsonData;
+        }
+        #endregion
+
+        #region Type Info
+        private static JsonData GenerateTypeInfo(Type type)
+        {
+            var jsonData = new JsonData();
+            // special types
+            if (type.IsGenericType)
+            {
+                if (type.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    jsonData[m_SpecialTypeKey] = new JsonData("List");
+                    jsonData[m_GenericType1Key] = GenerateTypeInfo(type.GetGenericArguments()[0]);
+                }
+            }
+            else
+            {
+                if (type == typeof(bool))
+                    jsonData[m_SpecialTypeKey] = new JsonData("bool");
+                else if (type == typeof(byte))
+                    jsonData[m_SpecialTypeKey] = new JsonData("byte");
+                else if (type == typeof(short))
+                    jsonData[m_SpecialTypeKey] = new JsonData("short");
+                else if (type == typeof(ushort))
+                    jsonData[m_SpecialTypeKey] = new JsonData("ushort");
+                else if (type == typeof(int))
+                    jsonData[m_SpecialTypeKey] = new JsonData("int");
+                else if (type == typeof(uint))
+                    jsonData[m_SpecialTypeKey] = new JsonData("uint");
+                else if (type == typeof(long))
+                    jsonData[m_SpecialTypeKey] = new JsonData("long");
+                else if (type == typeof(ulong))
+                    jsonData[m_SpecialTypeKey] = new JsonData("ulong");
+                else if (type == typeof(float))
+                    jsonData[m_SpecialTypeKey] = new JsonData("float");
+                else if (type == typeof(double))
+                    jsonData[m_SpecialTypeKey] = new JsonData("double");
+                else if (type == typeof(string))
+                    jsonData[m_SpecialTypeKey] = new JsonData("string");
+                else
+                {
+                    jsonData[m_FullTypeKey] = type.FullName;
+                    jsonData[m_TypeWithAssemblyKey] = type.AssemblyQualifiedName;
+                }
+            }
+            return jsonData;
+        }
+        #endregion
+
+        #endregion
+
         #region Deserialize
+
+        #region Body
         public static object Deserialize(JsonData jsonData)
         {
             object res = null;
@@ -211,41 +274,30 @@ namespace BbxCommon
 
         private static object ConvertJsonDataToObject(JsonData jsonData)
         {
-            if (jsonData.GetJsonType() == JsonType.Object && jsonData.ContainsKey(FullTypeKey))
+            if (jsonData.GetJsonType() == JsonType.Object && jsonData.ContainsKey(m_TypeInfoKey))
             {
-                Type objType = null;
-                if (jsonData.ContainsKey(TypeWithAssembly))
+                Type type = DeserializeTypeInfo(jsonData[m_TypeInfoKey]);
+                if (type.IsEnum)
                 {
-                    objType = Type.GetType((string)jsonData[TypeWithAssembly]);
-                }
-                if (objType == null)
-                {
-                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                    var typeName = (string)jsonData[FullTypeKey];
-                    foreach (var assembly in assemblies)
-                    {
-                        objType = assembly.GetType(typeName);
-                        if (objType != null)
-                            break;
-                    }
-                }
-                if (objType.IsEnum)
-                {
-                    var enumValue = Enum.Parse(objType, (string)jsonData["Value"]);
+                    var enumValue = Enum.Parse(type, (string)jsonData["Value"]);
                     return enumValue;
+                }
+                // special types
+                else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    return ConvertJsonDataToList(jsonData, type);
                 }
                 else
                 {
-                    var obj = objType.GetConstructor(Type.EmptyTypes).Invoke(null);
+                    var obj = type.GetConstructor(Type.EmptyTypes).Invoke(null);
                     foreach (var key in jsonData.Keys)
                     {
-                        if (key != FullTypeKey)
-                        {
-                            var field = objType.GetField(key);
-                            var value = ConvertJsonDataToObject(jsonData[key]);
-                            var finalValue = Convert.ChangeType(value, field.FieldType);
-                            field.SetValue(obj, finalValue);
-                        }
+                        if (key == m_TypeInfoKey)
+                            continue;
+                        var field = type.GetField(key);
+                        var value = ConvertJsonDataToObject(jsonData[key]);
+                        var finalValue = Convert.ChangeType(value, field.FieldType);
+                        field.SetValue(obj, finalValue);
                     }
                     return obj;
                 }
@@ -261,10 +313,77 @@ namespace BbxCommon
                 case JsonType.Double:
                     return (double)jsonData;
                 case JsonType.String:
-                    return (string)jsonData;
+                    if ((string)jsonData == "null")
+                        return null;
+                    else
+                        return (string)jsonData;
             }
             return null;
         }
+        #endregion
+
+        #region Special Types
+        private static object ConvertJsonDataToList(JsonData jsonData, Type type)
+        {
+            var list = Activator.CreateInstance(type);
+            var addMethod = type.GetMethod("Add");
+            int index = 0;
+            while (jsonData.ContainsKey(index.ToString()))
+            {
+                var element = ConvertJsonDataToObject(jsonData[index.ToString()]);
+                addMethod.Invoke(list, new object[] { element });
+                index++;
+            }
+            return list;
+        }
+        #endregion
+
+        #region Type Info
+        private static Type DeserializeTypeInfo(JsonData jsonData)
+        {
+            if (jsonData.ContainsKey(m_SpecialTypeKey))
+            {
+                Type type = null;
+                switch ((string)jsonData[m_SpecialTypeKey])
+                {
+                    case "bool":
+                        return typeof(bool);
+                    case "byte":
+                        return typeof(byte);
+                    case "short":
+                        return typeof(short);
+                    case "ushort":
+                        return typeof(ushort);
+                    case "int":
+                        return typeof(int);
+                    case "uint":
+                        return typeof(uint);
+                    case "long":
+                        return typeof(long);
+                    case "ulong":
+                        return typeof(ulong);
+                    case "float":
+                        return typeof(float);
+                    case "double":
+                        return typeof(double);
+                    case "string":
+                        return typeof(string);
+                    case "List":
+                        type = typeof(List<>);
+                        type = type.MakeGenericType(DeserializeTypeInfo(jsonData[m_GenericType1Key]));
+                        return type;
+                }
+            }
+            else if (jsonData.ContainsKey(m_FullTypeKey) && jsonData.ContainsKey(m_TypeWithAssemblyKey))
+            {
+                var fullType = (string)jsonData[m_FullTypeKey];
+                var typeWithAssembly = (string)jsonData[m_TypeWithAssemblyKey];
+                return ReflectionApi.GetType(fullType, typeWithAssembly);
+            }
+            return null;
+        }
+        #endregion
+
         #endregion
     }
 }

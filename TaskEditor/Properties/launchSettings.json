@@ -1,0 +1,14 @@
+{
+  "profiles": {
+    "TaskEditor": {
+      "commandName": "Project",
+      "nativeDebugging": true
+    },
+    "TaskEditor Debug": {
+      "commandName": "Executable",
+      "executablePath": "D:\\Git\\BbxCommon\\Godot\\Godot_v4.3-stable_mono_win64.exe",
+      "commandLineArgs": "--path . --verbose",
+      "workingDirectory": "."
+    }
+  }
+}

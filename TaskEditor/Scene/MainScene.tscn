@@ -1,6 +1,9 @@
-[gd_scene format=3 uid="uid://cg583i6ilt1el"]
+[gd_scene load_steps=2 format=3 uid="uid://cg583i6ilt1el"]
+
+[ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
 
 [node name="Control" type="Control"]
+process_mode = 3
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -8,15 +11,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Inspector" type="Control" parent="."]
-layout_mode = 1
+[node name="EditorRoot" type="Node" parent="."]
+script = ExtResource("1_e157r")
+
+[node name="Inspector" type="Control" parent="EditorRoot"]
+layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Frame" type="ColorRect" parent="Inspector"]
+[node name="Frame" type="ColorRect" parent="EditorRoot/Inspector"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -27,7 +33,7 @@ grow_vertical = 2
 pivot_offset = Vector2(1, 0.5)
 color = Color(0, 0, 0, 1)
 
-[node name="Border" type="ColorRect" parent="Inspector"]
+[node name="Border" type="ColorRect" parent="EditorRoot/Inspector"]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -41,7 +47,7 @@ grow_vertical = 2
 pivot_offset = Vector2(1, 0.5)
 color = Color(0.158472, 0.158472, 0.158472, 1)
 
-[node name="Label" type="Label" parent="Inspector"]
+[node name="Label" type="Label" parent="EditorRoot/Inspector"]
 layout_mode = 0
 offset_left = 1163.0
 offset_top = 13.0

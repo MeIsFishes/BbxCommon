@@ -1,8 +1,7 @@
 ﻿using System;
 #if UNITY_2017_1_OR_NEWER
 using UnityEngine;
-#endif
-#if GODOT
+#elif GODOT
 using Godot;
 #endif
 
@@ -14,8 +13,7 @@ namespace BbxCommon
         {
 #if UNITY_2017_1_OR_NEWER
             Debug.Log(args);
-#endif
-#if GODOT
+#elif GODOT
             GD.Print(args);
 #endif
         }
@@ -24,8 +22,7 @@ namespace BbxCommon
         {
 #if UNITY_2017_1_OR_NEWER
             Debug.LogWarning(args);
-#endif
-#if GODOT
+#elif GODOT
             GD.PushWarning(args);
 #endif
         }
@@ -34,8 +31,7 @@ namespace BbxCommon
         {
 #if UNITY_2017_1_OR_NEWER
             Debug.LogError(args);
-#endif
-#if GODOT
+#elif GODOT
             GD.PushError(args);
 #endif  
         }
@@ -44,6 +40,8 @@ namespace BbxCommon
         {
 #if UNITY_2017_1_OR_NEWER
             Debug.LogException(e);
+#elif GODOT
+            GD.PushError(e);
 #endif
         }
     }
