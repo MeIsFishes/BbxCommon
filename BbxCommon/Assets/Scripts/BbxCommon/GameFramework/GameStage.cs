@@ -73,7 +73,7 @@ namespace BbxCommon
             
             await UniTask.NextFrame();
         }
-
+        
         public float StageLoadingWeight = 1f;
         
         internal async UniTask UnloadStage(IProgress<float> progress)
@@ -93,6 +93,7 @@ namespace BbxCommon
             OnUnloadStageChildStage(progress);
             PostUnloadStage?.Invoke();
             progress?.Report(StageLoadingWeight);
+            await UniTask.NextFrame();
         }
         #endregion
 

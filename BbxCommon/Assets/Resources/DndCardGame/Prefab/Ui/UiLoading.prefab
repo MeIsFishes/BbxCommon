@@ -489,7 +489,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8b2e9abf3b4395048befedf77fa2b20e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  DefaultShow: 0
+  DefaultShow: 1
   BbxUiItems: []
   LoadingProgress: {fileID: 4341239625325965024}
 --- !u!1 &5586954875971355425
