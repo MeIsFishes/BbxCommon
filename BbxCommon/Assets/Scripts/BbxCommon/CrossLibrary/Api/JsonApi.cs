@@ -11,7 +11,6 @@ namespace BbxCommon
     {
         private static string m_TypeInfoKey = "Default.TypeInfo";
         private static string m_FullTypeKey = "FullType";
-        private static string m_TypeWithAssemblyKey = "AssemblyQualifiedName";
         private static string m_SpecialTypeKey = "SpecialType";
         private static string m_GenericType1Key = "GenericType1";
         private static string m_GenericType2Key = "GenericType2";
@@ -103,7 +102,6 @@ namespace BbxCommon
                 var enumJsonData = new JsonData();
                 enumJsonData[m_TypeInfoKey] = new JsonData();
                 enumJsonData[m_TypeInfoKey][m_FullTypeKey] = new JsonData(enumObj.GetType().FullName);
-                enumJsonData[m_TypeInfoKey][m_TypeWithAssemblyKey] = new JsonData(enumObj.GetType().AssemblyQualifiedName);
                 enumJsonData["Value"] = new JsonData(Enum.GetName(enumObj.GetType(), obj));
                 return enumJsonData;
             }
@@ -179,10 +177,7 @@ namespace BbxCommon
                 else if (type == typeof(string))
                     jsonData[m_SpecialTypeKey] = new JsonData("string");
                 else
-                {
                     jsonData[m_FullTypeKey] = type.FullName;
-                    jsonData[m_TypeWithAssemblyKey] = type.AssemblyQualifiedName;
-                }
             }
             return jsonData;
         }
@@ -374,11 +369,10 @@ namespace BbxCommon
                         return type;
                 }
             }
-            else if (jsonData.ContainsKey(m_FullTypeKey) && jsonData.ContainsKey(m_TypeWithAssemblyKey))
+            else if (jsonData.ContainsKey(m_FullTypeKey))
             {
                 var fullType = (string)jsonData[m_FullTypeKey];
-                var typeWithAssembly = (string)jsonData[m_TypeWithAssemblyKey];
-                return ReflectionApi.GetType(fullType, typeWithAssembly);
+                return ReflectionApi.GetType(fullType);
             }
             return null;
         }

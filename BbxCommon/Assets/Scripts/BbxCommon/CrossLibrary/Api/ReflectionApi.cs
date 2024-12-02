@@ -43,49 +43,33 @@ namespace BbxCommon
             typeof(TClass).GetField(fieldName, BindingFlags.Static | BindingFlags.NonPublic | BindingFlags.Public).SetValue(obj, value);
         }
 
+        private static Dictionary<string, Type> m_TypeDic = new();
+
         /// <summary>
         /// To ensure find out the unique result, you should pass in "BbxCommon.MyClass", but not "MyClass".
         /// </summary>
         public static Type GetType(string typeFullName)
         {
-            var type = Type.GetType(typeFullName);
-            if (type == null)
+            if (m_TypeDic.TryGetValue(typeFullName, out var type))
             {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assembly in assemblies)
-                {
-                    type = assembly.GetType(typeFullName);
-                    if (type != null)
-                        break;
-                }
+                return type;
             }
-            return type;
-        }
-
-        /// <summary>
-        /// This function will check assemblyQualifiedName first. Considering that assembly's name may be changed,
-        /// it keeps typeFullName as an option.
-        /// </summary>
-        /// <param name="typeFullName"> typeof(T).FullName </param>
-        /// <param name="assemblyQualifiedName"> typeof(T).AssemblyQualifiedName </param>
-        public static Type GetType(string typeFullName, string assemblyQualifiedName)
-        {
-            var type = Type.GetType(assemblyQualifiedName);
-            if (type == null)
+            else
             {
                 type = Type.GetType(typeFullName);
-            }
-            if (type == null)
-            {
-                var assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assembly in assemblies)
+                if (type == null)
                 {
-                    type = assembly.GetType(typeFullName);
-                    if (type != null)
-                        break;
+                    var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                    foreach (var assembly in assemblies)
+                    {
+                        type = assembly.GetType(typeFullName);
+                        if (type != null)
+                            break;
+                    }
                 }
+                m_TypeDic.Add(typeFullName, type);
+                return type;
             }
-            return type;
         }
 
         public static IEnumerable<Type> GetAllTypesEnumerator()

@@ -151,10 +151,10 @@ namespace BbxCommon
         /// </summary>
         private TaskBase DeserializeTask(TaskValueInfo taskValueInfo, TaskContextBase context)
         {
-            var type = ReflectionApi.GetType(taskValueInfo.FullTypeName, taskValueInfo.AssemblyQualifiedName);
+            var type = ReflectionApi.GetType(taskValueInfo.FullTypeName);
             if (type == null)
             {
-                DebugApi.LogError("Invalid Task Type, FullTypeName = " + taskValueInfo.FullTypeName + ", AssemblyQualifiedName = " + taskValueInfo.AssemblyQualifiedName);
+                DebugApi.LogError("Invalid Task Type, FullTypeName = " + taskValueInfo.FullTypeName);
                 return null;
             }
             var task = Activator.CreateInstance(type) as TaskBase;

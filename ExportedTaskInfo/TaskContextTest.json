@@ -1,28 +1,24 @@
 
 {
     "Default.TypeInfo" : {
-        "FullType" : "BbxCommon.Internal.TaskContextExportInfo",
-        "AssemblyQualifiedName" : "BbxCommon.Internal.TaskContextExportInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+        "FullType" : "BbxCommon.Internal.TaskContextExportInfo"
     },
     "TaskContextTypeName" : "TaskContextTest",
     "FieldInfos"          : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",
             "GenericType1" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
-                "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
             }
         },
         "0"                : {
             "Default.TypeInfo" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
-                "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
             },
             "FieldName"        : "DebugContent",
             "TypeInfo"         : {
                 "Default.TypeInfo" : {
-                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo",
-                    "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportTypeInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
                 "TypeName"         : "string",
                 "GenericType1"     : "null",
@@ -31,14 +27,12 @@
         },
         "1"                : {
             "Default.TypeInfo" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo",
-                "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportFieldInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
             },
             "FieldName"        : "Num",
             "TypeInfo"         : {
                 "Default.TypeInfo" : {
-                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo",
-                    "AssemblyQualifiedName" : "BbxCommon.Internal.TaskExportTypeInfo, CrossLibrary, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null"
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
                 "TypeName"         : "int",
                 "GenericType1"     : "null",

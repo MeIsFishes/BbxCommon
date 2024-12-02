@@ -353,7 +353,6 @@ namespace BbxCommon
         {
             var info = new TaskValueInfo();
             info.FullTypeName = typeof(T).FullName;
-            info.AssemblyQualifiedName = typeof(T).AssemblyQualifiedName;
             groupInfo.TaskInfos[id] = info;
             return info;
         }

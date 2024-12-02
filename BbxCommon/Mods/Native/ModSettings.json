@@ -1,5 +1,7 @@
 {
-  "Default.FullType": "BbxCommon.ModSettings",
+  "Default.TypeInfo": {
+    "FullType": "BbxCommon.ModSettings"
+  },
   "Name": "Native",
   "Version": 1,
   "Enabled": true,
