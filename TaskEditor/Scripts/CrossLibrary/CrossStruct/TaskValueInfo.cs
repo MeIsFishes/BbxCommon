@@ -33,7 +33,6 @@ namespace BbxCommon
     public class TaskValueInfo
     {
         public string FullTypeName;
-        public string AssemblyQualifiedName;
         public List<TaskFieldInfo> FieldInfos = new();
         public List<int> EnterConditionReferences = new();
         public List<int> ConditionReferences = new();
