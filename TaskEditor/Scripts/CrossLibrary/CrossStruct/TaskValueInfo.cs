@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Text;
 
 namespace BbxCommon
 {
@@ -150,6 +151,31 @@ namespace BbxCommon
             FieldInfos.Add(fieldInfo);
         }
 
+        public void AddFieldInfo<TTaskField, TEnum>(TTaskField fieldEnum, TEnum value)
+            where TTaskField : Enum where TEnum : Enum
+        {
+            var fieldInfo = new TaskFieldInfo();
+            fieldInfo.FieldName = fieldEnum.ToString();
+            fieldInfo.ValueSource = ETaskFieldValueSource.Value;
+            fieldInfo.Value = value.ToString();
+            FieldInfos.Add(fieldInfo);
+        }
+
+        public void AddFieldInfo<TTaskField, TElement>(TTaskField fieldEnum, List<TElement> value)
+        {
+            var fieldInfo = new TaskFieldInfo();
+            fieldInfo.FieldName = fieldEnum.ToString();
+            fieldInfo.ValueSource = ETaskFieldValueSource.Value;
+            var sb = new StringBuilder();
+            for (int i = 0; i < value.Count; i++)
+            {
+                sb.Append(value[i].ToString());
+                sb.Append("%||%");
+            }
+            fieldInfo.Value = sb.ToString();
+            FieldInfos.Add(fieldInfo);
+        }
+
         public void AddFieldInfo<TTaskField>(TTaskField fieldEnum, ETaskFieldValueSource valueSource, string value)
             where TTaskField : Enum
         {
@@ -160,7 +186,7 @@ namespace BbxCommon
             FieldInfos.Add(fieldInfo);
         }
 
-        public void AddFieldInfo<TTaskField, TContextField>(TTaskField taskFieldEnum, TContextField contextFieldEnum)
+        public void AddFieldInfoFromContext<TTaskField, TContextField>(TTaskField taskFieldEnum, TContextField contextFieldEnum)
             where TTaskField : Enum where TContextField : Enum
         {
             var fieldInfo = new TaskFieldInfo();

@@ -37,7 +37,7 @@ namespace Dcg
                 timelineInfo.AddTimelineInfo(5f, 0f, 2);
 
                 var debugLogInfo1 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(1);
-                debugLogInfo1.AddFieldInfo(TaskNodeDebugLog.EField.Content, TaskContextTest.EField.DebugContent);
+                debugLogInfo1.AddFieldInfoFromContext(TaskNodeDebugLog.EField.Content, TaskContextTest.EField.DebugContent);
                 debugLogInfo1.AddEnterCondition(3); // EnterCondition blocks entering, there will be no output.
 
                 var debugLogInfo2 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(2);
@@ -45,7 +45,7 @@ namespace Dcg
                 debugLogInfo2.AddCondition(4);  // Normal Condition doesn't block entering. For the node output via OnEnter(), there will be output in console.
 
                 var greaterInfo1 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(3);
-                greaterInfo1.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, TaskContextTest.EField.Num);
+                greaterInfo1.AddFieldInfoFromContext(TaskConditionGreaterThan5.EField.Num, TaskContextTest.EField.Num);
 
                 var greaterInfo2 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(4);
                 greaterInfo2.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, 1);
