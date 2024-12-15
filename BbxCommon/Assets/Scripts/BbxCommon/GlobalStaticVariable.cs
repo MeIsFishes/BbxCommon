@@ -11,5 +11,7 @@ namespace BbxCommon
         /// Relative path of <see cref="ScriptableObjectAssets"/> in Resources folder.
         /// </summary>
         public static string ExportScriptableObjectPathInResource = "BbxCommon/ScriptableObjectAssets";
+        
+        public static string ExportLoadingTimeDataPath = "BbxCommon/LoadingTimeData";
     }
 }
