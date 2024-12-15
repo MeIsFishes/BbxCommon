@@ -251,17 +251,21 @@ namespace BbxCommon
             
             SetStageLoadingWeight();
             loadUiCtrl?.SetVisible(true);
-
+            
             for (int i = 0; i < m_OperateStages.Count; i++)
             {
-                switch (m_OperateStages[i].OperateType)
+                if (m_OperateStages[i].OperateType == EOperateStage.Unload)
                 {
-                    case EOperateStage.Load:
+                    m_OperateStages[i].Stage.UnloadStage();
+                }
+            }
+
+            
+            for (int i = 0; i < m_OperateStages.Count; i++)
+            {
+                if (m_OperateStages[i].OperateType == EOperateStage.Load)
+                {
                     await m_OperateStages[i].Stage.LoadStage(progress);
-                    break;
-                    case EOperateStage.Unload:
-                    await  m_OperateStages[i].Stage.UnloadStage(progress);
-                    break;
                 }
             }
             
@@ -276,10 +280,45 @@ namespace BbxCommon
                 return;
             }
 
-            float loadingWeight = 1f / m_OperateStages.Count;
+            var loadingTime = DataApi.GetData<LoadingTimeData>();
+            if (loadingTime == null)
+            {
+                loadingTime = Resources.Load<LoadingTimeData>(BbxVar.ExportLoadingTimeDataPath);
+                DataApi.SetData(loadingTime);
+            }
+            
+            float totalLoadingTime = 0;
             foreach (var operate in m_OperateStages)
             {
-                operate.Stage.StageLoadingWeight = loadingWeight;
+                if (operate.OperateType == EOperateStage.Load)
+                {
+                    if (loadingTime.dataDictionary.TryGetValue(operate.Stage.StageName, out var stageTime))
+                    {
+                        totalLoadingTime += stageTime;
+                    }
+                    else
+                    {
+                        totalLoadingTime += 1;
+                    }
+                }
+                
+            }
+            
+            foreach (var operate in m_OperateStages)
+            {
+                if (operate.OperateType == EOperateStage.Load)
+                {
+                    float weight;
+                    if (loadingTime.dataDictionary.TryGetValue(operate.Stage.StageName, out var stageTime))
+                    {
+                        weight = stageTime / totalLoadingTime;
+                    }
+                    else
+                    {
+                        weight = 1 / totalLoadingTime;
+                    }
+                    operate.Stage.StageLoadingWeight = weight;
+                }
             }
             
         }

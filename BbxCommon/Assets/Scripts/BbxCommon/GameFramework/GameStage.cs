@@ -54,6 +54,8 @@ namespace BbxCommon
                 return;
             if (AllParentsLoaded() == false)
                 return;
+            
+            float gameTimeMilliseconds = Time.time * 1000;
 
             m_Loaded = true;
             PreLoadStage?.Invoke();
@@ -70,13 +72,21 @@ namespace BbxCommon
             {
                 progress?.Report(StageLoadingWeight);
             }
+
+            var costTime = Time.time * 1000 - gameTimeMilliseconds;
+            if (costTime < 1)
+            {
+                costTime = 1f;
+            }
+            var loadingTime = DataApi.GetData<LoadingTimeData>();
+            loadingTime.dataDictionary[StageName] = costTime;
             
             await UniTask.NextFrame();
         }
         
         public float StageLoadingWeight = 1f;
         
-        internal async UniTask UnloadStage(IProgress<float> progress)
+        internal void UnloadStage()
         {
             if (m_Loaded == false)
                 return;
@@ -90,10 +100,8 @@ namespace BbxCommon
             OnUnloadStageScene();
             OnUnloadStageLoad();
             m_Loaded = false;
-            OnUnloadStageChildStage(progress);
+            OnUnloadStageChildStage();
             PostUnloadStage?.Invoke();
-            progress?.Report(StageLoadingWeight);
-            await UniTask.NextFrame();
         }
         #endregion
 
@@ -137,11 +145,11 @@ namespace BbxCommon
             return true;
         }
 
-        public void OnUnloadStageChildStage(IProgress<float> progress)
+        public void OnUnloadStageChildStage()
         {
             foreach (var pair in m_ChildStages)
             {
-                pair.Value.UnloadStage(progress);
+                pair.Value.UnloadStage();
             }
         }
         #endregion
