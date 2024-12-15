@@ -12,10 +12,17 @@ namespace BbxCommon.Internal
     // GenericType1: "string"
     // GenericType2: "int"
     public class TaskExportTypeInfo
-	{
-		public string TypeName;
-		public TaskExportTypeInfo GenericType1;
-		public TaskExportTypeInfo GenericType2;
+    {
+        public string TypeName;
+        public TaskExportTypeInfo GenericType1;
+        public TaskExportTypeInfo GenericType2;
+
+		public TaskExportTypeInfo() { }
+
+		public TaskExportTypeInfo(string typeName)
+		{
+			TypeName = typeName;
+		}
 
 		public bool CheckMeet(TaskExportTypeInfo target)
 		{

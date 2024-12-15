@@ -1,0 +1,82 @@
+[gd_scene load_steps=4 format=3 uid="uid://b7twpmw5aiklv"]
+
+[ext_resource type="Script" path="res://Scripts/Timeline/TimelineNode.cs" id="1_i0oxn"]
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_v5ue2"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_oncdq"]
+
+[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "NodeButton")]
+custom_minimum_size = Vector2(1145, 80)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 1145.0
+offset_bottom = 80.0
+script = ExtResource("1_i0oxn")
+TaskButton = NodePath("Root/Body/BbxButton")
+NodeButton = NodePath("Root/Body/BbxButton")
+
+[node name="Root" type="Control" parent="."]
+custom_minimum_size = Vector2(1145, 80)
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Expand" type="Control" parent="Root"]
+custom_minimum_size = Vector2(1145, 80)
+anchors_preset = 0
+offset_right = 20.0
+offset_bottom = 80.0
+
+[node name="Border" type="ColorRect" parent="Root/Expand"]
+layout_mode = 0
+offset_right = 20.0
+offset_bottom = 80.0
+color = Color(0, 0, 0, 1)
+
+[node name="ArrowButton" type="Button" parent="Root/Expand"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 17.0
+offset_bottom = 77.0
+theme = ExtResource("1_v5ue2")
+theme_override_colors/icon_normal_color = Color(0, 1, 1, 1)
+theme_override_colors/icon_focus_color = Color(0, 0.570549, 0.570549, 1)
+theme_override_colors/icon_pressed_color = Color(2.55093e-06, 0.401097, 0.401097, 1)
+theme_override_colors/icon_hover_color = Color(0, 0.570549, 0.570549, 1)
+theme_override_colors/icon_hover_pressed_color = Color(2.55093e-06, 0.401097, 0.401097, 1)
+
+[node name="Body" type="Control" parent="Root"]
+anchors_preset = 0
+offset_left = 20.0
+offset_right = 1145.0
+offset_bottom = 60.0
+
+[node name="Border" type="ColorRect" parent="Root/Body"]
+layout_mode = 0
+offset_right = 1125.0
+offset_bottom = 60.0
+color = Color(0, 0, 0, 1)
+
+[node name="BbxButton" type="Button" parent="Root/Body"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 1122.0
+offset_bottom = 57.0
+theme = ExtResource("1_v5ue2")
+theme_override_font_sizes/font_size = 32
+text = "Task Name"
+script = ExtResource("2_oncdq")
+
+[node name="DurationBar" type="Control" parent="Root"]
+anchors_preset = 0
+offset_left = 20.0
+offset_top = 60.0
+offset_right = 1142.0
+offset_bottom = 80.0
+
+[node name="ColorRect" type="ColorRect" parent="Root/DurationBar"]
+layout_mode = 0
+offset_right = 1125.0
+offset_bottom = 15.0
+color = Color(1.13107e-06, 0.634216, 9.62615e-07, 1)

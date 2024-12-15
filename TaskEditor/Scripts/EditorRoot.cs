@@ -7,11 +7,15 @@ namespace BbxCommon
 {
 	public partial class EditorRoot : Node
 	{
+		[Export]
+		public OptionButton BindContextOption;
+
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
 		public override void _Ready()
 		{
 			DeserializeAllTaskInfo();
+			OnReadyBindContextOption();
 		}
 
 		public override void _Process(double delta)
@@ -34,5 +38,25 @@ namespace BbxCommon
 				DebugApi.Log("Finished!");
 			}
 		}
-	}
+
+		private void OnReadyBindContextOption()
+		{
+			BindContextOption.Clear();
+			var contextList = EditorDataStore.GetTaskContextInfoList();
+			for (int i = 0; i < contextList.Count; i++)
+			{
+				var contextInfo = contextList[i];
+				BindContextOption.AddItem(contextInfo.TaskContextTypeName.TryRemoveStart("TaskContext"), i);
+			}
+			BindContextOption.ItemSelected += OnBindContextOptionSelect;
+			// godot option menu cannot invoke selected callback when select via code
+			OnBindContextOptionSelect(0);
+        }
+
+		private void OnBindContextOptionSelect(long index)
+		{
+            var list = EditorDataStore.GetTaskContextInfoList();
+            EditorRuntime.BindingContextType = list[(int)index].TaskContextTypeName;
+        }
+    }
 }

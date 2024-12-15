@@ -21,5 +21,29 @@ namespace BbxCommon
 			m_TaskContextInfos.Add(info);
 			m_TaskContextInfoDic.Add(info.TaskContextTypeName, info);
 		}
+
+		public static TaskExportInfo GetTaskInfo(string typeName)
+		{
+			if (m_TaskInfoDic.TryGetValue(typeName, out var taskInfo))
+				return taskInfo;
+			return null;
+		}
+
+		public static List<TaskExportInfo> GetTaskInfoList()
+		{
+			return m_TaskInfos;
+		}
+
+		public static TaskContextExportInfo GetTaskContextInfo(string typeName)
+		{
+			if (m_TaskContextInfoDic.TryGetValue(typeName, out var taskContextInfo))
+				return taskContextInfo;
+			return null;
+		}
+
+		public static List<TaskContextExportInfo> GetTaskContextInfoList()
+		{
+			return m_TaskContextInfos;
+		}
 	}
 }

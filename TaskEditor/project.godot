@@ -26,6 +26,10 @@ window/stretch/aspect="ignore"
 
 project/assembly_name="TaskEditor"
 
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/BbxCommon/plugin.cfg")
+
 [rendering]
 
 renderer/rendering_method="mobile"

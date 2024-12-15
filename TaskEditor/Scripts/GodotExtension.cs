@@ -129,6 +129,18 @@ namespace BbxCommon
             }
         }
 
+        /// <summary>
+        /// Remove all children.
+        /// </summary>
+        public static void RemoveChildren(this Node node)
+        {
+            var children = node.GetChildren();
+            foreach (var child in children)
+            {
+                node.RemoveChild(child);
+            }
+        }
+
         public static void RemoveChildren<T>(this Node node) where T : Node
 		{
             var children = node.GetChildren();

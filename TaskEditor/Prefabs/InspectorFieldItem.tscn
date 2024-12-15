@@ -1,0 +1,50 @@
+[gd_scene load_steps=2 format=3 uid="uid://bgu1o65b0ucbc"]
+
+[ext_resource type="Script" path="res://Scripts/Common/InspectorFieldItem.cs" id="1_0lyst"]
+
+[node name="InpectorFieldItem" type="Control" node_paths=PackedStringArray("FieldNameLabel", "ValueSourceOption", "CustomValueEdit", "PresetValueOption")]
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_0lyst")
+FieldNameLabel = NodePath("FieldName")
+ValueSourceOption = NodePath("ValueSource")
+CustomValueEdit = NodePath("Value/CustomValue")
+PresetValueOption = NodePath("Value/PresetValue")
+
+[node name="FieldName" type="Label" parent="."]
+layout_mode = 0
+offset_top = 2.0
+offset_right = 140.0
+offset_bottom = 33.0
+theme_override_font_sizes/font_size = 20
+text = "Field Name"
+
+[node name="Value" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 150.0
+offset_right = 350.0
+offset_bottom = 31.0
+
+[node name="CustomValue" type="LineEdit" parent="Value"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 16
+placeholder_text = "No Value"
+max_length = 20
+
+[node name="PresetValue" type="OptionButton" parent="Value"]
+layout_mode = 0
+offset_right = 200.0
+offset_bottom = 31.0
+
+[node name="ValueSource" type="OptionButton" parent="."]
+layout_mode = 0
+offset_left = 355.0
+offset_right = 420.0
+offset_bottom = 31.0
+text_overrun_behavior = 1
+clip_text = true
+fit_to_longest_item = false
+allow_reselect = true
