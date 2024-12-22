@@ -3,7 +3,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [CreateAssetMenu(fileName = "ModelAttributesData", menuName = "Demos/Dcg/ModelAttributesData")]
+    [CreateAssetMenu(fileName = "ModelAttributesData", menuName = "Dcg/ModelAttributesData")]
     public class ModelAttributesData : BbxScriptableObject
     {
         public float WalkSpeed;

@@ -6,7 +6,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [CreateAssetMenu(fileName = "PrefabData", menuName = "Demos/Dcg/PrefabData")]
+    [CreateAssetMenu(fileName = "PrefabData", menuName = "Dcg/PrefabData")]
     public class PrefabData : BbxScriptableObject
     {
         public SerializableDic<string, GameObject> PrefabDic = new();

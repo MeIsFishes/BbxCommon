@@ -10,7 +10,7 @@ namespace Dcg
     /// <summary>
     /// 设置奖励界面骰子出现的概率
     /// </summary>
-    [CreateAssetMenu(fileName = "DiceData", menuName = "Demos/Dcg/DiceData")]
+    [CreateAssetMenu(fileName = "DiceData", menuName = "Dcg/DiceData")]
     public class DiceData : BbxScriptableObject
     {
         [FoldoutGroup("Reward"), LabelText("d4Weight")]

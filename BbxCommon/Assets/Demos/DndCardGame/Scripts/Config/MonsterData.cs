@@ -7,7 +7,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [CreateAssetMenu(fileName = "MonsterData", menuName = "Demos/Dcg/MonsterData")]
+    [CreateAssetMenu(fileName = "MonsterData", menuName = "Dcg/MonsterData")]
     public class MonsterData : BbxScriptableObject
     {
         public int Id;

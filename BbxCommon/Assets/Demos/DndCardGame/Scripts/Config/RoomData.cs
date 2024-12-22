@@ -4,7 +4,7 @@ using Sirenix.OdinInspector;
 
 namespace Dcg
 {
-    [CreateAssetMenu(fileName = "RoomData", menuName = "Demos/Dcg/RoomData")]
+    [CreateAssetMenu(fileName = "RoomData", menuName = "Dcg/RoomData")]
     public class RoomData : BbxScriptableObject
     {
         public GameObject RoomPrefab;

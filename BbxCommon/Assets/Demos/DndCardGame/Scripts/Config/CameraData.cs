@@ -7,7 +7,7 @@ using BbxCommon;
 
 namespace Dcg
 {
-    [CreateAssetMenu(fileName = "CameraData", menuName = "Demos/Dcg/CameraData")]
+    [CreateAssetMenu(fileName = "CameraData", menuName = "Dcg/CameraData")]
     public class CameraData : BbxScriptableObject
     {
         public GameObject CameraPrefab;
