@@ -69,9 +69,21 @@ namespace BbxCommon
 			m_FieldDic.Add(field.FieldName, field);
 		}
 
-        public void AddEditFieldFront(TaskEditField field)
+        public void InsertEditField(int index, TaskEditField field)
         {
-            m_Fields.AddFront(field);
+			if (m_FieldDic.ContainsKey(field.FieldName))
+			{
+				for (int i = 0; i < m_Fields.Count; i++)
+				{
+					if (m_Fields[i].FieldName == field.FieldName)
+					{
+						m_Fields.RemoveAt(i);
+						break;
+					}
+				}
+				m_FieldDic.Remove(field.FieldName);
+			}
+            m_Fields.Insert(index, field);
             m_FieldDic.Add(field.FieldName, field);
         }
 

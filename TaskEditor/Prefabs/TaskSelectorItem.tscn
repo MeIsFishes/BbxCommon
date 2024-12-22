@@ -1,0 +1,29 @@
+[gd_scene load_steps=4 format=3 uid="uid://csldepu7od0sp"]
+
+[ext_resource type="Script" path="res://Scripts/Common/TaskSelector/TaskSelectorItem.cs" id="1_d7xix"]
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_xvxfv"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_txk2n"]
+
+[node name="TaskSelectorItem" type="Control" node_paths=PackedStringArray("Button")]
+custom_minimum_size = Vector2(860, 40)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_d7xix")
+Button = NodePath("Button")
+
+[node name="Frame" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 860.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 857.0
+offset_bottom = 37.0
+theme = ExtResource("1_xvxfv")
+theme_override_font_sizes/font_size = 24
+text = "TaskName"
+script = ExtResource("2_txk2n")

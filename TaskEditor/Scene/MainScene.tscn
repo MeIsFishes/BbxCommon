@@ -1,10 +1,11 @@
-[gd_scene load_steps=8 format=3 uid="uid://cg583i6ilt1el"]
+[gd_scene load_steps=9 format=3 uid="uid://cg583i6ilt1el"]
 
 [ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
 [ext_resource type="Script" path="res://Scripts/Common/Inspector.cs" id="2_rhmro"]
 [ext_resource type="PackedScene" uid="uid://bgu1o65b0ucbc" path="res://Prefabs/InspectorFieldItem.tscn" id="3_1cbrp"]
 [ext_resource type="Script" path="res://Scripts/Timeline/TimelineRoot.cs" id="3_jatvs"]
 [ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="4_xou08"]
+[ext_resource type="PackedScene" uid="uid://wq2ud1optdpl" path="res://Prefabs/TaskSelector.tscn" id="6_fiuha"]
 [ext_resource type="PackedScene" uid="uid://b7twpmw5aiklv" path="res://Prefabs/TimelineNode.tscn" id="6_ljxpv"]
 [ext_resource type="Theme" uid="uid://66g3dqqfap64" path="res://Themes/TaskTimelineNewTask.tres" id="6_ndtnf"]
 
@@ -85,6 +86,7 @@ offset_right = 1150.0
 offset_bottom = 900.0
 theme = ExtResource("4_xou08")
 script = ExtResource("3_jatvs")
+TaskSelectorPrefab = ExtResource("6_fiuha")
 TaskNodePrefab = ExtResource("6_ljxpv")
 TaskNodeRoot = NodePath("VScrollBar/VBoxContainer/NodeRoot")
 NewTaskButton = NodePath("VScrollBar/VBoxContainer/NewTaskButton")
