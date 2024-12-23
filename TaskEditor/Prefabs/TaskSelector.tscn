@@ -110,6 +110,7 @@ text = "<"
 script = ExtResource("2_mdfxg")
 
 [node name="NextPage" type="Button" parent="Page"]
+layout_mode = 0
 offset_left = 120.0
 offset_right = 160.0
 offset_bottom = 40.0

@@ -68,7 +68,7 @@ namespace Cin.Ui
             }
             while (m_PointObjs.Count < m_Points.Count)
             {
-                var pointObj = Instantiate(m_View.PointPrefab, this.transform);
+                var pointObj = Instantiate(m_View.PointPrefab, m_View.transform);
                 m_PointObjs.Add(pointObj);
             }
 
