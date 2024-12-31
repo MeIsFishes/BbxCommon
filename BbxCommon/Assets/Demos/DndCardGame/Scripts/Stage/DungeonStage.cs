@@ -1,6 +1,7 @@
 using UnityEngine;
 using BbxCommon;
 using BbxCommon.Ui;
+using static UiCharacterStateContainerController;
 
 namespace Dcg
 {
@@ -44,19 +45,19 @@ namespace Dcg
         }
 
         /// <summary>
-        /// ³õÊ¼»¯µØÀÎ¹Ø¿¨
+        /// ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½ï¿½Î¹Ø¿ï¿½
         /// </summary>
         private class InitDungeon : IStageLoad
         {
             void IStageLoad.Load(GameStage stage)
             {
-                // ´´½¨³õÊ¼·¿¼ä
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½ï¿½ï¿½
                 var roomData = DataApi.GetData<RoomData>();
                 var roomComp = EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
                 var room = EntityCreator.CreateRoomEntity(Vector3.zero);
                 roomComp.AddRoom(room);
 
-                // ½«Íæ¼ÒÀ­¹ýÀ´
+                // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var character = playerComp.DungeonEntities[0];
                 character.GetGameObject().transform.position = roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset;

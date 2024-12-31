@@ -22,6 +22,6 @@ MonoBehaviour:
   - PrefabPath: DndCardGame/Prefab/Ui/TipList/UiTipList
     UiGroup: 2
     DefaultShow: 1
-    Position: {x: -800, y: 0, z: 0}
+    Position: {x: -483, y: 0, z: 0}
     Scale: {x: 1, y: 1, z: 1}
     Pivot: {x: 0.5, y: 0.5}

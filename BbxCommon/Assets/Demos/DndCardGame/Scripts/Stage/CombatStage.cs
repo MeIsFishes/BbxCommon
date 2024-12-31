@@ -4,6 +4,7 @@ using BbxCommon;
 using BbxCommon.Ui;
 using Dcg.Ui;
 using System.Collections.Generic;
+using static UiCharacterStateContainerController;
 namespace Dcg
 {
     public class CombatStage
@@ -106,6 +107,7 @@ namespace Dcg
                 var combatInfoComp = EcsApi.GetSingletonRawComponent<CombatInfoSingletonRawComponent>();
                 UiApi.GetUiController<UiCharacterInfoController>().Bind(combatInfoComp.Character);
                 UiApi.GetUiController<UiMonsterInfoController>().Bind(combatInfoComp.Monster);
+                UiApi.GetUiController<UiCharacterStateContainerController>().Refresh(ECharacterType.Combat);
             }
             void IStageLoad.Unload(GameStage stage)
             {
