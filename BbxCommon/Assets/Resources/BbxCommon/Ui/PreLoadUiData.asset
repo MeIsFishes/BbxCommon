@@ -50,3 +50,9 @@ MonoBehaviour:
     - Key: UiLoadingController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/UiLoading
+    - Key: UiCharacterStateItemController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/UnitInfo/UiCharacterStateItem
+    - Key: UiCharacterStateContainerController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/UnitInfo/UiCharacterStateContainer

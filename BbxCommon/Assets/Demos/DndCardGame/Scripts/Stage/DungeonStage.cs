@@ -1,6 +1,7 @@
 using UnityEngine;
 using BbxCommon;
 using BbxCommon.Ui;
+using static UiCharacterStateContainerController;
 
 namespace Dcg
 {

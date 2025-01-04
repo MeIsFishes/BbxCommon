@@ -3,6 +3,7 @@ using BbxCommon;
 using BbxCommon.Ui;
 using System.Runtime.CompilerServices;
 using System;
+using static UiCharacterStateContainerController;
 
 namespace Dcg
 {
