@@ -44,19 +44,19 @@ namespace Dcg
         }
 
         /// <summary>
-        /// ³õÊ¼»¯µØÀÎ¹Ø¿¨
+        /// åˆå§‹åŒ–åœ°ç‰¢å…³å¡
         /// </summary>
         private class InitDungeon : IStageLoad
         {
             void IStageLoad.Load(GameStage stage)
             {
-                // ´´½¨³õÊ¼·¿¼ä
+                // åˆ›å»ºåˆå§‹æˆ¿é—´
                 var roomData = DataApi.GetData<RoomData>();
                 var roomComp = EcsApi.AddSingletonRawComponent<DungeonRoomSingletonRawComponent>();
                 var room = EntityCreator.CreateRoomEntity(Vector3.zero);
                 roomComp.AddRoom(room);
 
-                // ½«Íæ¼ÒÀ­¹ıÀ´
+                // å°†ç©å®¶æ‹‰è¿‡æ¥
                 var playerComp = EcsApi.GetSingletonRawComponent<LocalPlayerSingletonRawComponent>();
                 var character = playerComp.DungeonEntities[0];
                 character.GetGameObject().transform.position = roomComp.CurRoom.GetGameObject().transform.position + roomData.CharacterOffset;

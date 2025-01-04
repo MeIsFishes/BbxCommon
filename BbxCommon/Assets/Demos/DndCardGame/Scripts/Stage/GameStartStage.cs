@@ -10,7 +10,7 @@ namespace Dcg
     {
         public static GameStage CreateStage()
         {
-            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Dungeon Walk Stage");
+            var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Game Start Stage");
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UIGameStart"));
    

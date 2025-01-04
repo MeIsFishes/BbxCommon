@@ -15,6 +15,7 @@ namespace Dcg
         private GameStage m_GameStartStage;
         private GameStage m_DungeonWalkStage;
         private GameStage m_DungeonStage;
+        private GameStage m_MapStage;
         private GameStage m_CombatStage;
         private GameStage m_RewardStage;
 
@@ -28,27 +29,28 @@ namespace Dcg
             UiScene = UiSceneWrapper.CreateUiScene<UiDungeonScene>();
             m_GlobalStage = GlobalStage.CreateStage();
             m_GameStartStage = GameStartStage.CreateStage();
+            m_DungeonStage = DungeonStage.CreateStage();
+            m_CombatStage = CombatStage.CreateStage();
+            m_RewardStage = RewardStage.CreateStage();
+            m_MapStage = MapStage.CreateStage();
 
             StageWrapper.LoadStage(m_GlobalStage);
             StageWrapper.LoadStage(m_GameStartStage);
             SetLoadingUi<UiLoadingController>();
         }
 
-        public void StartGame()
+        public void OpenMap()
         {
             StageWrapper.UnloadStage(m_GameStartStage);
-            m_DungeonStage = DungeonStage.CreateStage();
-            m_DungeonWalkStage = DungeonWalkStage.CreateStage();
-            m_CombatStage = CombatStage.CreateStage();
-            m_RewardStage = RewardStage.CreateStage();
-
-            StageWrapper.LoadStage(m_DungeonStage);
-            StageWrapper.LoadStage(m_DungeonWalkStage);
+            StageWrapper.UnloadStage(m_CombatStage);
+            StageWrapper.LoadStage(m_MapStage);
         }
+        
         
         public void EnterCombat()
         {
-            StageWrapper.UnloadStage(m_DungeonWalkStage);
+            StageWrapper.UnloadStage(m_MapStage);
+            StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_CombatStage);
             ClearAllTips();
             
@@ -64,7 +66,8 @@ namespace Dcg
         {
             StageWrapper.UnloadStage(m_RewardStage);
             StageWrapper.UnloadStage(m_CombatStage);
-            StageWrapper.LoadStage(m_DungeonWalkStage);
+            StageWrapper.UnloadStage(m_DungeonStage);
+            StageWrapper.LoadStage(m_MapStage);
             
         }
 
@@ -72,7 +75,6 @@ namespace Dcg
         {
             StageWrapper.UnloadStage(m_RewardStage);
             StageWrapper.UnloadStage(m_CombatStage);
-            StageWrapper.UnloadStage(m_DungeonWalkStage);
             StageWrapper.UnloadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonStage);
             StageWrapper.LoadStage(m_DungeonWalkStage);

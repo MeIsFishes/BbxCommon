@@ -6,6 +6,7 @@ namespace Dcg.Ui
     {
         Info,
         SubMenu,
+        Base,
         Normal,
     }
 
@@ -15,6 +16,7 @@ namespace Dcg.Ui
         {
             UiGroupWrapper.CreateUiGroupRoot(EUiGroup.Info);
             UiGroupWrapper.CreateUiGroupRoot(EUiGroup.SubMenu);
+            UiGroupWrapper.CreateUiGroupRoot(EUiGroup.Base);
             UiGroupWrapper.CreateUiGroupRoot(EUiGroup.Normal);
         }
     }

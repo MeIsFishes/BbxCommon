@@ -9,13 +9,13 @@ using BbxCommon.Ui;
 
 namespace Dcg.Ui
 {
-    public class UiNextRoomView : UiViewBase
+    public class UiMapView : UiViewBase
     {
         public Button Button;
 
         public override Type GetControllerType()
         {
-            return typeof(UiNextRoomController);
+            return typeof(UiMapController);
         }
     }
 }

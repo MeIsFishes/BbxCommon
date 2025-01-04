@@ -7,7 +7,7 @@ namespace Dcg.Ui
     {
         protected override void OnUiInit()
         {
-            m_View.Button.onClick.AddListener(DcgGameEngine.Instance.StartGame);
+            m_View.Button.onClick.AddListener(DcgGameEngine.Instance.OpenMap);
         }
 
         protected override void OnUiOpen()
