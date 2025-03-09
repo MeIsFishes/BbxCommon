@@ -12,13 +12,27 @@ namespace BbxCommon
 {
     internal static class EcsEntityManager
     {
-        //本地的entityID从0xFFFFFFFF处开始，主机传过来的entityID从1开始
-        private static UniqueIdGenerator m_IdGenerator = new UniqueIdGenerator(0xFFFFFFFF);
-        private static Dictionary<EntityID, Entity> m_DictionaryEntitys = new Dictionary<EntityID, Entity>();
         
-        internal static Entity CreateEntity(EntityID entityID)
+        private static Dictionary<string, UniqueIdGenerator> m_IdGenerators = new Dictionary<string, UniqueIdGenerator>();
+        private static Dictionary<string, Dictionary<EntityID, Entity>> m_EntityByDistrict = new Dictionary<string, Dictionary<EntityID, Entity>>();
+        
+        internal static Entity CreateEntity(EntityID entityID, string district)
         {
-            if (m_DictionaryEntitys.TryGetValue(entityID, out var entity))
+            UniqueIdGenerator idGenerator;
+            if(!m_IdGenerators.TryGetValue(district,out idGenerator))
+            {
+                idGenerator = new UniqueIdGenerator();
+                m_IdGenerators[district] = idGenerator;
+            }
+
+            Dictionary<EntityID, Entity> districtEntities;
+            if (!m_EntityByDistrict.TryGetValue(district, out districtEntities))
+            {
+                districtEntities = new Dictionary<EntityID, Entity>();
+                m_EntityByDistrict[district] = districtEntities;
+            }
+            
+            if (districtEntities.TryGetValue(entityID, out var entity))
             {
                 DebugApi.LogError("entityID conflict!!!");
                 return Entity.Null;
@@ -27,22 +41,28 @@ namespace BbxCommon
             entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
             if (entityID == EntityID.INVALID)
             {
-                entityID = m_IdGenerator.GenerateId();
+                entityID = new EntityID(idGenerator.GenerateId(), district);
             }
             
             var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
             ecsDataGroup.Init(entity);
             EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
-            m_DictionaryEntitys[entityID] = entity;
-            
             var entityIDComp = entity.AddRawComponent<EntityIDComponent>();
             entityIDComp.EntityUniqueID = entityID;
+            
+            districtEntities[entityID] = entity;
             return entity;
         }
 
         internal static bool GetEntityByID(EntityID uniqueId, out Entity entity)
         {
-            return m_DictionaryEntitys.TryGetValue(uniqueId, out entity);
+            if (m_EntityByDistrict.TryGetValue(uniqueId.GetDistrict(), out var districtDic))
+            {
+                return districtDic.TryGetValue(uniqueId, out entity);
+            }
+
+            entity = Entity.Null;
+            return false;
         }
         
         internal static void DestroyEntity(EntityID entityID)
@@ -51,14 +71,18 @@ namespace BbxCommon
             {
                 return;
             }
-            
-            if (GetEntityByID(entityID, out var entity))
+
+            if (m_EntityByDistrict.TryGetValue(entityID.GetDistrict(), out var districtDic))
             {
-                entity.ClearHud();
-                entity.GetGameObject().Destroy();
-                EcsDataManager.DestroyEntity(entityID);
-                World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
-                m_DictionaryEntitys.Remove(entityID);
+                if (districtDic.TryGetValue(entityID, out var entity))
+                {
+                    entity.ClearHud();
+                    entity.GetGameObject().Destroy();
+                    EcsDataManager.DestroyEntity(entityID);
+                    World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
+                    districtDic.Remove(entityID);
+                }
+               
             }
         }
         
@@ -72,7 +96,43 @@ namespace BbxCommon
                 EcsDataManager.DestroyEntity(entityID);
             }
             World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
-            m_DictionaryEntitys.Remove(entityID);
+            
+            if (m_EntityByDistrict.TryGetValue(entityID.GetDistrict(), out var districtDic))
+            {
+                districtDic.Remove(entityID);
+            }
+        }
+
+        internal static void ResetEntitiesByDistrict(string district)
+        {
+            if (m_EntityByDistrict.TryGetValue(district, out var districtDic))
+            {
+                foreach (var entity in districtDic.Values)
+                {
+                    DestroyEntity(entity);
+                }
+            }
+
+            if (m_IdGenerators.TryGetValue(district, out var idGenerator))
+            {
+                idGenerator.ResetCounter();
+            }
+            
+        }
+
+        internal static Dictionary<EntityID, Entity> GetEntitiesByDistrict(string district)
+        {
+            return m_EntityByDistrict.GetValueOrDefault(district);
+        }
+
+        internal static int CheckLeftEntityCount(string district)
+        {
+            if (m_EntityByDistrict.TryGetValue(district, out var districtDic))
+            {
+                return districtDic.Count;
+            }
+
+            return 0;
         }
         
     }
