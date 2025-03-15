@@ -11,6 +11,10 @@ namespace Dcg
     public enum EAbility
     {
         /// <summary>
+        /// 无属性加值
+        /// </summary>
+        None,
+        /// <summary>
         /// 力量
         /// </summary>
         Strength,

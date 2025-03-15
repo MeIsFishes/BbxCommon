@@ -6,6 +6,8 @@ using BbxCommon;
 using BbxCommon.Ui;
 using Dcg.Ui;
 using System.Text;
+using UnityEditor.SceneManagement;
+using NUnit.Framework;
 
 namespace Dcg
 {
@@ -20,205 +22,90 @@ namespace Dcg
                     continue;
 
                 castSkillComp.RequestCast = false;  // 重置请求
-                var attacker = castSkillComp.GetEntity();
-                var defender = castSkillComp.Target;
 
-                var attackGroup = CreateAttackDiceGroup(castSkillComp);
-                var defendGroup = DiceGroup.CreateAcGroup(defender, EAbility.Dexterity);
-                var attackResult = attackGroup.GetGroupResult();
-                var defendResult = defendGroup.GetGroupResult();
-                bool hit = attackResult.Amount >= defendResult.Amount;
-                bool crit = attackResult.Amount >= defendResult.Amount * 2.5f;
+                //攻击转为task
+                var taskTest = TaskApi.CreateTaskInfo<TaskContextCastSkill>("CastSkill", 0);
+                var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 0.5f);
+                timelineInfo.AddTimelineInfo(0f, 0.5f, 1);
+                timelineInfo.AddTimelineInfo(0.5f, 0f, 2);
 
-                StringBuilder sb = new StringBuilder();
-                sb.Append("攻击方掷骰：\n");
-                GenerateDiceGroupString(sb, attackGroup, attackResult);
-                sb.Append("\n防御方掷骰：\n");
-                GenerateDiceGroupString(sb, defendGroup, defendResult);
-                if (crit)
-                {
-                    sb.Append("攻击骰达到防御骰的2.5倍，暴击命中！");
-                }
-                else
-                {
-                    if (hit)
-                        sb.Append("\n攻击命中！");
-                    else
-                        sb.Append("\n攻击未命中！");
-                }
-                var diceGroupString = sb.ToString();
-                sb.Clear();
 
-                bool needShowTips = true;
-                var gameSetting = UiApi.GetUiModel<UiModelUserOption>();
-                if (gameSetting != null)
-                {
-                    needShowTips = gameSetting.TipsNeedShow;
-                }
+                var jumpNode = taskTest.CreateTaskValueInfo<TaskNodeJump>(1);
+                jumpNode.AddFieldInfoFromContext(TaskNodeJump.EField.AttackerEntityId, TaskContextCastSkill.EField.AttackerEntityId);
+                jumpNode.AddFieldInfo(TaskNodeJump.EField.JumpHeight, 5f);
 
-                if (needShowTips)
-                {
-                    UiApi.GetUiController<UiTipController>().ShowTip("攻击掷骰结果", diceGroupString);
-                }
+                var StandardAttackNode = taskTest.CreateTaskValueInfo<TaskNodeStandardAttack>(2);
 
-                if (hit)
+                StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.AttackerEntityId, TaskContextCastSkill.EField.AttackerEntityId);
+                StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.TargetEntityId, TaskContextCastSkill.EField.TargetEntityId);
+                StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.WildDiceList, TaskContextCastSkill.EField.WildDices);
+
+                List<EDiceType> baseAttackDices = new();
+                List<EDiceType> baseDamageDices = new();
+                List<uint> attackWildDiceIndex = new();
+                List<uint> damageWildDiceIndex = new();
+                EAbility damageModifier = EAbility.None;
+                EAbility attackModifier = EAbility.None;
+                EAbility ACModifier = EAbility.None;
+                DamageType damageType = DamageType.None;
+
+                //为攻击task提供需要的数据。暂时写死
+                if (castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>() != null)
                 {
-                    var damageGroup = CreateDamageDiceGroup(castSkillComp);
-                    if (crit)
+                    var monsterComp = castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>();
+                    for (int i = 0; i < monsterComp.AttackDices.Count; i++)
                     {
-                        var baseDicesCount = damageGroup.BaseDices.Dices.Count;
-                        for (int i = 0; i < baseDicesCount; i++)
-                        {
-                            damageGroup.BaseDices.Dices.Add(Dice.Create(damageGroup.BaseDices.Dices[i].DiceType));
-                        }
+                        baseAttackDices.Add(monsterComp.AttackDices[i]);
                     }
-                    var damageResult = damageGroup.GetGroupResult();
-                    GenerateDiceGroupString(sb, damageGroup, damageResult);
-                    var damageGroupString = sb.ToString();
-                    sb.Clear();
-                    if (needShowTips)
+                    for (int i = 0; i < monsterComp.DamageDices.Count; i++)
                     {
-                        UiApi.GetUiController<UiTipController>().ShowTip("伤害结果", damageGroupString);
+                        baseDamageDices.Add(monsterComp.DamageDices[i]);
                     }
-                    damageGroup.CollectToPool();
-
-                    var attackableComp = attacker.GetRawComponent<AttackableRawComponent>();
-                    attackableComp.AddCauseDamageRequest(attacker, defender, damageResult.Amount, DamageType.Slash);
+                    damageModifier = monsterComp.Modifier;
+                    ACModifier = EAbility.Dexterity;
+                    damageType = DamageType.Slash;
                 }
-
-                // 数据回收
-                attackGroup.CollectToPool();
-                defendGroup.CollectToPool();
-                var combatDeckComp = attacker.GetRawComponent<CombatDeckRawComponent>();
-                if (combatDeckComp != null)
+                else if (castSkillComp.ChosenSkill == "Sword")
                 {
-                    for (int i = 0; i < castSkillComp.WildDices.Count; i++)
-                    {
-                        if (castSkillComp.WildDices[i] != null)
-                            combatDeckComp.DicesInDiscard.Add(castSkillComp.WildDices[i]);
-                    }
-                    combatDeckComp.DispatchEvent(CombatDeckRawComponent.EUiEvent.DicesInDiscardRefresh);
-                    castSkillComp.WildDices.Clear();
-                    castSkillComp.DispatchEvent(CastSkillRawComponent.EUiEvent.WildDicesRefresh);
+                    baseAttackDices.Add(EDiceType.D4);
+                    baseDamageDices.Add(EDiceType.D4);
+                    attackWildDiceIndex.Add(0);
+                    damageWildDiceIndex.Add(1);
+                    attackModifier = EAbility.Strength;
+                    damageModifier = EAbility.Strength;
+                    ACModifier = EAbility.Dexterity;
+                    damageType = DamageType.Slash;
                 }
-            }
-        }
-
-        private void GenerateDiceGroupString(StringBuilder sb, DiceGroup diceGroup, DiceGroupResult result)
-        {
-            sb.Append("基础骰：");
-            foreach (var dice in diceGroup.BaseDices.Dices)
-            {
-                sb.Append(dice.DiceType.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("结果：");
-            foreach (var res in result.BaseDicesResult.DiceResults)
-            {
-                sb.Append(res.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("\n");
-
-            sb.Append("属性调整骰：");
-            foreach (var dice in diceGroup.AbilityModifier.Dices)
-            {
-                sb.Append(dice.DiceType.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("结果：");
-            foreach (var res in result.AbilityModifierResult.DiceResults)
-            {
-                sb.Append(res.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("\n");
-
-            sb.Append("Buff调整骰：");
-            foreach (var dice in diceGroup.BuffModifier.Dices)
-            {
-                sb.Append(dice.DiceType.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("结果：");
-            foreach (var res in result.BuffModifierResult.DiceResults)
-            {
-                sb.Append(res.ToString());
-                sb.Append(", ");
-            }
-            sb.Append("\n");
-
-            sb.Append("最终结果：");
-            sb.Append(result.Amount.ToString());
-            sb.Append("\n");
-        }
-
-        // 以下函数都是对技能的临时处理，后面大概需要全部重写
-
-        private DiceGroup CreateAttackDiceGroup(CastSkillRawComponent castSkillComp)
-        {
-            var dices = SimplePool<List<Dice>>.Alloc();
-            if (castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>() != null)
-            {
-                var monsterComp = castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>();
-                for (int i = 0; i < monsterComp.AttackDices.Count; i++)
+                else if (castSkillComp.ChosenSkill == "Dagger")
                 {
-                    dices.Add(Dice.Create(monsterComp.AttackDices[i]));
+                    baseDamageDices.Add(EDiceType.D4);
+                    baseDamageDices.Add(EDiceType.D4);
+                    attackWildDiceIndex.Add(0);
+                    attackWildDiceIndex.Add(1);
+                    attackModifier = EAbility.Dexterity;
+                    damageModifier = EAbility.Dexterity;
+                    ACModifier = EAbility.Dexterity;
+                    damageType = DamageType.Slash;
                 }
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, monsterComp.Modifier);
-                dices.CollectToPool();
-                return diceGroup;
-            }
-            else if (castSkillComp.ChosenSkill == "Sword")
-            {
-                dices.Add(castSkillComp.WildDices[0]);
-                dices.Add(Dice.Create(EDiceType.D4));
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Strength);
-                dices.CollectToPool();
-                return diceGroup;
-            }
-            else if (castSkillComp.ChosenSkill == "Dagger")
-            {
-                dices.Add(castSkillComp.WildDices[0]);
-                dices.Add(castSkillComp.WildDices[1]);
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Dexterity);
-                dices.CollectToPool();
-                return diceGroup;
-            }
-            return null;
-        }
 
-        private DiceGroup CreateDamageDiceGroup(CastSkillRawComponent castSkillComp)
-        {
-            var dices = SimplePool<List<Dice>>.Alloc();
-            if (castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>() != null)
-            {
-                var monsterComp = castSkillComp.GetEntity().GetRawComponent<MonsterRawComponent>();
-                for (int i = 0; i < monsterComp.DamageDices.Count; i++)
-                {
-                    dices.Add(Dice.Create(monsterComp.DamageDices[i]));
-                }
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, monsterComp.Modifier);
-                dices.CollectToPool();
-                return diceGroup;
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.BaseAttackDice, baseAttackDices);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.BaseDamageDice, baseDamageDices);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.AttackWildDiceIndexList, attackWildDiceIndex);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.DamageWildDiceIndexList, damageWildDiceIndex);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.AttackDamageType, damageType);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.AttackAbilityModifier, attackModifier);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.DamageAbilityModifier, damageModifier);
+                StandardAttackNode.AddFieldInfo(TaskNodeStandardAttack.EField.ACAbilityModifier, ACModifier);
+
+                // cast skill context
+                var context = ObjectPool<TaskContextCastSkill>.Alloc();
+                context.AttackerEntityId = castSkillComp.GetEntity().GetUniqueId();
+                context.TargetEntityId = castSkillComp.Target.GetUniqueId();
+                context.WildDices = castSkillComp.WildDices;
+
+                TaskApi.RunTask("CastSkill", context);
+                context.CollectToPool();
             }
-            else if (castSkillComp.ChosenSkill == "Sword")
-            {
-                dices.Add(castSkillComp.WildDices[1]);
-                dices.Add(Dice.Create(EDiceType.D4));
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Strength);
-                dices.CollectToPool();
-                return diceGroup;
-            }
-            else if (castSkillComp.ChosenSkill == "Dagger")
-            {
-                dices.Add(Dice.Create(EDiceType.D4));
-                dices.Add(Dice.Create(EDiceType.D4));
-                var diceGroup = DiceGroup.Create(castSkillComp.GetEntity(), dices, EAbility.Dexterity);
-                dices.CollectToPool();
-                return diceGroup;
-            }
-            return null;
         }
     }
 }
