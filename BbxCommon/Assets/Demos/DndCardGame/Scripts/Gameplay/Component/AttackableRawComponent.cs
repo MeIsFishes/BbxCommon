@@ -47,6 +47,7 @@ namespace Dcg
         public enum EEvent
         {
             DamageRequestProcessed,
+            AttackMiss,
         }
 
         public List<DamageRequest> CauseDamageRequests;

@@ -183,6 +183,11 @@ namespace Dcg
                 var attackableComp = AttackerEntityId.GetEntity().GetRawComponent<AttackableRawComponent>();
                 attackableComp.AddCauseDamageRequest(AttackerEntityId.GetEntity(), TargetEntityId.GetEntity(), damageResult.Amount, AttackDamageType);
             }
+            else
+            {
+                var attackableComp = TargetEntityId.GetEntity().GetRawComponent<AttackableRawComponent>();
+                attackableComp.DispatchEvent(AttackableRawComponent.EEvent.AttackMiss, null);
+            }
 
             // 数据回收
             attackGroup.CollectToPool();
