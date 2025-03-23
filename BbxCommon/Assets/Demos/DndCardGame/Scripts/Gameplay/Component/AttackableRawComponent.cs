@@ -2,6 +2,7 @@
 using UnityEngine.Events;
 using Unity.Entities;
 using BbxCommon;
+using UnityEngine;
 
 namespace Dcg
 {
@@ -14,6 +15,7 @@ namespace Dcg
         public Entity Target;
         public int Damage;
         public DamageType DamageType;
+        public Vector3 DamagePos;
     }
 
     public enum DamageType
@@ -64,13 +66,14 @@ namespace Dcg
             m_MessageHandler.Dispatch((int)e, extraData);
         }
 
-        public void AddCauseDamageRequest(Entity attacker, Entity target, int damage, DamageType damageType)
+        public void AddCauseDamageRequest(Entity attacker, Entity target, int damage, DamageType damageType, Vector3 damagePos)
         {
             var request = ObjectPool<DamageRequest>.Alloc();
             request.Attacker = attacker;
             request.Target = target;
             request.Damage = damage;
             request.DamageType = damageType;
+            request.DamagePos = damagePos;
             CauseDamageRequests.Add(request);
         }
 

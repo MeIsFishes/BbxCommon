@@ -186,5 +186,35 @@ namespace Dcg
             #endregion
         }
         #endregion
+
+        #region Hitfly
+
+        private static HitFlyData m_HitFlyData;
+
+        public static Vector3 GetHitFlyForce(Vector3 attackSourcePos, Vector3 targetPos, int finalDamage, int targetMaxHealth)
+        {
+            if (m_HitFlyData == null)
+            {
+                m_HitFlyData = DataApi.GetData<HitFlyData>();
+            }
+
+            //击飞力度
+            float force = (finalDamage / (float)targetMaxHealth) * m_HitFlyData.Force;
+
+            //击飞方向
+            Vector3 direction = (targetPos - attackSourcePos).normalized;
+
+            //随机角度
+            float angleRandomness = m_HitFlyData.RandomAngle;
+
+            direction = Quaternion.Euler(
+                Random.Range(-angleRandomness, angleRandomness), 
+                Random.Range(-angleRandomness, angleRandomness), 
+                Random.Range(-angleRandomness, angleRandomness)) * direction;
+
+            return direction * force;
+        }
+
+        #endregion
     }
 }
