@@ -181,7 +181,8 @@ namespace Dcg
                 damageGroup.CollectToPool();
 
                 var attackableComp = AttackerEntityId.GetEntity().GetRawComponent<AttackableRawComponent>();
-                attackableComp.AddCauseDamageRequest(AttackerEntityId.GetEntity(), TargetEntityId.GetEntity(), damageResult.Amount, AttackDamageType);
+                attackableComp.AddCauseDamageRequest(AttackerEntityId.GetEntity(), TargetEntityId.GetEntity(), damageResult.Amount, AttackDamageType, 
+                    damagePos : AttackerEntityId.GetEntity().GetGameObject().transform.position);//to do: attacker's position or spell's destination position
             }
             else
             {
