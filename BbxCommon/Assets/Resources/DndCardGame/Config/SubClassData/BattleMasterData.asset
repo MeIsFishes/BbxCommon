@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 61aec9dd237946a3bad8eafbb4e26a82, type: 3}
+  m_Name: BattleMasterData
+  m_EditorClassIdentifier: 
+  LoadingType: 0
+  GroupName: 
+  Id: 11
+  MainClassId: 1
+  Name: Battle Master
+  SubClassDesc: "\u6218\u58EB\u804C\u4E1A\uFF1A\u6218\u6597\u5927\u5E08"
+  SubClassModel: {fileID: 0}
+  InitialFeatId: 1101
+  LevelFeatGroupId: 4e0400004f040000500400005104000052040000

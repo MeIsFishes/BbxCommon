@@ -27,7 +27,6 @@ namespace Dcg
 
                 //处理护甲和类型tag的伤害修正
                 ProcessDamageByArmorTag(damageRequest);
-                
 
                 // 伤害和治疗公用逻辑
                 attributesRawComponent.CurHp -= damageRequest.Damage;
@@ -38,6 +37,9 @@ namespace Dcg
                 if (attributesRawComponent.CurHp <= 0)
                 {
                     attributesRawComponent.CurHp = 0;
+                 
+                    //最后一击击飞
+                    DoHitFly(damageRequest);
                 }
                 attackableComp.DispatchEvent(AttackableRawComponent.EEvent.DamageRequestProcessed, damageRequest);
 
@@ -63,6 +65,23 @@ namespace Dcg
                 }
             }
             damageRequest.Damage = (int)(damageRequest.Damage * damageCoefficient);
+        }
+
+        private void DoHitFly(DamageRequest damageRequest)
+        {
+            var force = GameUtility.GetHitFlyForce(damageRequest.DamagePos,
+                      damageRequest.Target.GetGameObject().transform.position,
+                      damageRequest.Damage,
+                      damageRequest.Target.GetRawComponent<AttributesRawComponent>().MaxHp);
+            Debug.Log("击飞direction：" + force);
+
+            var gameObject = damageRequest.Target.GetGameObject();
+            if (!gameObject.TryGetComponent<Rigidbody>(out var rigidbody))
+            {
+                rigidbody = gameObject.AddComponent<Rigidbody>();
+            }
+
+            rigidbody.AddForce(force, ForceMode.Impulse);
         }
     }
 }
