@@ -16,11 +16,12 @@ namespace BbxCommon
 		{
 			DeserializeAllTaskInfo();
 			OnReadyBindContextOption();
+			EditorModel.OnReady();
 		}
 
 		public override void _Process(double delta)
 		{
-
+			EditorModel.OnProcess(delta);
 		}
 
 		private void DeserializeAllTaskInfo()
@@ -56,7 +57,7 @@ namespace BbxCommon
 		private void OnBindContextOptionSelect(long index)
 		{
             var list = EditorDataStore.GetTaskContextInfoList();
-            EditorRuntime.BindingContextType = list[(int)index].TaskContextTypeName;
+            EditorModel.BindingContextType = list[(int)index].TaskContextTypeName;
         }
     }
 }

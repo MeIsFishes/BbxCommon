@@ -189,5 +189,17 @@ namespace BbxCommon
             }
         }
         #endregion
+
+        #region OptionButton
+        public static int GetItemIndex(this OptionButton option, string label)
+        {
+            for (int i = 0; i < option.ItemCount; i++)
+            {
+                if (option.GetItemText(i) == label)
+                    return i;
+            }
+            return 0;
+        }
+        #endregion
     }
 }

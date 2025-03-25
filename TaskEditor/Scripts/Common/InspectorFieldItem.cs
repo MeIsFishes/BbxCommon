@@ -16,6 +16,14 @@ namespace BbxCommon
 		[Export]
 		public OptionButton PresetValueOption;
 
+		public enum ESpecialField
+		{
+			None,
+			TimelineStartTime,
+			TimelineDuration,
+		}
+
+		private ESpecialField m_SpecialField;
 		private string m_FieldName;
 
         public override void _Ready()
@@ -27,9 +35,55 @@ namespace BbxCommon
 
         public void RebindField(TaskEditField editField)
         {
+			ValueSourceOption.Visible = true;
+			m_SpecialField = ESpecialField.None;
 			m_FieldName = editField.FieldName;
 			FieldNameLabel.Text = editField.FieldName;
+			switch (editField.ValueSource)
+			{
+				case ETaskFieldValueSource.Value:
+					ValueSourceOption.Select(0);
+					OnValueSourceChanged(0);
+					CustomValueEdit.Text = editField.Value;
+					break;
+				case ETaskFieldValueSource.Context:
+					ValueSourceOption.Select(1);
+					OnValueSourceChanged(1);
+					var contextIndex = PresetValueOption.GetItemIndex(editField.Value);
+					PresetValueOption.Select(contextIndex);
+                    break;
+				case ETaskFieldValueSource.Blackboard:
+                    ValueSourceOption.Select(2);
+					OnValueSourceChanged(2);
+                    CustomValueEdit.Text = editField.Value;
+                    break;
+            }
         }
+
+		public void RebindSpecialField(ESpecialField field)
+		{
+			switch (field)
+			{
+				case ESpecialField.TimelineStartTime:
+					ValueSourceOption.Visible = false;
+					m_SpecialField = ESpecialField.TimelineStartTime;
+					FieldNameLabel.Text = "StartTime";
+					if (EditorModel.CurSelectTaskNode.TaskEditData is TaskTimelineEditData timelineData1)
+					{
+						CustomValueEdit.Text = timelineData1.StartTime.ToString();
+					}
+					break;
+				case ESpecialField.TimelineDuration:
+                    ValueSourceOption.Visible = false;
+                    m_SpecialField = ESpecialField.TimelineDuration;
+                    FieldNameLabel.Text = "Duration";
+                    if (EditorModel.CurSelectTaskNode.TaskEditData is TaskTimelineEditData timelineData2)
+                    {
+                        CustomValueEdit.Text = timelineData2.Duration.ToString();
+                    }
+                    break;
+			}
+		}
 
 		private void OnReadyValueSourceOption()
 		{
@@ -75,7 +129,7 @@ namespace BbxCommon
 		private void RefreshContextFields()
 		{
 			PresetValueOption.Clear();
-			var contextInfo = EditorRuntime.BindingContextInfo;
+			var contextInfo = EditorModel.BindingContextInfo;
 			for (int i = 0; i < contextInfo.FieldInfos.Count; i++)
 			{
 				PresetValueOption.AddItem(contextInfo.FieldInfos[i].FieldName);
@@ -86,25 +140,49 @@ namespace BbxCommon
         #region Export Value
 		private void ExportCurField()
 		{
-			if (EditorRuntime.CurSelectTaskNode == null)
+			if (EditorModel.CurSelectTaskNode == null)
 				return;
-			var editField = EditorRuntime.CurSelectTaskNode.GetEditField(m_FieldName);
-			if (editField == null)
-				return;
-			switch (ValueSourceOption.Selected)
+			var editData = EditorModel.CurSelectTaskNode.TaskEditData;
+			if (m_SpecialField == ESpecialField.TimelineStartTime)
 			{
-				case 0:
-					editField.ValueSource = ETaskFieldValueSource.Value;
-					editField.Value = CustomValueEdit.Text;
-					break;
-				case 1:
-					editField.ValueSource = ETaskFieldValueSource.Context;
-					editField.Value = PresetValueOption.GetItemText(PresetValueOption.Selected);
-					break;
-				case 2:
-					editField.ValueSource = ETaskFieldValueSource.Blackboard;
-                    editField.Value = CustomValueEdit.Text;
-                    break;
+				if (editData is TaskTimelineEditData timelineData)
+				{
+					float.TryParse(CustomValueEdit.Text, out timelineData.StartTime);
+				}
+			}
+			else if (m_SpecialField == ESpecialField.TimelineDuration)
+			{
+                if (editData is TaskTimelineEditData timelineData)
+                {
+                    float.TryParse(CustomValueEdit.Text, out timelineData.Duration);
+                }
+				var durationField = editData.GetEditField("Duration");
+				if (durationField != null)
+				{
+					durationField.ValueSource = ETaskFieldValueSource.Value;
+					durationField.Value = CustomValueEdit.Text;
+				}
+            }
+			else if (m_SpecialField == ESpecialField.None)
+			{
+				var editField = editData.GetEditField(m_FieldName);
+				if (editField == null)
+					return;
+				switch (ValueSourceOption.Selected)
+				{
+					case 0:
+						editField.ValueSource = ETaskFieldValueSource.Value;
+						editField.Value = CustomValueEdit.Text;
+						break;
+					case 1:
+						editField.ValueSource = ETaskFieldValueSource.Context;
+						editField.Value = PresetValueOption.GetItemText(PresetValueOption.Selected);
+						break;
+					case 2:
+						editField.ValueSource = ETaskFieldValueSource.Blackboard;
+						editField.Value = CustomValueEdit.Text;
+						break;
+				}
 			}
 		}
         #endregion

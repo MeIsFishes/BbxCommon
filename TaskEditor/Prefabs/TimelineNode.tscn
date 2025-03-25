@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_v5ue2"]
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_oncdq"]
 
-[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "NodeButton")]
+[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "DurationBarRect", "NodeButton")]
 custom_minimum_size = Vector2(1145, 80)
 layout_mode = 3
 anchors_preset = 0
@@ -12,6 +12,7 @@ offset_right = 1145.0
 offset_bottom = 80.0
 script = ExtResource("1_i0oxn")
 TaskButton = NodePath("Root/Body/BbxButton")
+DurationBarRect = NodePath("Root/DurationBar/ColorRect")
 NodeButton = NodePath("Root/Body/BbxButton")
 
 [node name="Root" type="Control" parent="."]

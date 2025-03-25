@@ -7,20 +7,23 @@ namespace BbxCommon
 	{
         [Export]
         public BbxButton TaskButton;
+        [Export]
+        public ColorRect DurationBarRect;
+
+        private float m_DurationBarOriginalWidth;
+
+        private TaskTimelineEditData m_TimelineEditData = new();
+        public override TaskEditData TaskEditData => m_TimelineEditData;
+
+        protected override void OnReady()
+        {
+            m_DurationBarOriginalWidth = DurationBarRect.Size.X;
+        }
 
         protected override void OnBind(string taskType)
         {
+            taskType = taskType.TryRemoveStart("Task");
             TaskButton.Text = taskType;
-            var fieldStartTime = new TaskEditField();
-            fieldStartTime.FieldName = "StartTime";
-            fieldStartTime.TypeInfo = new Internal.TaskExportTypeInfo("float");
-            fieldStartTime.Value = "0";
-            InsertEditField(0, fieldStartTime);
-            var fieldDuration = new TaskEditField();
-            fieldDuration.FieldName = "Duration";
-            fieldDuration.TypeInfo = new Internal.TaskExportTypeInfo("float");
-            fieldDuration.Value = "0";
-            InsertEditField(1, fieldDuration);
         }
     }
 }
