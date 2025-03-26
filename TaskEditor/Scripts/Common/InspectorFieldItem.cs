@@ -147,14 +147,17 @@ namespace BbxCommon
 			{
 				if (editData is TaskTimelineEditData timelineData)
 				{
-					float.TryParse(CustomValueEdit.Text, out timelineData.StartTime);
-				}
-			}
+					float.TryParse(CustomValueEdit.Text, out var startTime);
+					timelineData.StartTime = startTime;
+                }
+                EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged();
+            }
 			else if (m_SpecialField == ESpecialField.TimelineDuration)
 			{
                 if (editData is TaskTimelineEditData timelineData)
                 {
-                    float.TryParse(CustomValueEdit.Text, out timelineData.Duration);
+                    float.TryParse(CustomValueEdit.Text, out var duration);
+                    timelineData.Duration = duration;
                 }
 				var durationField = editData.GetEditField("Duration");
 				if (durationField != null)
@@ -162,6 +165,7 @@ namespace BbxCommon
 					durationField.ValueSource = ETaskFieldValueSource.Value;
 					durationField.Value = CustomValueEdit.Text;
 				}
+				EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged();
             }
 			else if (m_SpecialField == ESpecialField.None)
 			{

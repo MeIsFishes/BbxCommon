@@ -78,7 +78,7 @@ offset_left = 0.400024
 offset_right = 0.399902
 offset_bottom = 0.299988
 
-[node name="TimelineRoot" type="Control" parent="EditorRoot" node_paths=PackedStringArray("TaskNodeRoot", "NewTaskButton")]
+[node name="TimelineRoot" type="Control" parent="EditorRoot" node_paths=PackedStringArray("TaskNodeRoot", "NewTaskButton", "TimeBarLabel")]
 layout_mode = 3
 anchors_preset = 0
 offset_top = 50.0
@@ -90,6 +90,7 @@ TaskSelectorPrefab = ExtResource("6_fiuha")
 TaskNodePrefab = ExtResource("6_ljxpv")
 TaskNodeRoot = NodePath("VScrollBar/VBoxContainer/NodeRoot")
 NewTaskButton = NodePath("VScrollBar/VBoxContainer/NewTaskButton")
+TimeBarLabel = [NodePath("TimeBar/TimeLabel1"), NodePath("TimeBar/TimeLabel2"), NodePath("TimeBar/TimeLabel3"), NodePath("TimeBar/TimeLabel4"), NodePath("TimeBar/TimeLabel5"), NodePath("TimeBar/TimeLabel6")]
 
 [node name="Frame" type="ColorRect" parent="EditorRoot/TimelineRoot"]
 layout_mode = 1
@@ -114,8 +115,124 @@ grow_vertical = 2
 pivot_offset = Vector2(1, 0.5)
 color = Color(0.158472, 0.158472, 0.158472, 1)
 
+[node name="TimeBar" type="Control" parent="EditorRoot/TimelineRoot"]
+anchors_preset = 0
+offset_left = 20.0
+offset_right = 1150.0
+offset_bottom = 50.0
+
+[node name="TimeLabel1" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
+offset_left = -5.0
+offset_right = 35.0
+offset_bottom = 45.0
+theme_override_font_sizes/font_size = 24
+text = "0"
+
+[node name="TimePoint1" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
+offset_top = 30.0
+offset_right = 5.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
+[node name="TimeLabel2" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -349.0
+offset_right = -309.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "20"
+
+[node name="TimePoint2" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+offset_left = 226.0
+offset_top = 30.0
+offset_right = 231.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
+[node name="TimeLabel3" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -123.0
+offset_right = -83.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "40"
+
+[node name="TimePoint3" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+offset_left = 452.0
+offset_top = 30.0
+offset_right = 457.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
+[node name="TimeLabel4" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 103.0
+offset_right = 143.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "60"
+
+[node name="TimePoint4" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+offset_left = 678.0
+offset_top = 30.0
+offset_right = 683.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
+[node name="TimeLabel5" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 329.0
+offset_right = 369.0
+offset_bottom = 45.0
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 24
+text = "80"
+
+[node name="TimePoint5" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+offset_left = 904.0
+offset_top = 30.0
+offset_right = 909.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
+[node name="TimeLabel6" type="Label" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 1
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -41.0
+offset_bottom = 45.0
+grow_horizontal = 0
+theme_override_font_sizes/font_size = 24
+text = "100"
+
+[node name="TimePoint6" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+offset_left = 1125.0
+offset_top = 30.0
+offset_right = 1130.0
+offset_bottom = 55.0
+color = Color(0.775063, 0.775063, 0.775063, 1)
+
 [node name="VScrollBar" type="ScrollContainer" parent="EditorRoot/TimelineRoot"]
 layout_mode = 0
+offset_top = 50.0
 offset_right = 1150.0
 offset_bottom = 850.0
 scroll_vertical_custom_step = 0.0

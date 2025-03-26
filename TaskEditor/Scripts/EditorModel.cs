@@ -35,8 +35,36 @@ namespace BbxCommon
 
 	public partial class TaskTimelineEditData : TaskEditData
 	{
-		public float StartTime;
-		public float Duration;
+		public Action OnStartTimeChanged;
+		public Action OnDurationChanged;
+
+		private float m_StartTime;
+		public float StartTime
+		{
+			get => m_StartTime;
+			set
+			{
+				if (m_StartTime != value)
+				{
+					m_StartTime = value;
+					OnStartTimeChanged?.Invoke();
+				}
+			}
+		}
+
+		private float m_Duration;
+		public float Duration
+		{
+			get => m_Duration;
+			set
+			{
+				if (m_Duration != value)
+				{
+					m_Duration = value;
+					OnDurationChanged?.Invoke();
+				}
+			}
+		}
 	}
     #endregion
 
@@ -103,19 +131,27 @@ namespace BbxCommon
 		#endregion
 
 		#region Timeline
-		public static Timeline TimelineData;
+		public static Timeline TimelineData = new();
 		public class Timeline
 		{
 			#region Task List
-			private List<string> m_TaskTypes = new();
-			public List<string> TaskTypes
+			public Action OnTaskStartTimeOrDurationChanged;
+			public List<TimelineNode> Nodes = new();
+
+			private float m_MaxTime;
+			public float MaxTime
 			{
-				get
+				get => m_MaxTime;
+				set
 				{
-					return m_TaskTypes;
+					if (m_MaxTime != value)
+					{
+						m_MaxTime = value;
+						OnMaxTimeChanged?.Invoke();
+					}
 				}
 			}
-			public static Action OnTaskTypesChanged;
+			public Action OnMaxTimeChanged;
             #endregion
         }
         #endregion
