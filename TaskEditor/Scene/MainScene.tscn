@@ -149,6 +149,7 @@ theme_override_font_sizes/font_size = 24
 text = "20"
 
 [node name="TimePoint2" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
 offset_left = 226.0
 offset_top = 30.0
 offset_right = 231.0
@@ -168,6 +169,7 @@ theme_override_font_sizes/font_size = 24
 text = "40"
 
 [node name="TimePoint3" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
 offset_left = 452.0
 offset_top = 30.0
 offset_right = 457.0
@@ -187,6 +189,7 @@ theme_override_font_sizes/font_size = 24
 text = "60"
 
 [node name="TimePoint4" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
 offset_left = 678.0
 offset_top = 30.0
 offset_right = 683.0
@@ -206,6 +209,7 @@ theme_override_font_sizes/font_size = 24
 text = "80"
 
 [node name="TimePoint5" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
 offset_left = 904.0
 offset_top = 30.0
 offset_right = 909.0
@@ -224,6 +228,7 @@ theme_override_font_sizes/font_size = 24
 text = "100"
 
 [node name="TimePoint6" type="ColorRect" parent="EditorRoot/TimelineRoot/TimeBar"]
+layout_mode = 0
 offset_left = 1125.0
 offset_top = 30.0
 offset_right = 1130.0

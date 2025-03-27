@@ -102,9 +102,9 @@ namespace BbxCommon
             m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(string));
         }
 
-        protected void RegisterObject<T>(T fieldEnum, object value) where T : Enum
+        protected void RegisterObject<TEnum, TObject>(TEnum fieldEnum, TObject value) where TEnum : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, value.GetType());
+            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(TObject));
         }
 
         internal object GetValue(string key)

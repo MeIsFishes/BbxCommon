@@ -1,0 +1,57 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskContextExportInfo"
+    },
+    "TaskContextTypeName" : "TaskContextCastSkill",
+    "FieldInfos"          : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            }
+        },
+        "0"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackerEntityId",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EntityID",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "1"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "TargetEntityId",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EntityID",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "2"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "WildDices",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        }
+    }
+}

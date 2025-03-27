@@ -1,0 +1,43 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskExportInfo"
+    },
+    "TaskTypeName"     : "TaskNodeJump",
+    "FieldInfos"       : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            }
+        },
+        "0"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackerEntityId",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EntityID",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "1"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "JumpHeight",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "float",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        }
+    }
+}

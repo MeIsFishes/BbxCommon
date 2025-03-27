@@ -1,0 +1,169 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskExportInfo"
+    },
+    "TaskTypeName"     : "TaskNodeStandardAttack",
+    "FieldInfos"       : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            }
+        },
+        "0"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackerEntityId",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EntityID",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "1"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "TargetEntityId",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EntityID",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "2"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "BaseAttackDice",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "3"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "BaseDamageDice",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "4"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackWildDiceIndexList",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "5"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "DamageWildDiceIndexList",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "6"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "WildDiceList",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "List`1",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "7"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackDamageType",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "DamageType",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "8"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "AttackAbilityModifier",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EAbility",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "9"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "DamageAbilityModifier",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EAbility",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        },
+        "10"               : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
+            },
+            "FieldName"        : "ACAbilityModifier",
+            "TypeInfo"         : {
+                "Default.TypeInfo" : {
+                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                },
+                "TypeName"         : "EAbility",
+                "GenericType1"     : "null",
+                "GenericType2"     : "null"
+            }
+        }
+    }
+}
