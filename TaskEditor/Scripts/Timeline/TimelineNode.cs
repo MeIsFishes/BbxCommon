@@ -1,4 +1,5 @@
 using Godot;
+using Godot.Collections;
 using System;
 
 namespace BbxCommon
@@ -9,27 +10,35 @@ namespace BbxCommon
         public BbxButton TaskButton;
         [Export]
         public ColorRect DurationBarRect;
+        [Export]
+        public Array<Control> SelectedControls;
 
         private float m_DurationBarOriginalX;
         private float m_DurationBarOriginalWidth;
 
-        private TaskTimelineEditData m_TimelineEditData = new();
-        public TaskTimelineEditData TimelineEditData => m_TimelineEditData;
-        public override TaskEditData TaskEditData => m_TimelineEditData;
+        public TaskTimelineEditData TimelineEditData => TaskEditData as TaskTimelineEditData;
 
         protected override void OnReady()
         {
             EditorModel.TimelineData.OnMaxTimeChanged += RefreshDurationBar;
-            m_TimelineEditData.OnStartTimeChanged += RefreshDurationBar;
-            m_TimelineEditData.OnDurationChanged += RefreshDurationBar;
+            EditorModel.OnCurSelectTaskNodeChanged += OnCurSelectNodeChanged;
             m_DurationBarOriginalX = DurationBarRect.Position.X;
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
+            OnCurSelectNodeChanged();
             RefreshDurationBar();
         }
 
-        protected override void OnBind(string taskType)
+        public override void _ExitTree()
         {
-            taskType = taskType.TryRemoveStart("Task");
+            EditorModel.TimelineData.OnMaxTimeChanged -= RefreshDurationBar;
+            EditorModel.OnCurSelectTaskNodeChanged -= OnCurSelectNodeChanged;
+        }
+
+        protected override void OnBind(TaskEditData editData)
+        {
+            TimelineEditData.OnStartTimeChanged = RefreshDurationBar;
+            TimelineEditData.OnDurationChanged = RefreshDurationBar;
+            var taskType = TaskUtils.GetTaskDisplayName(editData.TaskType);
             TaskButton.Text = taskType;
         }
 
@@ -38,10 +47,28 @@ namespace BbxCommon
             var maxTime = EditorModel.TimelineData.MaxTime;
             if (maxTime == 0)
                 return;
-            float startX = m_DurationBarOriginalX + (m_TimelineEditData.StartTime / maxTime) * m_DurationBarOriginalWidth;
-            float endX = m_DurationBarOriginalX + ((m_TimelineEditData.StartTime + m_TimelineEditData.Duration) / maxTime) * m_DurationBarOriginalWidth;
+            float startX = m_DurationBarOriginalX + (TimelineEditData.StartTime / maxTime) * m_DurationBarOriginalWidth;
+            float endX = m_DurationBarOriginalX + ((TimelineEditData.StartTime + TimelineEditData.Duration) / maxTime) * m_DurationBarOriginalWidth;
             DurationBarRect.Position = new Vector2(startX, DurationBarRect.Position.Y);
             DurationBarRect.Size = new Vector2(endX - startX, DurationBarRect.Size.Y);
+        }
+
+        private void OnCurSelectNodeChanged()
+        {
+            if (EditorModel.CurSelectTaskNode == this)
+            {
+                for (int i = 0; i < SelectedControls.Count; i++)
+                {
+                    SelectedControls[i].Visible = true;
+                }
+            }
+            else
+            {
+                for (int i = 0; i < SelectedControls.Count; i++)
+                {
+                    SelectedControls[i].Visible = false;
+                }
+            }
         }
     }
 }

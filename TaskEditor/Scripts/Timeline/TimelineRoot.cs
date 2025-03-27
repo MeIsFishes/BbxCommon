@@ -23,6 +23,7 @@ namespace BbxCommon
         public override void _Ready()
         {
             EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged += OnTaskStartTimeAndDurationChanged;
+            EditorModel.TimelineData.OnTimelineTasksChanged += OnTimelineTasksChanged;
             NewTaskButton.Pressed += OnNewTaskButtonClick;
         }
 
@@ -39,12 +40,33 @@ namespace BbxCommon
 
         void ITaskSelectorTarget.SelectTask(TaskExportInfo taskInfo)
         {
-            var node = TaskNodePrefab.Instantiate<TimelineNode>();
-            node.BindTask(taskInfo.TaskTypeName);
-            TaskNodeRoot.AddChild(node);
-            TaskNodeRoot.CustomMinimumSize = new Vector2(node.CustomMinimumSize.X,
-                TaskNodeRoot.CustomMinimumSize.Y + node.CustomMinimumSize.Y);
-            EditorModel.TimelineData.Nodes.Add(node);
+            var editData = new TaskTimelineEditData();
+            editData.TaskType = taskInfo.TaskTypeName;
+            editData.Fields.Clear();
+            for (int i = 0; i < taskInfo.FieldInfos.Count; i++)
+            {
+                var fieldInfo = taskInfo.FieldInfos[i];
+                var editField = new TaskEditField();
+                editField.FieldName = fieldInfo.FieldName;
+                editField.TypeInfo = fieldInfo.TypeInfo;
+                editField.Value = string.Empty;
+                editData.Fields.Add(editField);
+            }
+            EditorModel.TimelineData.TaskDatas.Add(editData);
+            EditorModel.TimelineData.OnTimelineTasksChanged();
+        }
+
+        private void OnTimelineTasksChanged()
+        {
+            TaskNodeRoot.RemoveChildren();
+            EditorModel.TimelineData.Nodes.Clear();
+            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            {
+                var node = TaskNodePrefab.Instantiate<TimelineNode>();
+                TaskNodeRoot.AddChild(node);
+                node.BindTask(EditorModel.TimelineData.TaskDatas[i]);
+                EditorModel.TimelineData.Nodes.Add(node);
+            }
         }
 
         private void OnTaskStartTimeAndDurationChanged()

@@ -10,7 +10,7 @@ namespace BbxCommon
         [Export]
 		public BbxButton NodeButton;
 
-		public abstract TaskEditData TaskEditData { get; }
+		public TaskEditData TaskEditData;
 
         public sealed override void _Ready()
         {
@@ -21,25 +21,14 @@ namespace BbxCommon
 		/// <summary>
 		/// Bind the specific task type, and clear all cached field infos.
 		/// </summary>
-		public void BindTask(string taskType)
+		public void BindTask(TaskEditData editData)
 		{
-			TaskEditData.TaskType = taskType;
-            TaskEditData.Fields.Clear();
-			var taskInfo = EditorDataStore.GetTaskInfo(taskType);
-			for (int i = 0; i < taskInfo.FieldInfos.Count; i++)
-			{
-				var fieldInfo = taskInfo.FieldInfos[i];
-				var editField = new TaskEditField();
-				editField.FieldName = fieldInfo.FieldName;
-				editField.TypeInfo = fieldInfo.TypeInfo;
-				editField.Value = string.Empty;
-                TaskEditData.Fields.Add(editField);
-			}
-			OnBind(taskType);
+			TaskEditData = editData;
+			OnBind(editData);
 		}
 
 		protected virtual void OnReady() { }
-		protected virtual void OnBind(string taskType) { }
+		protected virtual void OnBind(TaskEditData editData) { }
         #endregion
 
         #region Callbacks

@@ -4,7 +4,7 @@
 [ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_v5ue2"]
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_oncdq"]
 
-[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "DurationBarRect", "NodeButton")]
+[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "DurationBarRect", "SelectedControls", "NodeButton")]
 custom_minimum_size = Vector2(1145, 80)
 layout_mode = 3
 anchors_preset = 0
@@ -13,6 +13,7 @@ offset_bottom = 80.0
 script = ExtResource("1_i0oxn")
 TaskButton = NodePath("Root/Body/BbxButton")
 DurationBarRect = NodePath("Root/DurationBar/ColorRect")
+SelectedControls = [NodePath("Root/Expand/Selected"), NodePath("Root/Body/Selected")]
 NodeButton = NodePath("Root/Body/BbxButton")
 
 [node name="Root" type="Control" parent="."]
@@ -32,6 +33,11 @@ layout_mode = 0
 offset_right = 20.0
 offset_bottom = 80.0
 color = Color(0, 0, 0, 1)
+
+[node name="Selected" type="ColorRect" parent="Root/Expand"]
+offset_right = 20.0
+offset_bottom = 80.0
+color = Color(0, 0, 1, 1)
 
 [node name="ArrowButton" type="Button" parent="Root/Expand"]
 layout_mode = 0
@@ -57,6 +63,11 @@ layout_mode = 0
 offset_right = 1125.0
 offset_bottom = 60.0
 color = Color(0, 0, 0, 1)
+
+[node name="Selected" type="ColorRect" parent="Root/Body"]
+offset_right = 1125.0
+offset_bottom = 60.0
+color = Color(0, 0, 1, 1)
 
 [node name="BbxButton" type="Button" parent="Root/Body"]
 layout_mode = 0

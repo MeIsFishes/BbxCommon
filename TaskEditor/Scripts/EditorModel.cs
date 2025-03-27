@@ -135,8 +135,10 @@ namespace BbxCommon
 		public class Timeline
 		{
 			#region Task List
+			public Action OnTimelineTasksChanged;
 			public Action OnTaskStartTimeOrDurationChanged;
 			public List<TimelineNode> Nodes = new();
+			public List<TaskTimelineEditData> TaskDatas = new();
 
 			private float m_MaxTime;
 			public float MaxTime
