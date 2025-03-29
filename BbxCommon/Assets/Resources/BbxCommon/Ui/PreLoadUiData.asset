@@ -56,3 +56,9 @@ MonoBehaviour:
     - Key: UiCharacterStateContainerController
       Value:
         UiViewPrefabPath: DndCardGame/Prefab/Ui/UnitInfo/UiCharacterStateContainer
+    - Key: Dcg.Ui.UiMapController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Map/UiMap
+    - Key: UiMapRoomController
+      Value:
+        UiViewPrefabPath: DndCardGame/Prefab/Ui/Map/UiMapRoom

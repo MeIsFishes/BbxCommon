@@ -11,8 +11,7 @@ namespace Dcg.Ui
 {
     public class UiMapView : UiViewBase
     {
-        public Button Button;
-
+        public UiList MapRoomList;
         public override Type GetControllerType()
         {
             return typeof(UiMapController);

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: UiMap
   m_EditorClassIdentifier: 
   UiObjectDatas:
-  - PrefabPath: DndCardGame/Prefab/Ui/UiMap
+  - PrefabPath: DndCardGame/Prefab/Ui/Map/UiMap
     UiGroup: 2
     DefaultShow: 1
     Position: {x: 0, y: 0, z: 0}

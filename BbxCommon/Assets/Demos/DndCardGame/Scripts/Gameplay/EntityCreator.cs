@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using Unity.Entities;
 using BbxCommon;
@@ -6,8 +7,41 @@ using Dcg.Ui;
 
 namespace Dcg
 {
+    public struct MapRoom
+    {
+        public int Layer;
+        public int Index;
+        public List<int> NextRoomLayers;
+        public List<int> NextRoomIndices;
+        public List<int> PreviousRoomLayers;
+        public List<int> PreviousRoomIndices;
+        public Vector2 Position;
+        public EMapRoomType Type;
+    }
     public static class EntityCreator
     {
+        public static Entity CreateMapRoomEntity(MapRoom room)
+        {
+            //后面直接传配置的数据结构来初始化
+            var entity = EcsApi.CreateEntity();
+
+            var roomComp = entity.AddRawComponent<MapRoomRawComponent>();
+            roomComp.Layer = room.Layer;
+            roomComp.Index = room.Index;
+            roomComp.NextRoomLayers?.Clear(); 
+            roomComp.NextRoomLayers?.AddRange(room.NextRoomLayers);
+            roomComp.NextRoomIndices?.Clear();
+            roomComp.NextRoomIndices?.AddRange(room.NextRoomIndices);
+            roomComp.PreviousRoomLayers?.Clear();
+            roomComp.PreviousRoomLayers?.AddRange(room.PreviousRoomLayers);
+            roomComp.PreviousRoomIndices?.Clear();
+            roomComp.PreviousRoomIndices?.AddRange(room.PreviousRoomIndices);
+            roomComp.Position = room.Position;
+            roomComp.Type = room.Type;
+
+            return entity;
+        }
+        
         public static Entity CreatePlayerEntity()
         {
             var entity = EcsApi.CreateEntity();
