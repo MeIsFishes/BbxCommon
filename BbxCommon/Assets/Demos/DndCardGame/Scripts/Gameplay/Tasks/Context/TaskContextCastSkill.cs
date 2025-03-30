@@ -31,7 +31,7 @@ namespace Dcg
             RegisterObject(EField.WildDices, WildDices);
         }
 
-        public override void OnCollect()
+        protected override void OnContextCollect()
         {
             AttackerEntityId = EntityID.INVALID;
             TargetEntityId = EntityID.INVALID;

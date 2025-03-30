@@ -152,6 +152,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (T)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (T)context.GetBlackBoardObjectValue(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -170,6 +173,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (bool)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = context.GetBlackBoardLongValue(fieldInfo.Value) > 0;
                     break;
             }
             return res;
@@ -190,6 +196,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (short)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (short)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -208,6 +217,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (ushort)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (ushort)context.GetBlackBoardLongValue(fieldInfo.Value);
                     break;
             }
             return res;
@@ -228,6 +240,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (int)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (int)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -246,6 +261,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (uint)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (uint)context.GetBlackBoardLongValue(fieldInfo.Value);
                     break;
             }
             return res;
@@ -266,6 +284,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (long)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = context.GetBlackBoardLongValue(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -284,6 +305,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (ulong)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (ulong)context.GetBlackBoardLongValue(fieldInfo.Value);
                     break;
             }
             return res;
@@ -304,6 +328,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (float)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (float)context.GetBlackBoardDoubleValue(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -322,6 +349,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (double)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = context.GetBlackBoardDoubleValue(fieldInfo.Value);
                     break;
             }
             return res;
@@ -346,6 +376,9 @@ namespace BbxCommon
                 case ETaskFieldValueSource.Context:
                     res = (T)context.GetValue(fieldInfo.Value);
                     break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = context.GetBlackBoardValue<T>(fieldInfo.Value);
+                    break;
             }
             return res;
         }
@@ -360,6 +393,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res = (string)context.GetValue(fieldInfo.Value);
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res = (string)context.GetBlackBoardObjectValue(fieldInfo.Value);
                     break;
             }
             return res;
@@ -538,6 +574,9 @@ namespace BbxCommon
                     break;
                 case ETaskFieldValueSource.Context:
                     res.AddList((List<T>)context.GetValue(fieldInfo.Value));
+                    break;
+                case ETaskFieldValueSource.Blackboard:
+                    res.AddList((List<T>)context.GetBlackBoardObjectValue(fieldInfo.Value));
                     break;
             }
             return res;
