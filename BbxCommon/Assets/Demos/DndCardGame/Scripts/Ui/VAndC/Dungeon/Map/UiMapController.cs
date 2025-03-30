@@ -14,15 +14,19 @@ namespace Dcg.Ui
 
         protected override void OnUiInit()
         {
-            m_DicesInHandRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Open, (int)MapSingletonRawComponent.EUiEvent.MapInit, InitMap);
-            InitMap();
+            m_DicesInHandRefreshListener = ModelWrapper.CreateListener(EControllerLifeCycle.Show, (int)MapSingletonRawComponent.EUiEvent.MapInit, InitMap);
         }
 
         protected override void OnUiClose()
         {
             m_View.MapRoomList.ClearItems();
         }
-        
+
+        protected override void OnUiShow()
+        {
+            InitMap();
+        }
+
         private void InitMap()
         {
             var mapData = EcsApi.GetSingletonRawComponent<MapSingletonRawComponent>();
