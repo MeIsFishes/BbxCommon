@@ -6,7 +6,7 @@ namespace BbxCommon
     [DisableAutoCreation]
     internal partial class TaskSystem : EcsMixSystemBase
     {
-        private struct TaskFinishInfo
+        internal struct TaskFinishInfo
         {
             public int Index;
             public bool Succeeded;
