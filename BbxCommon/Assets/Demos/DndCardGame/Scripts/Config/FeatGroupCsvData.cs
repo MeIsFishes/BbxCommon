@@ -19,7 +19,7 @@ namespace Dcg
             GroupDesc = GetStringFromKey("GroupDesc");
             FeatList = ParseIntArrayFromKey("FeatList");
             
-            DataApi.SetData<FeatGroupCsvData>(this);
+            DataApi.SetData<FeatGroupCsvData>(GroupId,this);
         }
     }
 }

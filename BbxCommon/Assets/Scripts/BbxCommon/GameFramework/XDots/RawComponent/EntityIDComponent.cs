@@ -11,13 +11,13 @@ namespace BbxCommon
     public struct EntityID: IEquatable<EntityID>
     {
         private readonly ulong m_ID;
-        private string m_District;
+        private string m_Group;
         public static EntityID INVALID => new EntityID();
 
-        public EntityID(ulong id, string district)
+        public EntityID(ulong id, string group)
         {
             m_ID = id;
-            m_District = district;
+            m_Group = group;
         }
 
         // public static implicit operator ulong(EntityID id)
@@ -31,27 +31,27 @@ namespace BbxCommon
         //     return id;
         // }
 
-        public string GetDistrict()
+        public string GetGroup()
         {
-            return m_District;
+            return m_Group;
         }
         
         public static bool operator ==(EntityID a, EntityID b)
         {
             return a.m_ID == b.m_ID 
-                   && a.m_District == b.m_District;
+                   && a.m_Group == b.m_Group;
         }
         
         public static bool operator !=(EntityID a, EntityID b)
         {
             return a.m_ID != b.m_ID 
-                   || a.m_District != b.m_District;
+                   || a.m_Group != b.m_Group;
         }
         
         public bool Equals(EntityID other)
         {
             return m_ID == other.m_ID 
-                   && m_District == other.m_District;
+                   && m_Group == other.m_Group;
         }
       
         public override bool Equals(object obj)
@@ -61,12 +61,12 @@ namespace BbxCommon
 
             EntityID id = (EntityID)obj;
             return id.m_ID == m_ID 
-                   && id.m_District == m_District;
+                   && id.m_Group == m_Group;
         }
         
         public override int GetHashCode()
         {
-            return HashCode.Combine(m_ID,m_District);
+            return HashCode.Combine(m_ID,m_Group);
         }
         
     }

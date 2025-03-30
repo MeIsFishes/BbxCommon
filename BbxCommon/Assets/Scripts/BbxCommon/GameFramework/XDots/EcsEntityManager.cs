@@ -14,25 +14,25 @@ namespace BbxCommon
     {
         
         private static Dictionary<string, UniqueIdGenerator> m_IdGenerators = new Dictionary<string, UniqueIdGenerator>();
-        private static Dictionary<string, Dictionary<EntityID, Entity>> m_EntityByDistrict = new Dictionary<string, Dictionary<EntityID, Entity>>();
+        private static Dictionary<string, Dictionary<EntityID, Entity>> m_EntityByGroup = new Dictionary<string, Dictionary<EntityID, Entity>>();
         
-        internal static Entity CreateEntity(EntityID entityID, string district)
+        internal static Entity CreateEntity(EntityID entityID, string group)
         {
             UniqueIdGenerator idGenerator;
-            if(!m_IdGenerators.TryGetValue(district,out idGenerator))
+            if(!m_IdGenerators.TryGetValue(group,out idGenerator))
             {
                 idGenerator = new UniqueIdGenerator();
-                m_IdGenerators[district] = idGenerator;
+                m_IdGenerators[group] = idGenerator;
             }
 
-            Dictionary<EntityID, Entity> districtEntities;
-            if (!m_EntityByDistrict.TryGetValue(district, out districtEntities))
+            Dictionary<EntityID, Entity> groupEntities;
+            if (!m_EntityByGroup.TryGetValue(group, out groupEntities))
             {
-                districtEntities = new Dictionary<EntityID, Entity>();
-                m_EntityByDistrict[district] = districtEntities;
+                groupEntities = new Dictionary<EntityID, Entity>();
+                m_EntityByGroup[group] = groupEntities;
             }
             
-            if (districtEntities.TryGetValue(entityID, out var entity))
+            if (groupEntities.TryGetValue(entityID, out var entity))
             {
                 DebugApi.LogError("entityID conflict!!!");
                 return Entity.Null;
@@ -41,7 +41,7 @@ namespace BbxCommon
             entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
             if (entityID == EntityID.INVALID)
             {
-                entityID = new EntityID(idGenerator.GenerateId(), district);
+                entityID = new EntityID(idGenerator.GenerateId(), group);
             }
             
             var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
@@ -50,15 +50,15 @@ namespace BbxCommon
             var entityIDComp = entity.AddRawComponent<EntityIDComponent>();
             entityIDComp.EntityUniqueID = entityID;
             
-            districtEntities[entityID] = entity;
+            groupEntities[entityID] = entity;
             return entity;
         }
 
         internal static bool GetEntityByID(EntityID uniqueId, out Entity entity)
         {
-            if (m_EntityByDistrict.TryGetValue(uniqueId.GetDistrict(), out var districtDic))
+            if (m_EntityByGroup.TryGetValue(uniqueId.GetGroup(), out var groupDic))
             {
-                return districtDic.TryGetValue(uniqueId, out entity);
+                return groupDic.TryGetValue(uniqueId, out entity);
             }
 
             entity = Entity.Null;
@@ -72,15 +72,15 @@ namespace BbxCommon
                 return;
             }
 
-            if (m_EntityByDistrict.TryGetValue(entityID.GetDistrict(), out var districtDic))
+            if (m_EntityByGroup.TryGetValue(entityID.GetGroup(), out var groupDic))
             {
-                if (districtDic.TryGetValue(entityID, out var entity))
+                if (groupDic.TryGetValue(entityID, out var entity))
                 {
                     entity.ClearHud();
                     entity.GetGameObject().Destroy();
                     EcsDataManager.DestroyEntity(entityID);
                     World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
-                    districtDic.Remove(entityID);
+                    groupDic.Remove(entityID);
                 }
                
             }
@@ -97,39 +97,39 @@ namespace BbxCommon
             }
             World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
             
-            if (m_EntityByDistrict.TryGetValue(entityID.GetDistrict(), out var districtDic))
+            if (m_EntityByGroup.TryGetValue(entityID.GetGroup(), out var groupDic))
             {
-                districtDic.Remove(entityID);
+                groupDic.Remove(entityID);
             }
         }
 
-        internal static void ResetEntitiesByDistrict(string district)
+        internal static void ResetEntitiesByGroup(string group)
         {
-            if (m_EntityByDistrict.TryGetValue(district, out var districtDic))
+            if (m_EntityByGroup.TryGetValue(group, out var groupDic))
             {
-                foreach (var entity in districtDic.Values)
+                foreach (var entity in groupDic.Values)
                 {
                     DestroyEntity(entity);
                 }
             }
 
-            if (m_IdGenerators.TryGetValue(district, out var idGenerator))
+            if (m_IdGenerators.TryGetValue(group, out var idGenerator))
             {
                 idGenerator.ResetCounter();
             }
             
         }
 
-        internal static Dictionary<EntityID, Entity> GetEntitiesByDistrict(string district)
+        internal static Dictionary<EntityID, Entity> GetEntitiesByGroup(string group)
         {
-            return m_EntityByDistrict.GetValueOrDefault(district);
+            return m_EntityByGroup.GetValueOrDefault(group);
         }
 
-        internal static int CheckLeftEntityCount(string district)
+        internal static int CheckLeftEntityCount(string group)
         {
-            if (m_EntityByDistrict.TryGetValue(district, out var districtDic))
+            if (m_EntityByGroup.TryGetValue(group, out var gruopDic))
             {
-                return districtDic.Count;
+                return gruopDic.Count;
             }
 
             return 0;

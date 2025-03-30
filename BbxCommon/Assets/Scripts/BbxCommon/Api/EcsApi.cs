@@ -10,9 +10,9 @@ namespace BbxCommon
     public static class EcsApi
     {
         #region Common
-        public static Entity CreateEntity(string district = "", EntityID entityID = new EntityID())
+        public static Entity CreateEntity(string group = "", EntityID entityID = new EntityID())
         {
-            return EcsEntityManager.CreateEntity(entityID, district);
+            return EcsEntityManager.CreateEntity(entityID, group);
             //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
             //return entity;
             // var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
@@ -193,14 +193,14 @@ namespace BbxCommon
             return Entity.Null;
         }
 
-        public static void ResetEntitiesByDistrict(string district)
+        public static void ResetEntitiesByGroup(string group)
         {
-            EcsEntityManager.ResetEntitiesByDistrict(district);
+            EcsEntityManager.ResetEntitiesByGroup(group);
         }
         
-        public static Dictionary<EntityID, Entity> GetEntitiesByDistrict(string district)
+        public static Dictionary<EntityID, Entity> GetEntitiesByGroup(string group)
         {
-            return EcsEntityManager.GetEntitiesByDistrict(district);
+            return EcsEntityManager.GetEntitiesByGroup(group);
         }
 
 

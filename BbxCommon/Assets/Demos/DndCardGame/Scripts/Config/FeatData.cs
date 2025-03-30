@@ -12,7 +12,7 @@ namespace Dcg
         public string Icon;
         protected override void OnLoad()
         {
-            DataApi.SetData(this);
+            DataApi.SetData(Id,this);
         }
     }
 }

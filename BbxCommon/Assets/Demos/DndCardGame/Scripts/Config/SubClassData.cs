@@ -17,7 +17,7 @@ namespace Dcg
         
         protected override void OnLoad()
         {
-            DataApi.SetData(this);
+            DataApi.SetData(Id,this);
         }
     }
 }
