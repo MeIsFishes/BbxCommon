@@ -102,7 +102,7 @@ namespace BbxCommon
                         taskTimeLineInfo.Task.Stop();
                     }
                 }
-                for (int k = finishInfos.Count - 1; k >= 0; k--)
+                for (int k = finishedIndexes.Count - 1; k >= 0; k--)
                 {
                     m_RunningTaskIndexes.RemoveAt(finishedIndexes[k]);
                 }
