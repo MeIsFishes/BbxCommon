@@ -1,0 +1,29 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskEnumExportInfo"
+    },
+    "EnumTypeName"     : "Dcg.DamageType",
+    "EnumValues"       : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "SpecialType" : "string"
+            }
+        },
+        "0"                : "None",
+        "1"                : "Slash",
+        "2"                : "Piercing",
+        "3"                : "Bludgeoning",
+        "4"                : "Exploding",
+        "5"                : "Fire",
+        "6"                : "Cold",
+        "7"                : "Lightning",
+        "8"                : "Force",
+        "9"                : "Radiant",
+        "10"               : "Poison",
+        "11"               : "Psychic",
+        "12"               : "Healing",
+        "13"               : "UpperLimit"
+    }
+}

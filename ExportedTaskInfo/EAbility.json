@@ -1,0 +1,21 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.Internal.TaskEnumExportInfo"
+    },
+    "EnumTypeName"     : "Dcg.EAbility",
+    "EnumValues"       : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "SpecialType" : "string"
+            }
+        },
+        "0"                : "None",
+        "1"                : "Strength",
+        "2"                : "Dexterity",
+        "3"                : "Consititution",
+        "4"                : "Intelligence",
+        "5"                : "Wisdom"
+    }
+}

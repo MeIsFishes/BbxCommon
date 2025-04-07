@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace BbxCommon.Internal
@@ -58,5 +59,17 @@ namespace BbxCommon.Internal
 	{
 		public string TaskContextTypeName;
 		public List<TaskExportFieldInfo> FieldInfos = new();
+	}
+
+	public class TaskEnumExportInfo
+	{
+		public string EnumTypeName;
+		public List<string> EnumValues = new();
+
+		public void GenerateInfo(Type type)
+		{
+			EnumTypeName = type.FullName;
+			EnumValues.AddRange(type.GetEnumNames());
+		}
 	}
 }

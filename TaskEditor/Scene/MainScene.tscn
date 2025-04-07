@@ -94,6 +94,7 @@ text = "Move Up"
 script = ExtResource("5_s1nu3")
 
 [node name="BtnMoveDown" type="Button" parent="EditorRoot/Inspector"]
+layout_mode = 0
 offset_left = 1380.0
 offset_top = 780.0
 offset_right = 1570.0
@@ -104,6 +105,7 @@ text = "Move Down"
 script = ExtResource("5_s1nu3")
 
 [node name="BtnDelete" type="Button" parent="EditorRoot/Inspector"]
+layout_mode = 0
 offset_left = 1170.0
 offset_top = 840.0
 offset_right = 1570.0

@@ -1,11 +1,15 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using UnityEditor;
+using BbxCommon.Internal;
 
 namespace BbxCommon
 {
     public static class ExportTaskInfo
     {
+        public static Dictionary<string, Type> EnumDic = new();
+
         private static string m_ExportPath = "../ExportedTaskInfo/";
 
         [MenuItem("BbxCommon/ExportAllTasks")]
@@ -35,6 +39,12 @@ namespace BbxCommon
                     var taskContextExportInfo = taskContext.GenerateExportInfo();
                     JsonApi.Serialize(taskContextExportInfo, fullPath + type.Name + ".json");
                 }
+            }
+            foreach (var pair in EnumDic)
+            {
+                var enumInfo = new TaskEnumExportInfo();
+                enumInfo.GenerateInfo(pair.Value);
+                JsonApi.Serialize(enumInfo, fullPath + pair.Value.Name + ".json");
             }
         }
     }

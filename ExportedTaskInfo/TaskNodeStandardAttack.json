@@ -118,7 +118,7 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "DamageType",
+                "TypeName"         : "Dcg.DamageType",
                 "GenericType1"     : "null",
                 "GenericType2"     : "null"
             }
@@ -132,7 +132,7 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "EAbility",
+                "TypeName"         : "Dcg.EAbility",
                 "GenericType1"     : "null",
                 "GenericType2"     : "null"
             }
@@ -146,7 +146,7 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "EAbility",
+                "TypeName"         : "Dcg.EAbility",
                 "GenericType1"     : "null",
                 "GenericType2"     : "null"
             }
@@ -160,7 +160,7 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "EAbility",
+                "TypeName"         : "Dcg.EAbility",
                 "GenericType1"     : "null",
                 "GenericType2"     : "null"
             }

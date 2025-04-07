@@ -32,7 +32,7 @@ namespace Dcg
 
                 var jumpNode = taskTest.CreateTaskValueInfo<TaskNodeJump>(1);
                 jumpNode.AddFieldInfoFromContext(TaskNodeJump.EField.AttackerEntityId, TaskContextCastSkill.EField.AttackerEntityId);
-                jumpNode.AddFieldInfo(TaskNodeJump.EField.JumpHeight, 5f);
+                jumpNode.AddFieldInfo(TaskNodeJump.EField.JumpHeight, 2f);
 
                 var StandardAttackNode = taskTest.CreateTaskValueInfo<TaskNodeStandardAttack>(2);
 

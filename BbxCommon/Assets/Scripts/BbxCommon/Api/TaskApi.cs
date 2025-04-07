@@ -87,6 +87,14 @@ namespace BbxCommon
                 res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
                 res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
             }
+            else if (type.IsEnum)
+            {
+                res.TypeName = type.FullName;
+                if (ExportTaskInfo.EnumDic.ContainsKey(type.FullName) == false)
+                {
+                    ExportTaskInfo.EnumDic.Add(type.FullName, type);
+                }
+            }
             else
             {
                 res.TypeName = type.Name;
