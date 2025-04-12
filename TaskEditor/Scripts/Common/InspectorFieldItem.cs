@@ -4,9 +4,20 @@ using System;
 
 namespace BbxCommon
 {
+	/// <summary>
+	/// There are two field types: normal field and special field.
+	/// 
+	/// Normal field represents the fields in Task that developer claimed.
+	/// 
+	/// Special field is those ones claimed in base classes, for example, start time and duration in TaskTimeline.
+	/// And maybe there will be some fields only used in editor.
+	/// However, special field means it should be processed differently from normal ones.
+	/// </summary>
 	public partial class InspectorFieldItem : Node
 	{
         #region Common
+
+        #region Bind Field
         [Export]
 		public Label FieldNameLabel;
 		[Export]
@@ -24,51 +35,62 @@ namespace BbxCommon
 		}
 
 		private ESpecialField m_SpecialField;
-		private string m_FieldName;
+		private TaskEditField m_EditFieldInfo;
 
         public override void _Ready()
         {
 			OnReadyValueSourceOption();
-			OnReadyCustomValueEdit();
-			OnReadyPresetValueOption();
         }
 
+		/// <summary>
+		/// Bind normal fields.
+		/// </summary>
         public void RebindField(TaskEditField editField)
         {
 			ValueSourceOption.Visible = true;
 			m_SpecialField = ESpecialField.None;
-			m_FieldName = editField.FieldName;
+			m_EditFieldInfo = editField;
 			FieldNameLabel.Text = editField.FieldName;
 			switch (editField.ValueSource)
 			{
 				case ETaskFieldValueSource.Value:
-					ValueSourceOption.Select(0);
-					OnValueSourceChanged(0);
-					CustomValueEdit.Text = editField.Value;
-					break;
+                    ValueSourceOption.Select(0);
+                    OnValueSourceChanged(0);
+					if (TaskUtils.IsEnum(editField.TypeInfo))
+					{
+						PresetValueOption.Select(editField.Value);
+					}
+					else
+					{
+						CustomValueEdit.Text = editField.Value;
+					}
+                    break;
 				case ETaskFieldValueSource.Context:
-					ValueSourceOption.Select(1);
-					OnValueSourceChanged(1);
-					var contextIndex = PresetValueOption.GetItemIndex(editField.Value);
-					PresetValueOption.Select(contextIndex);
+                    ValueSourceOption.Select(1);
+                    OnValueSourceChanged(1);
+                    PresetValueOption.Select(editField.Value);
                     break;
 				case ETaskFieldValueSource.Blackboard:
                     ValueSourceOption.Select(2);
-					OnValueSourceChanged(2);
+                    OnValueSourceChanged(2);
                     CustomValueEdit.Text = editField.Value;
                     break;
             }
         }
 
-		public void RebindSpecialField(ESpecialField field)
+		/// <summary>
+		/// If there are more special fields in future, write in this function.
+		/// </summary>
+		public void RebindSpecialField(ESpecialField field, TaskNode taskNode)
 		{
+			m_EditFieldInfo = null;
 			switch (field)
 			{
 				case ESpecialField.TimelineStartTime:
 					ValueSourceOption.Visible = false;
 					m_SpecialField = ESpecialField.TimelineStartTime;
 					FieldNameLabel.Text = "StartTime";
-					if (EditorModel.CurSelectTaskNode.TaskEditData is TaskTimelineEditData timelineData1)
+					if (taskNode.TaskEditData is TaskTimelineEditData timelineData1)
 					{
 						CustomValueEdit.Text = timelineData1.StartTime.ToString();
 					}
@@ -77,7 +99,7 @@ namespace BbxCommon
                     ValueSourceOption.Visible = false;
                     m_SpecialField = ESpecialField.TimelineDuration;
                     FieldNameLabel.Text = "Duration";
-                    if (EditorModel.CurSelectTaskNode.TaskEditData is TaskTimelineEditData timelineData2)
+                    if (taskNode.TaskEditData is TaskTimelineEditData timelineData2)
                     {
                         CustomValueEdit.Text = timelineData2.Duration.ToString();
                     }
@@ -91,27 +113,25 @@ namespace BbxCommon
             ValueSourceOption.AddItem("Context", 1);
             ValueSourceOption.AddItem("Blackboard", 2);
 			ValueSourceOption.ItemSelected += OnValueSourceChanged;
-			// godot option menu cannot invoke selected callback when select via code
-			OnValueSourceChanged(0);
         }
-
-		private void OnReadyCustomValueEdit()
-		{
-			CustomValueEdit.TextChanged += (string content) => { ExportCurField(); };
-		}
-
-		private void OnReadyPresetValueOption()
-		{
-			PresetValueOption.ItemSelected += (long index) => { ExportCurField(); };
-		}
 
 		private void OnValueSourceChanged(long index)
 		{
 			switch (index)
 			{
 				case 0: // value
-					CustomValueEdit.Visible = true;
-					PresetValueOption.Visible = false;
+					if (TaskUtils.IsEnum(m_EditFieldInfo.TypeInfo))
+					{
+                        CustomValueEdit.Visible = false;
+                        PresetValueOption.Visible = true;
+						var enumInfo = TaskUtils.GetEnumInfo(m_EditFieldInfo.TypeInfo);
+						RefreshEnumFields(enumInfo);
+                    }
+					else
+					{
+						CustomValueEdit.Visible = true;
+						PresetValueOption.Visible = false;
+					}
 					break;
 				case 1: // context
 					CustomValueEdit.Visible = false;
@@ -123,10 +143,20 @@ namespace BbxCommon
 					PresetValueOption.Visible = false;
 					break;
 			}
-			ExportCurField();
+		}
+        #endregion
+
+        #region Preset Values
+		private void RefreshEnumFields(TaskEnumExportInfo enumInfo)
+		{
+			PresetValueOption.Clear();
+			for (int i = 0; i < enumInfo.EnumValues.Count; i++)
+			{
+				PresetValueOption.AddItem(enumInfo.EnumValues[i]);
+			}
 		}
 
-		private void RefreshContextFields()
+        private void RefreshContextFields()
 		{
 			PresetValueOption.Clear();
 			var contextInfo = EditorModel.BindingContextInfo;
@@ -137,12 +167,14 @@ namespace BbxCommon
 		}
         #endregion
 
+        #endregion
+
         #region Export Value
-		private void ExportCurField()
+        public void ExportCurField(TaskNode node)
 		{
 			if (EditorModel.CurSelectTaskNode == null)
 				return;
-			var editData = EditorModel.CurSelectTaskNode.TaskEditData;
+			var editData = node.TaskEditData;
 			if (m_SpecialField == ESpecialField.TimelineStartTime)
 			{
 				if (editData is TaskTimelineEditData timelineData)
@@ -150,7 +182,7 @@ namespace BbxCommon
 					float.TryParse(CustomValueEdit.Text, out var startTime);
 					timelineData.StartTime = startTime;
                 }
-                EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged();
+				EventBus.DispatchEvent(EEvent.TimelineNodeStartTimeOrDurationChanged);
             }
 			else if (m_SpecialField == ESpecialField.TimelineDuration)
 			{
@@ -165,26 +197,32 @@ namespace BbxCommon
 					durationField.ValueSource = ETaskFieldValueSource.Value;
 					durationField.Value = CustomValueEdit.Text;
 				}
-				EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged();
+                EventBus.DispatchEvent(EEvent.TimelineNodeStartTimeOrDurationChanged);
             }
 			else if (m_SpecialField == ESpecialField.None)
 			{
-				var editField = editData.GetEditField(m_FieldName);
-				if (editField == null)
+				if (m_EditFieldInfo == null)
 					return;
 				switch (ValueSourceOption.Selected)
 				{
-					case 0:
-						editField.ValueSource = ETaskFieldValueSource.Value;
-						editField.Value = CustomValueEdit.Text;
+					case 0:	// value
+                        m_EditFieldInfo.ValueSource = ETaskFieldValueSource.Value;
+						if (TaskUtils.IsEnum(m_EditFieldInfo.TypeInfo))
+						{
+							m_EditFieldInfo.Value = PresetValueOption.GetItemText(PresetValueOption.Selected);
+						}
+						else
+						{
+							m_EditFieldInfo.Value = CustomValueEdit.Text;
+						}
 						break;
-					case 1:
-						editField.ValueSource = ETaskFieldValueSource.Context;
-						editField.Value = PresetValueOption.GetItemText(PresetValueOption.Selected);
+					case 1:	// context
+                        m_EditFieldInfo.ValueSource = ETaskFieldValueSource.Context;
+                        m_EditFieldInfo.Value = PresetValueOption.GetItemText(PresetValueOption.Selected);
 						break;
-					case 2:
-						editField.ValueSource = ETaskFieldValueSource.Blackboard;
-						editField.Value = CustomValueEdit.Text;
+					case 2:	// blackboard
+                        m_EditFieldInfo.ValueSource = ETaskFieldValueSource.Blackboard;
+                        m_EditFieldInfo.Value = CustomValueEdit.Text;
 						break;
 				}
 			}

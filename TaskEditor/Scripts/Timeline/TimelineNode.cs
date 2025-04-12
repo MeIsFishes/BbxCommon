@@ -20,8 +20,7 @@ namespace BbxCommon
 
         protected override void OnReady()
         {
-            EditorModel.TimelineData.OnMaxTimeChanged += RefreshDurationBar;
-            EditorModel.OnCurSelectTaskNodeChanged += OnCurSelectNodeChanged;
+            EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
             m_DurationBarOriginalX = DurationBarRect.Position.X;
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
             OnCurSelectNodeChanged();
@@ -30,8 +29,8 @@ namespace BbxCommon
 
         public override void _ExitTree()
         {
-            EditorModel.TimelineData.OnMaxTimeChanged -= RefreshDurationBar;
-            EditorModel.OnCurSelectTaskNodeChanged -= OnCurSelectNodeChanged;
+            EventBus.UnregisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
+            EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
         }
 
         protected override void OnBind(TaskEditData editData)

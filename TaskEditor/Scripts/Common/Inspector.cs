@@ -18,9 +18,11 @@ namespace BbxCommon
 		[Export]
 		public BbxButton BtnDelete;
 
+		private TaskNode m_SelectedNode;
+
 		public override void _Ready()
 		{
-			EditorModel.OnCurSelectTaskNodeChanged += OnTaskChanged;
+			EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnTaskChanged);
 			BtnDelete.Pressed += OnBtnDeletePress;
 			BtnMoveUp.Pressed += OnBtnMoveUpPress;
 			BtnMoveDown.Pressed += OnBtnMoveDownPress;
@@ -31,52 +33,54 @@ namespace BbxCommon
 
         public override void _ExitTree()
         {
-            EditorModel.OnCurSelectTaskNodeChanged -= OnTaskChanged;
+            EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnTaskChanged);
         }
 
         private void OnTaskChanged()
 		{
+			// refresh selected node
+			ExportAllFields();
+			m_SelectedNode = EditorModel.CurSelectTaskNode;
 			// buttons
-			if (EditorModel.CurSelectTaskNode == null)
+			if (m_SelectedNode == null)
 			{
 				BtnMoveUp.Visible = false;
 				BtnMoveDown.Visible = false;
 				BtnDelete.Visible = false;
 			}
-			else if (EditorModel.CurSelectTaskNode is TimelineNode)
+			else if (m_SelectedNode is TimelineNode)
 			{
                 BtnMoveUp.Visible = true;
                 BtnMoveDown.Visible = true;
                 BtnDelete.Visible = true;
             }
 			// title
-			if (EditorModel.CurSelectTaskNode == null)
+			if (m_SelectedNode == null)
 			{
 				Title.Text = "Inspector";
 			}
 			else
 			{
-				Title.Text = TaskUtils.GetTaskDisplayName(EditorModel.CurSelectTaskNode.TaskEditData.TaskType);
+				Title.Text = TaskUtils.GetTaskDisplayName(m_SelectedNode.TaskEditData.TaskType);
 			}
 			// fields
 			FieldItemRoot.RemoveChildren();
-			var selectNode = EditorModel.CurSelectTaskNode;
-			if (selectNode == null)
+			if (m_SelectedNode == null)
 				return;
-			if (selectNode is TimelineNode timelineNode)
+			if (m_SelectedNode is TimelineNode timelineNode)
 			{
                 var fieldItem = FieldPrefab.Instantiate<InspectorFieldItem>();
-                fieldItem.RebindSpecialField(InspectorFieldItem.ESpecialField.TimelineStartTime);
+                fieldItem.RebindSpecialField(InspectorFieldItem.ESpecialField.TimelineStartTime, m_SelectedNode);
                 FieldItemRoot.AddChild(fieldItem);
                 fieldItem = FieldPrefab.Instantiate<InspectorFieldItem>();
-                fieldItem.RebindSpecialField(InspectorFieldItem.ESpecialField.TimelineDuration);
+                fieldItem.RebindSpecialField(InspectorFieldItem.ESpecialField.TimelineDuration, m_SelectedNode);
                 FieldItemRoot.AddChild(fieldItem);
             }
-			var fields = selectNode.TaskEditData.Fields;
+			var fields = m_SelectedNode.TaskEditData.Fields;
             for (int i = 0; i < fields.Count; i++)
 			{
 				var editField = fields[i];
-				if (editField.FieldName == "Duration" && selectNode is TimelineNode)	// use timeline node's duration as TaskDuration's duration
+				if (editField.FieldName == "Duration" && m_SelectedNode is TimelineNode)	// use timeline node's duration as TaskDuration's duration
 					continue;
 				var fieldItem = FieldPrefab.Instantiate<InspectorFieldItem>();
 				FieldItemRoot.AddChild(fieldItem);
@@ -93,7 +97,7 @@ namespace BbxCommon
 					if (EditorModel.CurSelectTaskNode.TaskEditData == EditorModel.TimelineData.TaskDatas[i])
 					{
 						EditorModel.TimelineData.TaskDatas.RemoveAt(i);
-						EditorModel.TimelineData.OnTimelineTasksChanged();
+						EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
 						EditorModel.CurSelectTaskNode = null;
 						return;
 					}
@@ -114,7 +118,7 @@ namespace BbxCommon
 						var temp = EditorModel.TimelineData.TaskDatas[i - 1];
 						EditorModel.TimelineData.TaskDatas[i - 1] = EditorModel.TimelineData.TaskDatas[i];
 						EditorModel.TimelineData.TaskDatas[i] = temp;
-						EditorModel.TimelineData.OnTimelineTasksChanged();
+                        EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
                         EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i - 1];
                         return;
                     }
@@ -135,12 +139,22 @@ namespace BbxCommon
                         var temp = EditorModel.TimelineData.TaskDatas[i + 1];
                         EditorModel.TimelineData.TaskDatas[i + 1] = EditorModel.TimelineData.TaskDatas[i];
                         EditorModel.TimelineData.TaskDatas[i] = temp;
-                        EditorModel.TimelineData.OnTimelineTasksChanged();
-						EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i + 1];
+                        EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+                        EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i + 1];
                         return;
                     }
                 }
             }
         }
+
+		private void ExportAllFields()
+		{
+			if (m_SelectedNode == null)
+				return;
+			foreach (var field in FieldItemRoot.GetChildren<InspectorFieldItem>())
+			{
+				field.ExportCurField(m_SelectedNode);
+			}
+		}
     }
 }

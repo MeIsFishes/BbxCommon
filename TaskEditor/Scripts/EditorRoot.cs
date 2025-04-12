@@ -35,8 +35,10 @@ namespace BbxCommon
 						EditorDataStore.AddTaskInfo(taskInfo);
 					else if (obj is TaskContextExportInfo contextInfo)
 						EditorDataStore.AddTaskContextInfo(contextInfo);
+					else if (obj is TaskEnumExportInfo enumInfo)
+						EditorDataStore.AddEnumInfo(enumInfo);
                 }
-				DebugApi.Log("Finished!");
+				DebugApi.Log("Deserialize task info finished!");
 			}
 		}
 

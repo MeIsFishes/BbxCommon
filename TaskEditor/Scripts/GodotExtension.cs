@@ -200,6 +200,12 @@ namespace BbxCommon
             }
             return 0;
         }
+
+        public static void Select(this OptionButton option, string label)
+        {
+            var contextIndex = option.GetItemIndex(label);
+            option.Select(contextIndex);
+        }
         #endregion
     }
 }

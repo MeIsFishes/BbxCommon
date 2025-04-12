@@ -22,9 +22,15 @@ namespace BbxCommon
 
         public override void _Ready()
         {
-            EditorModel.TimelineData.OnTaskStartTimeOrDurationChanged += OnTaskStartTimeAndDurationChanged;
-            EditorModel.TimelineData.OnTimelineTasksChanged += OnTimelineTasksChanged;
+            EventBus.RegisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
+            EventBus.RegisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
             NewTaskButton.Pressed += OnNewTaskButtonClick;
+        }
+
+        public override void _ExitTree()
+        {
+            EventBus.UnregisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
+            EventBus.UnregisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
         }
 
         private void OnNewTaskButtonClick()
@@ -53,7 +59,7 @@ namespace BbxCommon
                 editData.Fields.Add(editField);
             }
             EditorModel.TimelineData.TaskDatas.Add(editData);
-            EditorModel.TimelineData.OnTimelineTasksChanged();
+            EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
         }
 
         private void OnTimelineTasksChanged()

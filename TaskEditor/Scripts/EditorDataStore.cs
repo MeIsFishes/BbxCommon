@@ -9,6 +9,7 @@ namespace BbxCommon
 		private static Dictionary<string, TaskExportInfo> m_TaskInfoDic = new();
 		private static List<TaskContextExportInfo> m_TaskContextInfos = new();
 		private static Dictionary<string, TaskContextExportInfo> m_TaskContextInfoDic = new();
+		private static Dictionary<string, TaskEnumExportInfo> m_EnumInfoDic = new();
 
 		public static void AddTaskInfo(TaskExportInfo info)
 		{
@@ -20,6 +21,11 @@ namespace BbxCommon
 		{
 			m_TaskContextInfos.Add(info);
 			m_TaskContextInfoDic.Add(info.TaskContextTypeName, info);
+		}
+
+		public static void AddEnumInfo(TaskEnumExportInfo info)
+		{
+			m_EnumInfoDic.TryAdd(info.EnumTypeName, info);
 		}
 
 		public static TaskExportInfo GetTaskInfo(string typeName)
@@ -36,14 +42,24 @@ namespace BbxCommon
 
 		public static TaskContextExportInfo GetTaskContextInfo(string typeName)
 		{
-			if (m_TaskContextInfoDic.TryGetValue(typeName, out var taskContextInfo))
-				return taskContextInfo;
-			return null;
+			m_TaskContextInfoDic.TryGetValue(typeName, out var taskContextInfo);
+			return taskContextInfo;
 		}
 
 		public static List<TaskContextExportInfo> GetTaskContextInfoList()
 		{
 			return m_TaskContextInfos;
 		}
-	}
+
+		public static TaskEnumExportInfo GetEnumInfo(string enumName)
+		{
+			m_EnumInfoDic.TryGetValue(enumName, out var taskEnumInfo);
+			return taskEnumInfo;
+		}
+
+        public static bool IsEnum(TaskExportTypeInfo typeInfo)
+        {
+			return m_EnumInfoDic.ContainsKey(typeInfo.TypeName);
+        }
+    }
 }

@@ -121,11 +121,10 @@ namespace BbxCommon
 				if (value != m_CurSelectTaskNode)
 				{
 					m_CurSelectTaskNode = value;
-                    OnCurSelectTaskNodeChanged?.Invoke();
+					EventBus.DispatchEvent(EEvent.CurSelectTaskNodeChanged);
                 }
 			}
 		}
-		public static Action OnCurSelectTaskNodeChanged;
 		#endregion
 
 		#endregion
@@ -135,8 +134,6 @@ namespace BbxCommon
 		public class Timeline
 		{
 			#region Task List
-			public Action OnTimelineTasksChanged;
-			public Action OnTaskStartTimeOrDurationChanged;
 			public List<TimelineNode> Nodes = new();
 			public List<TaskTimelineEditData> TaskDatas = new();
 
@@ -149,11 +146,10 @@ namespace BbxCommon
 					if (m_MaxTime != value)
 					{
 						m_MaxTime = value;
-						OnMaxTimeChanged?.Invoke();
+						EventBus.DispatchEvent(EEvent.TimelineMaxTimeChanged);
 					}
 				}
 			}
-			public Action OnMaxTimeChanged;
             #endregion
         }
         #endregion
