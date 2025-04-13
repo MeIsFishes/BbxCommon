@@ -48,8 +48,15 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "List`1",
-                "GenericType1"     : "null",
+                "TypeName"         : "List",
+                "GenericType1"     : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                    },
+                    "TypeName"         : "Dcg.EDiceType",
+                    "GenericType1"     : "null",
+                    "GenericType2"     : "null"
+                },
                 "GenericType2"     : "null"
             }
         },
@@ -62,8 +69,15 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "List`1",
-                "GenericType1"     : "null",
+                "TypeName"         : "List",
+                "GenericType1"     : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                    },
+                    "TypeName"         : "Dcg.EDiceType",
+                    "GenericType1"     : "null",
+                    "GenericType2"     : "null"
+                },
                 "GenericType2"     : "null"
             }
         },
@@ -76,8 +90,15 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "List`1",
-                "GenericType1"     : "null",
+                "TypeName"         : "List",
+                "GenericType1"     : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                    },
+                    "TypeName"         : "uint",
+                    "GenericType1"     : "null",
+                    "GenericType2"     : "null"
+                },
                 "GenericType2"     : "null"
             }
         },
@@ -90,8 +111,15 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "List`1",
-                "GenericType1"     : "null",
+                "TypeName"         : "List",
+                "GenericType1"     : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                    },
+                    "TypeName"         : "uint",
+                    "GenericType1"     : "null",
+                    "GenericType2"     : "null"
+                },
                 "GenericType2"     : "null"
             }
         },
@@ -104,8 +132,15 @@
                 "Default.TypeInfo" : {
                     "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
                 },
-                "TypeName"         : "List`1",
-                "GenericType1"     : "null",
+                "TypeName"         : "List",
+                "GenericType1"     : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                    },
+                    "TypeName"         : "Dice",
+                    "GenericType1"     : "null",
+                    "GenericType2"     : "null"
+                },
                 "GenericType2"     : "null"
             }
         },

@@ -403,12 +403,12 @@ namespace BbxCommon
 
         protected List<T> ReadList<T>(TaskFieldInfo fieldInfo, TaskContextBase context, List<T> res)
         {
-            res ??= new List<T>();    
+            res ??= new List<T>();
             res.Clear();
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    var elements = fieldInfo.Value.Split("%||%", StringSplitOptions.RemoveEmptyEntries);
+                    var elements = fieldInfo.Value.Split(TaskExportCrossVariable.ListElementSplit, StringSplitOptions.RemoveEmptyEntries);
                     if (res is List<bool> boolList)
                     {
                         for (int i = 0; i < elements.Length; i++)

@@ -60,32 +60,35 @@ namespace BbxCommon
                 res.TypeName = "double";
             else if (type == typeof(string))
                 res.TypeName = "string";
-            else if (type.IsSubclassOf(typeof(List<>)))
+            else if (type.IsGenericType)
             {
-                res.TypeName = "List";
-                res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
-            }
-            else if (type.IsSubclassOf(typeof(HashSet<>)))
-            {
-                res.TypeName = "HashSet";
-                res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
-            }
-            else if (type.IsSubclassOf(typeof(SerializableHashSet<>)))
-            {
-                res.TypeName = "SerializableHashSet";
-                res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
-            }
-            else if (type.IsSubclassOf(typeof(Dictionary<,>)))
-            {
-                res.TypeName = "Dictionary";
-                res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
-                res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
-            }
-            else if (type.IsSubclassOf(typeof(SerializableDic<,>)))
-            {
-                res.TypeName = "SerializableDic";
-                res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
-                res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
+                if (type.GetGenericTypeDefinition() == typeof(List<>))
+                {
+                    res.TypeName = "List";
+                    res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                {
+                    res.TypeName = "HashSet";
+                    res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(SerializableHashSet<>))
+                {
+                    res.TypeName = "SerializableHashSet";
+                    res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    res.TypeName = "Dictionary";
+                    res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
+                    res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(SerializableDic<,>))
+                {
+                    res.TypeName = "SerializableDic";
+                    res.GenericType1 = GenerateTaskTypeInfo(type.GenericTypeArguments[0]);
+                    res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
+                }
             }
             else if (type.IsEnum)
             {

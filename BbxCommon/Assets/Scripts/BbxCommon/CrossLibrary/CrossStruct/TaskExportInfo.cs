@@ -3,6 +3,11 @@ using System.Collections.Generic;
 
 namespace BbxCommon.Internal
 {
+	public class TaskExportCrossVariable
+	{
+		public static string ListElementSplit = "%||%";
+	}
+
     // List<int> will be stored as:
     // TypeName: "List"
     // GenericType1: "int"

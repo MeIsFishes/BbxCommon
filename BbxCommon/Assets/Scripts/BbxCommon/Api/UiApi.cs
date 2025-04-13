@@ -40,12 +40,12 @@ namespace BbxCommon.Ui
         /// show on the screen, call <see cref="UiControllerBase.Show"/>.
         /// The <see cref="UiControllerBase"/> be opened in this way must be pre-load first.
         /// </summary>
-        public static T OpenUiController<T>(Transform parent) where T : UiControllerBase
+        public static T OpenUiController<T>(Transform parent, bool show = true) where T : UiControllerBase
         {
             var preLoadUiData = DataApi.GetData<PreLoadUiData>();
             var uiView = preLoadUiData.GetUiPrefabBy<T>();
             int controllerTypeId = ClassTypeId<UiControllerBase, T>.Id;
-            return (T)OpenUiController(uiView, controllerTypeId, parent);
+            return (T)OpenUiController(uiView, controllerTypeId, parent, show);
         }
 
         /// <summary>
@@ -61,7 +61,7 @@ namespace BbxCommon.Ui
         /// <param name="sourceView"> A <see cref="UiViewBase"/> hangs on an exist UI proto <see cref="GameObject"/> or a prefab. </param>
         /// <param name="uiControllerTypeId"> For getting which type of <see cref="UiControllerBase{TView}"/> will be opened. Getting value
         /// via <see cref="GetUiControllerTypeId(UiViewBase)"/> or <see cref="GetUiControllerTypeId{T}"/>, and it is recommended to cache it. </param>
-        public static UiControllerBase OpenUiController(UiViewBase sourceView, int uiControllerTypeId, Transform parent)
+        public static UiControllerBase OpenUiController(UiViewBase sourceView, int uiControllerTypeId, Transform parent, bool show = true)
         {
             // try getting controller from pool
             var uiController = UiControllerManager.GetPooledUiController(uiControllerTypeId);
@@ -81,6 +81,12 @@ namespace BbxCommon.Ui
             transform.localPosition = Vector3.zero;
             transform.localRotation = Quaternion.identity;
             transform.localScale = Vector3.one;
+
+            if (show)
+                uiController.Show();
+            else
+                uiController.Hide();
+            
             return uiController;
         }
 
@@ -191,11 +197,11 @@ namespace BbxCommon.Ui
             return hudController;
         }
 
-        public static T BindHud<T>(this Entity entity) where T : UiControllerBase, IHudController
+        public static T BindHud<T>(this Entity entity, bool show = true) where T : UiControllerBase, IHudController
         {
             var hudController = OpenHudController<T>();
             hudController.Bind(entity);
-            if (hudController.View.DefaultShow)
+            if (show)
                 hudController.Show();
 
             HudRawComponent hudComp;

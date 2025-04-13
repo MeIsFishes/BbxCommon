@@ -34,6 +34,25 @@ namespace BbxCommon
 			node.AddSibling(sibling);
 		}
 
+        public static void InsertChild(this Node node, int index, Node child)
+        {
+            var children = node.GetChildren();
+            var temp = new List<Node>();
+            for (int i = index; i < children.Count; i++)
+            {
+                temp.Add(children[i]);
+            }
+            for (int i = 0; i < temp.Count; i++)
+            {
+                node.RemoveChild(temp[i]);
+            }
+            node.AddChild(child);
+            for (int i = 0; i < temp.Count; i++)
+            {
+                node.AddChild(temp[i]);
+            }
+        }
+
 		public static T GetChild<T>(this Node node) where T : Node
 		{
 			var children = node.GetChildren();
@@ -47,7 +66,6 @@ namespace BbxCommon
 
 		public static T GetChild<T>(this Node node, string name) where T : Node
 		{
-
             var children = node.GetChildren();
             foreach (var child in children)
             {
@@ -187,6 +205,11 @@ namespace BbxCommon
                     node.GetParent().RemoveChild(sibling);
                 }
             }
+        }
+
+        public static void RemoveFromParent(this Node node)
+        {
+            node.GetParent().RemoveChild(node);
         }
         #endregion
 

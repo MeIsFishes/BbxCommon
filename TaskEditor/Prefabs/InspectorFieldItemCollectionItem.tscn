@@ -1,0 +1,88 @@
+[gd_scene load_steps=3 format=3 uid="uid://bdf57u1lqvba8"]
+
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="1_83cjo"]
+[ext_resource type="Script" path="res://Scripts/Common/InspectorFieldItemCollectionItem.cs" id="1_ej40g"]
+
+[node name="InspectorFieldItemCollectionItem" type="Control" node_paths=PackedStringArray("Value1Edit", "Value1Option", "Value2Edit", "Value2Option", "BtnAdd", "BtnRemove")]
+custom_minimum_size = Vector2(400, 32)
+layout_mode = 3
+anchors_preset = 0
+script = ExtResource("1_ej40g")
+Value1Edit = NodePath("Value1/CustomValue")
+Value1Option = NodePath("Value1/PresetValue")
+Value2Edit = NodePath("Value2/CustomValue")
+Value2Option = NodePath("Value2/PresetValue")
+BtnAdd = NodePath("BtnAdd")
+BtnRemove = NodePath("BtnRemove")
+
+[node name="Value1" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 160.0
+offset_bottom = 30.0
+
+[node name="CustomValue" type="LineEdit" parent="Value1"]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 16
+placeholder_text = "No Value"
+max_length = 20
+
+[node name="PresetValue" type="OptionButton" parent="Value1"]
+offset_right = 160.0
+offset_bottom = 30.0
+
+[node name="Value2" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 170.0
+offset_right = 330.0
+offset_bottom = 30.0
+
+[node name="CustomValue" type="LineEdit" parent="Value2"]
+layout_mode = 0
+offset_right = 160.0
+offset_bottom = 31.0
+theme_override_font_sizes/font_size = 16
+placeholder_text = "No Value"
+max_length = 20
+
+[node name="PresetValue" type="OptionButton" parent="Value2"]
+offset_right = 160.0
+offset_bottom = 30.0
+
+[node name="BtnAdd" type="Button" parent="."]
+layout_mode = 0
+offset_left = 335.0
+offset_top = 0.5
+offset_right = 365.0
+offset_bottom = 30.5
+theme_override_font_sizes/font_size = 15
+script = ExtResource("1_83cjo")
+
+[node name="Label" type="Label" parent="BtnAdd"]
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 21
+text = "+"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BtnRemove" type="Button" parent="."]
+layout_mode = 0
+offset_left = 370.0
+offset_top = 0.5
+offset_right = 400.0
+offset_bottom = 30.5
+theme_override_font_sizes/font_size = 15
+script = ExtResource("1_83cjo")
+
+[node name="Label" type="Label" parent="BtnRemove"]
+layout_mode = 0
+offset_right = 30.0
+offset_bottom = 30.0
+theme_override_font_sizes/font_size = 21
+text = "-"
+horizontal_alignment = 1
+vertical_alignment = 1

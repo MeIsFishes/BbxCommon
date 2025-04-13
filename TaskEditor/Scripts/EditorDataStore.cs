@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Reflection;
 using BbxCommon.Internal;
 
 namespace BbxCommon
@@ -60,6 +61,11 @@ namespace BbxCommon
         public static bool IsEnum(TaskExportTypeInfo typeInfo)
         {
 			return m_EnumInfoDic.ContainsKey(typeInfo.TypeName);
+        }
+
+        public static bool IsEnum(string typeName)
+        {
+            return m_EnumInfoDic.ContainsKey(typeName);
         }
     }
 }
