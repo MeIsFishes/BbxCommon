@@ -4,6 +4,15 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskConditionGreaterThan5",
+    "Tags"             : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "SpecialType" : "string"
+            }
+        },
+        "0"                : "Condition"
+    },
     "FieldInfos"       : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

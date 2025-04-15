@@ -6,6 +6,12 @@ namespace BbxCommon.Internal
 	public class TaskExportCrossVariable
 	{
 		public static string ListElementSplit = "%||%";
+
+		public static string TaskTagNormal = "Normal"; // not TaskOnceBase, TaskDurationBase or other derrived class
+		public static string TaskTagAction = "Action"; // not condition
+		public static string TaskTagOnce = "Once";
+		public static string TaskTagDuration = "Duration";
+		public static string TaskTagCondition = "Condition";
 	}
 
     // List<int> will be stored as:
@@ -57,6 +63,7 @@ namespace BbxCommon.Internal
 	public class TaskExportInfo
 	{
 		public string TaskTypeName;
+		public List<string> Tags = new();
 		public List<TaskExportFieldInfo> FieldInfos = new();
 	}
 

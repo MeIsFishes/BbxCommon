@@ -4,6 +4,15 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskNodeJump",
+    "Tags"             : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "SpecialType" : "string"
+            }
+        },
+        "0"                : "Normal"
+    },
     "FieldInfos"       : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

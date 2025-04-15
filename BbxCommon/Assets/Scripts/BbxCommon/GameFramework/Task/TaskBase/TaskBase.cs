@@ -599,6 +599,26 @@ namespace BbxCommon
             RegisterFields();
             var res = new TaskExportInfo();
             res.TaskTypeName = this.GetType().Name;
+            // tags
+            if (this is TaskDurationBase)
+            {
+                res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
+                res.Tags.Add(TaskExportCrossVariable.TaskTagDuration);
+            }
+            else if (this is TaskOnceBase)
+            {
+                res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
+                res.Tags.Add(TaskExportCrossVariable.TaskTagOnce);
+            }
+            else if (this is TaskConditionBase)
+            {
+                res.Tags.Add(TaskExportCrossVariable.TaskTagCondition);
+            }
+            else // hasn't been derrived
+            {
+                res.Tags.Add(TaskExportCrossVariable.TaskTagNormal);
+            }
+            // fields
             foreach (var field in m_TempFieldList)
             {
                 var exportFieldInfo = new TaskExportFieldInfo();
