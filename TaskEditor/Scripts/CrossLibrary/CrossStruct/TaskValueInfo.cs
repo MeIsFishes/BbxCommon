@@ -1,3 +1,4 @@
+using BbxCommon.Internal;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -170,7 +171,7 @@ namespace BbxCommon
             for (int i = 0; i < value.Count; i++)
             {
                 sb.Append(value[i].ToString());
-                sb.Append("%||%");
+                sb.Append(TaskExportCrossVariable.ListElementSplit);
             }
             fieldInfo.Value = sb.ToString();
             FieldInfos.Add(fieldInfo);

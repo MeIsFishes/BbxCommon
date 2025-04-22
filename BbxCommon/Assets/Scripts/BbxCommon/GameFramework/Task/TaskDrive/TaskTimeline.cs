@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
+    [TaskTag(TaskExportCrossVariable.TaskTagTimeline)]
     public class TaskTimeline : TaskBase
     {
         #region Init

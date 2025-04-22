@@ -618,6 +618,14 @@ namespace BbxCommon
             {
                 res.Tags.Add(TaskExportCrossVariable.TaskTagNormal);
             }
+            var attributes = this.GetType().GetCustomAttributes(true);
+            foreach (var attribute in attributes)
+            {
+                if (attribute is TaskTagAttribute tagAttribute)
+                {
+                    res.Tags.AddRange(tagAttribute.Tags);
+                }
+            }
             // fields
             foreach (var field in m_TempFieldList)
             {

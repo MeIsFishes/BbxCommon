@@ -3,16 +3,28 @@ using System.Collections.Generic;
 
 namespace BbxCommon.Internal
 {
-    public class TaskExportCrossVariable
-    {
-        public static string ListElementSplit = "%||%";
+	public class TaskExportCrossVariable
+	{
+		public const string ListElementSplit = "%||%";
 
-        public static string TaskTagNormal = "Normal"; // not TaskOnceBase, TaskDurationBase or other derrived class
-        public static string TaskTagAction = "Action"; // not condition
-        public static string TaskTagOnce = "Once";
-        public static string TaskTagDuration = "Duration";
-        public static string TaskTagCondition = "Condition";
-    }
+		public const string TaskTagNormal = "Normal"; // not TaskOnceBase, TaskDurationBase or other derrived class
+		public const string TaskTagAction = "Action"; // not condition
+		public const string TaskTagOnce = "Once";
+		public const string TaskTagDuration = "Duration";
+		public const string TaskTagCondition = "Condition";
+		public const string TaskTagTimeline = "Timeline";
+	}
+
+	[AttributeUsage(AttributeTargets.Class)]
+	public class TaskTagAttribute : Attribute
+	{
+		public List<string> Tags = new();
+
+		public TaskTagAttribute(params string[] tags)
+		{
+			Tags.AddRange(tags);
+		}
+	}
 
     // List<int> will be stored as:
     // TypeName: "List"
@@ -63,6 +75,7 @@ namespace BbxCommon.Internal
 	public class TaskExportInfo
 	{
 		public string TaskTypeName;
+		public List<string> Tags = new();
 		public List<TaskExportFieldInfo> FieldInfos = new();
 	}
 
