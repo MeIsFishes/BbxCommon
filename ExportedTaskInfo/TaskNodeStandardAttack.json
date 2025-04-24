@@ -11,7 +11,8 @@
                 "SpecialType" : "string"
             }
         },
-        "0"                : "Normal"
+        "0"                : "Action",
+        "1"                : "Normal"
     },
     "FieldInfos"       : {
         "Default.TypeInfo" : {

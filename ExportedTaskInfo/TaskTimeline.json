@@ -11,8 +11,7 @@
                 "SpecialType" : "string"
             }
         },
-        "0"                : "Normal",
-        "1"                : "Timeline"
+        "0"                : "Timeline"
     },
     "FieldInfos"       : {
         "Default.TypeInfo" : {

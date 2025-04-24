@@ -41,7 +41,7 @@ namespace BbxCommon
                 m_TaskSelector.SetTarget(this);
                 this.AddChild(m_TaskSelector);
             }
-            m_TaskSelector.Visible = true;
+            m_TaskSelector.OpenWithTags(TaskExportCrossVariable.TaskTagAction);
         }
 
         void ITaskSelectorTarget.SelectTask(TaskExportInfo taskInfo)

@@ -5,6 +5,10 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
+	/// <summary>
+	/// For adding task to the target.
+	/// If there is a page can be added tasks (Timeline, Graph, and so on), it should implement this interface.
+	/// </summary>
 	public interface ITaskSelectorTarget
 	{
 		public void SelectTask(TaskExportInfo taskInfo);
@@ -30,14 +34,16 @@ namespace BbxCommon
 		public BbxButton NextPageButton;
 
 		public ITaskSelectorTarget m_Target;
-		private List<TaskExportInfo> m_TaskInfos;
+		private List<TaskExportInfo> m_TaskInfos = new();
 		private List<TaskSelectorItem> m_Items = new();
-		private List<TaskExportInfo> m_SearchedTaskInfos = new();
 		private int m_CurPage = 1;
+
+		private List<string> m_SearchTaskTags = new();
+		private List<string> m_SearchTaskWithoutTags = new();
+        private List<TaskExportInfo> m_SearchedTaskInfos = new();
 
         public override void _Ready()
 		{
-			m_TaskInfos = EditorDataStore.GetTaskInfoList();
 			// init items
 			for (int i = m_Items.Count; i < ItemLimit; i++)
 			{
@@ -56,12 +62,83 @@ namespace BbxCommon
 			LastPageButton.Pressed += OnLastPageButtonClick;
 			NextPageButton.Pressed += OnNextPageButtonClick;
 			SearchEdit.TextChanged += RefreshTasks;
-			VisibilityChanged += OnShow;
-			// init display
-			SearchEdit.Text = string.Empty;
-			RefreshTasks(string.Empty);
-			SetPage(1);
+			VisibilityChanged += OnHide;
 		}
+
+		/// <summary>
+		/// Open the selector, and all tasks will has at least one of the given tags.
+		/// </summary>
+		public void OpenWithTags(params string[] tags)
+		{
+			m_SearchTaskTags.AddRange(tags);
+			Open();
+		}
+
+        /// <summary>
+        /// Open the selector, and all tasks will not has any one of the given tags.
+        /// </summary>
+        public void OpenWithoutTags(params string[] tags)
+		{
+			m_SearchTaskWithoutTags.AddRange(tags);
+			Open();
+		}
+
+        /// <summary>
+        /// Open the selector, and all tasks will has at least one of tag in withTags, with no tag in withoutTags.
+        /// </summary>
+        public void Open(List<string> withTags, List<string> withoutTags)
+		{
+			m_SearchTaskTags.AddRange(withTags);
+			m_SearchTaskWithoutTags.AddRange(withoutTags);
+			Open();
+		}
+
+        /// <summary>
+        /// Open the selector with all tasks.
+        /// </summary>
+        public void Open()
+		{
+			m_TaskInfos.Clear();
+			foreach (var info in EditorDataStore.GetTaskInfoList())
+			{
+				bool valid = true;
+				if (m_SearchTaskTags.Count > 0)
+				{
+					bool hasTag = false;
+					for (int i = 0; i < m_SearchTaskTags.Count; i++)
+					{
+						if (info.Tags.Contains(m_SearchTaskTags[i]))
+						{
+							hasTag = true;
+							break;
+						}
+					}
+					valid = hasTag;
+				}
+                if (valid && m_SearchTaskWithoutTags.Count > 0)
+                {
+                    for (int i = 0; i < m_SearchTaskWithoutTags.Count; i++)
+					{
+						if (info.Tags.Contains(m_SearchTaskWithoutTags[i]))
+						{
+							valid = false;
+							break;
+						}
+					}
+                }
+                if (valid)
+                {
+					m_TaskInfos.Add(info);
+                }
+            }
+			// init display
+			Visible = true;
+            SearchEdit.Text = string.Empty;
+            SetPage(1);
+            SetProcessInput(true);
+            SetProcessUnhandledInput(true);
+            RefreshTasks(SearchEdit.Text);
+        }
 
 		public void SetTarget(ITaskSelectorTarget target)
 		{
@@ -91,16 +168,14 @@ namespace BbxCommon
 			}
 		}
 
-		private void OnShow()
+		private void OnHide()
 		{
-			if (Visible == true)
-			{
-				SearchEdit.Text = string.Empty;
-				SetPage(1);
-				SetProcessInput(true);
-                SetProcessUnhandledInput(true);
+            if (Visible == false)
+            {
+				m_SearchTaskTags.Clear();
+				m_SearchTaskWithoutTags.Clear();
             }
-		}
+        }
 
 		private void RefreshTasks(string searchStr)
 		{

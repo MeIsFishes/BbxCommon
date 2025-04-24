@@ -19,7 +19,7 @@ namespace BbxCommon
 		public void SetTaskInfo(TaskExportInfo taskInfo)
 		{
 			TaskInfo = taskInfo;
-			Button.Text = taskInfo.TaskTypeName;
+			Button.Text = TaskUtils.GetTaskDisplayName(taskInfo.TaskTypeName);
 		}
 	}
 }

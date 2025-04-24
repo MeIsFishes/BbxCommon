@@ -18,23 +18,36 @@ namespace BbxCommon.Internal
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TaskTagAttribute : Attribute
 	{
+		public enum ESetTag
+		{
+			Override,
+			Addition,
+		}
+
+		public ESetTag SetTag = ESetTag.Addition;
 		public List<string> Tags = new();
 
-		public TaskTagAttribute(params string[] tags)
+        public TaskTagAttribute(ESetTag tag, params string[] tags)
+        {
+            SetTag = tag;
+            Tags.AddRange(tags);
+        }
+
+        public TaskTagAttribute(params string[] tags)
 		{
 			Tags.AddRange(tags);
 		}
 	}
 
-    // List<int> will be stored as:
-    // TypeName: "List"
-    // GenericType1: "int"
-    // GenericType2: null
+	// List<int> will be stored as:
+	// TypeName: "List"
+	// GenericType1: "int"
+	// GenericType2: null
 
-    // Dictionary<string, int> will be stored as:
-    // TypeName: "Dictionary"
-    // GenericType1: "string"
-    // GenericType2: "int"
+	// Dictionary<string, int> will be stored as:
+	// TypeName: "Dictionary"
+	// GenericType1: "string"
+	// GenericType2: "int"
     public class TaskExportTypeInfo
     {
         public string TypeName;

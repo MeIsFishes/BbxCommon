@@ -600,30 +600,36 @@ namespace BbxCommon
             var res = new TaskExportInfo();
             res.TaskTypeName = this.GetType().Name;
             // tags
-            if (this is TaskDurationBase)
-            {
-                res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
-                res.Tags.Add(TaskExportCrossVariable.TaskTagDuration);
-            }
-            else if (this is TaskOnceBase)
-            {
-                res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
-                res.Tags.Add(TaskExportCrossVariable.TaskTagOnce);
-            }
-            else if (this is TaskConditionBase)
-            {
-                res.Tags.Add(TaskExportCrossVariable.TaskTagCondition);
-            }
-            else // hasn't been derrived
-            {
-                res.Tags.Add(TaskExportCrossVariable.TaskTagNormal);
-            }
             var attributes = this.GetType().GetCustomAttributes(true);
+            bool overriden = false;
             foreach (var attribute in attributes)
             {
                 if (attribute is TaskTagAttribute tagAttribute)
                 {
                     res.Tags.AddRange(tagAttribute.Tags);
+                    overriden = tagAttribute.SetTag == TaskTagAttribute.ESetTag.Override;
+                }
+            }
+            if (overriden == false)
+            {
+                if (this is TaskDurationBase)
+                {
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagDuration);
+                }
+                else if (this is TaskOnceBase)
+                {
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagOnce);
+                }
+                else if (this is TaskConditionBase)
+                {
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagCondition);
+                }
+                else // hasn't been derrived
+                {
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagAction);
+                    res.Tags.Add(TaskExportCrossVariable.TaskTagNormal);
                 }
             }
             // fields

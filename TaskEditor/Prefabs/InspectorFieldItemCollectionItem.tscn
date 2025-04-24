@@ -29,6 +29,7 @@ placeholder_text = "No Value"
 max_length = 20
 
 [node name="PresetValue" type="OptionButton" parent="Value1"]
+layout_mode = 0
 offset_right = 160.0
 offset_bottom = 30.0
 
@@ -48,6 +49,7 @@ placeholder_text = "No Value"
 max_length = 20
 
 [node name="PresetValue" type="OptionButton" parent="Value2"]
+layout_mode = 0
 offset_right = 160.0
 offset_bottom = 30.0
 
