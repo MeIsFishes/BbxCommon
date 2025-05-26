@@ -3,7 +3,7 @@ using System;
 
 namespace BbxCommon
 {
-	public partial class Inspector : Control
+	public partial class Inspector : BbxControl
 	{
 		[Export]
 		public PackedScene FieldPrefab;
@@ -18,13 +18,13 @@ namespace BbxCommon
 
 		private TaskNode m_SelectedNode;
 
-		public override void _Ready()
+		protected override void OnUiOpen()
 		{
 			EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnTaskChanged);
             ButtonItemRoot.SortChildren += RecalculateButtonSize;
         }
 
-        public override void _ExitTree()
+        protected override void OnUiClose()
         {
             EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnTaskChanged);
             ButtonItemRoot.SortChildren -= RecalculateButtonSize;
@@ -33,7 +33,6 @@ namespace BbxCommon
         private void OnTaskChanged()
 		{
 			// refresh selected node
-			ExportAllFields();
 			m_SelectedNode = EditorModel.CurSelectTaskNode;
 			// buttons
 			ButtonItemRoot.RemoveChildren();
@@ -73,18 +72,8 @@ namespace BbxCommon
 					continue;
 				var fieldItem = FieldPrefab.Instantiate<InspectorFieldItem>();
 				FieldItemRoot.AddChild(fieldItem);
-                fieldItem.RebindField(editField);
+                fieldItem.RebindField(editField, m_SelectedNode);
             }
-		}
-
-		private void ExportAllFields()
-		{
-			if (m_SelectedNode == null)
-				return;
-			foreach (var field in FieldItemRoot.GetChildren<InspectorFieldItem>())
-			{
-				field.ExportCurField(m_SelectedNode);
-			}
 		}
 
 		private void RecalculateButtonSize()

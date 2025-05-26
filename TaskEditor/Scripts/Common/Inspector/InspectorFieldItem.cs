@@ -20,7 +20,7 @@ namespace BbxCommon
     /// RebindSpecialField: Rebind special fields.
     /// ExportCurField: Inspector will call this function to export field info to the task.
     /// </summary>
-    public partial class InspectorFieldItem : Control
+    public partial class InspectorFieldItem : BbxControl
 	{
         #region Lifecycle
         [Export]
@@ -45,18 +45,21 @@ namespace BbxCommon
 			TimelineDuration,
 		}
 
+		private TaskNode m_TaskNode;
 		private ESpecialField m_SpecialField;
 		private TaskEditField m_EditFieldInfo;
 		private float m_OriginalMinY;
 
-        public override void _Ready()
+        protected override void OnUiOpen()
         {
 			m_OriginalMinY = CustomMinimumSize.Y;
-			OnReadyValueSourceOption();
-			OnReadyCollectionItemRoot();
+			OnUiInitValueSourceOption();
+			OnUiInitCustomValueEdit();
+			OnUiInitPresetValueOption();
+            OnUiInitCollectionItemRoot();
         }
 
-        private void OnReadyValueSourceOption()
+        private void OnUiInitValueSourceOption()
         {
             ValueSourceOption.AddItem("Value", 0);
             ValueSourceOption.AddItem("Context", 1);
@@ -64,7 +67,17 @@ namespace BbxCommon
             ValueSourceOption.ItemSelected += OnValueSourceChanged;
         }
 
-        private void OnReadyCollectionItemRoot()
+		private void OnUiInitCustomValueEdit()
+		{
+			CustomValueEdit.TextChanged += (text) => { ExportCurField(m_TaskNode); };
+		}
+
+		private void OnUiInitPresetValueOption()
+		{
+			PresetValueOption.ItemSelected += (index) => { ExportCurField(m_TaskNode); };
+		}
+
+        private void OnUiInitCollectionItemRoot()
         {
             CollectionItemRoot.SortChildren += RefreshCustomMinimumSizeY;
         }
@@ -74,9 +87,10 @@ namespace BbxCommon
         /// <summary>
         /// Bind normal fields.
         /// </summary>
-        public void RebindField(TaskEditField editField)
+        public void RebindField(TaskEditField editField, TaskNode nodeBelongs)
         {
 			ValueSourceOption.Visible = true;
+			m_TaskNode = nodeBelongs;
 			m_SpecialField = ESpecialField.None;
 			m_EditFieldInfo = editField;
 
@@ -130,11 +144,14 @@ namespace BbxCommon
 		public void RebindSpecialField(ESpecialField field, TaskNode taskNode)
 		{
 			m_EditFieldInfo = null;
+			m_TaskNode = taskNode;
 			switch (field)
 			{
 				case ESpecialField.TimelineStartTime:
 					ValueSourceOption.Visible = false;
-					m_SpecialField = ESpecialField.TimelineStartTime;
+                    CustomValueEdit.Visible = true;
+                    PresetValueOption.Visible = false;
+                    m_SpecialField = ESpecialField.TimelineStartTime;
 					FieldNameLabel.Text = "StartTime";
 					if (taskNode.TaskEditData is TaskTimelineEditData timelineData1)
 					{
@@ -143,6 +160,8 @@ namespace BbxCommon
 					break;
 				case ESpecialField.TimelineDuration:
                     ValueSourceOption.Visible = false;
+                    CustomValueEdit.Visible = true;
+                    PresetValueOption.Visible = false;
                     m_SpecialField = ESpecialField.TimelineDuration;
                     FieldNameLabel.Text = "Duration";
                     if (taskNode.TaskEditData is TaskTimelineEditData timelineData2)
@@ -263,7 +282,7 @@ namespace BbxCommon
         #region Export Value
         public void ExportCurField(TaskNode node)
 		{
-			if (EditorModel.CurSelectTaskNode == null)
+			if (node == null)
 				return;
 			var editData = node.TaskEditData;
 			if (m_SpecialField == ESpecialField.TimelineStartTime)

@@ -5,21 +5,21 @@ using Godot;
 
 namespace BbxCommon
 {
-	public partial class EditorRoot : Node
+	public partial class EditorRoot : BbxControl
 	{
 		[Export]
 		public OptionButton BindContextOption;
 
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
-		public override void _Ready()
+		protected override void OnUiOpen()
 		{
 			DeserializeAllTaskInfo();
 			OnReadyBindContextOption();
 			EditorModel.OnReady();
 		}
 
-		public override void _Process(double delta)
+		protected override void OnUiUpdate(double delta)
 		{
 			EditorModel.OnProcess(delta);
 		}

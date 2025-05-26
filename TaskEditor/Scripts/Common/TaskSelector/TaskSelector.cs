@@ -14,7 +14,7 @@ namespace BbxCommon
 		public void SelectTask(TaskExportInfo taskInfo);
 	}
 
-	public partial class TaskSelector : Control
+	public partial class TaskSelector : BbxControl
 	{
         [Export]
         public PackedScene TaskItemPrefab;
@@ -42,7 +42,7 @@ namespace BbxCommon
 		private List<string> m_SearchTaskWithoutTags = new();
         private List<TaskExportInfo> m_SearchedTaskInfos = new();
 
-        public override void _Ready()
+        protected override void OnUiInit()
 		{
 			// init items
 			for (int i = m_Items.Count; i < ItemLimit; i++)
@@ -62,13 +62,18 @@ namespace BbxCommon
 			LastPageButton.Pressed += OnLastPageButtonClick;
 			NextPageButton.Pressed += OnNextPageButtonClick;
 			SearchEdit.TextChanged += RefreshTasks;
-			VisibilityChanged += OnHide;
 		}
 
-		/// <summary>
-		/// Open the selector, and all tasks will has at least one of the given tags.
-		/// </summary>
-		public void OpenWithTags(params string[] tags)
+		protected override void OnUiHide()
+		{
+			m_SearchTaskTags.Clear();
+			m_SearchTaskWithoutTags.Clear();
+		}
+
+        /// <summary>
+        /// Open the selector, and all tasks will has at least one of the given tags.
+        /// </summary>
+        public void OpenWithTags(params string[] tags)
 		{
 			m_SearchTaskTags.AddRange(tags);
 			Open();
@@ -167,15 +172,6 @@ namespace BbxCommon
 				SetPage(m_CurPage + 1);
 			}
 		}
-
-		private void OnHide()
-		{
-            if (Visible == false)
-            {
-				m_SearchTaskTags.Clear();
-				m_SearchTaskWithoutTags.Clear();
-            }
-        }
 
 		private void RefreshTasks(string searchStr)
 		{

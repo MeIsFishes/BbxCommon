@@ -5,7 +5,7 @@ using System;
 
 namespace BbxCommon
 {
-	public partial class TimelineRoot : Node, ITaskSelectorTarget
+	public partial class TimelineRoot : BbxControl, ITaskSelectorTarget
 	{
         [Export]
         public PackedScene TaskSelectorPrefab;
@@ -20,14 +20,14 @@ namespace BbxCommon
 
         private TaskSelector m_TaskSelector;
 
-        public override void _Ready()
+        protected override void OnUiInit()
         {
             EventBus.RegisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.RegisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
             NewTaskButton.Pressed += OnNewTaskButtonClick;
         }
 
-        public override void _ExitTree()
+        protected override void OnUiDestroy()
         {
             EventBus.UnregisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.UnregisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);

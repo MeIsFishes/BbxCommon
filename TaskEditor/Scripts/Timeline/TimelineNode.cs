@@ -19,8 +19,9 @@ namespace BbxCommon
 
         public TaskTimelineEditData TimelineEditData => TaskEditData as TaskTimelineEditData;
 
-        protected override void OnReady()
+        protected override void OnTaskUiOpen()
         {
+            EventBus.RegisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
             EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
             m_DurationBarOriginalX = DurationBarRect.Position.X;
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
@@ -28,17 +29,17 @@ namespace BbxCommon
             RefreshDurationBar();
         }
 
+        protected override void OnTaskUiClose()
+        {
+            EventBus.UnregisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
+            EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
+        }
+
         protected override void AddInspectorButton()
         {
             AddButton("Move Up", OnBtnMoveUpPress);
             AddButton("Move Down", OnBtnMoveDownPress);
             AddButton("Delete", OnBtnDeletePress);
-        }
-
-        public override void _ExitTree()
-        {
-            EventBus.UnregisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
-            EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
         }
 
         protected override void OnBind(TaskEditData editData)

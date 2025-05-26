@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
-	public abstract partial class TaskNode : Control
+	public abstract partial class TaskNode : BbxControl
 	{
         #region Common
 		public struct ButtonData
@@ -20,23 +20,30 @@ namespace BbxCommon
 		public TaskEditData TaskEditData;
 		public List<ButtonData> InspectorButtonDatas = new();
 
-        public sealed override void _Ready()
+        protected sealed override void OnUiOpen()
         {
 			NodeButton.Pressed += OnNodeButtonClick;
 			AddInspectorButton();
-			OnReady();
+			OnTaskUiOpen();
         }
 
-		/// <summary>
-		/// Bind the specific task type, and clear all cached field infos.
-		/// </summary>
-		public void BindTask(TaskEditData editData)
+        protected sealed override void OnUiClose()
+        {
+			OnTaskUiClose();
+            NodeButton.Pressed -= OnNodeButtonClick;
+        }
+
+        /// <summary>
+        /// Bind the specific task type, and clear all cached field infos.
+        /// </summary>
+        public void BindTask(TaskEditData editData)
 		{
 			TaskEditData = editData;
 			OnBind(editData);
 		}
 
-		protected virtual void OnReady() { }
+		protected virtual void OnTaskUiOpen() { }
+		protected virtual void OnTaskUiClose() { }
 		protected virtual void AddInspectorButton() { }
 		protected virtual void OnBind(TaskEditData editData) { }
 
