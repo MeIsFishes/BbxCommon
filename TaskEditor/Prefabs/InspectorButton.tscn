@@ -1,0 +1,23 @@
+[gd_scene load_steps=4 format=3 uid="uid://w5kojf74xxui"]
+
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_0vs2y"]
+[ext_resource type="Script" path="res://Scripts/Common/Inspector/InspectorButton.cs" id="1_8v3lw"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_ywkyr"]
+
+[node name="InspectorButton" type="Control" node_paths=PackedStringArray("Button")]
+custom_minimum_size = Vector2(430, 45)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 430.0
+offset_bottom = 45.0
+script = ExtResource("1_8v3lw")
+Button = NodePath("Button")
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 430.0
+offset_bottom = 45.0
+theme = ExtResource("1_0vs2y")
+theme_override_font_sizes/font_size = 28
+text = "Delete Node"
+script = ExtResource("2_ywkyr")

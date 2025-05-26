@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=3 uid="uid://bdf57u1lqvba8"]
 
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="1_83cjo"]
-[ext_resource type="Script" path="res://Scripts/Common/InspectorFieldItemCollectionItem.cs" id="1_ej40g"]
+[ext_resource type="Script" path="res://Scripts/Common/Inspector/InspectorFieldItemCollectionItem.cs" id="1_ej40g"]
 
 [node name="InspectorFieldItemCollectionItem" type="Control" node_paths=PackedStringArray("Value1Edit", "Value1Option", "Value2Edit", "Value2Option", "BtnAdd", "BtnRemove")]
 custom_minimum_size = Vector2(400, 32)

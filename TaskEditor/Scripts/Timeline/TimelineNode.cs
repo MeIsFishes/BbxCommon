@@ -6,6 +6,7 @@ namespace BbxCommon
 {
 	public partial class TimelineNode : TaskNode
 	{
+        #region Common
         [Export]
         public BbxButton TaskButton;
         [Export]
@@ -25,6 +26,13 @@ namespace BbxCommon
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
             OnCurSelectNodeChanged();
             RefreshDurationBar();
+        }
+
+        protected override void AddInspectorButton()
+        {
+            AddButton("Move Up", OnBtnMoveUpPress);
+            AddButton("Move Down", OnBtnMoveDownPress);
+            AddButton("Delete", OnBtnDeletePress);
         }
 
         public override void _ExitTree()
@@ -69,5 +77,58 @@ namespace BbxCommon
                 }
             }
         }
+        #endregion
+
+        #region Inspector Button
+        private void OnBtnDeletePress()
+        {
+            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            {
+                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                {
+                    EditorModel.TimelineData.TaskDatas.RemoveAt(i);
+                    EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+                    EditorModel.CurSelectTaskNode = null;
+                    return;
+                }
+            }
+        }
+
+        private void OnBtnMoveUpPress()
+        {
+            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            {
+                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                {
+                    if (i == 0)
+                        return;
+                    var temp = EditorModel.TimelineData.TaskDatas[i - 1];
+                    EditorModel.TimelineData.TaskDatas[i - 1] = EditorModel.TimelineData.TaskDatas[i];
+                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i - 1];
+                    return;
+                }
+            }
+        }
+
+        private void OnBtnMoveDownPress()
+        {
+            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            {
+                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                {
+                    if (i == EditorModel.TimelineData.TaskDatas.Count - 1)
+                        return;
+                    var temp = EditorModel.TimelineData.TaskDatas[i + 1];
+                    EditorModel.TimelineData.TaskDatas[i + 1] = EditorModel.TimelineData.TaskDatas[i];
+                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i + 1];
+                    return;
+                }
+            }
+        }
+        #endregion
     }
 }

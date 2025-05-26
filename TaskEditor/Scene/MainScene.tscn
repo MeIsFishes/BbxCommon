@@ -1,11 +1,11 @@
 [gd_scene load_steps=10 format=3 uid="uid://cg583i6ilt1el"]
 
 [ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
-[ext_resource type="Script" path="res://Scripts/Common/Inspector.cs" id="2_rhmro"]
+[ext_resource type="Script" path="res://Scripts/Common/Inspector/Inspector.cs" id="2_rhmro"]
 [ext_resource type="PackedScene" uid="uid://bgu1o65b0ucbc" path="res://Prefabs/InspectorFieldItem.tscn" id="3_1cbrp"]
 [ext_resource type="Script" path="res://Scripts/Timeline/TimelineRoot.cs" id="3_jatvs"]
+[ext_resource type="PackedScene" uid="uid://w5kojf74xxui" path="res://Prefabs/InspectorButton.tscn" id="4_l3n08"]
 [ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="4_xou08"]
-[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="5_s1nu3"]
 [ext_resource type="PackedScene" uid="uid://wq2ud1optdpl" path="res://Prefabs/TaskSelector.tscn" id="6_fiuha"]
 [ext_resource type="PackedScene" uid="uid://b7twpmw5aiklv" path="res://Prefabs/TimelineNode.tscn" id="6_ljxpv"]
 [ext_resource type="Theme" uid="uid://66g3dqqfap64" path="res://Themes/TaskTimelineNewTask.tres" id="6_ndtnf"]
@@ -23,7 +23,7 @@ grow_vertical = 2
 script = ExtResource("1_e157r")
 BindContextOption = NodePath("TopMenu/BindContext/OptionButton")
 
-[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "Title", "BtnMoveUp", "BtnMoveDown", "BtnDelete")]
+[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 3
 anchors_preset = 15
 anchor_right = 1.0
@@ -33,10 +33,9 @@ grow_vertical = 2
 script = ExtResource("2_rhmro")
 FieldPrefab = ExtResource("3_1cbrp")
 FieldItemRoot = NodePath("ScrollContainer/FieldsRoot")
+ButtonPrefab = ExtResource("4_l3n08")
+ButtonItemRoot = NodePath("ButtonContainer")
 Title = NodePath("Title")
-BtnMoveUp = NodePath("BtnMoveUp")
-BtnMoveDown = NodePath("BtnMoveDown")
-BtnDelete = NodePath("BtnDelete")
 
 [node name="Frame" type="ColorRect" parent="EditorRoot/Inspector"]
 layout_mode = 1
@@ -82,38 +81,12 @@ offset_bottom = 775.0
 [node name="FieldsRoot" type="VBoxContainer" parent="EditorRoot/Inspector/ScrollContainer"]
 layout_mode = 2
 
-[node name="BtnMoveUp" type="Button" parent="EditorRoot/Inspector"]
+[node name="ButtonContainer" type="VBoxContainer" parent="EditorRoot/Inspector"]
 layout_mode = 0
-offset_left = 1170.0
-offset_top = 780.0
-offset_right = 1360.0
-offset_bottom = 825.0
-theme = ExtResource("4_xou08")
-theme_override_font_sizes/font_size = 28
-text = "Move Up"
-script = ExtResource("5_s1nu3")
-
-[node name="BtnMoveDown" type="Button" parent="EditorRoot/Inspector"]
-layout_mode = 0
-offset_left = 1380.0
-offset_top = 780.0
-offset_right = 1570.0
-offset_bottom = 825.0
-theme = ExtResource("4_xou08")
-theme_override_font_sizes/font_size = 28
-text = "Move Down"
-script = ExtResource("5_s1nu3")
-
-[node name="BtnDelete" type="Button" parent="EditorRoot/Inspector"]
-layout_mode = 0
-offset_left = 1170.0
-offset_top = 840.0
-offset_right = 1570.0
-offset_bottom = 885.0
-theme = ExtResource("4_xou08")
-theme_override_font_sizes/font_size = 28
-text = "Delete Node"
-script = ExtResource("5_s1nu3")
+offset_left = 1160.0
+offset_top = 775.0
+offset_right = 1590.0
+offset_bottom = 875.0
 
 [node name="TimelineRoot" type="Control" parent="EditorRoot" node_paths=PackedStringArray("TaskNodeRoot", "NewTaskButton", "TimeBarLabel")]
 layout_mode = 3

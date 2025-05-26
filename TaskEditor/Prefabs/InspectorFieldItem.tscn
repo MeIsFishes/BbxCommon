@@ -1,6 +1,6 @@
 [gd_scene load_steps=3 format=3 uid="uid://bgu1o65b0ucbc"]
 
-[ext_resource type="Script" path="res://Scripts/Common/InspectorFieldItem.cs" id="1_0lyst"]
+[ext_resource type="Script" path="res://Scripts/Common/Inspector/InspectorFieldItem.cs" id="1_0lyst"]
 [ext_resource type="PackedScene" uid="uid://bdf57u1lqvba8" path="res://Prefabs/InspectorFieldItemCollectionItem.tscn" id="2_oxq1d"]
 
 [node name="InpectorFieldItem" type="Control" node_paths=PackedStringArray("FieldNameLabel", "ValueSourceOption", "CustomValueEdit", "PresetValueOption", "CollectionItemRoot")]
