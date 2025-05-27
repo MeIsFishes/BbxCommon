@@ -6,6 +6,11 @@ using System.Collections.Generic;
 namespace BbxCommon
 {
     #region Base Struct
+	// There are two kinds of data: TaskExport and TaskEdit.
+	// Classes namely begin with TaskExport: Exported from Unity project, which is originally Task definition.
+	// Classes namely begin with TaskEdit: Record data in TaskEditor, and prepare to convert to TaskValueInfo.
+	// TaskValueInfo: For assigning values to Tasks. It's for constructing Tasks during runtime.
+
     public partial class TaskEditField : GodotObject
     {
         public string FieldName;
@@ -70,6 +75,7 @@ namespace BbxCommon
 
     /// <summary>
     /// Data that exists only when editing tasks. Just like UIModel.
+	/// If you need event/message, see <see cref="EventBus"/>.
     /// </summary>
     public static class EditorModel
 	{

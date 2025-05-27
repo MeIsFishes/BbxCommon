@@ -4,13 +4,16 @@ using BbxCommon.Internal;
 
 namespace BbxCommon
 {
+	/// <summary>
+	/// All Task data deserialized from exported files will be stored here.
+	/// </summary>
 	public static class EditorDataStore
 	{
 		private static List<TaskExportInfo> m_TaskInfos = new();
 		private static Dictionary<string, TaskExportInfo> m_TaskInfoDic = new();
 		private static List<TaskContextExportInfo> m_TaskContextInfos = new();
 		private static Dictionary<string, TaskContextExportInfo> m_TaskContextInfoDic = new();
-		private static Dictionary<string, TaskEnumExportInfo> m_EnumInfoDic = new();
+		private static Dictionary<string, TaskEnumExportInfo> m_EnumInfoDic = new();	// if a Task field is enum type, it will be deserialized
 
 		public static void AddTaskInfo(TaskExportInfo info)
 		{

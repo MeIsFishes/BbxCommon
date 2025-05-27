@@ -35,12 +35,12 @@ namespace BbxCommon
     public class TaskValueInfo
     {
         public string FullTypeName;
-        public List<TaskFieldInfo> FieldInfos = new();
+        public List<TaskFieldInfo> FieldInfos = new();  // Task fields
         public List<int> EnterConditionReferences = new();
         public List<int> ConditionReferences = new();
         public List<int> ExitConditionReferences = new();
-        public List<TaskRefrenceInfo> TaskRefrenceDic = new();
-        public List<TaskTimelineItemInfo> TimelineItemInfos = new();
+        public List<TaskRefrenceInfo> TaskRefrenceDic = new();  // the refrence of other Tasks, for example, Sequence needs to connect with other Tasks
+        public List<TaskTimelineItemInfo> TimelineItemInfos = new();    // TaskTimeline uses this struct
 
         #region Add Field Info
         public void AddFieldInfo(string fieldName, ETaskFieldValueSource valueSource, string value)

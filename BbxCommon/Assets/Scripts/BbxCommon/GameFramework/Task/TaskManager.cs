@@ -147,7 +147,7 @@ namespace BbxCommon
         }
 
         /// <summary>
-        /// Deserialize only <see cref="TaskFieldInfo"/>, <see cref="TaskRefrenceInfo"/> will be deserialized in <see cref="RunTask(string, TaskContextBase)"/>.
+        /// Deserialize only <see cref="TaskFieldInfo"/>. <see cref="TaskRefrenceInfo"/> will be deserialized in <see cref="RunTask(string, TaskContextBase)"/>.
         /// </summary>
         private TaskBase DeserializeTask(TaskValueInfo taskValueInfo, TaskContextBase context)
         {
