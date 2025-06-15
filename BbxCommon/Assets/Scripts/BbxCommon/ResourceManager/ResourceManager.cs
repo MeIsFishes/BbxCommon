@@ -4,6 +4,7 @@ using System.IO;
 using UnityEngine;
 using System.Text;
 using Unity.Entities.UniversalDelegates;
+using static ResourcesDictionaryBuilder;
 
 namespace BbxCommon.Internal
 {
@@ -256,7 +257,8 @@ namespace BbxCommon.Internal
                 }
                 else if (info.FileSource == EFileSource.Resources)
                 {
-                    res = Resources.Load<TextAsset>(info.Path);
+                    res = LoadResource<TextAsset>(key);
+                    //res = Resources.Load<TextAsset>(info.Path);
                 }
             }
             else
@@ -282,7 +284,8 @@ namespace BbxCommon.Internal
                     }
                     else if (info.FileSource == EFileSource.Resources)
                     {
-                        var textAsset = Resources.Load<TextAsset>(info.Path);
+                        //var textAsset = Resources.Load<TextAsset>(info.Path);
+                        var textAsset = LoadResource<TextAsset>(key);
                         res.Add(textAsset);
                     }
                 }
@@ -347,6 +350,52 @@ namespace BbxCommon.Internal
                     return true;
             }
             return false;
+        }
+        #endregion
+
+        #region resource dictionary
+        private static Dictionary<string, string> m_ResourcesPathDic = new Dictionary<string, string>();
+        private static bool m_HasLoadResDictionar = false;
+
+        public static void InitResourceDictionary()
+        {
+            if (m_HasLoadResDictionar) return;
+            m_HasLoadResDictionar = true;
+
+            // 加载 ResourcesDictionary.json
+            TextAsset dictAsset = Resources.Load<TextAsset>("ResourcesDictionary");
+            if (dictAsset == null)
+            {
+                Debug.LogError("ResourcesDictionary.json not found in Resources!");
+                return;
+            }
+
+            // 反序列化
+            var wrapper = JsonUtility.FromJson<ResourceDictionaryList>(dictAsset.text);
+            if (wrapper == null || wrapper.list == null)
+            {
+                Debug.LogError("ResourcesDictionary.json format error!");
+                return;
+            }
+
+            foreach (var entry in wrapper.list)
+            {
+                if (!m_ResourcesPathDic.ContainsKey(entry.name))
+                    m_ResourcesPathDic.Add(entry.name, entry.path);
+                else
+                    Debug.LogWarning($"Duplicate resource name in dictionary: {entry.name}");
+            }
+        }
+
+        public static T LoadResource<T>(string name) where T : UnityEngine.Object
+        {
+            InitResourceDictionary();
+            if (m_ResourcesPathDic.TryGetValue(name, out var path))
+            {
+                return Resources.Load<T>(path);
+            }
+            Debug.LogError($"Resource not found: {name}");
+            return null;
         }
         #endregion
     }
