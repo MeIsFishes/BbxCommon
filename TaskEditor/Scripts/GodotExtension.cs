@@ -87,6 +87,37 @@ namespace BbxCommon
             return res;
         }
 
+        public static void GetChildrenRecursively<T>(this Node node, List<T> result, bool ignoreInvisible = true, bool includeSelf = true)
+        {
+            if (includeSelf && node is T t)
+            {
+                if (node is CanvasItem canvasItem)
+                {
+                    if (ignoreInvisible && !canvasItem.Visible)
+                        return; // Skip invisible nodes
+                }
+                result.Add(t);
+            }
+            foreach (Node child in node.GetChildren())
+            {
+                child.GetChildrenRecursively(result, ignoreInvisible, true);
+            }
+        }
+
+        public static List<Node> GetChildrenRecursively(this Node node, bool ignoreInvisible = true, bool includeSelf = true)
+        {
+            var result = new List<Node>();
+            node.GetChildrenRecursively(result, ignoreInvisible, includeSelf);
+            return result;
+        }
+
+        public static List<T> GetChildrenRecursively<T>(this Node node, bool ignoreInvisible = true, bool includeSelf = true)
+        {
+            var result = new List<T>();
+            node.GetChildrenRecursively(result, ignoreInvisible, includeSelf);
+            return result;
+        }
+
         public static T GetSibling<T>(this Node node) where T : Node
 		{
 			var siblings = node.GetParent().GetChildren();
@@ -228,6 +259,41 @@ namespace BbxCommon
         {
             var contextIndex = option.GetItemIndex(label);
             option.Select(contextIndex);
+        }
+        #endregion
+
+        #region Control
+        /// <summary>
+        /// Find MinX, MinY, MaxX, MaxY of all children under the control, and calculate its size.
+        /// The function doesn't consider rotation.
+        /// </summary>
+        public static Vector2 GetSizeIncludeChildren(this Control control)
+        {
+            var controls = control.GetChildrenRecursively<Control>(true, false);
+            float minX, minY, maxX, maxY;
+            if (controls.Count == 0)
+            {
+                return new Vector2();
+            }
+            else
+            {
+                minX = controls[0].GlobalPosition.X;
+                minY = controls[0].GlobalPosition.Y;
+                maxX = controls[0].GlobalPosition.X + controls[0].Size.X;
+                maxY = controls[0].GlobalPosition.Y + controls[0].Size.Y;
+            }
+            for (int i = 1; i < controls.Count; i++)
+            {
+                var newMinX = controls[i].GlobalPosition.X;
+                var newMinY = controls[i].GlobalPosition.Y;
+                var newMaxX = controls[i].GlobalPosition.X + controls[i].Size.X;
+                var newMaxY = controls[i].GlobalPosition.Y + controls[i].Size.Y;
+                minX = Mathf.Min(minX, newMinX);
+                minY = Mathf.Min(minY, newMinY);
+                maxX = Mathf.Max(maxX, newMaxX);
+                maxY = Mathf.Max(maxY, newMaxY);
+            }
+            return new Vector2(maxX - minX, maxY - minY);
         }
         #endregion
     }

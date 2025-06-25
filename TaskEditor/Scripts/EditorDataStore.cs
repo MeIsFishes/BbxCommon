@@ -4,10 +4,17 @@ using BbxCommon.Internal;
 
 namespace BbxCommon
 {
-	/// <summary>
-	/// All Task data deserialized from exported files will be stored here.
-	/// </summary>
-	public static class EditorDataStore
+    public enum EConditionType
+    {
+        EnterCondition,
+        Condition,
+        ExitCondition,
+    }
+
+    /// <summary>
+    /// All Task data deserialized from exported files will be stored here.
+    /// </summary>
+    public static class EditorDataStore
 	{
 		private static List<TaskExportInfo> m_TaskInfos = new();
 		private static Dictionary<string, TaskExportInfo> m_TaskInfoDic = new();

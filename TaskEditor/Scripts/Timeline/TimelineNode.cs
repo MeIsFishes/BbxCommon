@@ -13,6 +13,12 @@ namespace BbxCommon
         public ColorRect DurationBarRect;
         [Export]
         public Array<Control> SelectedControls;
+        [Export]
+        public BbxButton ConditionButton;
+        [Export]
+        public PackedScene ConditionContainerPrefab;
+        [Export]
+        public VBoxContainer ConditionContainerRoot;
 
         private float m_DurationBarOriginalX;
         private float m_DurationBarOriginalWidth;
@@ -27,12 +33,17 @@ namespace BbxCommon
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
             OnCurSelectNodeChanged();
             RefreshDurationBar();
+            InitConditionContainer();
+
+            ConditionContainerRoot.SortChildren += RecalculateSize;
         }
 
         protected override void OnTaskUiClose()
         {
             EventBus.UnregisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
             EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
+
+            ConditionContainerRoot.SortChildren -= RecalculateSize;
         }
 
         protected override void AddInspectorButton()
@@ -77,6 +88,12 @@ namespace BbxCommon
                     SelectedControls[i].Visible = false;
                 }
             }
+        }
+
+        private void RecalculateSize()
+        {
+            var size = this.GetSizeIncludeChildren();
+            this.CustomMinimumSize = size;
         }
         #endregion
 
@@ -129,6 +146,23 @@ namespace BbxCommon
                     return;
                 }
             }
+        }
+        #endregion
+
+        #region Conditions
+        private void InitConditionContainer()
+        {
+            var enterContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(enterContainer);
+            enterContainer.SetConditionType(EConditionType.EnterCondition);
+
+            var conditionContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(conditionContainer);
+            conditionContainer.SetConditionType(EConditionType.Condition);
+
+            var exitContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(exitContainer);
+            exitContainer.SetConditionType(EConditionType.ExitCondition);
         }
         #endregion
     }

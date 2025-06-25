@@ -1,0 +1,77 @@
+[gd_scene load_steps=5 format=3 uid="uid://both1ibxpjc32"]
+
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_7a60k"]
+[ext_resource type="Script" path="res://Scripts/Timeline/TimelineConditionContainer.cs" id="1_y4iag"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_7m6io"]
+[ext_resource type="PackedScene" uid="uid://gwwyeglm477w" path="res://Prefabs/TimelineCondition.tscn" id="2_16quy"]
+
+[node name="TimelineConditionContainer" type="Control" node_paths=PackedStringArray("CreateButton", "Label", "ConditionList")]
+custom_minimum_size = Vector2(1125, 40)
+layout_mode = 3
+anchors_preset = 0
+offset_left = 20.0
+offset_right = 1145.0
+offset_bottom = 36.0
+script = ExtResource("1_y4iag")
+CreateButton = NodePath("Button/BbxButton")
+Label = NodePath("Label")
+ConditionList = NodePath("ConditionContainer")
+ConditionPrefab = ExtResource("2_16quy")
+
+[node name="Frame" type="Control" parent="."]
+anchors_preset = 0
+offset_right = 1125.0
+offset_bottom = 40.0
+
+[node name="Frame1" type="ColorRect" parent="Frame"]
+layout_mode = 0
+offset_right = 1125.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Frame2" type="ColorRect" parent="Frame"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 1122.0
+offset_bottom = 37.0
+color = Color(0.6, 0.6, 0.6, 1)
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 4.0
+offset_right = 176.0
+offset_bottom = 35.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 22
+text = "Enter Condition"
+
+[node name="Button" type="Control" parent="."]
+anchors_preset = 0
+offset_left = 1085.0
+offset_right = 1125.0
+offset_bottom = 40.0
+
+[node name="ColorRect" type="ColorRect" parent="Button"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="BbxButton" type="Button" parent="Button"]
+layout_mode = 0
+offset_left = 3.0
+offset_top = 3.0
+offset_right = 37.0
+offset_bottom = 37.0
+theme = ExtResource("1_7a60k")
+theme_override_font_sizes/font_size = 24
+text = "+"
+script = ExtResource("2_7m6io")
+
+[node name="ConditionContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_top = 40.0
+offset_right = 1125.0
+offset_bottom = 40.0
