@@ -4,17 +4,18 @@
 [ext_resource type="Script" path="res://Scripts/Timeline/TimelineCondition.cs" id="1_fmu8b"]
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_yagc0"]
 
-[node name="TimelineCondition" type="Control" node_paths=PackedStringArray("ConditionButton")]
+[node name="TimelineCondition" type="Control" node_paths=PackedStringArray("Border", "NodeButton")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 20.0
 offset_right = 1145.0
 offset_bottom = 60.0
 script = ExtResource("1_fmu8b")
-ConditionButton = NodePath("BbxButton")
-EnterConditionColor = Color(0, 1, 1, 1)
+Border = NodePath("Border")
+EnterConditionColor = Color(0.721569, 0.698039, 1, 1)
 ConditionColor = Color(0, 0.356863, 1, 1)
 ExitConditionColor = Color(0.443137, 0.380392, 1, 1)
+NodeButton = NodePath("BbxButton")
 
 [node name="Border" type="ColorRect" parent="."]
 layout_mode = 0

@@ -5,17 +5,16 @@
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_oncdq"]
 [ext_resource type="PackedScene" uid="uid://both1ibxpjc32" path="res://Prefabs/TimelineConditionContainer.tscn" id="4_c42kg"]
 
-[node name="TimelineNode" type="Control" node_paths=PackedStringArray("TaskButton", "DurationBarRect", "SelectedControls", "ConditionButton", "ConditionContainerRoot", "NodeButton")]
+[node name="TimelineNode" type="Control" node_paths=PackedStringArray("DurationBarRect", "SelectedControls", "ConditionButton", "ConditionContainerRoot", "NodeButton")]
 custom_minimum_size = Vector2(1145, 80)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 1145.0
 offset_bottom = 80.0
 script = ExtResource("1_i0oxn")
-TaskButton = NodePath("Root/Body/BbxButton")
 DurationBarRect = NodePath("Root/DurationBar/ColorRect")
 SelectedControls = [NodePath("Root/Expand/Selected"), NodePath("Root/Body/Selected")]
-ConditionButton = NodePath("")
+ConditionButton = NodePath("Root/Expand/ConditionButton")
 ConditionContainerPrefab = ExtResource("4_c42kg")
 ConditionContainerRoot = NodePath("ConditionRoot/VBoxContainer")
 NodeButton = NodePath("Root/Body/BbxButton")

@@ -5,15 +5,6 @@ using System.Collections.Generic;
 
 namespace BbxCommon
 {
-	/// <summary>
-	/// For adding task to the target.
-	/// If there is a page can be added tasks (Timeline, Graph, and so on), it should implement this interface.
-	/// </summary>
-	public interface ITaskSelectorTarget
-	{
-		public void SelectTask(TaskExportInfo taskInfo);
-	}
-
 	public partial class TaskSelector : BbxControl
 	{
         [Export]
@@ -33,7 +24,7 @@ namespace BbxCommon
 		[Export]
 		public BbxButton NextPageButton;
 
-		public ITaskSelectorTarget m_Target;
+		private Action<TaskExportInfo> m_OnSelectTask;
 		private List<TaskExportInfo> m_TaskInfos = new();
 		private List<TaskSelectorItem> m_Items = new();
 		private int m_CurPage = 1;
@@ -44,6 +35,8 @@ namespace BbxCommon
 
         protected override void OnUiInit()
 		{
+			EditorModel.TaskSelector = this;
+			Visible = false;
 			// init items
 			for (int i = m_Items.Count; i < ItemLimit; i++)
 			{
@@ -51,7 +44,7 @@ namespace BbxCommon
 				item.Visible = false;
 				item.SetCallback(() =>
 				{
-					m_Target.SelectTask(item.TaskInfo);
+					m_OnSelectTask(item.TaskInfo);
 					this.Visible = false;
 				});
 				ItemContainer.AddChild(item);
@@ -73,37 +66,38 @@ namespace BbxCommon
         /// <summary>
         /// Open the selector, and all tasks will has at least one of the given tags.
         /// </summary>
-        public void OpenWithTags(params string[] tags)
+        public void OpenWithTags(Action<TaskExportInfo> onSelectTask, params string[] tags)
 		{
 			m_SearchTaskTags.AddRange(tags);
-			Open();
+			Open(onSelectTask);
 		}
 
         /// <summary>
         /// Open the selector, and all tasks will not has any one of the given tags.
         /// </summary>
-        public void OpenWithoutTags(params string[] tags)
+        public void OpenWithoutTags(Action<TaskExportInfo> onSelectTask, params string[] tags)
 		{
 			m_SearchTaskWithoutTags.AddRange(tags);
-			Open();
+			Open(onSelectTask);
 		}
 
         /// <summary>
         /// Open the selector, and all tasks will has at least one of tag in withTags, with no tag in withoutTags.
         /// </summary>
-        public void Open(List<string> withTags, List<string> withoutTags)
+        public void Open(Action<TaskExportInfo> onSelectTask, List<string> withTags, List<string> withoutTags)
 		{
 			m_SearchTaskTags.AddRange(withTags);
 			m_SearchTaskWithoutTags.AddRange(withoutTags);
-			Open();
+			Open(onSelectTask);
 		}
 
         /// <summary>
         /// Open the selector with all tasks.
         /// </summary>
-        public void Open()
+        public void Open(Action<TaskExportInfo> onSelectTask)
 		{
 			m_TaskInfos.Clear();
+			// check if task's tags fit
 			foreach (var info in EditorDataStore.GetTaskInfoList())
 			{
 				bool valid = true;
@@ -143,12 +137,8 @@ namespace BbxCommon
             SetProcessInput(true);
             SetProcessUnhandledInput(true);
             RefreshTasks(SearchEdit.Text);
+			m_OnSelectTask = onSelectTask;
         }
-
-		public void SetTarget(ITaskSelectorTarget target)
-		{
-			m_Target = target;
-		}
 
 		private void OnBackButtonClick()
 		{

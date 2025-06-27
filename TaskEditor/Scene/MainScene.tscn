@@ -99,7 +99,6 @@ offset_right = 1150.0
 offset_bottom = 900.0
 theme = ExtResource("4_xou08")
 script = ExtResource("3_jatvs")
-TaskSelectorPrefab = ExtResource("6_fiuha")
 TaskNodePrefab = ExtResource("6_ljxpv")
 TaskNodeRoot = NodePath("VScrollBar/VBoxContainer/NodeRoot")
 NewTaskButton = NodePath("VScrollBar/VBoxContainer/NewTaskButton")
@@ -318,3 +317,5 @@ offset_right = 100.0
 offset_bottom = 50.0
 theme_override_font_sizes/font_size = 32
 text = "Bind Context"
+
+[node name="TaskSelector" parent="EditorRoot" instance=ExtResource("6_fiuha")]

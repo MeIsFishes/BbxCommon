@@ -70,6 +70,11 @@ namespace BbxCommon
 				}
 			}
 		}
+
+		public bool ExpandCondition = false;
+		public List<TaskEditData> EnterConditions = new();
+		public List<TaskEditData> Conditions = new();
+		public List<TaskEditData> ExitConditions = new();
 	}
     #endregion
 
@@ -84,8 +89,8 @@ namespace BbxCommon
         #region Lifecycle
 		public static void OnReady()
 		{
-
-		}
+			
+        }
 
 		public static void OnProcess(double delta)
 		{
@@ -126,17 +131,24 @@ namespace BbxCommon
 			{
 				if (value != m_CurSelectTaskNode)
 				{
-					m_CurSelectTaskNode = value;
+					if (m_CurSelectTaskNode != null) m_CurSelectTaskNode.OnTaskSelected(false);
+                    m_CurSelectTaskNode = value;
+                    if (value != null) value.OnTaskSelected(true);
 					EventBus.DispatchEvent(EEvent.CurSelectTaskNodeChanged);
                 }
 			}
 		}
-		#endregion
+        #endregion
 
-		#endregion
+        #endregion
 
-		#region Timeline
-		public static Timeline TimelineData = new();
+        #region UI Ref
+		public static TaskSelector TaskSelector;
+		public static Inspector Inspector;
+        #endregion
+
+        #region Timeline
+        public static Timeline TimelineData = new();
 		public class Timeline
 		{
 			#region Task List

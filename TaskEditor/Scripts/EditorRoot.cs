@@ -12,7 +12,7 @@ namespace BbxCommon
 
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
-		protected override void OnUiOpen()
+        protected override void OnUiOpen()
 		{
 			DeserializeAllTaskInfo();
 			OnReadyBindContextOption();

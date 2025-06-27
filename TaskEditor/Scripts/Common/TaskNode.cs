@@ -7,7 +7,6 @@ namespace BbxCommon
 {
 	public abstract partial class TaskNode : BbxControl
 	{
-        #region Common
 		public struct ButtonData
 		{
 			public string Name;
@@ -23,8 +22,9 @@ namespace BbxCommon
         protected sealed override void OnUiOpen()
         {
 			NodeButton.Pressed += OnNodeButtonClick;
-			AddInspectorButton();
-			OnTaskUiOpen();
+            AddInspectorButton();
+            OnTaskSelected(false);
+            OnTaskUiOpen();
         }
 
         protected sealed override void OnUiClose()
@@ -39,25 +39,24 @@ namespace BbxCommon
         public void BindTask(TaskEditData editData)
 		{
 			TaskEditData = editData;
-			OnBind(editData);
+			NodeButton.Text = TaskUtils.GetTaskDisplayName(editData.TaskType);
+            OnBindTask(editData);
 		}
 
 		protected virtual void OnTaskUiOpen() { }
 		protected virtual void OnTaskUiClose() { }
 		protected virtual void AddInspectorButton() { }
-		protected virtual void OnBind(TaskEditData editData) { }
+		protected virtual void OnBindTask(TaskEditData editData) { }
+		public virtual void OnTaskSelected(bool selected) { }
 
 		protected void AddButton(string name, Action callback)
 		{
 			InspectorButtonDatas.Add(new ButtonData { Name = name, Callback = callback });
 		}
-        #endregion
 
-        #region Callbacks
         private void OnNodeButtonClick()
 		{
 			EditorModel.CurSelectTaskNode = this;
 		}
-        #endregion
     }
 }

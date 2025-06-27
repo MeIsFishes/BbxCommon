@@ -5,10 +5,8 @@ using System;
 
 namespace BbxCommon
 {
-	public partial class TimelineRoot : BbxControl, ITaskSelectorTarget
+	public partial class TimelineRoot : BbxControl
 	{
-        [Export]
-        public PackedScene TaskSelectorPrefab;
         [Export]
         public PackedScene TaskNodePrefab;
         [Export]
@@ -17,8 +15,6 @@ namespace BbxCommon
 		public Button NewTaskButton;
         [Export]
         public Array<Label> TimeBarLabel;
-
-        private TaskSelector m_TaskSelector;
 
         protected override void OnUiInit()
         {
@@ -35,31 +31,13 @@ namespace BbxCommon
 
         private void OnNewTaskButtonClick()
         {
-            if (m_TaskSelector == null)
+            EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
             {
-                m_TaskSelector = TaskSelectorPrefab.Instantiate<TaskSelector>();
-                m_TaskSelector.SetTarget(this);
-                this.AddChild(m_TaskSelector);
-            }
-            m_TaskSelector.OpenWithTags(TaskExportCrossVariable.TaskTagAction);
-        }
-
-        void ITaskSelectorTarget.SelectTask(TaskExportInfo taskInfo)
-        {
-            var editData = new TaskTimelineEditData();
-            editData.TaskType = taskInfo.TaskTypeName;
-            editData.Fields.Clear();
-            for (int i = 0; i < taskInfo.FieldInfos.Count; i++)
-            {
-                var fieldInfo = taskInfo.FieldInfos[i];
-                var editField = new TaskEditField();
-                editField.FieldName = fieldInfo.FieldName;
-                editField.TypeInfo = fieldInfo.TypeInfo;
-                editField.Value = string.Empty;
-                editData.Fields.Add(editField);
-            }
-            EditorModel.TimelineData.TaskDatas.Add(editData);
-            EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+                var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                EditorModel.TimelineData.TaskDatas.Add(editData);
+                EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
+            },
+            TaskExportCrossVariable.TaskTagAction);
         }
 
         private void OnTimelineTasksChanged()

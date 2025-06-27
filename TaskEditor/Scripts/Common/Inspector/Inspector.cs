@@ -18,6 +18,11 @@ namespace BbxCommon
 
 		private TaskNode m_SelectedNode;
 
+		protected override void OnUiInit()
+		{
+			EditorModel.Inspector = this;
+		}
+
 		protected override void OnUiOpen()
 		{
 			EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnTaskChanged);

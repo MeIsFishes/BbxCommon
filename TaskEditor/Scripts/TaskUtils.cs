@@ -38,6 +38,25 @@ namespace BbxCommon
         }
         #endregion
 
+        #region Convert
+        public static TaskTimelineEditData ExportInfoToTimelineEditData(TaskExportInfo exportInfo)
+        {
+            var editData = new TaskTimelineEditData();
+            editData.TaskType = exportInfo.TaskTypeName;
+            editData.Fields.Clear();
+            for (int i = 0; i < exportInfo.FieldInfos.Count; i++)
+            {
+                var fieldInfo = exportInfo.FieldInfos[i];
+                var editField = new TaskEditField();
+                editField.FieldName = fieldInfo.FieldName;
+                editField.TypeInfo = fieldInfo.TypeInfo;
+                editField.Value = string.Empty;
+                editData.Fields.Add(editField);
+            }
+            return editData;
+        }
+        #endregion
+
         #region Extension
         public static bool IsEnum(this TaskExportTypeInfo typeInfo)
         {

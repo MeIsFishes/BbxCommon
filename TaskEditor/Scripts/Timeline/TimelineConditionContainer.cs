@@ -20,18 +20,7 @@ namespace BbxCommon
         public void SetConditionType(EConditionType conditionType)
 		{
 			m_ConditionType = conditionType;
-            switch (m_ConditionType)
-			{
-				case EConditionType.EnterCondition:
-                    Label.Text = "Enter Conditions";
-                    break;
-                case EConditionType.Condition:
-                    Label.Text = "Conditions";
-                    break;
-                case EConditionType.ExitCondition:
-					Label.Text = "Exit Conditions";
-                    break;
-            }
+			RefreshLabel();
         }
 
 		public void AddCreateButtonCallback(Action callback)
@@ -47,7 +36,29 @@ namespace BbxCommon
 				var conditionNode = ConditionPrefab.Instantiate<TimelineCondition>();
 				conditionNode.BindTask(condition);
 				conditionNode.SetConditionType(m_ConditionType);
+				ConditionList.AddChild(conditionNode);
 			}
+			this.CustomMinimumSize = this.GetSizeIncludeChildren();
+			RefreshLabel();
 		}
+
+		private void RefreshLabel()
+		{
+			string text = null;
+            switch (m_ConditionType)
+            {
+                case EConditionType.EnterCondition:
+                    text = "Enter Conditions";
+                    break;
+                case EConditionType.Condition:
+                    text = "Conditions";
+                    break;
+                case EConditionType.ExitCondition:
+                    text = "Exit Conditions";
+                    break;
+            }
+			text = text + "(" + ConditionList.GetChildCount() + ")";
+			Label.Text = text;
+        }
     }
 }

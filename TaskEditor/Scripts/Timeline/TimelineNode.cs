@@ -1,3 +1,4 @@
+using BbxCommon.Internal;
 using Godot;
 using Godot.Collections;
 using System;
@@ -7,8 +8,6 @@ namespace BbxCommon
 	public partial class TimelineNode : TaskNode
 	{
         #region Common
-        [Export]
-        public BbxButton TaskButton;
         [Export]
         public ColorRect DurationBarRect;
         [Export]
@@ -28,22 +27,21 @@ namespace BbxCommon
         protected override void OnTaskUiOpen()
         {
             EventBus.RegisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
-            EventBus.RegisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
             m_DurationBarOriginalX = DurationBarRect.Position.X;
             m_DurationBarOriginalWidth = DurationBarRect.Size.X;
-            OnCurSelectNodeChanged();
             RefreshDurationBar();
             InitConditionContainer();
 
             ConditionContainerRoot.SortChildren += RecalculateSize;
+            ConditionButton.Pressed += OnConditionButton;
         }
 
         protected override void OnTaskUiClose()
         {
             EventBus.UnregisterEvent(EEvent.TimelineMaxTimeChanged, RefreshDurationBar);
-            EventBus.UnregisterEvent(EEvent.CurSelectTaskNodeChanged, OnCurSelectNodeChanged);
 
             ConditionContainerRoot.SortChildren -= RecalculateSize;
+            ConditionButton.Pressed -= OnConditionButton;
         }
 
         protected override void AddInspectorButton()
@@ -53,12 +51,11 @@ namespace BbxCommon
             AddButton("Delete", OnBtnDeletePress);
         }
 
-        protected override void OnBind(TaskEditData editData)
+        protected override void OnBindTask(TaskEditData editData)
         {
             TimelineEditData.OnStartTimeChanged = RefreshDurationBar;
             TimelineEditData.OnDurationChanged = RefreshDurationBar;
-            var taskType = TaskUtils.GetTaskDisplayName(editData.TaskType);
-            TaskButton.Text = taskType;
+            RefreshConditionContainer();
         }
 
         public void RefreshDurationBar()
@@ -72,9 +69,9 @@ namespace BbxCommon
             DurationBarRect.Size = new Vector2(endX - startX, DurationBarRect.Size.Y);
         }
 
-        private void OnCurSelectNodeChanged()
+        public override void OnTaskSelected(bool selected)
         {
-            if (EditorModel.CurSelectTaskNode == this)
+            if (selected)
             {
                 for (int i = 0; i < SelectedControls.Count; i++)
                 {
@@ -150,19 +147,74 @@ namespace BbxCommon
         #endregion
 
         #region Conditions
+        private TimelineConditionContainer m_EnterConditionContainer;
+        private TimelineConditionContainer m_ConditionContainer;
+        private TimelineConditionContainer m_ExitConditionContainer;
+
         private void InitConditionContainer()
         {
-            var enterContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
-            ConditionContainerRoot.AddChild(enterContainer);
-            enterContainer.SetConditionType(EConditionType.EnterCondition);
+            m_EnterConditionContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(m_EnterConditionContainer);
+            m_EnterConditionContainer.SetConditionType(EConditionType.EnterCondition);
+            m_EnterConditionContainer.AddCreateButtonCallback(() =>
+            {
+                EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
+                {
+                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    timelineData.EnterConditions.Add(editData);
+                    m_EnterConditionContainer.RefreshConditionList(timelineData.EnterConditions);
+                },
+                TaskExportCrossVariable.TaskTagCondition);
+            });
 
-            var conditionContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
-            ConditionContainerRoot.AddChild(conditionContainer);
-            conditionContainer.SetConditionType(EConditionType.Condition);
+            m_ConditionContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(m_ConditionContainer);
+            m_ConditionContainer.SetConditionType(EConditionType.Condition);
+            m_ConditionContainer.AddCreateButtonCallback(() =>
+            {
+                EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
+                {
+                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    timelineData.Conditions.Add(editData);
+                    m_ConditionContainer.RefreshConditionList(timelineData.Conditions);
+                },
+                TaskExportCrossVariable.TaskTagCondition);
+            });
 
-            var exitContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
-            ConditionContainerRoot.AddChild(exitContainer);
-            exitContainer.SetConditionType(EConditionType.ExitCondition);
+            m_ExitConditionContainer = ConditionContainerPrefab.Instantiate<TimelineConditionContainer>();
+            ConditionContainerRoot.AddChild(m_ExitConditionContainer);
+            m_ExitConditionContainer.SetConditionType(EConditionType.ExitCondition);
+            m_ExitConditionContainer.AddCreateButtonCallback(() =>
+            {
+                EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
+                {
+                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    timelineData.ExitConditions.Add(editData);
+                    m_ExitConditionContainer.RefreshConditionList(timelineData.ExitConditions);
+                },
+                TaskExportCrossVariable.TaskTagCondition);
+            });
+        }
+
+        private void RefreshConditionContainer()
+        {
+            ConditionContainerRoot.Visible = (TaskEditData as TaskTimelineEditData).ExpandCondition;
+            if (ConditionContainerRoot.Visible == true)
+            {
+                m_EnterConditionContainer.RefreshConditionList(TimelineEditData.EnterConditions);
+                m_ConditionContainer.RefreshConditionList(TimelineEditData.Conditions);
+                m_ExitConditionContainer.RefreshConditionList(TimelineEditData.ExitConditions);
+            }
+            RecalculateSize();
+        }
+
+        private void OnConditionButton()
+        {
+            (TaskEditData as TaskTimelineEditData).ExpandCondition = !ConditionContainerRoot.Visible;
+            RefreshConditionContainer();
         }
         #endregion
     }

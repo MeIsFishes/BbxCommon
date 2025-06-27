@@ -6,7 +6,7 @@ namespace BbxCommon
     public partial class TimelineCondition : TaskNode
 	{
 		[Export]
-        public BbxButton ConditionButton;
+		public ColorRect Border;
         [Export]
 		public Color EnterConditionColor;
 		[Export]
@@ -35,9 +35,21 @@ namespace BbxCommon
 			var hoverColor = color.Lightened(0.2f);
 			var normalColor = color;
 			var pressedColor = color.Darkened(0.2f);
-			ConditionButton.AddThemeStyleboxOverride("Hover", new StyleBoxFlat{ BgColor = hoverColor });
-            ConditionButton.AddThemeStyleboxOverride("Normal", new StyleBoxFlat { BgColor = normalColor });
-            ConditionButton.AddThemeStyleboxOverride("Pressed", new StyleBoxFlat { BgColor = pressedColor });
+            NodeButton.AddThemeStyleboxOverride("hover", new StyleBoxFlat { BgColor = hoverColor });
+            NodeButton.AddThemeStyleboxOverride("normal", new StyleBoxFlat { BgColor = normalColor });
+            NodeButton.AddThemeStyleboxOverride("pressed", new StyleBoxFlat { BgColor = pressedColor });
+        }
+
+        public override void OnTaskSelected(bool selected)
+        {
+            if (selected)
+			{
+				Border.Color = new Color(0xe9cb00ff);
+			}
+			else
+			{
+				Border.Color = new Color(0, 0, 0);
+			}
         }
     }
 }
