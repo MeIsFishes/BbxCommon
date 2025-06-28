@@ -13,6 +13,7 @@ namespace BbxCommon.Internal
 		public const string TaskTagDuration = "Duration";
 		public const string TaskTagCondition = "Condition";
 		public const string TaskTagTimeline = "Timeline";
+		public const string TaskTagDrive = "Drive";
 	}
 
 	[AttributeUsage(AttributeTargets.Class)]
