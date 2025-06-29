@@ -231,6 +231,33 @@ namespace BbxCommon
             }
         }
 
+        public static void Deserialize<T>(string absolutePath, out T obj)
+        {
+            StreamReader streamReader = null;
+            obj = default;
+            bool succeeded = false;
+            try
+            {
+                absolutePath = FileApi.AddExtensionIfNot(absolutePath, ".json");
+                streamReader = new StreamReader(absolutePath);
+                var jsonString = streamReader.ReadToEnd();
+                var jsonData = JsonMapper.ToObject(jsonString);
+                obj = (T)Deserialize(jsonData);
+                succeeded = true;
+            }
+            catch (Exception e)
+            {
+                DebugApi.LogException(e);
+            }
+            finally
+            {
+                if (streamReader != null)
+                    streamReader.Close();
+                if (succeeded == false)
+                    DebugApi.LogError("Json deserialization failed! File path: " + absolutePath);
+            }
+        }
+
         public static T Deserialize<T>(JsonData jsonData)
         {
             var obj = Deserialize(jsonData);
@@ -314,6 +341,64 @@ namespace BbxCommon
                         return (string)jsonData;
             }
             return null;
+        }
+
+        private static void ConvertJsonDataToObject(JsonData jsonData, object res)
+        {
+            Type type = res.GetType();
+            if (type.IsClass == false)
+            {
+                DebugApi.LogError("Json Deserializer: You should only pass class references to ConvertJsonDataToObject(JsonData, object), but got " + type.FullName + ".");
+            }
+            foreach (var key in jsonData.Keys)
+            {
+                if (key == m_TypeInfoKey)
+                    continue;
+                var field = type.GetField(key);
+                var value = ConvertJsonDataToObject(jsonData[key]);
+                var finalValue = Convert.ChangeType(value, field.FieldType);
+                field.SetValue(res, finalValue);
+            }
+        }
+
+        public static bool TryDeserialize<T>(JsonData jsonData, T res)
+        {
+            try
+            {
+                ConvertJsonDataToObject(jsonData, res);
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool TryDeserialize<T>(string absolutePath, T obj)
+        {
+            StreamReader streamReader = null;
+            bool succeeded = false;
+            try
+            {
+                absolutePath = FileApi.AddExtensionIfNot(absolutePath, ".json");
+                streamReader = new StreamReader(absolutePath);
+                var jsonString = streamReader.ReadToEnd();
+                var jsonData = JsonMapper.ToObject(jsonString);
+                ConvertJsonDataToObject(jsonData, obj);
+                succeeded = true;
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            finally
+            {
+                if (streamReader != null)
+                    streamReader.Close();
+                if (succeeded == false)
+                    DebugApi.LogError("Json deserialization failed! File path: " + absolutePath);
+            }
         }
         #endregion
 

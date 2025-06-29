@@ -12,7 +12,7 @@ namespace BbxCommon
         [Export]
         public Control TaskNodeRoot;
 		[Export]
-		public Button NewTaskButton;
+		public BbxButton NewTaskButton;
         [Export]
         public Array<Label> TimeBarLabel;
 

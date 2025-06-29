@@ -9,37 +9,23 @@ namespace BbxCommon
 	{
 		[Export]
 		public OptionButton BindContextOption;
+		[Export]
+		public BbxButton SettingsPanelButton;
 
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
-        protected override void OnUiOpen()
+        protected override void OnUiInit()
 		{
-			DeserializeAllTaskInfo();
-			OnReadyBindContextOption();
-			EditorModel.OnReady();
+			EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnReadyBindContextOption);
+			SettingsPanelButton.Pressed += OnSettingsPanelButton;
+
+			EditorModel.EditorRoot = this;
+            EditorModel.OnReady();
 		}
 
 		protected override void OnUiUpdate(double delta)
 		{
 			EditorModel.OnProcess(delta);
-		}
-
-		private void DeserializeAllTaskInfo()
-		{
-			if (Directory.Exists(m_ExportedInfoPath))
-			{
-				foreach (var path in Directory.EnumerateFiles(m_ExportedInfoPath))
-				{
-					var obj = JsonApi.Deserialize(Path.GetFullPath(path));
-					if (obj is TaskExportInfo taskInfo)
-						EditorDataStore.AddTaskInfo(taskInfo);
-					else if (obj is TaskContextExportInfo contextInfo)
-						EditorDataStore.AddTaskContextInfo(contextInfo);
-					else if (obj is TaskEnumExportInfo enumInfo)
-						EditorDataStore.AddEnumInfo(enumInfo);
-                }
-				DebugApi.Log("Deserialize task info finished!");
-			}
 		}
 
 		private void OnReadyBindContextOption()
@@ -61,5 +47,10 @@ namespace BbxCommon
             var list = EditorDataStore.GetTaskContextInfoList();
             EditorModel.BindingContextType = list[(int)index].TaskContextTypeName;
         }
+
+		private void OnSettingsPanelButton()
+		{
+			EditorModel.SettingsPanel.Open();
+		}
     }
 }

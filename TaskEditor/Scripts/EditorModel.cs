@@ -79,24 +79,24 @@ namespace BbxCommon
     #endregion
 
     /// <summary>
-    /// Data that exists only when editing tasks. Just like UIModel.
+    /// Data that exists only when editing tasks. It likes a mix UIModel and Facade.
 	/// If you need event/message, see <see cref="EventBus"/>.
     /// </summary>
     public static class EditorModel
 	{
-        #region Common
-
         #region Lifecycle
 		public static void OnReady()
 		{
-			
+			EditorDataStore.DeserializeAllTaskInfo();
         }
 
 		public static void OnProcess(double delta)
 		{
-
-		}
+            BbxButton.OnProcessHotkey();
+        }
         #endregion
+
+        #region Variables and Callbacks
 
         #region Context Type
         private static string m_BindingContextType;
@@ -145,6 +145,37 @@ namespace BbxCommon
         #region UI Ref
 		public static TaskSelector TaskSelector;
 		public static Inspector Inspector;
+		public static SettingsPanel SettingsPanel;
+		public static EditorRoot EditorRoot;
+
+		private static bool m_FileDialogOpened;
+		public static void OpenFileDialog(Action<string> selected, FileDialog.FileModeEnum fileModeEnum = FileDialog.FileModeEnum.OpenFile)
+		{
+			if (m_FileDialogOpened == true)
+				return;
+
+			var fileDialog = new FileDialog();
+			fileDialog.Size = new Vector2I(600, 400);
+			fileDialog.Position = new Vector2I(30, 60);
+			fileDialog.Access = FileDialog.AccessEnum.Filesystem;
+			fileDialog.FileMode = fileModeEnum;
+            switch (fileModeEnum)
+			{
+				case FileDialog.FileModeEnum.OpenFile:
+					fileDialog.FileSelected += (string s) => { selected(s); };
+					break;
+				case FileDialog.FileModeEnum.OpenDir:
+                    fileDialog.DirSelected += (string s) => { selected(s); };
+                    break;
+				default:
+					DebugApi.LogError("FileModeEnum you set is not supported: " + fileModeEnum);
+					break;
+			}
+			fileDialog.CloseRequested += () => { m_FileDialogOpened = false; };
+            fileDialog.Show();
+			m_FileDialogOpened = true;
+			EditorRoot.AddChild(fileDialog);
+        }
         #endregion
 
         #region Timeline

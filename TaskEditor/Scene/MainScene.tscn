@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://cg583i6ilt1el"]
+[gd_scene load_steps=12 format=3 uid="uid://cg583i6ilt1el"]
 
 [ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
 [ext_resource type="Script" path="res://Scripts/Common/Inspector/Inspector.cs" id="2_rhmro"]
@@ -9,6 +9,8 @@
 [ext_resource type="PackedScene" uid="uid://wq2ud1optdpl" path="res://Prefabs/TaskSelector.tscn" id="6_fiuha"]
 [ext_resource type="PackedScene" uid="uid://b7twpmw5aiklv" path="res://Prefabs/TimelineNode.tscn" id="6_ljxpv"]
 [ext_resource type="Theme" uid="uid://66g3dqqfap64" path="res://Themes/TaskTimelineNewTask.tres" id="6_ndtnf"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="9_dmcw6"]
+[ext_resource type="PackedScene" uid="uid://63a5dib7y7e8" path="res://Scene/SettingsPanel.tscn" id="10_61wjl"]
 
 [node name="Control" type="Control"]
 process_mode = 3
@@ -19,12 +21,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("BindContextOption")]
+[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("BindContextOption", "SettingsPanelButton")]
 anchors_preset = 0
 offset_right = 1600.0
 offset_bottom = 900.0
 script = ExtResource("1_e157r")
 BindContextOption = NodePath("TopMenu/BindContext/OptionButton")
+SettingsPanelButton = NodePath("TopMenu/SettingsPanelButton/Button")
 
 [node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 1
@@ -266,6 +269,9 @@ layout_mode = 2
 theme = ExtResource("6_ndtnf")
 theme_override_font_sizes/font_size = 48
 text = "New Task"
+script = ExtResource("9_dmcw6")
+Hotkeys = [32]
+HotkeyGroup1 = [4194326, 67]
 
 [node name="TopMenu" type="Control" parent="EditorRoot"]
 layout_mode = 3
@@ -318,4 +324,34 @@ offset_bottom = 50.0
 theme_override_font_sizes/font_size = 32
 text = "Bind Context"
 
+[node name="SettingsPanelButton" type="Control" parent="EditorRoot/TopMenu"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 460.0
+offset_top = 6.0
+offset_right = 630.0
+offset_bottom = 46.0
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/TopMenu/SettingsPanelButton"]
+layout_mode = 0
+offset_right = 170.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="EditorRoot/TopMenu/SettingsPanelButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 168.0
+offset_bottom = 38.0
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 22
+text = "Editor Settings"
+script = ExtResource("9_dmcw6")
+Hotkeys = [4194305]
+
 [node name="TaskSelector" parent="EditorRoot" instance=ExtResource("6_fiuha")]
+visible = false
+
+[node name="SettingsPanel" parent="EditorRoot" instance=ExtResource("10_61wjl")]
+visible = false

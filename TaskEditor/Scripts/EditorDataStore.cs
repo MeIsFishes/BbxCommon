@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.IO;
 using System.Reflection;
 using BbxCommon.Internal;
 
@@ -20,9 +21,40 @@ namespace BbxCommon
 		private static Dictionary<string, TaskExportInfo> m_TaskInfoDic = new();
 		private static List<TaskContextExportInfo> m_TaskContextInfos = new();
 		private static Dictionary<string, TaskContextExportInfo> m_TaskContextInfoDic = new();
-		private static Dictionary<string, TaskEnumExportInfo> m_EnumInfoDic = new();	// if a Task field is enum type, it will be deserialized
+		private static Dictionary<string, TaskEnumExportInfo> m_EnumInfoDic = new();    // if a Task field is enum type, it will be deserialized
 
-		public static void AddTaskInfo(TaskExportInfo info)
+        public static void DeserializeAllTaskInfo()
+        {
+			m_TaskInfos.Clear();
+			m_TaskInfoDic.Clear();
+            m_TaskContextInfos.Clear();
+            m_TaskContextInfoDic.Clear();
+            m_EnumInfoDic.Clear();
+			DebugApi.Log("TaskDataStore: Cleared all task info. Starting deserialization...");
+
+            var infoPath = EditorSettings.Instance.TaskInfoPath;
+            if (Directory.Exists(infoPath))
+            {
+                foreach (var path in Directory.EnumerateFiles(infoPath))
+                {
+                    var obj = JsonApi.Deserialize(Path.GetFullPath(path));
+                    if (obj is TaskExportInfo taskInfo)
+                        AddTaskInfo(taskInfo);
+                    else if (obj is TaskContextExportInfo contextInfo)
+                        AddTaskContextInfo(contextInfo);
+                    else if (obj is TaskEnumExportInfo enumInfo)
+                        AddEnumInfo(enumInfo);
+                }
+				EventBus.DispatchEvent(EEvent.EditorDataStoreRefresh);
+                DebugApi.Log("TaskDataStore: Deserialize task info finished!");
+            }
+			else
+			{
+				DebugApi.LogWarning("TaskDataStore: Task info path does not exist: " + infoPath);
+			}
+        }
+
+        public static void AddTaskInfo(TaskExportInfo info)
 		{
 			m_TaskInfos.Add(info);
 			m_TaskInfoDic.Add(info.TaskTypeName, info);
