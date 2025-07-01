@@ -21,13 +21,16 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("BindContextOption", "SettingsPanelButton")]
+[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("BindContextOption", "SettingsPanelButton", "SaveButton", "SaveAsButton", "LoadButton")]
 anchors_preset = 0
 offset_right = 1600.0
 offset_bottom = 900.0
 script = ExtResource("1_e157r")
 BindContextOption = NodePath("TopMenu/BindContext/OptionButton")
 SettingsPanelButton = NodePath("TopMenu/SettingsPanelButton/Button")
+SaveButton = NodePath("TopMenu/SaveButton/Button")
+SaveAsButton = NodePath("TopMenu/SaveAsButton/Button")
+LoadButton = NodePath("TopMenu/LoadButton/Button")
 
 [node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 1
@@ -349,6 +352,85 @@ theme_override_font_sizes/font_size = 22
 text = "Editor Settings"
 script = ExtResource("9_dmcw6")
 Hotkeys = [4194305]
+
+[node name="SaveButton" type="Control" parent="EditorRoot/TopMenu"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 640.0
+offset_top = 6.0
+offset_right = 720.0
+offset_bottom = 46.0
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/TopMenu/SaveButton"]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="EditorRoot/TopMenu/SaveButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 78.0
+offset_bottom = 38.0
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 22
+text = "Save"
+script = ExtResource("9_dmcw6")
+HotkeyGroup1 = [4194326, 83]
+
+[node name="SaveAsButton" type="Control" parent="EditorRoot/TopMenu"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 730.0
+offset_top = 6.0
+offset_right = 840.0
+offset_bottom = 46.0
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/TopMenu/SaveAsButton"]
+layout_mode = 0
+offset_right = 110.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="EditorRoot/TopMenu/SaveAsButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 108.0
+offset_bottom = 38.0
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 22
+text = "Save As..."
+script = ExtResource("9_dmcw6")
+HotkeyGroup1 = [4194326, 4194328, 83]
+
+[node name="LoadButton" type="Control" parent="EditorRoot/TopMenu"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 850.0
+offset_top = 6.0
+offset_right = 930.0
+offset_bottom = 46.0
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/TopMenu/LoadButton"]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="EditorRoot/TopMenu/LoadButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 78.0
+offset_bottom = 38.0
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 22
+text = "Load"
+script = ExtResource("9_dmcw6")
+Hotkeys = [76]
+HotkeyGroup1 = [4194326, 65]
 
 [node name="TaskSelector" parent="EditorRoot" instance=ExtResource("6_fiuha")]
 visible = false

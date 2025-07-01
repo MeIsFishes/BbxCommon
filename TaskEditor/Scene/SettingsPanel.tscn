@@ -4,7 +4,7 @@
 [ext_resource type="Script" path="res://Scripts/Common/SettingsPanel/SettingsPanel.cs" id="1_ib2xh"]
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_0g631"]
 
-[node name="SettingsPanel" type="Control" node_paths=PackedStringArray("BackButton", "TaskInfoPathEdit", "TaskInfoPathImportButton", "TaskInfoPathPathButton")]
+[node name="SettingsPanel" type="Control" node_paths=PackedStringArray("BackButton", "TaskInfoPathEdit", "TaskInfoPathImportButton", "TaskInfoPathPathButton", "CurrentTaskPathEdit")]
 layout_mode = 3
 anchors_preset = 0
 offset_left = 350.0
@@ -16,13 +16,14 @@ BackButton = NodePath("BackButton/Button")
 TaskInfoPathEdit = NodePath("TaskInfoPath/TextEdit")
 TaskInfoPathImportButton = NodePath("TaskInfoPath/ImportButton/Button")
 TaskInfoPathPathButton = NodePath("TaskInfoPath/PathButton/Button")
+CurrentTaskPathEdit = NodePath("CurrentTaskPath/TextEdit")
 
 [node name="Frame" type="Control" parent="."]
-custom_minimum_size = Vector2(900, 600)
+custom_minimum_size = Vector2(900, 300)
 layout_mode = 3
 anchors_preset = 0
 offset_right = 900.0
-offset_bottom = 40.0
+offset_bottom = 300.0
 
 [node name="Frame1" type="ColorRect" parent="Frame"]
 layout_mode = 0
@@ -86,12 +87,12 @@ offset_top = 6.0
 offset_right = 148.0
 offset_bottom = 34.0
 theme_override_font_sizes/font_size = 20
-text = "Task Info Path"
+text = "Export Info Path"
 
 [node name="TextEdit" type="TextEdit" parent="TaskInfoPath"]
 layout_mode = 0
-offset_left = 160.0
-offset_right = 730.0
+offset_left = 200.0
+offset_right = 750.0
 offset_bottom = 40.0
 theme_override_font_sizes/font_size = 20
 text = "C:/Workspace/BbxCommon/TaskEditor"
@@ -99,13 +100,13 @@ text = "C:/Workspace/BbxCommon/TaskEditor"
 [node name="ImportButton" type="Control" parent="TaskInfoPath"]
 layout_mode = 3
 anchors_preset = 0
-offset_left = 740.0
+offset_left = 760.0
 offset_right = 840.0
 offset_bottom = 40.0
 
 [node name="Frame" type="ColorRect" parent="TaskInfoPath/ImportButton"]
 layout_mode = 0
-offset_right = 100.0
+offset_right = 80.0
 offset_bottom = 40.0
 color = Color(0, 0, 0, 1)
 
@@ -113,7 +114,7 @@ color = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_left = 2.0
 offset_top = 2.0
-offset_right = 98.0
+offset_right = 78.0
 offset_bottom = 38.0
 theme = ExtResource("1_7b5ho")
 theme_override_font_sizes/font_size = 22
@@ -124,7 +125,7 @@ script = ExtResource("2_0g631")
 layout_mode = 3
 anchors_preset = 0
 offset_left = 850.0
-offset_right = 950.0
+offset_right = 890.0
 offset_bottom = 40.0
 
 [node name="Frame" type="ColorRect" parent="TaskInfoPath/PathButton"]
@@ -143,3 +144,28 @@ theme = ExtResource("1_7b5ho")
 theme_override_font_sizes/font_size = 22
 text = "..."
 script = ExtResource("2_0g631")
+
+[node name="CurrentTaskPath" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_top = 120.0
+offset_right = 900.0
+offset_bottom = 160.0
+
+[node name="Name" type="Label" parent="CurrentTaskPath"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 148.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 20
+text = "CUrrent Task Path"
+
+[node name="TextEdit" type="TextEdit" parent="CurrentTaskPath"]
+layout_mode = 0
+offset_left = 200.0
+offset_right = 750.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 20
+text = "D:/Workspace/DndCardGame/Tasks"
+editable = false

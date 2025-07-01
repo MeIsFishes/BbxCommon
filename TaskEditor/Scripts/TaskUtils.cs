@@ -39,9 +39,9 @@ namespace BbxCommon
         #endregion
 
         #region Convert
-        public static TaskTimelineEditData ExportInfoToTimelineEditData(TaskExportInfo exportInfo)
+        public static TimelineItemEditData ExportInfoToTimelineEditData(TaskExportInfo exportInfo)
         {
-            var editData = new TaskTimelineEditData();
+            var editData = new TimelineItemEditData();
             editData.TaskType = exportInfo.TaskTypeName;
             editData.Fields.Clear();
             for (int i = 0; i < exportInfo.FieldInfos.Count; i++)

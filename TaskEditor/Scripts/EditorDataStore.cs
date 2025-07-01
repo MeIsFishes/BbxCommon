@@ -32,7 +32,7 @@ namespace BbxCommon
             m_EnumInfoDic.Clear();
 			DebugApi.Log("TaskDataStore: Cleared all task info. Starting deserialization...");
 
-            var infoPath = EditorSettings.Instance.TaskInfoPath;
+            var infoPath = EditorSettings.Instance.ExportInfoPath;
             if (Directory.Exists(infoPath))
             {
                 foreach (var path in Directory.EnumerateFiles(infoPath))

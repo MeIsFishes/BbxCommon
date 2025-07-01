@@ -22,7 +22,7 @@ namespace BbxCommon
         private float m_DurationBarOriginalX;
         private float m_DurationBarOriginalWidth;
 
-        public TaskTimelineEditData TimelineEditData => TaskEditData as TaskTimelineEditData;
+        public TimelineItemEditData TimelineEditData => TaskEditData as TimelineItemEditData;
 
         protected override void OnTaskUiOpen()
         {
@@ -121,7 +121,7 @@ namespace BbxCommon
                     EditorModel.TimelineData.TaskDatas[i - 1] = EditorModel.TimelineData.TaskDatas[i];
                     EditorModel.TimelineData.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
-                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i - 1];
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i - 1];
                     return;
                 }
             }
@@ -139,7 +139,7 @@ namespace BbxCommon
                     EditorModel.TimelineData.TaskDatas[i + 1] = EditorModel.TimelineData.TaskDatas[i];
                     EditorModel.TimelineData.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
-                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i + 1];
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i + 1];
                     return;
                 }
             }
@@ -160,7 +160,7 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
                     var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
                     timelineData.EnterConditions.Add(editData);
                     m_EnterConditionContainer.RefreshConditionList(timelineData.EnterConditions);
@@ -175,7 +175,7 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
                     var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
                     timelineData.Conditions.Add(editData);
                     m_ConditionContainer.RefreshConditionList(timelineData.Conditions);
@@ -190,7 +190,7 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
                     var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
                     timelineData.ExitConditions.Add(editData);
                     m_ExitConditionContainer.RefreshConditionList(timelineData.ExitConditions);
@@ -201,7 +201,7 @@ namespace BbxCommon
 
         private void RefreshConditionContainer()
         {
-            ConditionContainerRoot.Visible = (TaskEditData as TaskTimelineEditData).ExpandCondition;
+            ConditionContainerRoot.Visible = (TaskEditData as TimelineItemEditData).ExpandCondition;
             if (ConditionContainerRoot.Visible == true)
             {
                 m_EnterConditionContainer.RefreshConditionList(TimelineEditData.EnterConditions);
@@ -213,7 +213,7 @@ namespace BbxCommon
 
         private void OnConditionButton()
         {
-            (TaskEditData as TaskTimelineEditData).ExpandCondition = !ConditionContainerRoot.Visible;
+            (TaskEditData as TimelineItemEditData).ExpandCondition = !ConditionContainerRoot.Visible;
             RefreshConditionContainer();
         }
         #endregion

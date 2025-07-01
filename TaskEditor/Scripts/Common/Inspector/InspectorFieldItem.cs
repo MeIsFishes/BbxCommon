@@ -153,7 +153,7 @@ namespace BbxCommon
                     PresetValueOption.Visible = false;
                     m_SpecialField = ESpecialField.TimelineStartTime;
 					FieldNameLabel.Text = "StartTime";
-					if (taskNode.TaskEditData is TaskTimelineEditData timelineData1)
+					if (taskNode.TaskEditData is TimelineItemEditData timelineData1)
 					{
 						CustomValueEdit.Text = timelineData1.StartTime.ToString();
 					}
@@ -164,7 +164,7 @@ namespace BbxCommon
                     PresetValueOption.Visible = false;
                     m_SpecialField = ESpecialField.TimelineDuration;
                     FieldNameLabel.Text = "Duration";
-                    if (taskNode.TaskEditData is TaskTimelineEditData timelineData2)
+                    if (taskNode.TaskEditData is TimelineItemEditData timelineData2)
                     {
                         CustomValueEdit.Text = timelineData2.Duration.ToString();
                     }
@@ -287,7 +287,7 @@ namespace BbxCommon
 			var editData = node.TaskEditData;
 			if (m_SpecialField == ESpecialField.TimelineStartTime)
 			{
-				if (editData is TaskTimelineEditData timelineData)
+				if (editData is TimelineItemEditData timelineData)
 				{
 					float.TryParse(CustomValueEdit.Text, out var startTime);
 					timelineData.StartTime = startTime;
@@ -296,7 +296,7 @@ namespace BbxCommon
             }
 			else if (m_SpecialField == ESpecialField.TimelineDuration)
 			{
-                if (editData is TaskTimelineEditData timelineData)
+                if (editData is TimelineItemEditData timelineData)
                 {
                     float.TryParse(CustomValueEdit.Text, out var duration);
                     timelineData.Duration = duration;

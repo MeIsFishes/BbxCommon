@@ -11,6 +11,12 @@ namespace BbxCommon
 	// Classes namely begin with TaskEdit: Record data in TaskEditor, and prepare to convert to TaskValueInfo.
 	// TaskValueInfo: For assigning values to Tasks. It's for constructing Tasks during runtime.
 
+	public enum EEditingTaskType
+	{
+		Timeline,
+		Graph,
+	}
+
     public partial class TaskEditField : GodotObject
     {
         public string FieldName;
@@ -38,7 +44,7 @@ namespace BbxCommon
         }
     }
 
-	public partial class TaskTimelineEditData : TaskEditData
+	public partial class TimelineItemEditData : TaskEditData
 	{
 		public Action OnStartTimeChanged;
 		public Action OnDurationChanged;
@@ -98,6 +104,22 @@ namespace BbxCommon
 
         #region Variables and Callbacks
 
+        #region Editing Task
+        private static EEditingTaskType m_EditingTaskType = EEditingTaskType.Timeline;
+        public static EEditingTaskType EditingTaskType
+		{
+			get => m_EditingTaskType;
+			set
+			{
+				if (m_EditingTaskType != value)
+				{
+					m_EditingTaskType = value;
+					EventBus.DispatchEvent(EEvent.EdittingTaskTypeChanged);
+				}
+			}
+        }
+        #endregion
+
         #region Context Type
         private static string m_BindingContextType;
 		private static TaskContextExportInfo m_BindingContextInfo;
@@ -113,13 +135,11 @@ namespace BbxCommon
 					{
 						m_BindingContextType = value;
 						m_BindingContextInfo = info;
-                        OnBindingContextTypeChanged?.Invoke();
 					}
 				}
 			}
 		}
 		public static TaskContextExportInfo BindingContextInfo => m_BindingContextInfo;
-		public static Action OnBindingContextTypeChanged;
         #endregion
 
         #region Current Select Task Node
@@ -147,9 +167,10 @@ namespace BbxCommon
 		public static Inspector Inspector;
 		public static SettingsPanel SettingsPanel;
 		public static EditorRoot EditorRoot;
+		public static TimelineRoot TimelineRoot;
 
 		private static bool m_FileDialogOpened;
-		public static void OpenFileDialog(Action<string> selected, FileDialog.FileModeEnum fileModeEnum = FileDialog.FileModeEnum.OpenFile)
+		public static void OpenFileDialog(Action<string> selected, FileDialog.FileModeEnum fileModeEnum = FileDialog.FileModeEnum.OpenFile, string currentDir = null)
 		{
 			if (m_FileDialogOpened == true)
 				return;
@@ -159,9 +180,14 @@ namespace BbxCommon
 			fileDialog.Position = new Vector2I(30, 60);
 			fileDialog.Access = FileDialog.AccessEnum.Filesystem;
 			fileDialog.FileMode = fileModeEnum;
+			if (currentDir != null)
+			{
+				fileDialog.CurrentDir = currentDir;
+            }
             switch (fileModeEnum)
 			{
 				case FileDialog.FileModeEnum.OpenFile:
+				case FileDialog.FileModeEnum.SaveFile:
 					fileDialog.FileSelected += (string s) => { selected(s); };
 					break;
 				case FileDialog.FileModeEnum.OpenDir:
@@ -178,13 +204,47 @@ namespace BbxCommon
         }
         #endregion
 
-        #region Timeline
-        public static Timeline TimelineData = new();
-		public class Timeline
+        #region Save Target
+
+        #region Common
+		public static object SaveTarget
 		{
-			#region Task List
-			public List<TimelineNode> Nodes = new();
-			public List<TaskTimelineEditData> TaskDatas = new();
+			get
+			{
+				switch (EditingTaskType)
+				{
+                    case EEditingTaskType.Timeline:
+                        return TimelineData;
+                    case EEditingTaskType.Graph:
+                        return NodeGraphData;
+                    default:
+                        DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
+                        return null;
+                }
+			}
+			set
+			{
+				switch (EditingTaskType)
+				{
+                    case EEditingTaskType.Timeline:
+                        TimelineData = (TimelineDataStruct)value;
+						break;
+                    case EEditingTaskType.Graph:
+                        NodeGraphData = (NodeGraphDataStruct)value;
+						break;
+                    default:
+                        DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
+						break;
+                }
+			}
+		}
+        #endregion
+
+        #region Timeline
+        public static TimelineDataStruct TimelineData = new();
+		public class TimelineDataStruct
+		{
+			public List<TimelineItemEditData> TaskDatas = new();
 
 			private float m_MaxTime;
 			public float MaxTime
@@ -199,16 +259,17 @@ namespace BbxCommon
 					}
 				}
 			}
-            #endregion
         }
         #endregion
 
         #region Node Graph
-        public static NodeGraph NodeGraphData;
-		public class NodeGraph
+        public static NodeGraphDataStruct NodeGraphData;
+		public class NodeGraphDataStruct
 		{
 
 		}
+        #endregion
+
         #endregion
     }
 }

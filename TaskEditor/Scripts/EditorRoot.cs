@@ -11,6 +11,12 @@ namespace BbxCommon
 		public OptionButton BindContextOption;
 		[Export]
 		public BbxButton SettingsPanelButton;
+		[Export]
+		public BbxButton SaveButton;
+		[Export]
+		public BbxButton SaveAsButton;
+		[Export]
+		public BbxButton LoadButton;
 
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
@@ -18,8 +24,11 @@ namespace BbxCommon
 		{
 			EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnReadyBindContextOption);
 			SettingsPanelButton.Pressed += OnSettingsPanelButton;
+			SaveButton.Pressed += OnSaveButton;
+            SaveAsButton.Pressed += OnSaveAsButton;
+            LoadButton.Pressed += OnLoadButton;
 
-			EditorModel.EditorRoot = this;
+            EditorModel.EditorRoot = this;
             EditorModel.OnReady();
 		}
 
@@ -52,5 +61,36 @@ namespace BbxCommon
 		{
 			EditorModel.SettingsPanel.Open();
 		}
+
+		private void OnSaveButton()
+		{
+			if (File.Exists(EditorSettings.Instance.CurrentTaskPath))
+			{
+				JsonApi.Serialize(EditorModel.SaveTarget, EditorSettings.Instance.CurrentTaskPath);
+			}
+			else
+			{
+				OnSaveAsButton();
+			}
+		}
+
+		private void OnSaveAsButton()
+		{
+			EditorModel.OpenFileDialog((s) =>
+			{
+				EditorSettings.Instance.CurrentTaskPath = FileApi.AddExtensionIfNot(s, ".json");
+                JsonApi.Serialize(EditorModel.SaveTarget, EditorSettings.Instance.CurrentTaskPath);
+            }, FileDialog.FileModeEnum.SaveFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
+        }
+
+		private void OnLoadButton()
+		{
+            EditorModel.OpenFileDialog((s) =>
+            {
+                EditorSettings.Instance.CurrentTaskPath = FileApi.AddExtensionIfNot(s, ".json");
+                EditorModel.SaveTarget = JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath);
+				EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
+            }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
+        }
     }
 }

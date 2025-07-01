@@ -1,14 +1,41 @@
 using Godot;
 using System;
+using System.Collections.Generic;
 using System.IO;
 
 namespace BbxCommon
 {
 	public class EditorSettings : Singleton<EditorSettings>
 	{
-		public string TaskInfoPath;
+		private string m_ExportInfoPath;
+		public string ExportInfoPath
+		{
+			get => m_ExportInfoPath;
+			set
+			{
+				if (m_ExportInfoPath != value)
+				{
+					m_ExportInfoPath = value;
+					Save();
+				}
+			}
+		}
 
-		public void Save()
+		private string m_CurrentTaskPath;
+		public string CurrentTaskPath
+		{
+			get => m_CurrentTaskPath;
+			set
+			{
+				if (m_CurrentTaskPath != value)
+				{
+					m_CurrentTaskPath = value;
+					Save();
+				}
+			}
+		}
+
+		private void Save()
 		{
 			JsonApi.Serialize(this, Path.GetFullPath("EditorSettings.json"));
 		}

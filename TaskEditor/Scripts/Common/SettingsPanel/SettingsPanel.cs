@@ -15,6 +15,8 @@ namespace BbxCommon
         public BbxButton TaskInfoPathImportButton;
         [Export]
         public BbxButton TaskInfoPathPathButton;
+        [Export]
+        public TextEdit CurrentTaskPathEdit;
 
         protected override void OnUiInit()
         {
@@ -27,9 +29,10 @@ namespace BbxCommon
 
         protected override void OnUiOpen()
         {
-            TaskInfoPathEdit.Text = EditorSettings.Instance.TaskInfoPath;
+            TaskInfoPathEdit.Text = EditorSettings.Instance.ExportInfoPath;
 
             OnUiOpenTaskInfoPath();
+            OnUiOpenCurrentTaskPath();
         }
 
         public void Open()
@@ -39,7 +42,6 @@ namespace BbxCommon
 
         private void OnBackButtonClick()
         {
-            EditorSettings.Instance.Save();
             Visible = false;
         }
         #endregion
@@ -49,11 +51,11 @@ namespace BbxCommon
         {
             TaskInfoPathEdit.TextChanged += () =>
             {
-                EditorSettings.Instance.TaskInfoPath = TaskInfoPathEdit.Text;
+                EditorSettings.Instance.ExportInfoPath = TaskInfoPathEdit.Text;
             };
             TaskInfoPathEdit.TextSet += () =>
             {
-                EditorSettings.Instance.TaskInfoPath = TaskInfoPathEdit.Text;
+                EditorSettings.Instance.ExportInfoPath = TaskInfoPathEdit.Text;
             };
             TaskInfoPathImportButton.Pressed += OnTaskInfoPathImportButton;
             TaskInfoPathPathButton.Pressed += OnTaskInfoPathPathButton;
@@ -61,7 +63,7 @@ namespace BbxCommon
 
         private void OnUiOpenTaskInfoPath()
         {
-            TaskInfoPathEdit.Text = EditorSettings.Instance.TaskInfoPath;
+            TaskInfoPathEdit.Text = EditorSettings.Instance.ExportInfoPath;
         }
 
         private void OnTaskInfoPathImportButton()
@@ -76,6 +78,13 @@ namespace BbxCommon
                 TaskInfoPathEdit.Text = s;
             },
             FileDialog.FileModeEnum.OpenDir);
+        }
+        #endregion
+
+        #region Current Task Path
+        private void OnUiOpenCurrentTaskPath()
+        {
+            CurrentTaskPathEdit.Text = EditorSettings.Instance.CurrentTaskPath;
         }
         #endregion
     }

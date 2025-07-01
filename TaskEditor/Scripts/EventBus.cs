@@ -9,8 +9,10 @@ namespace BbxCommon
 		// common
 		EditorDataStoreRefresh,
 		CurSelectTaskNodeChanged,
-		// timeline
-		TimelineTasksChanged,
+        EdittingTaskTypeChanged,
+		ReloadEditingTaskData,
+        // timeline
+        TimelineTasksChanged,
 		TimelineMaxTimeChanged,
 		TimelineNodeStartTimeOrDurationChanged,
 	}

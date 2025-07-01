@@ -1,7 +1,7 @@
 using BbxCommon.Internal;
 using Godot;
 using Godot.Collections;
-using System;
+using System.Collections.Generic;
 
 namespace BbxCommon
 {
@@ -16,8 +16,13 @@ namespace BbxCommon
         [Export]
         public Array<Label> TimeBarLabel;
 
+        public List<TimelineNode> Nodes = new();
+
         protected override void OnUiInit()
         {
+            EditorModel.TimelineRoot = this;
+            EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnEditorDataStoreRefresh);
+            EventBus.RegisterEvent(EEvent.ReloadEditingTaskData, OnEditorDataStoreRefresh);
             EventBus.RegisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.RegisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
             NewTaskButton.Pressed += OnNewTaskButtonClick;
@@ -25,6 +30,8 @@ namespace BbxCommon
 
         protected override void OnUiDestroy()
         {
+            EventBus.UnregisterEvent(EEvent.EditorDataStoreRefresh, OnEditorDataStoreRefresh);
+            EventBus.UnregisterEvent(EEvent.ReloadEditingTaskData, OnEditorDataStoreRefresh);
             EventBus.UnregisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.UnregisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
         }
@@ -40,16 +47,24 @@ namespace BbxCommon
             TaskExportCrossVariable.TaskTagAction);
         }
 
+        private void OnEditorDataStoreRefresh()
+        {
+            if (EditorModel.EditingTaskType == EEditingTaskType.Timeline)
+            {
+                OnTimelineTasksChanged();
+            }
+        }
+
         private void OnTimelineTasksChanged()
         {
             TaskNodeRoot.RemoveChildren();
-            EditorModel.TimelineData.Nodes.Clear();
+            Nodes.Clear();
             for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
             {
                 var node = TaskNodePrefab.Instantiate<TimelineNode>();
                 TaskNodeRoot.AddChild(node);
                 node.BindTask(EditorModel.TimelineData.TaskDatas[i]);
-                EditorModel.TimelineData.Nodes.Add(node);
+                Nodes.Add(node);
             }
         }
 
@@ -58,9 +73,9 @@ namespace BbxCommon
             if (TimeBarLabel.Count < 2)
                 return;
             float maxTime = 0;
-            for (int i = 0; i < EditorModel.TimelineData.Nodes.Count; i++)
+            for (int i = 0; i < Nodes.Count; i++)
             {
-                var node = EditorModel.TimelineData.Nodes[i];
+                var node = Nodes[i];
                 if (node.TimelineEditData.StartTime + node.TimelineEditData.Duration > maxTime)
                     maxTime = node.TimelineEditData.StartTime + node.TimelineEditData.Duration;
             }
