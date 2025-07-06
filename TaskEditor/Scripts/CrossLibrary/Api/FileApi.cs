@@ -23,6 +23,8 @@ namespace BbxCommon
         /// </summary>
         public static string GetDirectory(string path)
         {
+            if (path == null)
+                return null;
             while (Directory.Exists(path) == false && path.Length > 0)
             {
                 var index = path.LastIndexOf('/');

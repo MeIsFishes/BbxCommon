@@ -431,6 +431,7 @@ text = "Load"
 script = ExtResource("9_dmcw6")
 Hotkeys = [76]
 HotkeyGroup1 = [4194326, 65]
+HotkeyGroup2 = [4194326, 76]
 
 [node name="TaskSelector" parent="EditorRoot" instance=ExtResource("6_fiuha")]
 visible = false

@@ -98,7 +98,18 @@ namespace BbxCommon
 
 		public static void OnProcess(double delta)
 		{
-            BbxButton.OnProcessHotkey();
+			// hotkeys
+            SimplePool.Alloc(out Dictionary<int, bool> keyStates);
+			InputApi.GetKeyStateRequestDic(keyStates);
+			foreach (var pair in keyStates)
+			{
+				if (Input.IsKeyPressed((Key)pair.Key))
+				{
+					keyStates[pair.Key] = true;
+                }
+			}
+			InputApi.Tick(keyStates);
+			keyStates.CollectToPool();
         }
         #endregion
 
@@ -198,6 +209,7 @@ namespace BbxCommon
 					break;
 			}
 			fileDialog.CloseRequested += () => { m_FileDialogOpened = false; };
+			fileDialog.DialogCloseOnEscape = false; // close via Escape will not invoke CloseRequested
             fileDialog.Show();
 			m_FileDialogOpened = true;
 			EditorRoot.AddChild(fileDialog);

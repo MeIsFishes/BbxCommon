@@ -159,7 +159,7 @@ offset_top = 6.0
 offset_right = 148.0
 offset_bottom = 34.0
 theme_override_font_sizes/font_size = 20
-text = "CUrrent Task Path"
+text = "Current Task Path"
 
 [node name="TextEdit" type="TextEdit" parent="CurrentTaskPath"]
 layout_mode = 0

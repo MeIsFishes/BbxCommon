@@ -22,6 +22,7 @@ namespace BbxCommon
 
         public override void _ExitTree()
         {
+            Visible = false;
             base.Pressed -= InvokePressed;
             VisibilityChanged -= OnVisibilityChanged;
         }
@@ -90,72 +91,6 @@ namespace BbxCommon
         [Export]
         public Godot.Collections.Array<Key> HotkeyGroup2 = new();
 
-        private static Dictionary<CombinedHotkey, List<BbxButton>> m_RegisteredButton = new();
-        private static HashSet<CombinedHotkey> m_CooldownHotkey = new();
-
-        /// <summary>
-        /// Check if the button hotkey will be called.
-        /// NOTICE: this function should be called manually in project.
-        /// </summary>
-        public static void OnProcessHotkey()
-        {
-            // normal buttons
-            foreach (var keyButton in m_RegisteredButton)
-            {
-                // cooldown
-                bool cooldown = false;
-                foreach (var cooldownKey in m_CooldownHotkey)
-                {
-                    if (keyButton.Key.Equals(cooldownKey))
-                    {
-                        cooldown = true;
-                        break;
-                    }
-                }
-                if (cooldown) continue;
-                // invoke
-                bool valid = true;
-                for (int i = 0; i < keyButton.Key.Hotkeys.Count; i++)
-                {
-                    if (Input.IsKeyPressed(keyButton.Key.Hotkeys[i]) == false)
-                    {
-                        valid = false;
-                        continue;
-                    }
-                }
-                if (valid)
-                {
-                    if (keyButton.Value.Count > 0)
-                    {
-                        var count = keyButton.Value.Count;
-                        if (keyButton.Value[count - 1].Pressed != null)
-                        {
-                            keyButton.Value[count - 1].Pressed();
-                        }
-                        m_CooldownHotkey.Add(keyButton.Key);
-                    }
-                }
-            }
-
-            // reset cooldown
-            var resetCooldownList = new List<CombinedHotkey>();
-            foreach (var key in m_CooldownHotkey)
-            {
-                for (int i = 0; i < key.Hotkeys.Count; i++)
-                {
-                    if (Input.IsKeyPressed(key.Hotkeys[i]) == false)
-                    {
-                        resetCooldownList.Add(key);
-                        continue;
-                    }
-                }
-            }
-            for (int i = 0; i < resetCooldownList.Count; i++)
-            {
-                m_CooldownHotkey.Remove(resetCooldownList[i]);
-            }
-        }
-
         private void OnVisibilityChanged()
         {
             if (IsVisibleInTree())
@@ -169,10 +104,10 @@ namespace BbxCommon
             for (int i = 0; i < Hotkeys.Count; i++)
             {
                 var combinedHotkey = new CombinedHotkey(Hotkeys[i]);
-                RegisterHotkey(combinedHotkey, this);
+                RegisterHotkey(combinedHotkey);
             }
-            RegisterHotkey(new CombinedHotkey(HotkeyGroup1), this);
-            RegisterHotkey(new CombinedHotkey(HotkeyGroup2), this);
+            RegisterHotkey(new CombinedHotkey(HotkeyGroup1));
+            RegisterHotkey(new CombinedHotkey(HotkeyGroup2));
         }
 
         private void UnregisterAllHotkey()
@@ -180,54 +115,36 @@ namespace BbxCommon
             for (int i = 0; i < Hotkeys.Count; i++)
             {
                 var combinedHotkey = new CombinedHotkey(Hotkeys[i]);
-                UnregisterHotkey(combinedHotkey, this);
+                UnregisterHotkey(combinedHotkey);
             }
-            UnregisterHotkey(new CombinedHotkey(HotkeyGroup1), this);
-            UnregisterHotkey(new CombinedHotkey(HotkeyGroup2), this);
+            UnregisterHotkey(new CombinedHotkey(HotkeyGroup1));
+            UnregisterHotkey(new CombinedHotkey(HotkeyGroup2));
         }
 
-        private static void RegisterHotkey(CombinedHotkey combinedHotkey, BbxButton button)
+        private void RegisterHotkey(CombinedHotkey combinedHotkey)
         {
-            if (combinedHotkey == null || combinedHotkey.Hotkeys.Count == 0)
+            if (combinedHotkey.Hotkeys.Count == 0)
                 return;
-            
-            bool found = false;
-            foreach (var keyButton in m_RegisteredButton)
+            SimplePool.Alloc(out List<int> hotkeys);
+            for (int i = 0; i < combinedHotkey.Hotkeys.Count; i++)
             {
-                if (keyButton.Key.Equals(combinedHotkey))
-                {
-                    found = true;
-                    keyButton.Value.Add(button);
-                }
+                hotkeys.Add((int)combinedHotkey.Hotkeys[i]);
             }
-            if (found == false)
-            {
-                var list = new List<BbxButton>();
-                list.Add(button);
-                var key = combinedHotkey.Clone();
-                m_RegisteredButton.Add(key, list);
-            }
+            InputApi.RegisterHotkey(Pressed, InputApi.EHotkeyType.Mutex, hotkeys);
+            hotkeys.CollectToPool();
         }
 
-        private static void UnregisterHotkey(CombinedHotkey combinedHotkey, BbxButton button)
+        private void UnregisterHotkey(CombinedHotkey combinedHotkey)
         {
-            if (combinedHotkey == null || combinedHotkey.Hotkeys.Count == 0)
+            if (combinedHotkey.Hotkeys.Count == 0)
                 return;
-            
-            CombinedHotkey key = default;
-            foreach (var keyButton in m_RegisteredButton)
+            SimplePool.Alloc(out List<int> hotkeys);
+            for (int i = 0; i < combinedHotkey.Hotkeys.Count; i++)
             {
-                if (keyButton.Key.Equals(combinedHotkey))
-                {
-                    key = keyButton.Key;
-                    keyButton.Value.Remove(button);
-                    break;
-                }
+                hotkeys.Add((int)combinedHotkey.Hotkeys[i]);
             }
-            if (key != null && m_RegisteredButton[key].Count == 0)
-            {
-                m_RegisteredButton.Remove(key);
-            }
+            InputApi.UnregisterHotkey(Pressed, InputApi.EHotkeyType.Mutex, hotkeys);
+            hotkeys.CollectToPool();
         }
         #endregion
     }
