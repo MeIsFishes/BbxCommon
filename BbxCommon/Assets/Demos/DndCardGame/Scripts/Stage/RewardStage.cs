@@ -12,7 +12,7 @@ namespace Dcg
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiRewardScene"));
 
-            stage.AddLoadItem(new RewardStageGenerateRewardDice());
+            stage.AddLoadItem<RewardStageGenerateRewardDice>();
 
             return stage;
         }

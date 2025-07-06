@@ -15,12 +15,12 @@ namespace Dcg
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiGlobalScene"));
 
-            stage.AddLateLoadItem(new BuildTestTask());
-            stage.AddLoadItem(new InitSingletonComponent());
+            stage.AddLoadItem<InitSingletonComponent>();
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-
-            stage.AddLateLoadItem(new InitCamera());
-            stage.AddLateLoadItem(new BuildRandomPool());
+            
+            stage.AddLateLoadItem<BuildTestTask>();
+            stage.AddLateLoadItem<InitCamera>();
+            stage.AddLateLoadItem<BuildRandomPool>();
 
             stage.AddUpdateSystem<ProcessOperationSystem>();
 

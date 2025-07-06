@@ -15,9 +15,9 @@ namespace Dcg
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiDungeonScene"));
 
-            stage.AddLoadItem(new InitPlayerAndCharacter());
+            stage.AddLoadItem<InitPlayerAndCharacter>();
 
-            stage.AddLateLoadItem(new InitDungeon());
+            stage.AddLateLoadItem<InitDungeon>();
 
             stage.AddUpdateSystem<DungeonCameraSystem>();
             stage.AddUpdateSystem<SpawnRoomSystem>();
