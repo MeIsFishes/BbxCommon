@@ -66,7 +66,7 @@ namespace BbxCommon
 		{
 			if (File.Exists(EditorSettings.Instance.CurrentTaskPath))
 			{
-				JsonApi.Serialize(EditorModel.SaveTarget, EditorSettings.Instance.CurrentTaskPath);
+				EditorModel.SaveTarget.Save();
 			}
 			else
 			{
@@ -79,7 +79,7 @@ namespace BbxCommon
 			EditorModel.OpenFileDialog((s) =>
 			{
 				EditorSettings.Instance.CurrentTaskPath = FileApi.AddExtensionIfNot(s, ".json");
-                JsonApi.Serialize(EditorModel.SaveTarget, EditorSettings.Instance.CurrentTaskPath);
+                EditorModel.SaveTarget.Save();
             }, FileDialog.FileModeEnum.SaveFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
         }
 
@@ -88,7 +88,7 @@ namespace BbxCommon
             EditorModel.OpenFileDialog((s) =>
             {
                 EditorSettings.Instance.CurrentTaskPath = FileApi.AddExtensionIfNot(s, ".json");
-                EditorModel.SaveTarget = JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath);
+                EditorModel.SaveTarget = (EditorModel.ISaveTarget)JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath);
 				EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
             }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
         }

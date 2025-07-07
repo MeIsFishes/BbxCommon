@@ -156,6 +156,8 @@ namespace BbxCommon
                     res = (T)context.GetBlackBoardObjectValue(fieldInfo.Value);
                     break;
             }
+            if (res == null)
+                res = (T)Activator.CreateInstance(typeof(T));
             return res;
         }
 

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using BbxCommon.Internal;
+using LitJson;
 using UnityEditor.Graphs;
 
 namespace BbxCommon
@@ -45,10 +46,22 @@ namespace BbxCommon
         {
             if (m_Tasks.TryGetValue(key, out var taskGroupInfo) == false)
             {
-                DebugApi.LogError("No such task: " + key);
-                return;
+                var textAsset = ResourceApi.LoadTextAsset(key);
+                if (textAsset != null)
+                {
+                    var jsonData = JsonMapper.ToObject(textAsset.text);
+                    var readTaskGroupInfo = JsonApi.Deserialize<TaskGroupInfo>(jsonData);
+                    RegisterTask(key, readTaskGroupInfo);
+                    taskGroupInfo = readTaskGroupInfo;
+                }
+                else
+                {
+                    DebugApi.LogError("No such task: " + key);
+                    return;
+                }
             }
-            if (taskGroupInfo.BindingContextFullType != context.GetType().FullName)
+            if (taskGroupInfo.BindingContextFullType != context.GetType().FullName &&
+                taskGroupInfo.BindingContextFullType != context.GetType().Name)
             {
                 DebugApi.LogError("Context doesn't match! You pass in " + context.GetType().FullName + ", but the task " + key +
                     " requires " + taskGroupInfo.BindingContextFullType);
@@ -66,7 +79,7 @@ namespace BbxCommon
             {
                 var task = taskDic[pair.Key];
                 var taskInfo = pair.Value;
-                foreach (var refrenceInfo in taskInfo.TaskRefrenceDic)
+                foreach (var refrenceInfo in taskInfo.TaskRefrences)
                 {
                     var enumTypes = new List<Type>();
                     task.GetFieldEnumTypes(enumTypes);

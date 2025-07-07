@@ -176,9 +176,9 @@ namespace BbxCommon
             {
                 var pairType = item.GetType();
                 var keyField = pairType.GetField("key", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-                dicJsonData[index.ToString() + ", 0"] = ConvertObjectToJsonData(keyField.GetValue(item));
+                dicJsonData[index.ToString() + ", Key"] = ConvertObjectToJsonData(keyField.GetValue(item));
                 var valueField = pairType.GetField("value", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-                dicJsonData[index.ToString() + ", 1"] = ConvertObjectToJsonData(valueField.GetValue(item));
+                dicJsonData[index.ToString() + ", Value"] = ConvertObjectToJsonData(valueField.GetValue(item));
                 index++;
             }
             return dicJsonData;
@@ -424,7 +424,7 @@ namespace BbxCommon
                 }
                 else
                 {
-                    var obj = type.GetConstructor(Type.EmptyTypes).Invoke(null);
+                    var obj = Activator.CreateInstance(type);
                     foreach (var key in jsonData.Keys)
                     {
                         if (key == m_TypeInfoKey)
@@ -509,10 +509,10 @@ namespace BbxCommon
             var dic = Activator.CreateInstance(type);
             var addMethod = type.GetMethod("Add");
             int index = 0;
-            while (jsonData.ContainsKey(index.ToString() + ", 0"))
+            while (jsonData.ContainsKey(index.ToString() + ", Key"))
             {
-                var key = ConvertJsonDataToObject(jsonData[index.ToString() + ", 0"]);
-                var value = ConvertJsonDataToObject(jsonData[index.ToString() + ", 1"]);
+                var key = ConvertJsonDataToObject(jsonData[index.ToString() + ", Key"]);
+                var value = ConvertJsonDataToObject(jsonData[index.ToString() + ", Value"]);
                 addMethod.Invoke(dic, new object[] { key, value });
                 index++;
             }

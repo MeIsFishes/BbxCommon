@@ -1,5 +1,6 @@
 using BbxCommon.Internal;
 using Godot;
+using LitJson;
 using System;
 using System.Collections.Generic;
 
@@ -17,7 +18,7 @@ namespace BbxCommon
 		Graph,
 	}
 
-    public partial class TaskEditField : GodotObject
+    public partial class TaskEditField
     {
         public string FieldName;
         public TaskExportTypeInfo TypeInfo;
@@ -25,7 +26,7 @@ namespace BbxCommon
         public string Value;
     }
 
-	public partial class TaskEditData : GodotObject
+	public partial class TaskEditData
 	{
 		public string TaskType;
 		public List<TaskEditField> Fields = new();
@@ -219,7 +220,7 @@ namespace BbxCommon
         #region Save Target
 
         #region Common
-		public static object SaveTarget
+		public static ISaveTarget SaveTarget
 		{
 			get
 			{
@@ -250,11 +251,16 @@ namespace BbxCommon
                 }
 			}
 		}
+
+		public interface ISaveTarget
+		{
+			public void Save();
+		}
         #endregion
 
         #region Timeline
         public static TimelineDataStruct TimelineData = new();
-		public class TimelineDataStruct
+		public class TimelineDataStruct : ISaveTarget
 		{
 			public List<TimelineItemEditData> TaskDatas = new();
 
@@ -271,14 +277,88 @@ namespace BbxCommon
 					}
 				}
 			}
+
+			public void Save()
+			{
+				// save editor file
+				var currentTaskPath = EditorSettings.Instance.CurrentTaskPath;
+				var editorFilePath = FileApi.RemoveExtensionIfHas(currentTaskPath) + ".editor.json";
+                JsonApi.Serialize(this, editorFilePath);
+                // build timeline root info
+                int taskId = 0;
+				var taskGroupInfo = new TaskGroupInfo();
+                var timelineRootValueInfo = new TaskValueInfo();
+				timelineRootValueInfo.FullTypeName = "TaskTimeline";
+				timelineRootValueInfo.AddFieldInfo("Duration", ETaskFieldValueSource.Value, MaxTime.ToString());
+				taskGroupInfo.BindingContextFullType = BindingContextType;
+                taskGroupInfo.SetRootTaskId(taskId);
+				taskGroupInfo.TaskInfos[taskId++] = timelineRootValueInfo;
+				// build task items
+				foreach (var timelineItemEditData in TaskDatas)
+				{
+					// timeline item
+					var itemInfo = new TaskTimelineItemInfo();
+					var itemValueInfo = new TaskValueInfo();
+					itemValueInfo.FullTypeName = timelineItemEditData.TaskType;
+					taskGroupInfo.TaskInfos[taskId] = itemValueInfo;
+					itemInfo.Id = taskId++;
+					itemInfo.StartTime = timelineItemEditData.StartTime;
+					itemInfo.Duration = timelineItemEditData.Duration;
+					timelineRootValueInfo.AddTimelineInfo(timelineItemEditData.StartTime, timelineItemEditData.Duration, itemInfo.Id);
+                    foreach (var field in timelineItemEditData.Fields)
+					{
+						itemValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+					}
+                    // enter condition
+                    foreach (var condition in timelineItemEditData.EnterConditions)
+                    {
+                        var conditionValueInfo = new TaskValueInfo();
+						conditionValueInfo.FullTypeName = condition.TaskType;
+                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+						itemValueInfo.AddEnterCondition(taskId++);
+						foreach (var field in condition.Fields)
+						{
+							conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+						}
+                    }
+                    // condition
+                    foreach (var condition in timelineItemEditData.Conditions)
+                    {
+                        var conditionValueInfo = new TaskValueInfo();
+                        conditionValueInfo.FullTypeName = condition.TaskType;
+                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+                        itemValueInfo.AddCondition(taskId++);
+                        foreach (var field in condition.Fields)
+                        {
+                            conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+                        }
+                    }
+                    // exit condition
+                    foreach (var condition in timelineItemEditData.ExitConditions)
+                    {
+                        var conditionValueInfo = new TaskValueInfo();
+                        conditionValueInfo.FullTypeName = condition.TaskType;
+                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+                        itemValueInfo.AddExitCondition(taskId++);
+                        foreach (var field in condition.Fields)
+                        {
+                            conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+                        }
+                    }
+                }
+				JsonApi.Serialize(taskGroupInfo, currentTaskPath);
+            }
         }
         #endregion
 
         #region Node Graph
         public static NodeGraphDataStruct NodeGraphData;
-		public class NodeGraphDataStruct
+		public class NodeGraphDataStruct : ISaveTarget
 		{
+			public void Save()
+			{
 
+			}
 		}
         #endregion
 

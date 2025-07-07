@@ -32,7 +32,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 // generate
-                var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("Test", 0);
+                var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("CodeTest", 0);
                 var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5f);
                 timelineInfo.AddTimelineInfo(0f, 0f, 1);
                 timelineInfo.AddTimelineInfo(5f, 0f, 2);
