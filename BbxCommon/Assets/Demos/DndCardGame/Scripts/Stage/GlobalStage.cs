@@ -43,9 +43,6 @@ namespace Dcg
 
                 var debugLogInfo2 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(2);
                 debugLogInfo2.AddFieldInfo(TaskNodeDebugLog.EField.Content, "5s later!");
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackLong, TaskContextTest.EField.BlackLong);
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackDouble, TaskContextTest.EField.BlackDouble);
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackObject, TaskContextTest.EField.BlackObject);
                 debugLogInfo2.AddCondition(4);  // Normal Condition doesn't block entering. For the node output via OnEnter(), there will be output in console.
 
                 var greaterInfo1 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(3);
