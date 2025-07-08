@@ -526,10 +526,36 @@ namespace BbxCommon
             return str;
         }
 
+        /// <summary>
+        /// As the order passed in, try to remove the first string matched.
+        /// </summary>
+        public static string TryRemoveStart(this string str, params string[] remove)
+        {
+            for (int i = 0; i < remove.Length; i++)
+            {
+                if (str.StartsWith(remove[i]))
+                    return str.Remove(0, remove[i].Length);
+            }
+            return str;
+        }
+
         public static string TryRemoveEnd(this string str, string remove)
         {
             if (str.EndsWith(remove))
                 return str.Remove(str.Length - remove.Length, remove.Length);
+            return str;
+        }
+
+        /// <summary>
+        /// As the order passed in, try to remove the first string matched.
+        /// </summary>
+        public static string TryRemoveEnd(this string str, params string[] remove)
+        {
+            for (int i = 0; i < remove.Length; i++)
+            {
+                if (str.EndsWith(remove[i]))
+                    return str.Remove(str.Length - remove[i].Length, remove[i].Length);
+            }
             return str;
         }
 

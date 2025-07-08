@@ -211,6 +211,7 @@ namespace BbxCommon
 			}
 			fileDialog.CloseRequested += () => { m_FileDialogOpened = false; };
 			fileDialog.DialogCloseOnEscape = false; // close via Escape will not invoke CloseRequested
+			fileDialog.Filters = new string[1] { "*.editor.json" };
             fileDialog.Show();
 			m_FileDialogOpened = true;
 			EditorRoot.AddChild(fileDialog);
@@ -282,7 +283,8 @@ namespace BbxCommon
 			{
 				// save editor file
 				var currentTaskPath = EditorSettings.Instance.CurrentTaskPath;
-				var editorFilePath = FileApi.RemoveExtensionIfHas(currentTaskPath) + ".editor.json";
+				var editorFilePath = currentTaskPath.TryRemoveEnd(".editor.json", ".json");
+				editorFilePath += ".editor.json";
                 JsonApi.Serialize(this, editorFilePath);
                 // build timeline root info
                 int taskId = 0;
