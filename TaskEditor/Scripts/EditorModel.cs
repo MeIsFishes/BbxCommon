@@ -133,19 +133,18 @@ namespace BbxCommon
         #endregion
 
         #region Context Type
-        private static string m_BindingContextType;
 		private static TaskContextExportInfo m_BindingContextInfo;
 		public static string BindingContextType
 		{
-			get => m_BindingContextType;
+			get => SaveTarget.GetBindingContextType();
 			set
 			{
-				if (m_BindingContextType != value)
+				if (SaveTarget.GetBindingContextType() != value)
 				{
 					var info = EditorDataStore.GetTaskContextInfo(value);
 					if (info != null)
 					{
-						m_BindingContextType = value;
+						SaveTarget.SetBindingContextType(value);
 						m_BindingContextInfo = info;
 					}
 				}
@@ -175,55 +174,78 @@ namespace BbxCommon
         #endregion
 
         #region UI Ref
-		public static TaskSelector TaskSelector;
+
+        #region Common
+        public static TaskSelector TaskSelector;
 		public static Inspector Inspector;
 		public static SettingsPanel SettingsPanel;
 		public static EditorRoot EditorRoot;
 		public static TimelineRoot TimelineRoot;
+        #endregion
 
-		private static bool m_FileDialogOpened;
-		public static void OpenFileDialog(Action<string> selected, FileDialog.FileModeEnum fileModeEnum = FileDialog.FileModeEnum.OpenFile, string currentDir = null)
+        #region FileDialog
+        private static FileDialog m_FileDialog;
+		public static void OpenFileDialog(Action<string> selected, FileDialog.FileModeEnum fileModeEnum = FileDialog.FileModeEnum.OpenFile,
+			string currentDir = null, string filter = null)
 		{
-			if (m_FileDialogOpened == true)
-				return;
-
-			var fileDialog = new FileDialog();
-			fileDialog.Size = new Vector2I(600, 400);
-			fileDialog.Position = new Vector2I(30, 60);
-			fileDialog.Access = FileDialog.AccessEnum.Filesystem;
-			fileDialog.FileMode = fileModeEnum;
+			if (m_FileDialog == null)
+			{
+				m_FileDialog = new FileDialog();
+				EditorRoot.AddChild(m_FileDialog);
+			}
+            m_FileDialog.Size = new Vector2I(600, 400);
+            m_FileDialog.Position = new Vector2I(30, 60);
+            m_FileDialog.Access = FileDialog.AccessEnum.Filesystem;
+			m_FileDialog.FileMode = fileModeEnum;
 			if (currentDir != null)
 			{
-				fileDialog.CurrentDir = currentDir;
+				m_FileDialog.CurrentDir = currentDir;
             }
             switch (fileModeEnum)
 			{
 				case FileDialog.FileModeEnum.OpenFile:
 				case FileDialog.FileModeEnum.SaveFile:
-					fileDialog.FileSelected += (string s) => { selected(s); };
+					m_FileDialog.FileSelected += (string s) => { selected(s); };
 					break;
 				case FileDialog.FileModeEnum.OpenDir:
-                    fileDialog.DirSelected += (string s) => { selected(s); };
+                    m_FileDialog.DirSelected += (string s) => { selected(s); };
                     break;
 				default:
 					DebugApi.LogError("FileModeEnum you set is not supported: " + fileModeEnum);
 					break;
 			}
-			fileDialog.CloseRequested += () => { m_FileDialogOpened = false; };
-			fileDialog.DialogCloseOnEscape = false; // close via Escape will not invoke CloseRequested
-			fileDialog.Filters = new string[1] { "*.editor.json" };
-            fileDialog.Show();
-			m_FileDialogOpened = true;
-			EditorRoot.AddChild(fileDialog);
+			if (filter != null)
+				m_FileDialog.Filters = new string[1] { filter };
+            m_FileDialog.Show();
         }
+		#endregion
+
+		#region AcceptDialog
+		private static AcceptDialog m_AcceptDialog;
+
+		public static void OpenAcceptDialog(string message, string title = "Notice")
+		{
+			if (m_AcceptDialog == null)
+			{
+				m_AcceptDialog = new AcceptDialog();
+                EditorRoot.AddChild(m_AcceptDialog);
+            }
+            m_AcceptDialog.Size = new Vector2I(600, 150);
+            m_AcceptDialog.Position = new Vector2I(300, 350);
+			m_AcceptDialog.DialogText = message;
+			m_AcceptDialog.Title = title;
+			m_AcceptDialog.Show();
+        }
+        #endregion
+
         #endregion
 
         #region Save Target
 
         #region Common
-		public static ISaveTarget SaveTarget
+        public static ISaveTarget SaveTarget
 		{
-			get
+			private get
 			{
 				switch (EditingTaskType)
 				{
@@ -238,24 +260,44 @@ namespace BbxCommon
 			}
 			set
 			{
-				switch (EditingTaskType)
+				if (SaveTarget != value)
 				{
-                    case EEditingTaskType.Timeline:
-                        TimelineData = (TimelineDataStruct)value;
-						break;
-                    case EEditingTaskType.Graph:
-                        NodeGraphData = (NodeGraphDataStruct)value;
-						break;
-                    default:
-                        DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
-						break;
-                }
+					switch (EditingTaskType)
+					{
+						case EEditingTaskType.Timeline:
+							TimelineData = (TimelineDataStruct)value;
+                            EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
+                            break;
+						case EEditingTaskType.Graph:
+							NodeGraphData = (NodeGraphDataStruct)value;
+                            EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
+                            break;
+						default:
+							DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
+							break;
+					}
+				}
 			}
 		}
+
+		public static void RequestToSave()
+		{
+			try
+			{
+				SaveTarget.Save();
+			}
+			catch (Exception e)
+			{
+				OpenAcceptDialog(e.Message, "Error");
+			}
+			OpenAcceptDialog("Save Successfully!");
+        }
 
 		public interface ISaveTarget
 		{
 			public void Save();
+			public string GetBindingContextType();
+			public void SetBindingContextType(string type);
 		}
         #endregion
 
@@ -265,7 +307,19 @@ namespace BbxCommon
 		{
 			public List<TimelineItemEditData> TaskDatas = new();
 
-			private float m_MaxTime;
+            private string m_BindingContextType;
+
+			public string GetBindingContextType()
+			{
+				return m_BindingContextType;
+			}
+
+			public void SetBindingContextType(string type)
+			{
+				m_BindingContextType = type;
+			}
+
+            private float m_MaxTime;
 			public float MaxTime
 			{
 				get => m_MaxTime;
@@ -290,9 +344,9 @@ namespace BbxCommon
                 int taskId = 0;
 				var taskGroupInfo = new TaskGroupInfo();
                 var timelineRootValueInfo = new TaskValueInfo();
-				timelineRootValueInfo.FullTypeName = "TaskTimeline";
+				timelineRootValueInfo.FullTypeName = EditorDataStore.GetTaskInfo("TaskTimeline").TaskFullTypeName;
 				timelineRootValueInfo.AddFieldInfo("Duration", ETaskFieldValueSource.Value, MaxTime.ToString());
-				taskGroupInfo.BindingContextFullType = BindingContextType;
+				taskGroupInfo.BindingContextFullType = m_BindingContextType;
                 taskGroupInfo.SetRootTaskId(taskId);
 				taskGroupInfo.TaskInfos[taskId++] = timelineRootValueInfo;
 				// build task items
@@ -300,9 +354,8 @@ namespace BbxCommon
 				{
 					// timeline item
 					var itemInfo = new TaskTimelineItemInfo();
-					var itemValueInfo = new TaskValueInfo();
-					itemValueInfo.FullTypeName = timelineItemEditData.TaskType;
-					taskGroupInfo.TaskInfos[taskId] = itemValueInfo;
+					var itemValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(timelineItemEditData);
+                    taskGroupInfo.TaskInfos[taskId] = itemValueInfo;
 					itemInfo.Id = taskId++;
 					itemInfo.StartTime = timelineItemEditData.StartTime;
 					itemInfo.Duration = timelineItemEditData.Duration;
@@ -314,38 +367,23 @@ namespace BbxCommon
                     // enter condition
                     foreach (var condition in timelineItemEditData.EnterConditions)
                     {
-                        var conditionValueInfo = new TaskValueInfo();
-						conditionValueInfo.FullTypeName = condition.TaskType;
+                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
                         taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
 						itemValueInfo.AddEnterCondition(taskId++);
-						foreach (var field in condition.Fields)
-						{
-							conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
-						}
                     }
                     // condition
                     foreach (var condition in timelineItemEditData.Conditions)
                     {
-                        var conditionValueInfo = new TaskValueInfo();
-                        conditionValueInfo.FullTypeName = condition.TaskType;
+                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
                         taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
                         itemValueInfo.AddCondition(taskId++);
-                        foreach (var field in condition.Fields)
-                        {
-                            conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
-                        }
                     }
                     // exit condition
                     foreach (var condition in timelineItemEditData.ExitConditions)
                     {
-                        var conditionValueInfo = new TaskValueInfo();
-                        conditionValueInfo.FullTypeName = condition.TaskType;
+                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
                         taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
                         itemValueInfo.AddExitCondition(taskId++);
-                        foreach (var field in condition.Fields)
-                        {
-                            conditionValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
-                        }
                     }
                 }
 				JsonApi.Serialize(taskGroupInfo, currentTaskPath);
@@ -357,7 +395,19 @@ namespace BbxCommon
         public static NodeGraphDataStruct NodeGraphData;
 		public class NodeGraphDataStruct : ISaveTarget
 		{
-			public void Save()
+            private string m_BindingContextType;
+
+            public string GetBindingContextType()
+            {
+                return m_BindingContextType;
+            }
+
+            public void SetBindingContextType(string type)
+            {
+                m_BindingContextType = type;
+            }
+
+            public void Save()
 			{
 
 			}

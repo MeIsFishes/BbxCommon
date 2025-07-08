@@ -75,6 +75,7 @@ namespace BbxCommon
 		{
 			if (m_TaskInfoDic.TryGetValue(typeName, out var taskInfo))
 				return taskInfo;
+			DebugApi.LogError("No such a TaskExportInfo: " + typeName);
 			return null;
 		}
 
@@ -85,7 +86,8 @@ namespace BbxCommon
 
 		public static TaskContextExportInfo GetTaskContextInfo(string typeName)
 		{
-			m_TaskContextInfoDic.TryGetValue(typeName, out var taskContextInfo);
+			if (m_TaskContextInfoDic.TryGetValue(typeName, out var taskContextInfo) == false)
+				DebugApi.LogError("No such a TaskContextExportInfo: " + typeName);
 			return taskContextInfo;
 		}
 
@@ -96,7 +98,8 @@ namespace BbxCommon
 
 		public static TaskEnumExportInfo GetEnumInfo(string enumName)
 		{
-			m_EnumInfoDic.TryGetValue(enumName, out var taskEnumInfo);
+			if (m_EnumInfoDic.TryGetValue(enumName, out var taskEnumInfo) == false)
+				DebugApi.LogError("No such a TaskEnumExportInfo: " + enumName);
 			return taskEnumInfo;
 		}
 

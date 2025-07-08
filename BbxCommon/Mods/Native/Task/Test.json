@@ -20,7 +20,7 @@
             "Default.TypeInfo" : {
                 "FullType" : "BbxCommon.TaskValueInfo"
             },
-            "FullTypeName"     : "TaskTimeline",
+            "FullTypeName"     : "BbxCommon.TaskTimeline",
             "FieldInfos"       : {
                 "Default.TypeInfo" : {
                     "SpecialType" : "List",
@@ -96,7 +96,7 @@
             "Default.TypeInfo" : {
                 "FullType" : "BbxCommon.TaskValueInfo"
             },
-            "FullTypeName"     : "TaskNodeDebugLog",
+            "FullTypeName"     : "Dcg.TaskNodeDebugLog",
             "FieldInfos"       : {
                 "Default.TypeInfo" : {
                     "SpecialType" : "List",
@@ -144,6 +144,58 @@
                     "Value"            : ""
                 },
                 "3"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "BlackObject",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : ""
+                },
+                "4"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "Content",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : "1111"
+                },
+                "5"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "BlackLong",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : ""
+                },
+                "6"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "BlackDouble",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : ""
+                },
+                "7"                : {
                     "Default.TypeInfo" : {
                         "FullType" : "BbxCommon.TaskFieldInfo"
                     },
@@ -204,7 +256,7 @@
             "Default.TypeInfo" : {
                 "FullType" : "BbxCommon.TaskValueInfo"
             },
-            "FullTypeName"     : "TaskConditionGreaterThan5",
+            "FullTypeName"     : "Dcg.TaskConditionGreaterThan5",
             "FieldInfos"       : {
                 "Default.TypeInfo" : {
                     "SpecialType" : "List",

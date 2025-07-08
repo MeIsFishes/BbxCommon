@@ -161,7 +161,7 @@ namespace BbxCommon
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
                     var timelineData = this.TaskEditData as TimelineItemEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.EnterConditions.Add(editData);
                     m_EnterConditionContainer.RefreshConditionList(timelineData.EnterConditions);
                 },
@@ -176,7 +176,7 @@ namespace BbxCommon
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
                     var timelineData = this.TaskEditData as TimelineItemEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.Conditions.Add(editData);
                     m_ConditionContainer.RefreshConditionList(timelineData.Conditions);
                 },
@@ -191,7 +191,7 @@ namespace BbxCommon
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
                     var timelineData = this.TaskEditData as TimelineItemEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.ExitConditions.Add(editData);
                     m_ExitConditionContainer.RefreshConditionList(timelineData.ExitConditions);
                 },

@@ -601,6 +601,7 @@ namespace BbxCommon
             RegisterFields();
             var res = new TaskExportInfo();
             res.TaskTypeName = this.GetType().Name;
+            res.TaskFullTypeName = this.GetType().FullName;
             // tags
             var attributes = this.GetType().GetCustomAttributes(true);
             bool overriden = false;

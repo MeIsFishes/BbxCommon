@@ -39,7 +39,7 @@ namespace BbxCommon
         #endregion
 
         #region Convert
-        public static TimelineItemEditData ExportInfoToTimelineEditData(TaskExportInfo exportInfo)
+        public static TimelineItemEditData TaskExportInfoToTimelineEditData(TaskExportInfo exportInfo)
         {
             var editData = new TimelineItemEditData();
             editData.TaskType = exportInfo.TaskTypeName;
@@ -54,6 +54,24 @@ namespace BbxCommon
                 editData.Fields.Add(editField);
             }
             return editData;
+        }
+
+        public static TaskValueInfo TaskEditDataToTaskValueInfo(TaskEditData editData)
+        {
+            var taskExportInfo = EditorDataStore.GetTaskInfo(editData.TaskType);
+            if (taskExportInfo == null)
+            {
+                DebugApi.LogError("Cannot find the TaskExportInfo for TaskEditData: " + editData.TaskType);
+                return null;
+            }
+            var valueInfo = new TaskValueInfo();
+            valueInfo.FullTypeName = taskExportInfo.TaskFullTypeName;
+            for (int i = 0; i < editData.Fields.Count; i++)
+            {
+                var field = editData.Fields[i];
+                valueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+            }
+            return valueInfo;
         }
         #endregion
 

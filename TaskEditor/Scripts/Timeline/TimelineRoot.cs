@@ -40,7 +40,7 @@ namespace BbxCommon
         {
             EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
             {
-                var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                 EditorModel.TimelineData.TaskDatas.Add(editData);
                 EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
             },

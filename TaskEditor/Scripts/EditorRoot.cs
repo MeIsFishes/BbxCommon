@@ -23,6 +23,7 @@ namespace BbxCommon
         protected override void OnUiInit()
 		{
 			EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnReadyBindContextOption);
+			EventBus.RegisterEvent(EEvent.ReloadEditingTaskData, OnReloadEditingTaskData);
 			SettingsPanelButton.Pressed += OnSettingsPanelButton;
 			SaveButton.Pressed += OnSaveButton;
             SaveAsButton.Pressed += OnSaveAsButton;
@@ -57,16 +58,21 @@ namespace BbxCommon
             EditorModel.BindingContextType = list[(int)index].TaskContextTypeName;
         }
 
-		private void OnSettingsPanelButton()
+		private void OnReloadEditingTaskData()
+		{
+			BindContextOption.Select(EditorModel.BindingContextType.TryRemoveStart("TaskContext"));
+		}
+
+        private void OnSettingsPanelButton()
 		{
 			EditorModel.SettingsPanel.Open();
 		}
 
 		private void OnSaveButton()
 		{
-			if (File.Exists(EditorSettings.Instance.CurrentTaskPath))
+			if (File.Exists(EditorSettings.Instance.CurrentTaskPath + ".editor.json"))
 			{
-				EditorModel.SaveTarget.Save();
+				EditorModel.RequestToSave();
 			}
 			else
 			{
@@ -79,8 +85,8 @@ namespace BbxCommon
 			EditorModel.OpenFileDialog((s) =>
 			{
 				EditorSettings.Instance.CurrentTaskPath = s.TryRemoveEnd(".editor.json", ".json");
-                EditorModel.SaveTarget.Save();
-            }, FileDialog.FileModeEnum.SaveFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
+                EditorModel.RequestToSave();
+            }, FileDialog.FileModeEnum.SaveFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath), "*.editor.json");
         }
 
 		private void OnLoadButton()
@@ -89,8 +95,7 @@ namespace BbxCommon
             {
                 EditorSettings.Instance.CurrentTaskPath = s.TryRemoveEnd(".editor.json", ".json");
                 EditorModel.SaveTarget = (EditorModel.ISaveTarget)JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath + ".editor.json");
-				EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
-            }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath));
+            }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath), "*.editor.json");
         }
     }
 }

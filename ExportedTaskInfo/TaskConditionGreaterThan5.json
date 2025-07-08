@@ -4,6 +4,7 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskConditionGreaterThan5",
+    "TaskFullTypeName" : "Dcg.TaskConditionGreaterThan5",
     "Tags"             : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

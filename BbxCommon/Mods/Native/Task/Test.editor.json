@@ -209,5 +209,6 @@
             }
         }
     },
-    "m_MaxTime"        : 0.0
+    "m_BindingContextType" : "TaskContextTest",
+    "m_MaxTime"            : 0.0
 }

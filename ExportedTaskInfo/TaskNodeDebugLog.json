@@ -4,6 +4,7 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskNodeDebugLog",
+    "TaskFullTypeName" : "Dcg.TaskNodeDebugLog",
     "Tags"             : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

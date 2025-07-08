@@ -430,6 +430,8 @@ namespace BbxCommon
                         if (key == m_TypeInfoKey)
                             continue;
                         var field = type.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                        if (field == null)  // the field may be deleted
+                            continue;
                         var value = ConvertJsonDataToObject(jsonData[key]);
                         var finalValue = Convert.ChangeType(value, field.FieldType);
                         field.SetValue(obj, finalValue);
