@@ -41,7 +41,7 @@ namespace BbxCommon
             EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
             {
                 var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
-                EditorModel.TimelineData.TaskDatas.Add(editData);
+                EditorModel.TimelineSaveTarget.TaskDatas.Add(editData);
                 EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
             },
             TaskExportCrossVariable.TaskTagAction);
@@ -49,7 +49,7 @@ namespace BbxCommon
 
         private void OnEditorDataStoreRefresh()
         {
-            if (EditorModel.EditingTaskType == EEditingTaskType.Timeline)
+            if (EditorModel.CurSaveTarget.IsTimeline)
             {
                 OnTimelineTasksChanged();
             }
@@ -59,11 +59,11 @@ namespace BbxCommon
         {
             TaskNodeRoot.RemoveChildren();
             Nodes.Clear();
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
                 var node = TaskNodePrefab.Instantiate<TimelineNode>();
                 TaskNodeRoot.AddChild(node);
-                node.BindTask(EditorModel.TimelineData.TaskDatas[i]);
+                node.BindTask(EditorModel.TimelineSaveTarget.TaskDatas[i]);
                 Nodes.Add(node);
             }
         }
@@ -79,7 +79,7 @@ namespace BbxCommon
                 if (node.TimelineEditData.StartTime + node.TimelineEditData.Duration > maxTime)
                     maxTime = node.TimelineEditData.StartTime + node.TimelineEditData.Duration;
             }
-            EditorModel.TimelineData.MaxTime = maxTime;
+            EditorModel.TimelineSaveTarget.MaxTime = maxTime;
             float timeStep = maxTime / (TimeBarLabel.Count - 1);
             for (int i = 0; i < TimeBarLabel.Count; i++)
             {

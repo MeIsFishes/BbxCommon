@@ -219,7 +219,7 @@ namespace BbxCommon
         private void RefreshContextFields()
 		{
 			PresetValueOption.Clear();
-			var contextInfo = EditorModel.BindingContextInfo;
+			var contextInfo = EditorModel.CurSaveTarget.BindingContextInfo;
 			for (int i = 0; i < contextInfo.FieldInfos.Count; i++)
 			{
 				PresetValueOption.AddItem(contextInfo.FieldInfos[i].FieldName);

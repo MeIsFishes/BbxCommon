@@ -12,12 +12,6 @@ namespace BbxCommon
 	// Classes namely begin with TaskEdit: Record data in TaskEditor, and prepare to convert to TaskValueInfo.
 	// TaskValueInfo: For assigning values to Tasks. It's for constructing Tasks during runtime.
 
-	public enum EEditingTaskType
-	{
-		Timeline,
-		Graph,
-	}
-
     public partial class TaskEditField
     {
         public string FieldName;
@@ -116,43 +110,6 @@ namespace BbxCommon
 
         #region Variables and Callbacks
 
-        #region Editing Task
-        private static EEditingTaskType m_EditingTaskType = EEditingTaskType.Timeline;
-        public static EEditingTaskType EditingTaskType
-		{
-			get => m_EditingTaskType;
-			set
-			{
-				if (m_EditingTaskType != value)
-				{
-					m_EditingTaskType = value;
-					EventBus.DispatchEvent(EEvent.EdittingTaskTypeChanged);
-				}
-			}
-        }
-        #endregion
-
-        #region Context Type
-		private static TaskContextExportInfo m_BindingContextInfo;
-		public static string BindingContextType
-		{
-			get => SaveTarget.GetBindingContextType();
-			set
-			{
-				if (SaveTarget.GetBindingContextType() != value)
-				{
-					var info = EditorDataStore.GetTaskContextInfo(value);
-					if (info != null)
-					{
-						SaveTarget.SetBindingContextType(value);
-						m_BindingContextInfo = info;
-					}
-				}
-			}
-		}
-		public static TaskContextExportInfo BindingContextInfo => m_BindingContextInfo;
-        #endregion
-
         #region Current Select Task Node
         private static TaskNode m_CurSelectTaskNode;
 		public static TaskNode CurSelectTaskNode
@@ -223,7 +180,12 @@ namespace BbxCommon
 		#region AcceptDialog
 		private static AcceptDialog m_AcceptDialog;
 
-		public static void OpenAcceptDialog(string message, string title = "Notice")
+		public static void OpenAcceptDialog(string message)
+		{
+			OpenAcceptDialog("Notice", message);
+		}
+
+		public static void OpenAcceptDialog(string title, string message)
 		{
 			if (m_AcceptDialog == null)
 			{
@@ -236,47 +198,27 @@ namespace BbxCommon
 			m_AcceptDialog.Title = title;
 			m_AcceptDialog.Show();
         }
-        #endregion
+		#endregion
 
-        #endregion
+		#endregion
 
-        #region Save Target
+		#region Save Target
 
-        #region Common
-        public static ISaveTarget SaveTarget
+		#region Common
+		private static SaveTargetBase m_CurSaveTarget;
+        public static SaveTargetBase CurSaveTarget
 		{
-			private get
+			get
 			{
-				switch (EditingTaskType)
-				{
-                    case EEditingTaskType.Timeline:
-                        return TimelineData;
-                    case EEditingTaskType.Graph:
-                        return NodeGraphData;
-                    default:
-                        DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
-                        return null;
-                }
+				return m_CurSaveTarget;
 			}
 			set
 			{
-				if (SaveTarget != value)
+				if (m_CurSaveTarget != value)
 				{
-					switch (EditingTaskType)
-					{
-						case EEditingTaskType.Timeline:
-							TimelineData = (TimelineDataStruct)value;
-                            EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
-                            break;
-						case EEditingTaskType.Graph:
-							NodeGraphData = (NodeGraphDataStruct)value;
-                            EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
-                            break;
-						default:
-							DebugApi.LogError("Unknown EditingTaskType: " + EditingTaskType);
-							break;
-					}
-				}
+					m_CurSaveTarget = value;
+                    EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
+                }
 			}
 		}
 
@@ -284,26 +226,41 @@ namespace BbxCommon
 		{
 			try
 			{
-				SaveTarget.Save();
+				CurSaveTarget.Save();
 			}
 			catch (Exception e)
 			{
-				OpenAcceptDialog(e.Message, "Error");
+				OpenAcceptDialog("Error", e.Message);
 			}
 			OpenAcceptDialog("Save Successfully!");
         }
 
-		public interface ISaveTarget
+		public abstract class SaveTargetBase
 		{
-			public void Save();
-			public string GetBindingContextType();
-			public void SetBindingContextType(string type);
+            private string m_BindingContextType;
+            public string BindingContextType
+            {
+                get => m_BindingContextType;
+                set
+                {
+					if (m_BindingContextType != value)
+					{
+						m_BindingContextType = value;
+					}
+                }
+            }
+            public TaskContextExportInfo BindingContextInfo => EditorDataStore.GetTaskContextInfo(m_BindingContextType);
+
+			public bool IsTimeline => this is TimelineSaveTargetData;
+			public bool IsGraphNode => this is NodeGraphSaveTargetData;
+
+            public abstract void Save();
 		}
         #endregion
 
         #region Timeline
-        public static TimelineDataStruct TimelineData = new();
-		public class TimelineDataStruct : ISaveTarget
+        public static TimelineSaveTargetData TimelineSaveTarget = new();
+		public class TimelineSaveTargetData : SaveTargetBase
 		{
 			public List<TimelineItemEditData> TaskDatas = new();
 
@@ -333,7 +290,7 @@ namespace BbxCommon
 				}
 			}
 
-			public void Save()
+			public override void Save()
 			{
 				// save editor file
 				var currentTaskPath = EditorSettings.Instance.CurrentTaskPath;
@@ -392,8 +349,8 @@ namespace BbxCommon
         #endregion
 
         #region Node Graph
-        public static NodeGraphDataStruct NodeGraphData;
-		public class NodeGraphDataStruct : ISaveTarget
+        public static NodeGraphSaveTargetData NodeGraphSaveTarget;
+		public class NodeGraphSaveTargetData : SaveTargetBase
 		{
             private string m_BindingContextType;
 
@@ -407,7 +364,7 @@ namespace BbxCommon
                 m_BindingContextType = type;
             }
 
-            public void Save()
+            public override void Save()
 			{
 
 			}

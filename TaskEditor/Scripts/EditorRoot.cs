@@ -55,12 +55,12 @@ namespace BbxCommon
 		private void OnBindContextOptionSelect(long index)
 		{
             var list = EditorDataStore.GetTaskContextInfoList();
-            EditorModel.BindingContextType = list[(int)index].TaskContextTypeName;
+            EditorModel.CurSaveTarget.BindingContextType = list[(int)index].TaskContextTypeName;
         }
 
 		private void OnReloadEditingTaskData()
 		{
-			BindContextOption.Select(EditorModel.BindingContextType.TryRemoveStart("TaskContext"));
+			BindContextOption.Select(EditorModel.CurSaveTarget.BindingContextType.TryRemoveStart("TaskContext"));
 		}
 
         private void OnSettingsPanelButton()
@@ -94,7 +94,7 @@ namespace BbxCommon
             EditorModel.OpenFileDialog((s) =>
             {
                 EditorSettings.Instance.CurrentTaskPath = s.TryRemoveEnd(".editor.json", ".json");
-                EditorModel.SaveTarget = (EditorModel.ISaveTarget)JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath + ".editor.json");
+                EditorModel.CurSaveTarget = (EditorModel.SaveTargetBase)JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath + ".editor.json");
             }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath), "*.editor.json");
         }
     }

@@ -60,7 +60,7 @@ namespace BbxCommon
 
         public void RefreshDurationBar()
         {
-            var maxTime = EditorModel.TimelineData.MaxTime;
+            var maxTime = EditorModel.TimelineSaveTarget.MaxTime;
             if (maxTime == 0)
                 return;
             float startX = m_DurationBarOriginalX + (TimelineEditData.StartTime / maxTime) * m_DurationBarOriginalWidth;
@@ -97,11 +97,11 @@ namespace BbxCommon
         #region Inspector Button
         private void OnBtnDeletePress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
-                    EditorModel.TimelineData.TaskDatas.RemoveAt(i);
+                    EditorModel.TimelineSaveTarget.TaskDatas.RemoveAt(i);
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
                     EditorModel.CurSelectTaskNode = null;
                     return;
@@ -111,15 +111,15 @@ namespace BbxCommon
 
         private void OnBtnMoveUpPress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
                     if (i == 0)
                         return;
-                    var temp = EditorModel.TimelineData.TaskDatas[i - 1];
-                    EditorModel.TimelineData.TaskDatas[i - 1] = EditorModel.TimelineData.TaskDatas[i];
-                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    var temp = EditorModel.TimelineSaveTarget.TaskDatas[i - 1];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i - 1] = EditorModel.TimelineSaveTarget.TaskDatas[i];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
                     EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i - 1];
                     return;
@@ -129,15 +129,15 @@ namespace BbxCommon
 
         private void OnBtnMoveDownPress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
-                    if (i == EditorModel.TimelineData.TaskDatas.Count - 1)
+                    if (i == EditorModel.TimelineSaveTarget.TaskDatas.Count - 1)
                         return;
-                    var temp = EditorModel.TimelineData.TaskDatas[i + 1];
-                    EditorModel.TimelineData.TaskDatas[i + 1] = EditorModel.TimelineData.TaskDatas[i];
-                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    var temp = EditorModel.TimelineSaveTarget.TaskDatas[i + 1];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i + 1] = EditorModel.TimelineSaveTarget.TaskDatas[i];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
                     EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i + 1];
                     return;

@@ -1,0 +1,39 @@
+[gd_scene load_steps=3 format=3 uid="uid://dbl81khnvruc8"]
+
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="1_208bo"]
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="2_ykv0t"]
+
+[node name="FileLabelItem" type="Control"]
+custom_minimum_size = Vector2(250, 45)
+layout_mode = 3
+anchors_preset = 0
+
+[node name="Normal" type="ColorRect" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 45.0
+color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[node name="Selected" type="ColorRect" parent="."]
+offset_right = 250.0
+offset_bottom = 45.0
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_right = 250.0
+offset_bottom = 45.0
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 21
+text = "FileNameHere"
+alignment = 0
+script = ExtResource("1_208bo")
+
+[node name="BbxButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 200.0
+offset_right = 245.0
+offset_bottom = 45.0
+theme = ExtResource("2_ykv0t")
+theme_override_font_sizes/font_size = 30
+text = "X"
+script = ExtResource("1_208bo")

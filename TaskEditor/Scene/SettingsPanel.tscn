@@ -164,7 +164,7 @@ text = "Current Task Path"
 [node name="TextEdit" type="TextEdit" parent="CurrentTaskPath"]
 layout_mode = 0
 offset_left = 200.0
-offset_right = 750.0
+offset_right = 885.0
 offset_bottom = 40.0
 theme_override_font_sizes/font_size = 20
 text = "D:/Workspace/DndCardGame/Tasks"
