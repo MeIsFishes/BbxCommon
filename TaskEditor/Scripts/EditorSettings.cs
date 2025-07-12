@@ -21,21 +21,21 @@ namespace BbxCommon
 			}
 		}
 
-		private string m_CurrentTaskPath;
-		public string CurrentTaskPath
+		private string m_LastSaveTargetPath;
+		public string LastSaveTargetPath
 		{
-			get => m_CurrentTaskPath;
+			get => m_LastSaveTargetPath;
 			set
 			{
-				if (m_CurrentTaskPath != value)
+				if (m_LastSaveTargetPath != value)
 				{
-					m_CurrentTaskPath = value;
+					m_LastSaveTargetPath = value;
 					Save();
 				}
 			}
 		}
 
-		private void Save()
+        private void Save()
 		{
 			JsonApi.Serialize(this, Path.GetFullPath("EditorSettings.json"));
 		}

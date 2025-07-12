@@ -89,8 +89,8 @@ namespace BbxCommon.Internal
 	public class TaskExportInfo
 	{
 		public string TaskTypeName;
-		public string TaskFullTypeName;	// to improve reflection performance, use full type name is recommended
-		public List<string> Tags = new();
+        public string TaskFullTypeName; // to improve reflection performance, use full type name is recommended
+        public List<string> Tags = new();
 		public List<TaskExportFieldInfo> FieldInfos = new();
 	}
 

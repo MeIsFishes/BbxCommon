@@ -35,55 +35,6 @@
                 "GenericType1"     : "null",
                 "GenericType2"     : "null"
             }
-        },
-        "1"                : {
-            "Default.TypeInfo" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
-            },
-            "FieldName"        : "BlackLong",
-            "TypeInfo"         : {
-                "Default.TypeInfo" : {
-                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
-                },
-                "TypeName"         : "long",
-                "GenericType1"     : "null",
-                "GenericType2"     : "null"
-            }
-        },
-        "2"                : {
-            "Default.TypeInfo" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
-            },
-            "FieldName"        : "BlackDouble",
-            "TypeInfo"         : {
-                "Default.TypeInfo" : {
-                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
-                },
-                "TypeName"         : "double",
-                "GenericType1"     : "null",
-                "GenericType2"     : "null"
-            }
-        },
-        "3"                : {
-            "Default.TypeInfo" : {
-                "FullType" : "BbxCommon.Internal.TaskExportFieldInfo"
-            },
-            "FieldName"        : "BlackObject",
-            "TypeInfo"         : {
-                "Default.TypeInfo" : {
-                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
-                },
-                "TypeName"         : "List",
-                "GenericType1"     : {
-                    "Default.TypeInfo" : {
-                        "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
-                    },
-                    "TypeName"         : "int",
-                    "GenericType1"     : "null",
-                    "GenericType2"     : "null"
-                },
-                "GenericType2"     : "null"
-            }
         }
     }
 }

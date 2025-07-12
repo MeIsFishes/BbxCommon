@@ -128,10 +128,14 @@ namespace BbxCommon
             // serialize class
             var jsonData = new JsonData();
             jsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
-            foreach (var field in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance))
+            while (type != null) // check if it has base class
             {
-                var value = field.GetValue(obj);
-                jsonData[field.Name] = ConvertObjectToJsonData(value);
+                foreach (var field in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance))
+                {
+                    var value = field.GetValue(obj);
+                    jsonData[field.Name] = ConvertObjectToJsonData(value);
+                }
+                type = type.BaseType;
             }
             return jsonData;
         }
@@ -358,8 +362,9 @@ namespace BbxCommon
                 ConvertJsonDataToObject(jsonData, res);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                DebugApi.LogException(e);
                 return false;
             }
         }
@@ -378,8 +383,9 @@ namespace BbxCommon
                 succeeded = true;
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                DebugApi.LogException(e);
                 return false;
             }
             finally
@@ -430,8 +436,19 @@ namespace BbxCommon
                         if (key == m_TypeInfoKey)
                             continue;
                         var field = type.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
-                        if (field == null)  // the field may be deleted
-                            continue;
+                        if (field == null) // check if it is in base class
+                        {
+                            var baseType = type.BaseType;
+                            while (baseType != null)
+                            {
+                                field = baseType.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                                if (field != null)
+                                    break;
+                                baseType = baseType.BaseType;
+                            }
+                            if (field == null)  // the field may be deleted
+                                continue;
+                        }
                         var value = ConvertJsonDataToObject(jsonData[key]);
                         var finalValue = Convert.ChangeType(value, field.FieldType);
                         field.SetValue(obj, finalValue);
@@ -458,6 +475,11 @@ namespace BbxCommon
             return null;
         }
 
+        /// <summary>
+        /// This function is for deserializing an object that has been created by the user, such as a class instance.
+        /// <para>In some cases, you can only get "this" instance, for eaxample: JsonApi.TryDeserialize(path, this).</para>
+        /// If so, you can use this function to deserialize the JsonData into the "this" instance. Otherwise it's not recommended.
+        /// </summary>
         private static void ConvertJsonDataToObject(JsonData jsonData, object res)
         {
             Type type = res.GetType();
@@ -470,6 +492,19 @@ namespace BbxCommon
                 if (key == m_TypeInfoKey)
                     continue;
                 var field = type.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                if (field == null) // check if it is in base class
+                {
+                    var baseType = type.BaseType;
+                    while (baseType != null)
+                    {
+                        field = baseType.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                        if (field != null)
+                            break;
+                        baseType = baseType.BaseType;
+                    }
+                    if (field == null)  // the field may be deleted
+                        continue;
+                }
                 var value = ConvertJsonDataToObject(jsonData[key]);
                 var finalValue = Convert.ChangeType(value, field.FieldType);
                 field.SetValue(res, finalValue);

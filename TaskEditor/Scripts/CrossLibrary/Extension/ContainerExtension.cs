@@ -521,6 +521,8 @@ namespace BbxCommon
         #region String
         public static string TryRemoveStart(this string str, string remove)
         {
+            if (str.IsNullOrEmpty())
+                return str;
             if (str.StartsWith(remove))
                 return str.Remove(0, remove.Length);
             return str;
@@ -531,6 +533,8 @@ namespace BbxCommon
         /// </summary>
         public static string TryRemoveStart(this string str, params string[] remove)
         {
+            if (str.IsNullOrEmpty())
+                return str;
             for (int i = 0; i < remove.Length; i++)
             {
                 if (str.StartsWith(remove[i]))
@@ -541,6 +545,8 @@ namespace BbxCommon
 
         public static string TryRemoveEnd(this string str, string remove)
         {
+            if (str.IsNullOrEmpty())
+                return str;
             if (str.EndsWith(remove))
                 return str.Remove(str.Length - remove.Length, remove.Length);
             return str;
@@ -551,6 +557,8 @@ namespace BbxCommon
         /// </summary>
         public static string TryRemoveEnd(this string str, params string[] remove)
         {
+            if (str.IsNullOrEmpty())
+                return str;
             for (int i = 0; i < remove.Length; i++)
             {
                 if (str.EndsWith(remove[i]))

@@ -156,7 +156,7 @@ namespace BbxCommon
 			m_FileDialog.FileMode = fileModeEnum;
 			if (currentDir != null)
 			{
-				m_FileDialog.CurrentDir = currentDir;
+				m_FileDialog.CurrentDir = FileApi.GetDirectory(currentDir);
             }
             switch (fileModeEnum)
 			{
@@ -205,6 +205,8 @@ namespace BbxCommon
 		#region Save Target
 
 		#region Common
+		public static List<SaveTargetBase> SaveTargetList = new(); // loaded files
+
 		private static SaveTargetBase m_CurSaveTarget;
         public static SaveTargetBase CurSaveTarget
 		{
@@ -217,26 +219,23 @@ namespace BbxCommon
 				if (m_CurSaveTarget != value)
 				{
 					m_CurSaveTarget = value;
-                    EventBus.DispatchEvent(EEvent.ReloadEditingTaskData);
+                    EventBus.DispatchEvent(EEvent.CurSaveTargetChanged);
                 }
 			}
 		}
 
-		public static void RequestToSave()
-		{
-			try
-			{
-				CurSaveTarget.Save();
-			}
-			catch (Exception e)
-			{
-				OpenAcceptDialog("Error", e.Message);
-			}
-			OpenAcceptDialog("Save Successfully!");
-        }
-
 		public abstract class SaveTargetBase
 		{
+			private string m_FilePath;
+			public string FilePath
+			{
+				get => m_FilePath;
+				set
+				{
+					m_FilePath = value.TryRemoveEnd(".editor.json", ".json");
+				}
+			}
+
             private string m_BindingContextType;
             public string BindingContextType
             {
@@ -254,7 +253,7 @@ namespace BbxCommon
 			public bool IsTimeline => this is TimelineSaveTargetData;
 			public bool IsGraphNode => this is NodeGraphSaveTargetData;
 
-            public abstract void Save();
+            public abstract void Save(string filePath = null);
 		}
         #endregion
 
@@ -290,60 +289,72 @@ namespace BbxCommon
 				}
 			}
 
-			public override void Save()
+			public override void Save(string filePath)
 			{
-				// save editor file
-				var currentTaskPath = EditorSettings.Instance.CurrentTaskPath;
-				var editorFilePath = currentTaskPath.TryRemoveEnd(".editor.json", ".json");
-				editorFilePath += ".editor.json";
-                JsonApi.Serialize(this, editorFilePath);
-                // build timeline root info
-                int taskId = 0;
-				var taskGroupInfo = new TaskGroupInfo();
-                var timelineRootValueInfo = new TaskValueInfo();
-				timelineRootValueInfo.FullTypeName = EditorDataStore.GetTaskInfo("TaskTimeline").TaskFullTypeName;
-				timelineRootValueInfo.AddFieldInfo("Duration", ETaskFieldValueSource.Value, MaxTime.ToString());
-				taskGroupInfo.BindingContextFullType = m_BindingContextType;
-                taskGroupInfo.SetRootTaskId(taskId);
-				taskGroupInfo.TaskInfos[taskId++] = timelineRootValueInfo;
-				// build task items
-				foreach (var timelineItemEditData in TaskDatas)
+				try
 				{
-					// timeline item
-					var itemInfo = new TaskTimelineItemInfo();
-					var itemValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(timelineItemEditData);
-                    taskGroupInfo.TaskInfos[taskId] = itemValueInfo;
-					itemInfo.Id = taskId++;
-					itemInfo.StartTime = timelineItemEditData.StartTime;
-					itemInfo.Duration = timelineItemEditData.Duration;
-					timelineRootValueInfo.AddTimelineInfo(timelineItemEditData.StartTime, timelineItemEditData.Duration, itemInfo.Id);
-                    foreach (var field in timelineItemEditData.Fields)
+					// save editor file
+					if (filePath.IsNullOrEmpty() == false)
 					{
-						itemValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+						FilePath = filePath;
 					}
-                    // enter condition
-                    foreach (var condition in timelineItemEditData.EnterConditions)
-                    {
-                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
-                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
-						itemValueInfo.AddEnterCondition(taskId++);
-                    }
-                    // condition
-                    foreach (var condition in timelineItemEditData.Conditions)
-                    {
-                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
-                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
-                        itemValueInfo.AddCondition(taskId++);
-                    }
-                    // exit condition
-                    foreach (var condition in timelineItemEditData.ExitConditions)
-                    {
-                        var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
-                        taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
-                        itemValueInfo.AddExitCondition(taskId++);
-                    }
+					var currentTaskPath = FilePath;
+					var editorFilePath = currentTaskPath.TryRemoveEnd(".editor.json", ".json");
+					editorFilePath += ".editor.json";
+					JsonApi.Serialize(this, editorFilePath);
+					// build timeline root info
+					int taskId = 0;
+					var taskGroupInfo = new TaskGroupInfo();
+					var timelineRootValueInfo = new TaskValueInfo();
+					timelineRootValueInfo.FullTypeName = EditorDataStore.GetTaskInfo("TaskTimeline").TaskFullTypeName;
+					timelineRootValueInfo.AddFieldInfo("Duration", ETaskFieldValueSource.Value, MaxTime.ToString());
+					taskGroupInfo.BindingContextFullType = m_BindingContextType;
+					taskGroupInfo.SetRootTaskId(taskId);
+					taskGroupInfo.TaskInfos[taskId++] = timelineRootValueInfo;
+					// build task items
+					foreach (var timelineItemEditData in TaskDatas)
+					{
+						// timeline item
+						var itemInfo = new TaskTimelineItemInfo();
+						var itemValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(timelineItemEditData);
+						taskGroupInfo.TaskInfos[taskId] = itemValueInfo;
+						itemInfo.Id = taskId++;
+						itemInfo.StartTime = timelineItemEditData.StartTime;
+						itemInfo.Duration = timelineItemEditData.Duration;
+						timelineRootValueInfo.AddTimelineInfo(timelineItemEditData.StartTime, timelineItemEditData.Duration, itemInfo.Id);
+						foreach (var field in timelineItemEditData.Fields)
+						{
+							itemValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+						}
+						// enter condition
+						foreach (var condition in timelineItemEditData.EnterConditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddEnterCondition(taskId++);
+						}
+						// condition
+						foreach (var condition in timelineItemEditData.Conditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddCondition(taskId++);
+						}
+						// exit condition
+						foreach (var condition in timelineItemEditData.ExitConditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddExitCondition(taskId++);
+						}
+					}
+					JsonApi.Serialize(taskGroupInfo, currentTaskPath);
+                    OpenAcceptDialog("Save Successfully!");
                 }
-				JsonApi.Serialize(taskGroupInfo, currentTaskPath);
+				catch (Exception e)
+				{
+					OpenAcceptDialog("Error", e.Message);
+				}
             }
         }
         #endregion
@@ -364,7 +375,7 @@ namespace BbxCommon
                 m_BindingContextType = type;
             }
 
-            public override void Save()
+            public override void Save(string filePath)
 			{
 
 			}

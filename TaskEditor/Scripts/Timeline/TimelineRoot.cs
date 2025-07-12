@@ -22,7 +22,7 @@ namespace BbxCommon
         {
             EditorModel.TimelineRoot = this;
             EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnEditorDataStoreRefresh);
-            EventBus.RegisterEvent(EEvent.ReloadEditingTaskData, OnEditorDataStoreRefresh);
+            EventBus.RegisterEvent(EEvent.CurSaveTargetChanged, OnEditorDataStoreRefresh);
             EventBus.RegisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.RegisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
             NewTaskButton.Pressed += OnNewTaskButtonClick;
@@ -31,7 +31,7 @@ namespace BbxCommon
         protected override void OnUiDestroy()
         {
             EventBus.UnregisterEvent(EEvent.EditorDataStoreRefresh, OnEditorDataStoreRefresh);
-            EventBus.UnregisterEvent(EEvent.ReloadEditingTaskData, OnEditorDataStoreRefresh);
+            EventBus.UnregisterEvent(EEvent.CurSaveTargetChanged, OnEditorDataStoreRefresh);
             EventBus.UnregisterEvent(EEvent.TimelineNodeStartTimeOrDurationChanged, OnTaskStartTimeAndDurationChanged);
             EventBus.UnregisterEvent(EEvent.TimelineTasksChanged, OnTimelineTasksChanged);
         }

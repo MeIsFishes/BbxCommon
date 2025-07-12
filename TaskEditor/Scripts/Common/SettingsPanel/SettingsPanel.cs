@@ -15,8 +15,6 @@ namespace BbxCommon
         public BbxButton TaskInfoPathImportButton;
         [Export]
         public BbxButton TaskInfoPathPathButton;
-        [Export]
-        public TextEdit CurrentTaskPathEdit;
 
         protected override void OnUiInit()
         {
@@ -32,7 +30,6 @@ namespace BbxCommon
             TaskInfoPathEdit.Text = EditorSettings.Instance.ExportInfoPath;
 
             OnUiOpenTaskInfoPath();
-            OnUiOpenCurrentTaskPath();
         }
 
         public void Open()
@@ -78,13 +75,6 @@ namespace BbxCommon
                 TaskInfoPathEdit.Text = s;
             },
             FileDialog.FileModeEnum.OpenDir);
-        }
-        #endregion
-
-        #region Current Task Path
-        private void OnUiOpenCurrentTaskPath()
-        {
-            CurrentTaskPathEdit.Text = EditorSettings.Instance.CurrentTaskPath;
         }
         #endregion
     }

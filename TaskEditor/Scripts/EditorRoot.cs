@@ -8,6 +8,10 @@ namespace BbxCommon
 	public partial class EditorRoot : BbxControl
 	{
 		[Export]
+		public TimelineRoot TimelineRoot;
+		[Export]
+		public Control EmptyRoot;
+		[Export]
 		public OptionButton BindContextOption;
 		[Export]
 		public BbxButton SettingsPanelButton;
@@ -23,11 +27,13 @@ namespace BbxCommon
         protected override void OnUiInit()
 		{
 			EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnReadyBindContextOption);
-			EventBus.RegisterEvent(EEvent.ReloadEditingTaskData, OnReloadEditingTaskData);
+			EventBus.RegisterEvent(EEvent.CurSaveTargetChanged, OnCurSaveTargetChanged);
 			SettingsPanelButton.Pressed += OnSettingsPanelButton;
 			SaveButton.Pressed += OnSaveButton;
             SaveAsButton.Pressed += OnSaveAsButton;
             LoadButton.Pressed += OnLoadButton;
+
+			OnCurSaveTargetChanged();
 
             EditorModel.EditorRoot = this;
             EditorModel.OnReady();
@@ -54,13 +60,29 @@ namespace BbxCommon
 
 		private void OnBindContextOptionSelect(long index)
 		{
+			if (EditorModel.CurSaveTarget == null)
+				return;
             var list = EditorDataStore.GetTaskContextInfoList();
             EditorModel.CurSaveTarget.BindingContextType = list[(int)index].TaskContextTypeName;
         }
 
-		private void OnReloadEditingTaskData()
+		private void OnCurSaveTargetChanged()
 		{
-			BindContextOption.Select(EditorModel.CurSaveTarget.BindingContextType.TryRemoveStart("TaskContext"));
+			if (EditorModel.CurSaveTarget == null)
+			{
+				EmptyRoot.Visible = true;
+				TimelineRoot.Visible = false;
+			}
+			else if (EditorModel.CurSaveTarget.IsTimeline)
+			{
+                EmptyRoot.Visible = false;
+                TimelineRoot.Visible = true;
+                BindContextOption.Select(EditorModel.CurSaveTarget.BindingContextType.TryRemoveStart("TaskContext"));
+			}
+			else
+			{
+				DebugApi.LogError("EditorRoot OnCurSaveTargetChanged: Unknow SaveTarget Type!");
+			}
 		}
 
         private void OnSettingsPanelButton()
@@ -70,9 +92,9 @@ namespace BbxCommon
 
 		private void OnSaveButton()
 		{
-			if (File.Exists(EditorSettings.Instance.CurrentTaskPath + ".editor.json"))
+			if (File.Exists(EditorModel.CurSaveTarget.FilePath + ".editor.json"))
 			{
-				EditorModel.RequestToSave();
+				EditorModel.CurSaveTarget.Save();
 			}
 			else
 			{
@@ -84,18 +106,23 @@ namespace BbxCommon
 		{
 			EditorModel.OpenFileDialog((s) =>
 			{
-				EditorSettings.Instance.CurrentTaskPath = s.TryRemoveEnd(".editor.json", ".json");
-                EditorModel.RequestToSave();
-            }, FileDialog.FileModeEnum.SaveFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath), "*.editor.json");
+				EditorModel.CurSaveTarget.FilePath = s;
+                EditorModel.CurSaveTarget.Save(s);
+				EditorSettings.Instance.LastSaveTargetPath = s;
+				EventBus.DispatchEvent(EEvent.SaveTargetListChanged);
+            }, FileDialog.FileModeEnum.SaveFile, EditorSettings.Instance.LastSaveTargetPath, "*.editor.json");
         }
 
 		private void OnLoadButton()
 		{
             EditorModel.OpenFileDialog((s) =>
             {
-                EditorSettings.Instance.CurrentTaskPath = s.TryRemoveEnd(".editor.json", ".json");
-                EditorModel.CurSaveTarget = (EditorModel.SaveTargetBase)JsonApi.Deserialize(EditorSettings.Instance.CurrentTaskPath + ".editor.json");
-            }, FileDialog.FileModeEnum.OpenFile, FileApi.GetDirectory(EditorSettings.Instance.CurrentTaskPath), "*.editor.json");
+                var saveTarget = (EditorModel.SaveTargetBase)JsonApi.Deserialize(s);
+				EditorModel.SaveTargetList.Insert(0, saveTarget);
+				EditorModel.CurSaveTarget = saveTarget;
+				EventBus.DispatchEvent(EEvent.SaveTargetListChanged);
+				EditorSettings.Instance.LastSaveTargetPath = s;
+            }, FileDialog.FileModeEnum.OpenFile, EditorSettings.Instance.LastSaveTargetPath, "*.editor.json");
         }
     }
 }

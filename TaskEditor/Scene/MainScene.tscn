@@ -1,4 +1,4 @@
-[gd_scene load_steps=12 format=3 uid="uid://cg583i6ilt1el"]
+[gd_scene load_steps=14 format=3 uid="uid://cg583i6ilt1el"]
 
 [ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
 [ext_resource type="Script" path="res://Scripts/Common/Inspector/Inspector.cs" id="2_rhmro"]
@@ -11,6 +11,8 @@
 [ext_resource type="Theme" uid="uid://66g3dqqfap64" path="res://Themes/TaskTimelineNewTask.tres" id="6_ndtnf"]
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="9_dmcw6"]
 [ext_resource type="PackedScene" uid="uid://63a5dib7y7e8" path="res://Scene/SettingsPanel.tscn" id="10_61wjl"]
+[ext_resource type="Script" path="res://Scripts/Common/FileLabel/FileLabelRoot.cs" id="10_dnkja"]
+[ext_resource type="PackedScene" uid="uid://dbl81khnvruc8" path="res://Prefabs/FileLabelItem.tscn" id="11_bgggg"]
 
 [node name="Control" type="Control"]
 process_mode = 3
@@ -21,42 +23,18 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("BindContextOption", "SettingsPanelButton", "SaveButton", "SaveAsButton", "LoadButton")]
+[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("TimelineRoot", "EmptyRoot", "BindContextOption", "SettingsPanelButton", "SaveButton", "SaveAsButton", "LoadButton")]
 anchors_preset = 0
 offset_right = 1600.0
 offset_bottom = 900.0
 script = ExtResource("1_e157r")
+TimelineRoot = NodePath("TimelineRoot")
+EmptyRoot = NodePath("EmptyRoot")
 BindContextOption = NodePath("TopMenu/BindContext/OptionButton")
 SettingsPanelButton = NodePath("TopMenu/SettingsPanelButton/Button")
 SaveButton = NodePath("TopMenu/SaveButton/Button")
 SaveAsButton = NodePath("TopMenu/SaveAsButton/Button")
 LoadButton = NodePath("TopMenu/LoadButton/Button")
-
-[node name="FileList" type="Control" parent="EditorRoot"]
-anchors_preset = 0
-offset_right = 1600.0
-offset_bottom = 50.0
-
-[node name="Frame" type="ColorRect" parent="EditorRoot/FileList"]
-layout_mode = 0
-offset_right = 1600.0
-offset_bottom = 50.0
-color = Color(0, 0, 0, 1)
-
-[node name="Border" type="ColorRect" parent="EditorRoot/FileList"]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 1595.0
-offset_bottom = 50.0
-color = Color(0.156863, 0.156863, 0.156863, 1)
-
-[node name="FileContainer" type="HBoxContainer" parent="EditorRoot/FileList"]
-layout_mode = 0
-offset_left = 5.0
-offset_top = 5.0
-offset_right = 1595.0
-offset_bottom = 50.0
 
 [node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 1
@@ -115,6 +93,35 @@ offset_left = 10.0
 offset_top = 725.0
 offset_right = 440.0
 offset_bottom = 825.0
+
+[node name="EmptyRoot" type="Control" parent="EditorRoot"]
+anchors_preset = 0
+offset_top = 100.0
+offset_right = 1150.0
+offset_bottom = 900.0
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/EmptyRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1, 0.5)
+color = Color(0, 0, 0, 1)
+
+[node name="Border" type="ColorRect" parent="EditorRoot/EmptyRoot"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 5.0
+offset_top = 5.0
+offset_bottom = -5.0
+grow_horizontal = 2
+grow_vertical = 2
+pivot_offset = Vector2(1, 0.5)
+color = Color(0.158472, 0.158472, 0.158472, 1)
 
 [node name="TimelineRoot" type="Control" parent="EditorRoot" node_paths=PackedStringArray("TaskNodeRoot", "NewTaskButton", "TimeBarLabel")]
 layout_mode = 3
@@ -327,14 +334,15 @@ color = Color(0.158472, 0.158472, 0.158472, 1)
 
 [node name="BindContext" type="Control" parent="EditorRoot/TopMenu"]
 anchors_preset = 0
+offset_top = 5.0
 offset_right = 40.0
-offset_bottom = 40.0
+offset_bottom = 45.0
 
 [node name="OptionButton" type="OptionButton" parent="EditorRoot/TopMenu/BindContext"]
 layout_mode = 0
 offset_left = 210.0
 offset_right = 410.0
-offset_bottom = 50.0
+offset_bottom = 45.0
 theme_override_font_sizes/font_size = 24
 clip_text = true
 fit_to_longest_item = false
@@ -452,6 +460,94 @@ script = ExtResource("9_dmcw6")
 Hotkeys = [76]
 HotkeyGroup1 = [4194326, 65]
 HotkeyGroup2 = [4194326, 76]
+
+[node name="FileLabelRoot" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FileLabelItemContainer", "MoreLabelButton", "MoreLabelContainer", "CreateButton", "CreateContainer", "CreateTimelineButton", "CreateGraphNodeButton")]
+anchors_preset = 0
+offset_right = 1600.0
+offset_bottom = 50.0
+script = ExtResource("10_dnkja")
+FileLabelItemPrefab = ExtResource("11_bgggg")
+FileLabelItemContainer = NodePath("FileContainer")
+MoreLabelButton = NodePath("MoreButton")
+MoreLabelContainer = NodePath("MoreLabelsContainer")
+CreateButton = NodePath("CreateButton")
+CreateContainer = NodePath("CreateContainer")
+CreateTimelineButton = NodePath("CreateContainer/CreateTimelineButton")
+CreateGraphNodeButton = NodePath("CreateContainer/CreateGraphNodeButton")
+
+[node name="Frame" type="ColorRect" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_right = 1600.0
+offset_bottom = 50.0
+color = Color(0, 0, 0, 1)
+
+[node name="Border" type="ColorRect" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 1595.0
+offset_bottom = 50.0
+color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[node name="FileContainer" type="HBoxContainer" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_left = 50.0
+offset_top = 5.0
+offset_right = 1550.0
+offset_bottom = 50.0
+
+[node name="CreateButton" type="Button" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 50.0
+offset_bottom = 50.0
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 32
+text = "+"
+script = ExtResource("9_dmcw6")
+
+[node name="CreateContainer" type="VBoxContainer" parent="EditorRoot/FileLabelRoot"]
+visible = false
+layout_mode = 0
+offset_left = 5.0
+offset_top = 54.0
+offset_right = 205.0
+offset_bottom = 148.0
+
+[node name="CreateTimelineButton" type="Button" parent="EditorRoot/FileLabelRoot/CreateContainer"]
+custom_minimum_size = Vector2(200, 45)
+layout_mode = 2
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 32
+text = "Timeline"
+script = ExtResource("9_dmcw6")
+
+[node name="CreateGraphNodeButton" type="Button" parent="EditorRoot/FileLabelRoot/CreateContainer"]
+layout_mode = 2
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 32
+text = "Graph Node"
+script = ExtResource("9_dmcw6")
+
+[node name="MoreButton" type="Button" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_left = 1595.0
+offset_top = 5.0
+offset_right = 1640.0
+offset_bottom = 50.0
+rotation = 1.5708
+theme = ExtResource("4_xou08")
+theme_override_font_sizes/font_size = 32
+text = ">"
+script = ExtResource("9_dmcw6")
+
+[node name="MoreLabelsContainer" type="VBoxContainer" parent="EditorRoot/FileLabelRoot"]
+layout_mode = 0
+offset_left = 1355.0
+offset_top = 50.0
+offset_right = 1595.0
+offset_bottom = 95.0
 
 [node name="TaskSelector" parent="EditorRoot" instance=ExtResource("6_fiuha")]
 visible = false
