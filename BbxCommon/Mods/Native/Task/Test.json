@@ -4,7 +4,7 @@
         "FullType" : "BbxCommon.TaskGroupInfo"
     },
     "RootTaskId"       : 0,
-    "BindingContextFullType" : "null",
+    "BindingContextFullType" : "TaskContextTest",
     "TaskInfos"              : {
         "Default.TypeInfo" : {
             "SpecialType" : "Dictionary",
@@ -40,6 +40,164 @@
                         "Value"            : "Value"
                     },
                     "Value"            : "0"
+                }
+            },
+            "EnterConditionReferences" : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                }
+            },
+            "ConditionReferences"      : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                }
+            },
+            "ExitConditionReferences"  : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                }
+            },
+            "TaskRefrences"            : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskRefrenceInfo"
+                    }
+                }
+            },
+            "TimelineItemInfos"        : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskTimelineItemInfo"
+                    }
+                },
+                "0"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskTimelineItemInfo"
+                    },
+                    "StartTime"        : 0.0,
+                    "Duration"         : 0.0,
+                    "Id"               : 1
+                }
+            }
+        },
+        "1, Key"           : 1,
+        "1, Value"         : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.TaskValueInfo"
+            },
+            "FullTypeName"     : "Dcg.TaskNodeDebugLog",
+            "FieldInfos"       : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    }
+                },
+                "0"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "Content",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : "1111"
+                },
+                "1"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "Content",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : "1111"
+                }
+            },
+            "EnterConditionReferences" : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                },
+                "0"                : 2
+            },
+            "ConditionReferences"      : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                }
+            },
+            "ExitConditionReferences"  : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "SpecialType" : "int"
+                    }
+                }
+            },
+            "TaskRefrences"            : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskRefrenceInfo"
+                    }
+                }
+            },
+            "TimelineItemInfos"        : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskTimelineItemInfo"
+                    }
+                }
+            }
+        },
+        "2, Key"           : 2,
+        "2, Value"         : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.TaskValueInfo"
+            },
+            "FullTypeName"     : "Dcg.TaskConditionGreaterThan5",
+            "FieldInfos"       : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    }
+                },
+                "0"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskFieldInfo"
+                    },
+                    "FieldName"        : "Num",
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : "6"
                 }
             },
             "EnterConditionReferences" : {

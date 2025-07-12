@@ -103,7 +103,7 @@ namespace BbxCommon
                 if (index1 > index2)
                     return path.Substring(index1 + 1);
                 else
-                    return path.Substring(index2 + 2);
+                    return path.Substring(index2 + 1);
             }
             return path;
         }

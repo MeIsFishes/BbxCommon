@@ -258,22 +258,10 @@ namespace BbxCommon
         #endregion
 
         #region Timeline
-        public static TimelineSaveTargetData TimelineSaveTarget = new();
+        public static TimelineSaveTargetData TimelineSaveTarget => CurSaveTarget as TimelineSaveTargetData;
 		public class TimelineSaveTargetData : SaveTargetBase
 		{
 			public List<TimelineItemEditData> TaskDatas = new();
-
-            private string m_BindingContextType;
-
-			public string GetBindingContextType()
-			{
-				return m_BindingContextType;
-			}
-
-			public void SetBindingContextType(string type)
-			{
-				m_BindingContextType = type;
-			}
 
             private float m_MaxTime;
 			public float MaxTime
@@ -308,7 +296,7 @@ namespace BbxCommon
 					var timelineRootValueInfo = new TaskValueInfo();
 					timelineRootValueInfo.FullTypeName = EditorDataStore.GetTaskInfo("TaskTimeline").TaskFullTypeName;
 					timelineRootValueInfo.AddFieldInfo("Duration", ETaskFieldValueSource.Value, MaxTime.ToString());
-					taskGroupInfo.BindingContextFullType = m_BindingContextType;
+					taskGroupInfo.BindingContextFullType = BindingContextType;
 					taskGroupInfo.SetRootTaskId(taskId);
 					taskGroupInfo.TaskInfos[taskId++] = timelineRootValueInfo;
 					// build task items
@@ -360,7 +348,7 @@ namespace BbxCommon
         #endregion
 
         #region Node Graph
-        public static NodeGraphSaveTargetData NodeGraphSaveTarget;
+        public static NodeGraphSaveTargetData NodeGraphSaveTarget => CurSaveTarget as NodeGraphSaveTargetData;
 		public class NodeGraphSaveTargetData : SaveTargetBase
 		{
             private string m_BindingContextType;
