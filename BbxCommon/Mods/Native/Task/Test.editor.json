@@ -1,0 +1,145 @@
+
+{
+    "Default.TypeInfo" : {
+        "FullType" : "BbxCommon.EditorModel+TimelineSaveTargetData"
+    },
+    "TaskDatas"        : {
+        "Default.TypeInfo" : {
+            "SpecialType" : "List",
+            "GenericType1" : {
+                "FullType" : "BbxCommon.TimelineItemEditData"
+            }
+        },
+        "0"                : {
+            "Default.TypeInfo" : {
+                "FullType" : "BbxCommon.TimelineItemEditData"
+            },
+            "OnStartTimeChanged" : "null",
+            "OnDurationChanged"  : "null",
+            "m_StartTime"        : 0.0,
+            "m_Duration"         : 0.0,
+            "ExpandCondition"    : true,
+            "EnterConditions"    : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskEditData"
+                    }
+                },
+                "0"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TimelineItemEditData"
+                    },
+                    "OnStartTimeChanged" : "null",
+                    "OnDurationChanged"  : "null",
+                    "m_StartTime"        : 0.0,
+                    "m_Duration"         : 0.0,
+                    "ExpandCondition"    : false,
+                    "EnterConditions"    : {
+                        "Default.TypeInfo" : {
+                            "SpecialType" : "List",
+                            "GenericType1" : {
+                                "FullType" : "BbxCommon.TaskEditData"
+                            }
+                        }
+                    },
+                    "Conditions"         : {
+                        "Default.TypeInfo" : {
+                            "SpecialType" : "List",
+                            "GenericType1" : {
+                                "FullType" : "BbxCommon.TaskEditData"
+                            }
+                        }
+                    },
+                    "ExitConditions"     : {
+                        "Default.TypeInfo" : {
+                            "SpecialType" : "List",
+                            "GenericType1" : {
+                                "FullType" : "BbxCommon.TaskEditData"
+                            }
+                        }
+                    },
+                    "TaskType"           : "TaskConditionGreaterThan5",
+                    "Fields"             : {
+                        "Default.TypeInfo" : {
+                            "SpecialType" : "List",
+                            "GenericType1" : {
+                                "FullType" : "BbxCommon.TaskEditField"
+                            }
+                        },
+                        "0"                : {
+                            "Default.TypeInfo" : {
+                                "FullType" : "BbxCommon.TaskEditField"
+                            },
+                            "FieldName"        : "Num",
+                            "TypeInfo"         : {
+                                "Default.TypeInfo" : {
+                                    "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                                },
+                                "TypeName"         : "int",
+                                "GenericType1"     : "null",
+                                "GenericType2"     : "null"
+                            },
+                            "ValueSource"      : {
+                                "Default.TypeInfo" : {
+                                    "FullType" : "BbxCommon.ETaskFieldValueSource"
+                                },
+                                "Value"            : "Value"
+                            },
+                            "Value"            : "6"
+                        }
+                    }
+                }
+            },
+            "Conditions"         : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskEditData"
+                    }
+                }
+            },
+            "ExitConditions"     : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskEditData"
+                    }
+                }
+            },
+            "TaskType"           : "TaskNodeDebugLog",
+            "Fields"             : {
+                "Default.TypeInfo" : {
+                    "SpecialType" : "List",
+                    "GenericType1" : {
+                        "FullType" : "BbxCommon.TaskEditField"
+                    }
+                },
+                "0"                : {
+                    "Default.TypeInfo" : {
+                        "FullType" : "BbxCommon.TaskEditField"
+                    },
+                    "FieldName"        : "Content",
+                    "TypeInfo"         : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.Internal.TaskExportTypeInfo"
+                        },
+                        "TypeName"         : "string",
+                        "GenericType1"     : "null",
+                        "GenericType2"     : "null"
+                    },
+                    "ValueSource"      : {
+                        "Default.TypeInfo" : {
+                            "FullType" : "BbxCommon.ETaskFieldValueSource"
+                        },
+                        "Value"            : "Value"
+                    },
+                    "Value"            : "1111"
+                }
+            }
+        }
+    },
+    "m_MaxTime"        : 0.0,
+    "m_FilePath"       : "D:/Git/BbxCommon/BbxCommon/Mods/Native/Task/Test",
+    "m_BindingContextType" : "TaskContextTest"
+}

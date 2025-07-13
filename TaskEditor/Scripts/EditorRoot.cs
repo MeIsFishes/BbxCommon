@@ -8,38 +8,40 @@ namespace BbxCommon
 	public partial class EditorRoot : BbxControl
 	{
 		[Export]
+		public TimelineRoot TimelineRoot;
+		[Export]
+		public Control EmptyRoot;
+		[Export]
 		public OptionButton BindContextOption;
+		[Export]
+		public BbxButton SettingsPanelButton;
+		[Export]
+		public BbxButton SaveButton;
+		[Export]
+		public BbxButton SaveAsButton;
+		[Export]
+		public BbxButton LoadButton;
 
 		private string m_ExportedInfoPath = "../ExportedTaskInfo/";
 
-        protected override void OnUiOpen()
+        protected override void OnUiInit()
 		{
-			DeserializeAllTaskInfo();
-			OnReadyBindContextOption();
-			EditorModel.OnReady();
+			EventBus.RegisterEvent(EEvent.EditorDataStoreRefresh, OnReadyBindContextOption);
+			EventBus.RegisterEvent(EEvent.CurSaveTargetChanged, OnCurSaveTargetChanged);
+			SettingsPanelButton.Pressed += OnSettingsPanelButton;
+			SaveButton.Pressed += OnSaveButton;
+            SaveAsButton.Pressed += OnSaveAsButton;
+            LoadButton.Pressed += OnLoadButton;
+
+			OnCurSaveTargetChanged();
+
+            EditorModel.EditorRoot = this;
+            EditorModel.OnReady();
 		}
 
 		protected override void OnUiUpdate(double delta)
 		{
 			EditorModel.OnProcess(delta);
-		}
-
-		private void DeserializeAllTaskInfo()
-		{
-			if (Directory.Exists(m_ExportedInfoPath))
-			{
-				foreach (var path in Directory.EnumerateFiles(m_ExportedInfoPath))
-				{
-					var obj = JsonApi.Deserialize(Path.GetFullPath(path));
-					if (obj is TaskExportInfo taskInfo)
-						EditorDataStore.AddTaskInfo(taskInfo);
-					else if (obj is TaskContextExportInfo contextInfo)
-						EditorDataStore.AddTaskContextInfo(contextInfo);
-					else if (obj is TaskEnumExportInfo enumInfo)
-						EditorDataStore.AddEnumInfo(enumInfo);
-                }
-				DebugApi.Log("Deserialize task info finished!");
-			}
 		}
 
 		private void OnReadyBindContextOption()
@@ -58,8 +60,69 @@ namespace BbxCommon
 
 		private void OnBindContextOptionSelect(long index)
 		{
+			if (EditorModel.CurSaveTarget == null)
+				return;
             var list = EditorDataStore.GetTaskContextInfoList();
-            EditorModel.BindingContextType = list[(int)index].TaskContextTypeName;
+            EditorModel.CurSaveTarget.BindingContextType = list[(int)index].TaskContextTypeName;
+        }
+
+		private void OnCurSaveTargetChanged()
+		{
+			if (EditorModel.CurSaveTarget == null)
+			{
+				EmptyRoot.Visible = true;
+				TimelineRoot.Visible = false;
+			}
+			else if (EditorModel.CurSaveTarget.IsTimeline)
+			{
+                EmptyRoot.Visible = false;
+                TimelineRoot.Visible = true;
+                BindContextOption.Select(EditorModel.CurSaveTarget.BindingContextType.TryRemoveStart("TaskContext"));
+			}
+			else
+			{
+				DebugApi.LogError("EditorRoot OnCurSaveTargetChanged: Unknow SaveTarget Type!");
+			}
+		}
+
+        private void OnSettingsPanelButton()
+		{
+			EditorModel.SettingsPanel.Open();
+		}
+
+		private void OnSaveButton()
+		{
+			if (File.Exists(EditorModel.CurSaveTarget.FilePath + ".editor.json"))
+			{
+				EditorModel.CurSaveTarget.Save();
+			}
+			else
+			{
+				OnSaveAsButton();
+			}
+		}
+
+		private void OnSaveAsButton()
+		{
+			EditorModel.OpenFileDialog((s) =>
+			{
+				EditorModel.CurSaveTarget.FilePath = s;
+                EditorModel.CurSaveTarget.Save(s);
+				EditorSettings.Instance.LastSaveTargetPath = s;
+				EventBus.DispatchEvent(EEvent.SaveTargetListChanged);
+            }, FileDialog.FileModeEnum.SaveFile, EditorSettings.Instance.LastSaveTargetPath, "*.editor.json");
+        }
+
+		private void OnLoadButton()
+		{
+            EditorModel.OpenFileDialog((s) =>
+            {
+                var saveTarget = (EditorModel.SaveTargetBase)JsonApi.Deserialize(s);
+				EditorModel.SaveTargetList.Insert(0, saveTarget);
+				EditorModel.CurSaveTarget = saveTarget;
+				EventBus.DispatchEvent(EEvent.SaveTargetListChanged);
+				EditorSettings.Instance.LastSaveTargetPath = s;
+            }, FileDialog.FileModeEnum.OpenFile, EditorSettings.Instance.LastSaveTargetPath, "*.editor.json");
         }
     }
 }

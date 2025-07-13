@@ -4,6 +4,7 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskNodeJump",
+    "TaskFullTypeName" : "Dcg.TaskNodeJump",
     "Tags"             : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

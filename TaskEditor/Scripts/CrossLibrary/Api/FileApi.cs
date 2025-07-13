@@ -18,6 +18,26 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// GetDirectory("C:/MyFile/game.exe") returns "C:/MyFile/".
+        /// GetDirectory("C:/MyFile/") returns "C:/MyFile/".
+        /// </summary>
+        public static string GetDirectory(string path)
+        {
+            if (path == null)
+                return null;
+            while (Directory.Exists(path) == false && path.Length > 0)
+            {
+                var index = path.LastIndexOf('/');
+                if (index < 0)
+                    index = path.LastIndexOf('\\');
+                if (index < 0)
+                    return null; // no directory found
+                path = path.Remove(index + 1);
+            }
+            return path;
+        }
+
+        /// <summary>
         /// Create file with the given path, and ensure that all directories in path will be created.
         /// </summary>
         public static void CreateAbsolutePathFile(string path)
@@ -81,7 +101,7 @@ namespace BbxCommon
             if (index1 >= 0 || index2 >= 0)
             {
                 if (index1 > index2)
-                    return path.Substring(index1);
+                    return path.Substring(index1 + 1);
                 else
                     return path.Substring(index2 + 1);
             }

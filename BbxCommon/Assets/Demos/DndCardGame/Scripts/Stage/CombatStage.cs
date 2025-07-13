@@ -13,9 +13,9 @@ namespace Dcg
         {
             var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("Combat Stage");
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiCombatScene"));
-            stage.AddLoadItem(new CombatStageInitPlayerData());
-            stage.AddLoadItem(new CombatStageInitCombatInfo());
-            stage.AddLateLoadItem(new CombatStageBindUi());
+            stage.AddLoadItem<CombatStageInitPlayerData>();
+            stage.AddLoadItem<CombatStageInitCombatInfo>();
+            stage.AddLateLoadItem<CombatStageBindUi>();
             stage.AddUpdateSystem<CauseDamageSystem>();
             stage.AddUpdateSystem<TakeDamageSystem>();
             stage.AddUpdateSystem<CombatRoundSystem>();

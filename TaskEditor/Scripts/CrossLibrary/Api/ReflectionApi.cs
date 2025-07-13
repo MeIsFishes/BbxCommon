@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace BbxCommon
 {
@@ -65,6 +66,15 @@ namespace BbxCommon
                         type = assembly.GetType(typeFullName);
                         if (type != null)
                             break;
+                    }
+                    if (type == null)
+                    {
+                        foreach (var assembly in assemblies)
+                        {
+                            type = assembly.GetTypes().FirstOrDefault(t => t.Name == typeFullName);
+                            if (type != null)
+                                break;
+                        }
                     }
                 }
                 m_TypeDic.Add(typeFullName, type);

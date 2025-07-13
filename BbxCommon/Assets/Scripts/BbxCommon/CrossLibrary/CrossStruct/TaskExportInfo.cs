@@ -13,8 +13,8 @@ namespace BbxCommon.Internal
 		public const string TaskTagDuration = "Duration";
 		public const string TaskTagCondition = "Condition";
 		public const string TaskTagTimeline = "Timeline";
-		public const string TaskTagDrive = "Drive";
-	}
+        public const string TaskTagDrive = "Drive";
+    }
 
 	[AttributeUsage(AttributeTargets.Class)]
 	public class TaskTagAttribute : Attribute
@@ -89,7 +89,8 @@ namespace BbxCommon.Internal
 	public class TaskExportInfo
 	{
 		public string TaskTypeName;
-		public List<string> Tags = new();
+        public string TaskFullTypeName; // to improve reflection performance, use full type name is recommended
+        public List<string> Tags = new();
 		public List<TaskExportFieldInfo> FieldInfos = new();
 	}
 

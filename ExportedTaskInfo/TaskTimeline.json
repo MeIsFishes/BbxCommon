@@ -4,6 +4,7 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskTimeline",
+    "TaskFullTypeName" : "BbxCommon.TaskTimeline",
     "Tags"             : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

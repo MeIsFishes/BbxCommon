@@ -1,0 +1,145 @@
+[gd_scene load_steps=4 format=3 uid="uid://63a5dib7y7e8"]
+
+[ext_resource type="Theme" uid="uid://j7o0j4ykjo10" path="res://Themes/TaskTimeline.tres" id="1_7b5ho"]
+[ext_resource type="Script" path="res://Scripts/Common/SettingsPanel/SettingsPanel.cs" id="1_ib2xh"]
+[ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="2_0g631"]
+
+[node name="SettingsPanel" type="Control" node_paths=PackedStringArray("BackButton", "TaskInfoPathEdit", "TaskInfoPathImportButton", "TaskInfoPathPathButton")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 350.0
+offset_top = 200.0
+offset_right = 1250.0
+offset_bottom = 500.0
+script = ExtResource("1_ib2xh")
+BackButton = NodePath("BackButton/Button")
+TaskInfoPathEdit = NodePath("TaskInfoPath/TextEdit")
+TaskInfoPathImportButton = NodePath("TaskInfoPath/ImportButton/Button")
+TaskInfoPathPathButton = NodePath("TaskInfoPath/PathButton/Button")
+
+[node name="Frame" type="Control" parent="."]
+custom_minimum_size = Vector2(900, 300)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 900.0
+offset_bottom = 300.0
+
+[node name="Frame1" type="ColorRect" parent="Frame"]
+layout_mode = 0
+offset_right = 900.0
+offset_bottom = 300.0
+color = Color(0, 0, 0, 1)
+
+[node name="ColorRect" type="ColorRect" parent="Frame"]
+layout_mode = 0
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 895.0
+offset_bottom = 295.0
+color = Color(0.156863, 0.156863, 0.156863, 1)
+
+[node name="Title" type="Label" parent="."]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 10.0
+offset_right = 189.0
+offset_bottom = 44.0
+theme_override_font_sizes/font_size = 24
+text = "Editor Settings"
+
+[node name="BackButton" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 730.0
+offset_top = 10.0
+offset_right = 880.0
+offset_bottom = 50.0
+
+[node name="Frame" type="ColorRect" parent="BackButton"]
+layout_mode = 0
+offset_right = 150.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="BackButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 148.0
+offset_bottom = 38.0
+theme = ExtResource("1_7b5ho")
+theme_override_font_sizes/font_size = 22
+text = "Back"
+script = ExtResource("2_0g631")
+Hotkeys = [4194305]
+
+[node name="TaskInfoPath" type="Control" parent="."]
+anchors_preset = 0
+offset_top = 70.0
+offset_right = 900.0
+offset_bottom = 110.0
+
+[node name="Name" type="Label" parent="TaskInfoPath"]
+layout_mode = 0
+offset_left = 10.0
+offset_top = 6.0
+offset_right = 148.0
+offset_bottom = 34.0
+theme_override_font_sizes/font_size = 20
+text = "Export Info Path"
+
+[node name="TextEdit" type="TextEdit" parent="TaskInfoPath"]
+layout_mode = 0
+offset_left = 200.0
+offset_right = 750.0
+offset_bottom = 40.0
+theme_override_font_sizes/font_size = 20
+text = "C:/Workspace/BbxCommon/TaskEditor"
+
+[node name="ImportButton" type="Control" parent="TaskInfoPath"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 760.0
+offset_right = 840.0
+offset_bottom = 40.0
+
+[node name="Frame" type="ColorRect" parent="TaskInfoPath/ImportButton"]
+layout_mode = 0
+offset_right = 80.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="TaskInfoPath/ImportButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 78.0
+offset_bottom = 38.0
+theme = ExtResource("1_7b5ho")
+theme_override_font_sizes/font_size = 22
+text = "Import"
+script = ExtResource("2_0g631")
+
+[node name="PathButton" type="Control" parent="TaskInfoPath"]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 850.0
+offset_right = 890.0
+offset_bottom = 40.0
+
+[node name="Frame" type="ColorRect" parent="TaskInfoPath/PathButton"]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+color = Color(0, 0, 0, 1)
+
+[node name="Button" type="Button" parent="TaskInfoPath/PathButton"]
+layout_mode = 0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = 38.0
+offset_bottom = 38.0
+theme = ExtResource("1_7b5ho")
+theme_override_font_sizes/font_size = 22
+text = "..."
+script = ExtResource("2_0g631")

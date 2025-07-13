@@ -4,6 +4,7 @@
         "FullType" : "BbxCommon.Internal.TaskExportInfo"
     },
     "TaskTypeName"     : "TaskNodeStandardAttack",
+    "TaskFullTypeName" : "Dcg.TaskNodeStandardAttack",
     "Tags"             : {
         "Default.TypeInfo" : {
             "SpecialType" : "List",

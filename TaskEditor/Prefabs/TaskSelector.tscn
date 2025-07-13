@@ -74,6 +74,7 @@ theme = ExtResource("1_u8b4s")
 theme_override_font_sizes/font_size = 22
 text = "Back"
 script = ExtResource("2_mdfxg")
+Hotkeys = [4194305]
 
 [node name="ItemContainer" type="VBoxContainer" parent="."]
 clip_contents = true

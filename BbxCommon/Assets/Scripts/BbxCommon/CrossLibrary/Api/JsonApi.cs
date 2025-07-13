@@ -17,7 +17,7 @@ namespace BbxCommon
 
         #region Serialize
 
-        #region Body
+        #region API
         public static JsonData Serialize(object obj)
         {
             try
@@ -66,7 +66,9 @@ namespace BbxCommon
                 }
             }
         }
+        #endregion
 
+        #region Body
         private static JsonData ConvertObjectToJsonData(object obj)
         {
             if (obj == null)
@@ -105,11 +107,19 @@ namespace BbxCommon
                 enumJsonData["Value"] = new JsonData(Enum.GetName(enumObj.GetType(), obj));
                 return enumJsonData;
             }
+            if (obj is Delegate)
+            {
+                return new JsonData("null");
+            }
             // special types
             var type = obj.GetType();
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
             {
                 return ConvertListToJsonData(obj, type);
+            }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+            {
+                return ConvertHashSetToJsonData(obj, type);
             }
             if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
             {
@@ -118,10 +128,14 @@ namespace BbxCommon
             // serialize class
             var jsonData = new JsonData();
             jsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
-            foreach (var field in type.GetFields())
+            while (type != null) // check if it has base class
             {
-                var value = field.GetValue(obj);
-                jsonData[field.Name] = ConvertObjectToJsonData(value);
+                foreach (var field in type.GetFields(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic | System.Reflection.BindingFlags.Instance))
+                {
+                    var value = field.GetValue(obj);
+                    jsonData[field.Name] = ConvertObjectToJsonData(value);
+                }
+                type = type.BaseType;
             }
             return jsonData;
         }
@@ -142,21 +156,36 @@ namespace BbxCommon
             return listJsonData;
         }
 
-        private static JsonData ConvertDictionaryToJsonData(object obj, Type type)
+        private static JsonData ConvertHashSetToJsonData(object obj, Type type)
         {
-            var dictJsonData = new JsonData();
-            dictJsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
+            var hashSetJsonData = new JsonData();
+            hashSetJsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
             var enumerator = obj as IEnumerable;
+            int index = 0;
             foreach (var item in enumerator)
             {
-                var pair = item;
-                var keyProp = pair.GetType().GetProperty("Key");
-                var valueProp = pair.GetType().GetProperty("Value");
-                var key = keyProp.GetValue(pair, null);
-                var value = valueProp.GetValue(pair, null);
-                dictJsonData[key.ToString()] = ConvertObjectToJsonData(value);
+                hashSetJsonData[index.ToString()] = ConvertObjectToJsonData(item);
+                index++;
             }
-            return dictJsonData;
+            return hashSetJsonData;
+        }
+
+        private static JsonData ConvertDictionaryToJsonData(object obj, Type type)
+        {
+            var dicJsonData = new JsonData();
+            dicJsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
+            var enumerator = obj as IEnumerable;
+            int index = 0;
+            foreach (var item in enumerator)
+            {
+                var pairType = item.GetType();
+                var keyField = pairType.GetField("key", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                dicJsonData[index.ToString() + ", Key"] = ConvertObjectToJsonData(keyField.GetValue(item));
+                var valueField = pairType.GetField("value", System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                dicJsonData[index.ToString() + ", Value"] = ConvertObjectToJsonData(valueField.GetValue(item));
+                index++;
+            }
+            return dicJsonData;
         }
         #endregion
 
@@ -170,6 +199,11 @@ namespace BbxCommon
                 if (type.GetGenericTypeDefinition() == typeof(List<>))
                 {
                     jsonData[m_SpecialTypeKey] = new JsonData("List");
+                    jsonData[m_GenericType1Key] = GenerateTypeInfo(type.GetGenericArguments()[0]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                {
+                    jsonData[m_SpecialTypeKey] = new JsonData("HashSet");
                     jsonData[m_GenericType1Key] = GenerateTypeInfo(type.GetGenericArguments()[0]);
                 }
                 else if (type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
@@ -214,7 +248,7 @@ namespace BbxCommon
 
         #region Deserialize
 
-        #region Body
+        #region API
         public static object Deserialize(JsonData jsonData)
         {
             object res = null;
@@ -258,6 +292,33 @@ namespace BbxCommon
             }
         }
 
+        public static void Deserialize<T>(string absolutePath, out T obj)
+        {
+            StreamReader streamReader = null;
+            obj = default;
+            bool succeeded = false;
+            try
+            {
+                absolutePath = FileApi.AddExtensionIfNot(absolutePath, ".json");
+                streamReader = new StreamReader(absolutePath);
+                var jsonString = streamReader.ReadToEnd();
+                var jsonData = JsonMapper.ToObject(jsonString);
+                obj = (T)Deserialize(jsonData);
+                succeeded = true;
+            }
+            catch (Exception e)
+            {
+                DebugApi.LogException(e);
+            }
+            finally
+            {
+                if (streamReader != null)
+                    streamReader.Close();
+                if (succeeded == false)
+                    DebugApi.LogError("Json deserialization failed! File path: " + absolutePath);
+            }
+        }
+
         public static T Deserialize<T>(JsonData jsonData)
         {
             var obj = Deserialize(jsonData);
@@ -294,20 +355,74 @@ namespace BbxCommon
             }
         }
 
+        public static bool TryDeserialize<T>(JsonData jsonData, T res)
+        {
+            try
+            {
+                ConvertJsonDataToObject(jsonData, res);
+                return true;
+            }
+            catch (Exception e)
+            {
+                DebugApi.LogException(e);
+                return false;
+            }
+        }
+
+        public static bool TryDeserialize<T>(string absolutePath, T obj)
+        {
+            StreamReader streamReader = null;
+            bool succeeded = false;
+            try
+            {
+                absolutePath = FileApi.AddExtensionIfNot(absolutePath, ".json");
+                streamReader = new StreamReader(absolutePath);
+                var jsonString = streamReader.ReadToEnd();
+                var jsonData = JsonMapper.ToObject(jsonString);
+                ConvertJsonDataToObject(jsonData, obj);
+                succeeded = true;
+                return true;
+            }
+            catch (Exception e)
+            {
+                DebugApi.LogException(e);
+                return false;
+            }
+            finally
+            {
+                if (streamReader != null)
+                    streamReader.Close();
+                if (succeeded == false)
+                    DebugApi.LogError("Json deserialization failed! File path: " + absolutePath);
+            }
+        }
+        #endregion
+
+        #region Body
         private static object ConvertJsonDataToObject(JsonData jsonData)
         {
             if (jsonData.GetJsonType() == JsonType.Object && jsonData.ContainsKey(m_TypeInfoKey))
             {
                 Type type = DeserializeTypeInfo(jsonData[m_TypeInfoKey]);
+                // enum
                 if (type.IsEnum)
                 {
                     var enumValue = Enum.Parse(type, (string)jsonData["Value"]);
                     return enumValue;
                 }
+                // delegate
+                else if (type.IsSubclassOf(typeof(Delegate)))
+                {
+                    return null;
+                }
                 // special types
                 else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>))
                 {
                     return ConvertJsonDataToList(jsonData, type);
+                }
+                else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(HashSet<>))
+                {
+                    return ConvertJsonDataToHashSet(jsonData, type);
                 }
                 else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
                 {
@@ -315,12 +430,25 @@ namespace BbxCommon
                 }
                 else
                 {
-                    var obj = type.GetConstructor(Type.EmptyTypes).Invoke(null);
+                    var obj = Activator.CreateInstance(type);
                     foreach (var key in jsonData.Keys)
                     {
                         if (key == m_TypeInfoKey)
                             continue;
-                        var field = type.GetField(key);
+                        var field = type.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                        if (field == null) // check if it is in base class
+                        {
+                            var baseType = type.BaseType;
+                            while (baseType != null)
+                            {
+                                field = baseType.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                                if (field != null)
+                                    break;
+                                baseType = baseType.BaseType;
+                            }
+                            if (field == null)  // the field may be deleted
+                                continue;
+                        }
                         var value = ConvertJsonDataToObject(jsonData[key]);
                         var finalValue = Convert.ChangeType(value, field.FieldType);
                         field.SetValue(obj, finalValue);
@@ -346,6 +474,42 @@ namespace BbxCommon
             }
             return null;
         }
+
+        /// <summary>
+        /// This function is for deserializing an object that has been created by the user, such as a class instance.
+        /// <para>In some cases, you can only get "this" instance, for eaxample: JsonApi.TryDeserialize(path, this).</para>
+        /// If so, you can use this function to deserialize the JsonData into the "this" instance. Otherwise it's not recommended.
+        /// </summary>
+        private static void ConvertJsonDataToObject(JsonData jsonData, object res)
+        {
+            Type type = res.GetType();
+            if (type.IsClass == false)
+            {
+                DebugApi.LogError("Json Deserializer: You should only pass class references to ConvertJsonDataToObject(JsonData, object), but got " + type.FullName + ".");
+            }
+            foreach (var key in jsonData.Keys)
+            {
+                if (key == m_TypeInfoKey)
+                    continue;
+                var field = type.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                if (field == null) // check if it is in base class
+                {
+                    var baseType = type.BaseType;
+                    while (baseType != null)
+                    {
+                        field = baseType.GetField(key, System.Reflection.BindingFlags.Instance | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                        if (field != null)
+                            break;
+                        baseType = baseType.BaseType;
+                    }
+                    if (field == null)  // the field may be deleted
+                        continue;
+                }
+                var value = ConvertJsonDataToObject(jsonData[key]);
+                var finalValue = Convert.ChangeType(value, field.FieldType);
+                field.SetValue(res, finalValue);
+            }
+        }
         #endregion
 
         #region Special Types
@@ -363,22 +527,33 @@ namespace BbxCommon
             return list;
         }
 
+        private static object ConvertJsonDataToHashSet(JsonData jsonData, Type type)
+        {
+            var hashSet = Activator.CreateInstance(type);
+            var addMethod = type.GetMethod("Add");
+            int index = 0;
+            while (jsonData.ContainsKey(index.ToString()))
+            {
+                var element = ConvertJsonDataToObject(jsonData[index.ToString()]);
+                addMethod.Invoke(hashSet, new object[] { element });
+                index++;
+            }
+            return hashSet;
+        }
+
         private static object ConvertJsonDataToDictionary(JsonData jsonData, Type type)
         {
-            var dict = Activator.CreateInstance(type);
+            var dic = Activator.CreateInstance(type);
             var addMethod = type.GetMethod("Add");
-            var keyType = type.GetGenericArguments()[0];
-            var valueType = type.GetGenericArguments()[1];
-
-            foreach (var key in jsonData.Keys)
+            int index = 0;
+            while (jsonData.ContainsKey(index.ToString() + ", Key"))
             {
-                if (key == m_TypeInfoKey)
-                    continue;
-                object realKey = Convert.ChangeType(key, keyType);
-                object realValue = ConvertJsonDataToObject(jsonData[key]);
-                addMethod.Invoke(dict, new object[] { realKey, realValue });
+                var key = ConvertJsonDataToObject(jsonData[index.ToString() + ", Key"]);
+                var value = ConvertJsonDataToObject(jsonData[index.ToString() + ", Value"]);
+                addMethod.Invoke(dic, new object[] { key, value });
+                index++;
             }
-            return dict;
+            return dic;
         }
         #endregion
 
@@ -416,12 +591,13 @@ namespace BbxCommon
                         type = typeof(List<>);
                         type = type.MakeGenericType(DeserializeTypeInfo(jsonData[m_GenericType1Key]));
                         return type;
+                    case "HashSet":
+                        type = typeof(HashSet<>);
+                        type = type.MakeGenericType(DeserializeTypeInfo(jsonData[m_GenericType1Key]));
+                        return type;
                     case "Dictionary":
-                            type = typeof(Dictionary<,>);
-                        type = type.MakeGenericType(
-                            DeserializeTypeInfo(jsonData[m_GenericType1Key]),
-                            DeserializeTypeInfo(jsonData[m_GenericType2Key])
-                        );
+                        type = typeof(Dictionary<,>);
+                        type = type.MakeGenericType(DeserializeTypeInfo(jsonData[m_GenericType1Key]), DeserializeTypeInfo(jsonData[m_GenericType2Key]));
                         return type;
                 }
             }

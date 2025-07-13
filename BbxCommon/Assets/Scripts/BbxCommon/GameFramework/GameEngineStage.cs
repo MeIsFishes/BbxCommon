@@ -11,6 +11,8 @@ namespace BbxCommon
 
             stage.AddDataGroup("GameEngineDefault");
 
+            stage.AddGameEngineEarlyUpdateSystem<InputSystem>();
+
             stage.AddGameEngineLateUpdateSystem<TaskSystem>();
 
             return stage;

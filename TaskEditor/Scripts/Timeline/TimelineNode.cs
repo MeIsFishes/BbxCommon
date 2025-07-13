@@ -22,7 +22,7 @@ namespace BbxCommon
         private float m_DurationBarOriginalX;
         private float m_DurationBarOriginalWidth;
 
-        public TaskTimelineEditData TimelineEditData => TaskEditData as TaskTimelineEditData;
+        public TimelineItemEditData TimelineEditData => TaskEditData as TimelineItemEditData;
 
         protected override void OnTaskUiOpen()
         {
@@ -60,7 +60,7 @@ namespace BbxCommon
 
         public void RefreshDurationBar()
         {
-            var maxTime = EditorModel.TimelineData.MaxTime;
+            var maxTime = EditorModel.TimelineSaveTarget.MaxTime;
             if (maxTime == 0)
                 return;
             float startX = m_DurationBarOriginalX + (TimelineEditData.StartTime / maxTime) * m_DurationBarOriginalWidth;
@@ -97,11 +97,11 @@ namespace BbxCommon
         #region Inspector Button
         private void OnBtnDeletePress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
-                    EditorModel.TimelineData.TaskDatas.RemoveAt(i);
+                    EditorModel.TimelineSaveTarget.TaskDatas.RemoveAt(i);
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
                     EditorModel.CurSelectTaskNode = null;
                     return;
@@ -111,17 +111,17 @@ namespace BbxCommon
 
         private void OnBtnMoveUpPress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
                     if (i == 0)
                         return;
-                    var temp = EditorModel.TimelineData.TaskDatas[i - 1];
-                    EditorModel.TimelineData.TaskDatas[i - 1] = EditorModel.TimelineData.TaskDatas[i];
-                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    var temp = EditorModel.TimelineSaveTarget.TaskDatas[i - 1];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i - 1] = EditorModel.TimelineSaveTarget.TaskDatas[i];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
-                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i - 1];
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i - 1];
                     return;
                 }
             }
@@ -129,17 +129,17 @@ namespace BbxCommon
 
         private void OnBtnMoveDownPress()
         {
-            for (int i = 0; i < EditorModel.TimelineData.TaskDatas.Count; i++)
+            for (int i = 0; i < EditorModel.TimelineSaveTarget.TaskDatas.Count; i++)
             {
-                if (EditorModel.TimelineData.TaskDatas[i] == TaskEditData)
+                if (EditorModel.TimelineSaveTarget.TaskDatas[i] == TaskEditData)
                 {
-                    if (i == EditorModel.TimelineData.TaskDatas.Count - 1)
+                    if (i == EditorModel.TimelineSaveTarget.TaskDatas.Count - 1)
                         return;
-                    var temp = EditorModel.TimelineData.TaskDatas[i + 1];
-                    EditorModel.TimelineData.TaskDatas[i + 1] = EditorModel.TimelineData.TaskDatas[i];
-                    EditorModel.TimelineData.TaskDatas[i] = temp;
+                    var temp = EditorModel.TimelineSaveTarget.TaskDatas[i + 1];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i + 1] = EditorModel.TimelineSaveTarget.TaskDatas[i];
+                    EditorModel.TimelineSaveTarget.TaskDatas[i] = temp;
                     EventBus.DispatchEvent(EEvent.TimelineTasksChanged);
-                    EditorModel.CurSelectTaskNode = EditorModel.TimelineData.Nodes[i + 1];
+                    EditorModel.CurSelectTaskNode = EditorModel.TimelineRoot.Nodes[i + 1];
                     return;
                 }
             }
@@ -160,8 +160,8 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.EnterConditions.Add(editData);
                     m_EnterConditionContainer.RefreshConditionList(timelineData.EnterConditions);
                 },
@@ -175,8 +175,8 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.Conditions.Add(editData);
                     m_ConditionContainer.RefreshConditionList(timelineData.Conditions);
                 },
@@ -190,8 +190,8 @@ namespace BbxCommon
             {
                 EditorModel.TaskSelector.OpenWithTags((taskInfo) =>
                 {
-                    var timelineData = this.TaskEditData as TaskTimelineEditData;
-                    var editData = TaskUtils.ExportInfoToTimelineEditData(taskInfo);
+                    var timelineData = this.TaskEditData as TimelineItemEditData;
+                    var editData = TaskUtils.TaskExportInfoToTimelineEditData(taskInfo);
                     timelineData.ExitConditions.Add(editData);
                     m_ExitConditionContainer.RefreshConditionList(timelineData.ExitConditions);
                 },
@@ -201,7 +201,7 @@ namespace BbxCommon
 
         private void RefreshConditionContainer()
         {
-            ConditionContainerRoot.Visible = (TaskEditData as TaskTimelineEditData).ExpandCondition;
+            ConditionContainerRoot.Visible = (TaskEditData as TimelineItemEditData).ExpandCondition;
             if (ConditionContainerRoot.Visible == true)
             {
                 m_EnterConditionContainer.RefreshConditionList(TimelineEditData.EnterConditions);
@@ -213,7 +213,7 @@ namespace BbxCommon
 
         private void OnConditionButton()
         {
-            (TaskEditData as TaskTimelineEditData).ExpandCondition = !ConditionContainerRoot.Visible;
+            (TaskEditData as TimelineItemEditData).ExpandCondition = !ConditionContainerRoot.Visible;
             RefreshConditionContainer();
         }
         #endregion

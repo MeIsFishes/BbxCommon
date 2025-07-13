@@ -14,7 +14,7 @@ namespace Dcg
             var stage = DcgGameEngine.Instance.StageWrapper.CreateStage("MapStage");
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiMap"));
-            stage.AddLoadItem(new MapInitData());
+            stage.AddLoadItem<MapInitData>();
             stage.AddUpdateSystem<MapSystem>();
    
             return stage;

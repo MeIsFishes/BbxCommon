@@ -43,14 +43,14 @@ namespace BbxCommon.Internal
                         // sort mods
                         if (m_ModList.Count == 0)
                         {
-                            m_ModList.Add(new ModInfo(FileApi.GetLastDirectoryOrFileOfPath(directory), modSettings));
+                            m_ModList.Add(new ModInfo(directory, modSettings));
                         }
                         else
                         {
                             for (int i = 0; i < m_ModList.Count; i++)
                             {
                                 if (m_ModList[i].ModSettings.Priority >= modSettings.Priority)
-                                    m_ModList.Insert(i, new ModInfo(FileApi.GetLastDirectoryOrFileOfPath(directory), modSettings));
+                                    m_ModList.Insert(i, new ModInfo(directory, modSettings));
                             }
                         }
                     }

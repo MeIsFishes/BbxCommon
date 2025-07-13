@@ -7,9 +7,12 @@ namespace BbxCommon
 	public enum EEvent
 	{
 		// common
+		EditorDataStoreRefresh,
 		CurSelectTaskNodeChanged,
-		// timeline
-		TimelineTasksChanged,
+		CurSaveTargetChanged,
+        SaveTargetListChanged,
+        // timeline
+        TimelineTasksChanged,
 		TimelineMaxTimeChanged,
 		TimelineNodeStartTimeOrDurationChanged,
 	}

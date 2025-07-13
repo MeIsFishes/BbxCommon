@@ -76,12 +76,11 @@ namespace BbxCommon
                 if (m_ElapsedTime > Duration)
                     m_ElapsedTime = Duration;
                 StartTask(m_ElapsedTime);
+                // update tasks
+                UpdateChild();
                 if (m_ElapsedTime >= Duration)
                     return ETaskRunState.Succeeded;
             }
-            // update tasks
-            
-            UpdateChild();
 
             return ETaskRunState.Running;
         }
@@ -97,10 +96,10 @@ namespace BbxCommon
                 var finishedIndexes = SimplePool<List<int>>.Alloc();
                 for (int k = 0; k < m_RunningTaskIndexes.Count; k++)
                 {
-                    var taskTimeLineInfo = m_TaskInfos[m_RunningTaskIndexes[k]];
-                    if (taskTimeLineInfo.EndTime < m_ElapsedTime)
+                    var taskTimelineInfo = m_TaskInfos[m_RunningTaskIndexes[k]];
+                    if (taskTimelineInfo.EndTime < m_ElapsedTime)
                     {
-                        taskTimeLineInfo.Task.Stop();
+                        taskTimelineInfo.Task.Stop();
                     }
                 }
                 for (int k = finishedIndexes.Count - 1; k >= 0; k--)

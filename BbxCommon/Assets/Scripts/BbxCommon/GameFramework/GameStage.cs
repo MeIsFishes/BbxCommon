@@ -238,13 +238,17 @@ namespace BbxCommon
             m_StageLoadItems.Add(item);
         }
 
+        public void AddLoadItem<T>() where T : IStageLoad, new()
+        {
+            AddLoadItem(new T());
+        }
+
         protected async UniTask OnLoadStageLoad(IProgress<float> progress)
         {
             foreach (var item in m_StageLoadItems)
             {
                 var itemWeight = await AsyncLoadStageItem(item);
                 progress?.Report(itemWeight);
-                //item.Load(this);
             }
             
         }
@@ -252,11 +256,9 @@ namespace BbxCommon
         private async UniTask<float> AsyncLoadStageItem(IStageLoad item)
         {
             var itemCount = m_StageLoadItems.Count + m_StageLateLoadItems.Count;
-            
             await UniTask.NextFrame();
             item.Load(this);
             return StageLoadingWeight / itemCount;
-
         }
         
         protected void OnUnloadStageLoad()
@@ -272,13 +274,17 @@ namespace BbxCommon
             m_StageLateLoadItems.Add(item);
         }
 
+        public void AddLateLoadItem<T>() where T : IStageLoad, new()
+        {
+            AddLateLoadItem(new T());
+        }
+
         protected async UniTask OnLoadStageLateLoad(IProgress<float> progress)
         {
             foreach (var item in m_StageLateLoadItems)
             {
                 var itemWeight = await AsyncLoadStageItem(item);
                 progress?.Report(itemWeight);
-                //item.Load(this);
             }
         }
 

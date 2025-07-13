@@ -159,6 +159,8 @@ namespace BbxCommon
                     res = (T)context.GetBlackBoardObjectValue(fieldInfo.Value);
                     break;
             }
+            if (res == null)
+                res = (T)Activator.CreateInstance(typeof(T));
             return res;
         }
 
@@ -168,6 +170,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (bool.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -190,6 +194,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (short.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -212,6 +218,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (ushort.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -234,6 +242,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (int.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -256,6 +266,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (uint.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -278,6 +290,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (long.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -300,6 +314,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (ulong.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -322,6 +338,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (float.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -344,6 +362,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (double.TryParse(fieldInfo.Value, out res) == false)
                     {
                         DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
@@ -366,6 +386,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     if (Enum.TryParse(typeof(T), fieldInfo.Value, out var obj))
                     {
                         res = (T)obj;
@@ -411,6 +433,8 @@ namespace BbxCommon
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
+                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
+                        return res;
                     var elements = fieldInfo.Value.Split(TaskExportCrossVariable.ListElementSplit, StringSplitOptions.RemoveEmptyEntries);
                     if (res is List<bool> boolList)
                     {
@@ -602,6 +626,7 @@ namespace BbxCommon
             RegisterFields();
             var res = new TaskExportInfo();
             res.TaskTypeName = this.GetType().Name;
+            res.TaskFullTypeName = this.GetType().FullName;
             // tags
             var attributes = this.GetType().GetCustomAttributes(true);
             bool overriden = false;

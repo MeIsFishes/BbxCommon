@@ -15,12 +15,12 @@ namespace Dcg
 
             stage.SetUiScene(DcgGameEngine.Instance.UiScene, Resources.Load<UiSceneAsset>("DndCardGame/Config/UiScene/UiGlobalScene"));
 
-            stage.AddLateLoadItem(new BuildTestTask());
-            stage.AddLoadItem(new InitSingletonComponent());
+            stage.AddLoadItem<InitSingletonComponent>();
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-
-            stage.AddLateLoadItem(new InitCamera());
-            stage.AddLateLoadItem(new BuildRandomPool());
+            
+            stage.AddLateLoadItem<BuildTestTask>();
+            stage.AddLateLoadItem<InitCamera>();
+            stage.AddLateLoadItem<BuildRandomPool>();
 
             stage.AddUpdateSystem<ProcessOperationSystem>();
 
@@ -32,7 +32,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 // generate
-                var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("Test", 0);
+                var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("CodeTest", 0);
                 var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5f);
                 timelineInfo.AddTimelineInfo(0f, 0f, 1);
                 timelineInfo.AddTimelineInfo(5f, 0f, 2);
@@ -43,9 +43,6 @@ namespace Dcg
 
                 var debugLogInfo2 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(2);
                 debugLogInfo2.AddFieldInfo(TaskNodeDebugLog.EField.Content, "5s later!");
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackLong, TaskContextTest.EField.BlackLong);
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackDouble, TaskContextTest.EField.BlackDouble);
-                debugLogInfo2.AddFieldInfoFromBlackboard(TaskNodeDebugLog.EField.BlackObject, TaskContextTest.EField.BlackObject);
                 debugLogInfo2.AddCondition(4);  // Normal Condition doesn't block entering. For the node output via OnEnter(), there will be output in console.
 
                 var greaterInfo1 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(3);

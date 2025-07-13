@@ -252,7 +252,7 @@ namespace BbxCommon
                 if (option.GetItemText(i) == label)
                     return i;
             }
-            return 0;
+            return -1;
         }
 
         public static void Select(this OptionButton option, string label)
