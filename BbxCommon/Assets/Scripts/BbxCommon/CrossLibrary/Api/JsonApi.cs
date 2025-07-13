@@ -111,6 +111,10 @@ namespace BbxCommon
             {
                 return ConvertListToJsonData(obj, type);
             }
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+            {
+                return ConvertDictionaryToJsonData(obj, type);
+            }
             // serialize class
             var jsonData = new JsonData();
             jsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
@@ -137,6 +141,23 @@ namespace BbxCommon
             }
             return listJsonData;
         }
+
+        private static JsonData ConvertDictionaryToJsonData(object obj, Type type)
+        {
+            var dictJsonData = new JsonData();
+            dictJsonData[m_TypeInfoKey] = GenerateTypeInfo(type);
+            var enumerator = obj as IEnumerable;
+            foreach (var item in enumerator)
+            {
+                var pair = item;
+                var keyProp = pair.GetType().GetProperty("Key");
+                var valueProp = pair.GetType().GetProperty("Value");
+                var key = keyProp.GetValue(pair, null);
+                var value = valueProp.GetValue(pair, null);
+                dictJsonData[key.ToString()] = ConvertObjectToJsonData(value);
+            }
+            return dictJsonData;
+        }
         #endregion
 
         #region Type Info
@@ -150,6 +171,12 @@ namespace BbxCommon
                 {
                     jsonData[m_SpecialTypeKey] = new JsonData("List");
                     jsonData[m_GenericType1Key] = GenerateTypeInfo(type.GetGenericArguments()[0]);
+                }
+                else if (type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    jsonData[m_SpecialTypeKey] = new JsonData("Dictionary");
+                    jsonData[m_GenericType1Key] = GenerateTypeInfo(type.GetGenericArguments()[0]);
+                    jsonData[m_GenericType2Key] = GenerateTypeInfo(type.GetGenericArguments()[1]);
                 }
             }
             else
@@ -282,6 +309,10 @@ namespace BbxCommon
                 {
                     return ConvertJsonDataToList(jsonData, type);
                 }
+                else if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(Dictionary<,>))
+                {
+                    return ConvertJsonDataToDictionary(jsonData, type);
+                }
                 else
                 {
                     var obj = type.GetConstructor(Type.EmptyTypes).Invoke(null);
@@ -331,6 +362,24 @@ namespace BbxCommon
             }
             return list;
         }
+
+        private static object ConvertJsonDataToDictionary(JsonData jsonData, Type type)
+        {
+            var dict = Activator.CreateInstance(type);
+            var addMethod = type.GetMethod("Add");
+            var keyType = type.GetGenericArguments()[0];
+            var valueType = type.GetGenericArguments()[1];
+
+            foreach (var key in jsonData.Keys)
+            {
+                if (key == m_TypeInfoKey)
+                    continue;
+                object realKey = Convert.ChangeType(key, keyType);
+                object realValue = ConvertJsonDataToObject(jsonData[key]);
+                addMethod.Invoke(dict, new object[] { realKey, realValue });
+            }
+            return dict;
+        }
         #endregion
 
         #region Type Info
@@ -366,6 +415,13 @@ namespace BbxCommon
                     case "List":
                         type = typeof(List<>);
                         type = type.MakeGenericType(DeserializeTypeInfo(jsonData[m_GenericType1Key]));
+                        return type;
+                    case "Dictionary":
+                            type = typeof(Dictionary<,>);
+                        type = type.MakeGenericType(
+                            DeserializeTypeInfo(jsonData[m_GenericType1Key]),
+                            DeserializeTypeInfo(jsonData[m_GenericType2Key])
+                        );
                         return type;
                 }
             }

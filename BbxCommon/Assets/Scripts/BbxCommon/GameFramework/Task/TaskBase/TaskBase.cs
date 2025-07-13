@@ -7,6 +7,7 @@ namespace BbxCommon
 {
     public enum ETaskRunState
     {
+        None,
         Running,
         Succeeded,
         Failed,
@@ -23,9 +24,11 @@ namespace BbxCommon
         // EnterCondition: Check once when task executes Enter().
         // Condition: Check every frame. If failed, the task will be stopped and return failed.
         // ExitCondition: Check every frame. If succeeded, the task will be stopped and return succeeded.
-        private List<TaskConditionBase> m_EnterCondition = new();
-        private List<TaskConditionBase> m_Conditions = new();
-        private List<TaskConditionBase> m_ExitConditions = new();
+        private TaskConnectPoint m_EnterCondition = new();
+        private TaskConnectPoint m_Conditions = new();
+        private TaskConnectPoint m_ExitConditions = new();
+
+        private ETaskRunState m_TaskRunState = ETaskRunState.None;
 
         public void Run()
         {
@@ -42,17 +45,17 @@ namespace BbxCommon
 
         public void AddEnterCondition(TaskConditionBase condition)
         {
-            m_EnterCondition.Add(condition);
+            m_EnterCondition.Tasks.Add(condition);
         }
 
         public void AddCondition(TaskConditionBase condition)
         {
-            m_Conditions.Add(condition);
+            m_Conditions.Tasks.Add(condition);
         }
 
         public void AddExitCondition(TaskConditionBase condition)
         {
-            m_ExitConditions.Add(condition);
+            m_ExitConditions.Tasks.Add(condition);
         }
 
         internal void Enter()
@@ -60,9 +63,9 @@ namespace BbxCommon
             IsRunning = true;
             m_RequiredStop = false;
             m_BlockEnter = false;
-            for (int i = 0; i < m_EnterCondition.Count; i++)
+            for (int i = 0; i < m_EnterCondition.Tasks.Count; i++)
             {
-                var condition = m_EnterCondition[i];
+                var condition = m_EnterCondition.Tasks[i];
                 condition.Enter();
                 var state = condition.Update(0);
                 condition.Exit();
@@ -72,9 +75,9 @@ namespace BbxCommon
                     return;
                 }
             }
-            for (int i = 0; i < m_Conditions.Count; i++)
+            for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
-                m_Conditions[i].Enter();
+                m_Conditions.Tasks[i].Enter();
             }
             OnEnter();
         }
@@ -85,16 +88,16 @@ namespace BbxCommon
                 return ETaskRunState.Succeeded;
             if (m_BlockEnter)
                 return ETaskRunState.Failed;
-            for (int i = 0; i < m_Conditions.Count; i++)
+            for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
-                if (m_Conditions[i].Update(deltaTime) == ETaskRunState.Failed)
+                if (m_Conditions.Tasks[i].Update(deltaTime) == ETaskRunState.Failed)
                 {
                     return ETaskRunState.Failed;
                 }
             }
-            for (int i = 0; i < m_ExitConditions.Count; i++)
+            for (int i = 0; i < m_ExitConditions.Tasks.Count; i++)
             {
-                if (m_ExitConditions[i].Update(deltaTime) == ETaskRunState.Succeeded)
+                if (m_ExitConditions.Tasks[i].Update(deltaTime) == ETaskRunState.Succeeded)
                 {
                     return ETaskRunState.Succeeded;
                 }
@@ -107,13 +110,13 @@ namespace BbxCommon
             IsRunning = false;
             if (m_BlockEnter)
                 return;
-            for (int i = 0; i < m_Conditions.Count; i++)
+            for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
-                m_Conditions[i].Exit();
+                m_Conditions.Tasks[i].Exit();
             }
-            for (int i = 0; i < m_ExitConditions.Count; i++)
+            for (int i = 0; i < m_ExitConditions.Tasks.Count; i++)
             {
-                m_ExitConditions[i].Exit();
+                m_ExitConditions.Tasks[i].Exit();
             }
             OnExit();
         }
@@ -654,6 +657,11 @@ namespace BbxCommon
             m_TempFieldList.Add(field);
         }
         #endregion
+
+        protected virtual TaskConnectPoint GetTaskConnect()
+        {
+            return null;
+        }
     }
 
     #region Task Extension

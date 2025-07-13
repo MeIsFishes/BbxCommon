@@ -2,6 +2,7 @@ using UnityEditor;
 using UnityEngine;
 using System.IO;
 using System.Collections.Generic;
+using BbxCommon;
 
 public class ResourcesDictionaryBuilder
 {
@@ -12,14 +13,13 @@ public class ResourcesDictionaryBuilder
         string outputPath = "Assets/Resources/ResourcesDictionary.json";
 
         string[] assetPaths = AssetDatabase.FindAssets("", new[] { resourcesPath });
-        List<ResourceDictionary> resourceList = new List<ResourceDictionary>();
+        Dictionary<string, string> resourceDict = new Dictionary<string, string>();
         HashSet<string> fileNames = new HashSet<string>();
 
         foreach (string guid in assetPaths)
         {
             string assetPath = AssetDatabase.GUIDToAssetPath(guid);
 
-            // 跳过文件夹和.meta文件
             if (AssetDatabase.GetMainAssetTypeAtPath(assetPath) == typeof(DefaultAsset)) continue;
             if (assetPath.EndsWith(".meta")) continue;
 
@@ -35,12 +35,13 @@ public class ResourcesDictionaryBuilder
                     continue;
                 }
 
-                resourceList.Add(new ResourceDictionary { name = fileName, path = relativePath });
+                resourceDict[fileName] = relativePath;
             }
         }
 
-        var wrapper = new ResourceDictionaryList { list = resourceList };
-        File.WriteAllText(outputPath, JsonUtility.ToJson(wrapper, true));
+        // 使用JsonApi序列化并写入文件
+        var jsonData = JsonApi.Serialize(resourceDict);
+        File.WriteAllText(outputPath, jsonData.ToJson());
         Debug.Log($"Resources Dictionary built at: {outputPath}");
     }
 

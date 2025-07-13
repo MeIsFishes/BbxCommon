@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
 using System.Text;
-using Unity.Entities.UniversalDelegates;
-using static ResourcesDictionaryBuilder;
+
 
 namespace BbxCommon.Internal
 {
@@ -370,20 +369,13 @@ namespace BbxCommon.Internal
                 return;
             }
 
-            // 反序列化
-            var wrapper = JsonUtility.FromJson<ResourceDictionaryList>(dictAsset.text);
-            if (wrapper == null || wrapper.list == null)
+            // 用JsonApi反序列化
+            var jsonData = LitJson.JsonMapper.ToObject(dictAsset.text);
+            m_ResourcesPathDic = JsonApi.Deserialize<Dictionary<string, string>>(jsonData);
+            if (m_ResourcesPathDic == null)
             {
                 Debug.LogError("ResourcesDictionary.json format error!");
                 return;
-            }
-
-            foreach (var entry in wrapper.list)
-            {
-                if (!m_ResourcesPathDic.ContainsKey(entry.name))
-                    m_ResourcesPathDic.Add(entry.name, entry.path);
-                else
-                    Debug.LogWarning($"Duplicate resource name in dictionary: {entry.name}");
             }
         }
 
