@@ -132,17 +132,14 @@ namespace BbxCommon
         #endregion
 
         #region Read Field Info
+
+        #region Common
         public virtual void GetFieldEnumTypes(List<Type> res)
         {
             res.Add(GetFieldEnumType());
         }
         protected abstract Type GetFieldEnumType();
         public abstract void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context);
-        /// <summary>
-        /// Read task refrences for child nodes. Most frequently used in low-level drive nodes, such as Sequence, Selector in
-        /// behavior tree.
-        /// </summary>
-        public virtual void ReadRefrenceInfo(int fieldEnum, List<TaskBase> tasks, TaskContextBase context) { }
 
         protected T ReadValue<T>(TaskFieldInfo fieldInfo, TaskContextBase context)
         {
@@ -163,7 +160,9 @@ namespace BbxCommon
                 res = (T)Activator.CreateInstance(typeof(T));
             return res;
         }
+        #endregion
 
+        #region Base Type
         protected bool ReadBool(TaskFieldInfo fieldInfo, TaskContextBase context)
         {
             bool res = default;
@@ -425,7 +424,9 @@ namespace BbxCommon
             }
             return res;
         }
+        #endregion
 
+        #region Special Type
         protected List<T> ReadList<T>(TaskFieldInfo fieldInfo, TaskContextBase context, List<T> res)
         {
             res ??= new List<T>();
@@ -610,6 +611,42 @@ namespace BbxCommon
         }
         #endregion
 
+        #region Task Connect Point
+        /// <summary>
+        /// For task instances should be deserialized first, it can't read refrences during deserialization. We cache those
+        /// connect point and then initialize them after deserialization is done.
+        /// </summary>
+        private List<TaskConnectPoint> m_CachedConnectPoint = new();
+
+        /// <summary>
+        /// Read task refrences for child nodes. Most frequently used in low-level drive nodes, such as Sequence, Selector in
+        /// behavior tree.
+        /// </summary>
+        protected TaskConnectPoint ReadConnectPoint(TaskFieldInfo fieldInfo, TaskContextBase context)
+        {
+            var res = new TaskConnectPoint();
+            ReadList(fieldInfo, context, res.TaskRefrenceIds);
+            m_CachedConnectPoint.Add(res);
+            return res;
+        }
+
+        internal void InitConnectPoint(Dictionary<int, TaskBase> taskDic)
+        {
+            for (int i = 0; i < m_CachedConnectPoint.Count; i++)
+            {
+                var connectPoint = m_CachedConnectPoint[i];
+                for (int j = 0; j < connectPoint.TaskRefrenceIds.Count; j++)
+                {
+                    connectPoint.Tasks.Add(taskDic[connectPoint.TaskRefrenceIds[j]]);
+                }
+                connectPoint.TaskRefrenceIds.Clear();
+            }
+            m_CachedConnectPoint.Clear();
+        }
+        #endregion
+
+        #endregion
+
         #region Register Field Info
         internal class RegisteredField
         {
@@ -682,11 +719,6 @@ namespace BbxCommon
             m_TempFieldList.Add(field);
         }
         #endregion
-
-        protected virtual TaskConnectPoint GetTaskConnect()
-        {
-            return null;
-        }
     }
 
     #region Task Extension

@@ -19,12 +19,6 @@ namespace BbxCommon
         public string Value;
     }
 
-    public struct TaskRefrenceInfo
-    {
-        public string FieldName;
-        public List<int> Ids;
-    }
-
     public struct TaskTimelineItemInfo
     {
         public float StartTime;
@@ -39,7 +33,6 @@ namespace BbxCommon
         public List<int> EnterConditionReferences = new();
         public List<int> ConditionReferences = new();
         public List<int> ExitConditionReferences = new();
-        public List<TaskRefrenceInfo> TaskRefrences = new();  // the refrence of other Tasks, for example, Sequence needs to connect with other Tasks
         public List<TaskTimelineItemInfo> TimelineItemInfos = new();    // TaskTimeline uses this struct
 
         #region Add Field Info

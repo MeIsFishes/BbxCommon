@@ -14,5 +14,6 @@ namespace BbxCommon.Internal
     {
         public ETaskConnectPointType ConnectPointType = ETaskConnectPointType.Multiple;
         public List<TaskBase> Tasks = new();
+        internal List<int> TaskRefrenceIds = new();
     }
 }

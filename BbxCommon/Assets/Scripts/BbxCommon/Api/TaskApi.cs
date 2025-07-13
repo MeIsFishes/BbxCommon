@@ -90,6 +90,10 @@ namespace BbxCommon
                     res.GenericType2 = GenerateTaskTypeInfo(type.GenericTypeArguments[1]);
                 }
             }
+            else if (type == typeof(TaskConnectPoint))
+            {
+                res.TypeName = "TaskConnectPoint";
+            }
             else if (type.IsEnum)
             {
                 res.TypeName = type.FullName;

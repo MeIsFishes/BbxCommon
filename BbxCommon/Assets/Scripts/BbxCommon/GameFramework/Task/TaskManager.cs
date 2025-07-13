@@ -74,28 +74,15 @@ namespace BbxCommon
             {
                 taskDic[pair.Key] = DeserializeTask(pair.Value, context);
             }
+            foreach (var pair in taskDic)
+            {
+                pair.Value.InitConnectPoint(taskDic);
+            }
             // read task reference
             foreach (var pair in taskGroupInfo.TaskInfos)
             {
                 var task = taskDic[pair.Key];
                 var taskInfo = pair.Value;
-                foreach (var refrenceInfo in taskInfo.TaskRefrences)
-                {
-                    var enumTypes = new List<Type>();
-                    task.GetFieldEnumTypes(enumTypes);
-                    foreach (var enumType in enumTypes)
-                    {
-                        var enumValue = Enum.Parse(enumType, refrenceInfo.FieldName);
-                        var taskList = SimplePool<List<TaskBase>>.Alloc();
-                        for (int i = 0; i < refrenceInfo.Ids.Count; i++)
-                        {
-                            taskList.Add(taskDic[refrenceInfo.Ids[i]]);
-                        }
-                        task.ReadRefrenceInfo(enumValue.GetHashCode(), taskList, context);
-                        taskList.CollectToPool();
-                    }
-                    enumTypes.CollectToPool();
-                }
                 // read timeline info
                 if (task is TaskTimeline taskTimeline)
                 {
@@ -160,7 +147,7 @@ namespace BbxCommon
         }
 
         /// <summary>
-        /// Deserialize only <see cref="TaskFieldInfo"/>. <see cref="TaskRefrenceInfo"/> will be deserialized in <see cref="RunTask(string, TaskContextBase)"/>.
+        /// Deserialize only <see cref="TaskFieldInfo"/>.
         /// </summary>
         private TaskBase DeserializeTask(TaskValueInfo taskValueInfo, TaskContextBase context)
         {
