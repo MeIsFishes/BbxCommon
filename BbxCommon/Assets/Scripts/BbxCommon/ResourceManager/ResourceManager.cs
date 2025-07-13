@@ -361,6 +361,11 @@ namespace BbxCommon.Internal
             if (m_HasLoadResDictionar) return;
             m_HasLoadResDictionar = true;
 
+#if UNITY_EDITOR
+            ResourcesDictionaryBuilder.BuildResourcesDictionary();
+            UnityEditor.AssetDatabase.Refresh();
+#endif
+
             // 加载 ResourcesDictionary.json
             TextAsset dictAsset = Resources.Load<TextAsset>("ResourcesDictionary");
             if (dictAsset == null)
