@@ -6,7 +6,7 @@ using BbxCommon.Internal;
 
 namespace Dcg
 {
-    // ÐÐÎªÊ÷¸ù½Úµã
+    // ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½
     public class TaskBtRoot : TaskBase
     {
         public TaskConnectPoint Tasks = new();
@@ -22,7 +22,7 @@ namespace Dcg
             {
                 return;
             }
-            Tasks.Tasks[0].Run();
+            Tasks.Tasks[0].Enter();
         }
 
         protected override ETaskRunState OnUpdate(float deltaTime)
@@ -62,7 +62,7 @@ namespace Dcg
             switch (fieldEnum)
             {
                 case (int)EField.Tasks:
-                    Tasks = ReadValue<TaskConnectPoint>(fieldInfo, context);
+                    Tasks = ReadConnectPoint(fieldInfo, context);
                     break;
                 default:
                     break;

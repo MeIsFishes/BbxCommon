@@ -9,8 +9,7 @@ namespace BbxCommon
     public class TaskNodeSelector : TaskBase
     {
         public TaskConnectPoint Tasks = new();
-        private int m_CurrentIndex;
-        private bool m_FoundValid;
+        private int m_CurrentIndex = -1;
 
         public enum EField
         {
@@ -20,43 +19,36 @@ namespace BbxCommon
         protected override void OnEnter()
         {
             m_CurrentIndex = 0;
-            m_FoundValid = false;
-            if (Tasks.Tasks.Count > 0)
+
+            for (int i = 0; i < Tasks.Tasks.Count; i++)
             {
-                Tasks.Tasks[m_CurrentIndex].Run();
+                if (Tasks.Tasks[i].CanEnter())
+                {
+                    m_CurrentIndex = i;
+                    Tasks.Tasks[i].Enter();
+                    return;
+                }
             }
         }
 
         protected override ETaskRunState OnUpdate(float deltaTime)
         {
-            if (Tasks.Tasks.Count == 0)
+            if (Tasks.Tasks.Count == 0 || m_CurrentIndex == -1)
             {
                 return ETaskRunState.Failed;
             }
 
-            while (m_CurrentIndex < Tasks.Tasks.Count)
-            {
-                var task = Tasks.Tasks[m_CurrentIndex];
-                if (!m_FoundValid)
-                {
-                    task.Run();
-                    m_FoundValid = true;
-                }
-                var state = task.Update(deltaTime);
+            var task = Tasks.Tasks[m_CurrentIndex];
+                
+            var state = task.Update(deltaTime);
 
-                if (state == ETaskRunState.Running)
-                {
-                    return ETaskRunState.Running;
-                }
-                if (state == ETaskRunState.Succeeded)
-                {
-                    return ETaskRunState.Succeeded;
-                }
-                    
-                m_CurrentIndex++;
-                m_FoundValid = false;
+            if (state == ETaskRunState.Running)
+            {
+                return ETaskRunState.Running;
             }
-            return ETaskRunState.Failed;
+            //extra logic?
+
+            return ETaskRunState.Succeeded;
         }
 
         protected override void OnExit()
@@ -68,7 +60,7 @@ namespace BbxCommon
         {
             base.OnCollect();
             Tasks = null;
-            m_CurrentIndex = 0;
+            m_CurrentIndex = -1;
         }
 
         public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
@@ -76,7 +68,7 @@ namespace BbxCommon
             switch (fieldEnum)
             {
                 case (int)EField.Tasks:
-                    Tasks = ReadValue<TaskConnectPoint>(fieldInfo, context);
+                    Tasks = ReadConnectPoint(fieldInfo, context);
                     break;
                 default:
                     break;

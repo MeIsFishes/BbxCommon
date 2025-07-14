@@ -17,8 +17,9 @@ namespace Dcg
 
             stage.AddLoadItem<InitSingletonComponent>();
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-            
+
             stage.AddLateLoadItem<BuildTestTask>();
+            stage.AddLateLoadItem<BuildTestBtTask>();
             stage.AddLateLoadItem<InitCamera>();
             stage.AddLateLoadItem<BuildRandomPool>();
 
@@ -63,6 +64,29 @@ namespace Dcg
                 });
                 TaskApi.RunTask("Test", context);
                 context.CollectToPool();
+            }
+
+            void IStageLoad.Unload(GameStage stage)
+            {
+
+            }
+        }
+
+        private class BuildTestBtTask : IStageLoad
+        {
+            void IStageLoad.Load(GameStage stage)
+            {
+                //to do
+                var root = new TaskBtRoot();
+                var sequence = new BbxCommon.TaskNodeSequence();
+                var log1 = new TaskNodeDebugLog { Content = "step1" };
+                var log2 = new TaskNodeDebugLog { Content = "step2" };
+
+                root.Tasks.Tasks.Add(sequence);
+                sequence.Tasks.Tasks.Add(log1);
+                sequence.Tasks.Tasks.Add(log2);
+
+                root.Run();
             }
 
             void IStageLoad.Unload(GameStage stage)

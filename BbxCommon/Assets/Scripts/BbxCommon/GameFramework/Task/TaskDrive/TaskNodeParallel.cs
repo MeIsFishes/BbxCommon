@@ -25,7 +25,7 @@ namespace BbxCommon
             }
             for (int i = 0; i < Tasks.Tasks.Count; i++)
             {
-                Tasks.Tasks[0].Run();
+                Tasks.Tasks[0].Enter();
             }
         }
 
@@ -58,7 +58,7 @@ namespace BbxCommon
             switch (fieldEnum)
             {
                 case (int)EField.Tasks:
-                    Tasks = ReadValue<TaskConnectPoint>(fieldInfo, context);
+                    Tasks = ReadConnectPoint(fieldInfo, context);
                     break;
                 default:
                     break;

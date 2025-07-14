@@ -23,7 +23,7 @@ namespace BbxCommon
             m_CurrentIndex = 0;
             if (Tasks.Tasks.Count > 0)
             {
-                Tasks.Tasks[m_CurrentIndex].Run();
+                Tasks.Tasks[m_CurrentIndex].Enter();
             }
         }
 
@@ -38,10 +38,7 @@ namespace BbxCommon
             while (m_CurrentIndex < Tasks.Tasks.Count)
             {
                 var state = Tasks.Tasks[m_CurrentIndex].Update(deltaTime);
-                if (state == ETaskRunState.Failed)
-                {
-                    return ETaskRunState.Failed;
-                }
+                
                 if (state == ETaskRunState.Running)
                 {
                     return ETaskRunState.Running;
@@ -50,7 +47,7 @@ namespace BbxCommon
                 m_CurrentIndex++;
                 if (m_CurrentIndex < Tasks.Tasks.Count)
                 {
-                    Tasks.Tasks[m_CurrentIndex].Run();
+                    Tasks.Tasks[m_CurrentIndex].Enter();
                 }
                     
             }
@@ -74,7 +71,7 @@ namespace BbxCommon
             switch (fieldEnum)
             {
                 case (int)EField.Tasks:
-                    Tasks = ReadValue<TaskConnectPoint>(fieldInfo, context);
+                    Tasks = ReadConnectPoint(fieldInfo, context);
                     break;
                 default:
                     break;

@@ -28,8 +28,6 @@ namespace BbxCommon
         private TaskConnectPoint m_Conditions = new();
         private TaskConnectPoint m_ExitConditions = new();
 
-        private ETaskRunState m_TaskRunState = ETaskRunState.None;
-
         public void Run()
         {
             TaskManager.Instance.RunTask(this);
@@ -80,6 +78,23 @@ namespace BbxCommon
                 m_Conditions.Tasks[i].Enter();
             }
             OnEnter();
+        }
+
+        public bool CanEnter()
+        {
+            for (int i = 0; i < m_EnterCondition.Tasks.Count; i++)
+            {
+                var condition = m_EnterCondition.Tasks[i];
+                condition.Enter();
+                var state = condition.Update(0);
+                condition.Exit();
+                if (state == ETaskRunState.Failed)
+                {
+                    m_BlockEnter = true;
+                    return false;
+                }
+            }
+            return true;
         }
 
         internal ETaskRunState Update(float deltaTime)
