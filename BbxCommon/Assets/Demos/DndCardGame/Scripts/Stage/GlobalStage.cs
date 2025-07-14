@@ -17,7 +17,7 @@ namespace Dcg
 
             stage.AddLoadItem<InitSingletonComponent>();
             stage.AddLoadItem(Resources.Load<DcgInteractingDataAsset>("DndCardGame/Config/DcgInteractingDataAsset"));
-
+            
             stage.AddLateLoadItem<BuildTestTask>();
             stage.AddLateLoadItem<BuildTestBtTask>();
             stage.AddLateLoadItem<InitCamera>();
@@ -76,17 +76,32 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                //to do
-                var root = new TaskBtRoot();
-                var sequence = new BbxCommon.TaskNodeSequence();
-                var log1 = new TaskNodeDebugLog { Content = "step1" };
-                var log2 = new TaskNodeDebugLog { Content = "step2" };
+                // 1. 创建 TaskGroupInfo
+                var groupInfo = TaskApi.CreateTaskInfo<TaskContextTest>("CodeTest", 0);
 
-                root.Tasks.Tasks.Add(sequence);
-                sequence.Tasks.Tasks.Add(log1);
-                sequence.Tasks.Tasks.Add(log2);
+                // 2. 创建 TaskValueInfo 节点
+                // 0: root
+                var rootInfo = groupInfo.CreateTaskValueInfo<TaskBtRoot>(0);
+                rootInfo.AddTaskConnectPoint(TaskBtRoot.EField.Tasks, new int[]{1});
 
-                root.Run();
+                 // 1: sequence
+                var sequence = groupInfo.CreateTaskValueInfo<TaskNodeSequence>(1);
+                sequence.AddTaskConnectPoint(TaskBtRoot.EField.Tasks, new int[]{2, 3});
+
+                // 2: log1
+                var debugLogInfo1 = groupInfo.CreateTaskValueInfo<TaskNodeDebugLog>(2);
+                debugLogInfo1.AddFieldInfo(TaskNodeDebugLog.EField.Content, "step1");
+
+                // 3: log2
+                var debugLogInfo2 = groupInfo.CreateTaskValueInfo<TaskNodeDebugLog>(3);
+                debugLogInfo2.AddFieldInfo(TaskNodeDebugLog.EField.Content, "step2");
+
+
+                TaskApi.RegisterTask("TestBt", groupInfo);
+
+                var context = ObjectPool<Dcg.TaskContextTest>.Alloc();
+                TaskApi.RunTask("TestBt", context);
+                context.CollectToPool();
             }
 
             void IStageLoad.Unload(GameStage stage)
