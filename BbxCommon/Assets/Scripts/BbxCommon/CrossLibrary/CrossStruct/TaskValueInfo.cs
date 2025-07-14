@@ -180,13 +180,29 @@ namespace BbxCommon
             FieldInfos.Add(fieldInfo);
         }
 
-        public void AddFieldInfoFromBlackboard<TTaskField, TBlackboardField>(TTaskField taskFieldEnum, TBlackboardField contextFieldEnum)
-            where TTaskField : Enum where TBlackboardField : Enum
+        public void AddTaskConnectPoint<TTaskField>(TTaskField fieldEnum, params int[] taskIds)
+            where TTaskField : Enum
+        {
+            var fieldInfo = new TaskFieldInfo();
+            fieldInfo.FieldName = fieldEnum.ToString();
+            fieldInfo.ValueSource = ETaskFieldValueSource.Value;
+            var sb = new StringBuilder();
+            for (int i = 0; i < taskIds.Length; i++)
+            {
+                sb.Append(taskIds[i].ToString());
+                sb.Append(TaskExportCrossVariable.ListElementSplit);
+            }
+            fieldInfo.Value = sb.ToString();
+            FieldInfos.Add(fieldInfo);
+        }
+
+        public void AddFieldInfoFromBlackboard<TTaskField>(TTaskField taskFieldEnum, string key)
+            where TTaskField : Enum
         {
             var fieldInfo = new TaskFieldInfo();
             fieldInfo.FieldName = taskFieldEnum.ToString();
             fieldInfo.ValueSource = ETaskFieldValueSource.Blackboard;
-            fieldInfo.Value = contextFieldEnum.ToString();
+            fieldInfo.Value = key;
             FieldInfos.Add(fieldInfo);
         }
         
