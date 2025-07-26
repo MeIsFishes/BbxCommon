@@ -87,6 +87,10 @@ namespace BbxCommon
                     m_LabelItems.Add(item);
                 }
             }
+            if (EditorModel.CurSaveTarget == null && EditorModel.SaveTargetList.Count > 0)
+            {
+                EditorModel.CurSaveTarget = EditorModel.SaveTargetList[0];
+            }
             OnCurSaveTargetChanged();
         }
 

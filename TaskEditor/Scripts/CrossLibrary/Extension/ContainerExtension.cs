@@ -430,6 +430,22 @@ namespace BbxCommon
         }
 
         /// <summary>
+        /// If contained, return true, or return false.
+        /// </summary>
+        public static bool TryRemove<T>(this HashSet<T> set, T element)
+        {
+            if (set.Contains(element))
+            {
+                set.Remove(element);
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Add array's members to the HashSet.
         /// </summary>
         public static void AddArray<T>(this HashSet<T> set, T[] array)

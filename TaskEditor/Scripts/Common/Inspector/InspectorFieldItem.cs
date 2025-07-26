@@ -53,10 +53,26 @@ namespace BbxCommon
         protected override void OnUiOpen()
         {
 			m_OriginalMinY = CustomMinimumSize.Y;
+			OnUiInitFieldNameLabel();
 			OnUiInitValueSourceOption();
 			OnUiInitCustomValueEdit();
 			OnUiInitPresetValueOption();
             OnUiInitCollectionItemRoot();
+        }
+
+		private void OnUiInitFieldNameLabel()
+		{
+            FieldNameLabel.MouseEntered += () =>
+			{
+				if (m_EditFieldInfo != null)
+				{
+					EditorModel.ShowTipsText(FieldNameLabel, TaskUtils.GenerateTaskFieldTypeString(m_EditFieldInfo.TypeInfo));
+				}
+			};
+            FieldNameLabel.MouseExited += () =>
+            {
+                EditorModel.HideTipsText(FieldNameLabel);
+            };
         }
 
         private void OnUiInitValueSourceOption()

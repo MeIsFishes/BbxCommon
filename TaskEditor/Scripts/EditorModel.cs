@@ -200,12 +200,36 @@ namespace BbxCommon
         }
 		#endregion
 
-		#endregion
+		#region TipsText
+		public static TipsText TipsText;
 
-		#region Save Target
+		private static HashSet<Node> m_TipsTextShowRequester = new();
 
-		#region Common
-		public static List<SaveTargetBase> SaveTargetList = new(); // loaded files
+		public static void ShowTipsText(Node requester, string text)
+		{
+			TipsText.Visible = true;
+			TipsText.SetText(text);
+			// calculate position
+			TipsText.Position = TipsText.GetGlobalMousePosition();
+            m_TipsTextShowRequester.TryAdd(requester);
+		}
+
+		public static void HideTipsText(Node requester)
+		{
+			m_TipsTextShowRequester.TryRemove(requester);
+			if (m_TipsTextShowRequester.Count == 0)
+			{
+				TipsText.Visible = false;
+			}
+		}
+        #endregion
+
+        #endregion
+
+        #region Save Target
+
+        #region Common
+        public static List<SaveTargetBase> SaveTargetList = new(); // loaded files
 
 		private static SaveTargetBase m_CurSaveTarget;
         public static SaveTargetBase CurSaveTarget

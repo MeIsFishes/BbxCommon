@@ -8,6 +8,8 @@ namespace BbxCommon
 		[Export]
 		public PackedScene FieldPrefab;
 		[Export]
+		public ScrollContainer FieldScrollContainer;
+		[Export]
 		public Container FieldItemRoot;
 		[Export]
 		public PackedScene ButtonPrefab;
@@ -93,7 +95,7 @@ namespace BbxCommon
 			float rootY = GetTree().Root.Size.Y - 10;	// -10 to keep the bottom padding
             ButtonItemRoot.Position = new Vector2(ButtonItemRoot.Position.X, rootY - buttonSizeY - this.Position.Y);
 			ButtonItemRoot.Size = new Vector2(ButtonItemRoot.Size.X, buttonSizeY);
-			FieldItemRoot.Size = new Vector2(FieldItemRoot.Size.X, rootY - FieldItemRoot.Position.Y - buttonSizeY);
+			FieldScrollContainer.Size = new Vector2(FieldScrollContainer.Size.X, this.Size.Y - FieldItemRoot.GlobalPosition.Y - buttonSizeY);
 		}
     }
 }

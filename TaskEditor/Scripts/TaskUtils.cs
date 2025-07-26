@@ -38,6 +38,28 @@ namespace BbxCommon
         }
         #endregion
 
+        #region Export Info
+        public static string GenerateTaskFieldTypeString(TaskExportTypeInfo typeInfo)
+        {
+            var strs = typeInfo.TypeName.Split('.');
+            var finalType = strs[strs.Length - 1];
+            if (typeInfo.GenericType1 != null || typeInfo.GenericType2 != null)
+            {
+                finalType += "<";
+                if (typeInfo.GenericType1 != null)
+                {
+                    finalType += GenerateTaskFieldTypeString(typeInfo.GenericType1);
+                }
+                if (typeInfo.GenericType2 != null)
+                {
+                    finalType += ", " + GenerateTaskFieldTypeString(typeInfo.GenericType2);
+                }
+                finalType += ">";
+            }
+            return finalType;
+        }
+        #endregion
+
         #region Convert
         public static TimelineItemEditData TaskExportInfoToTimelineEditData(TaskExportInfo exportInfo)
         {
