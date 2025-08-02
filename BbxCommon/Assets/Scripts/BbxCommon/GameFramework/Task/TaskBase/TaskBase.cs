@@ -730,7 +730,7 @@ namespace BbxCommon
             var field = new RegisteredField();
             field.Name = fieldEnum.ToString();
             field.EnumValue = fieldEnum.GetHashCode();
-            field.TypeInfo = TaskApi.GenerateTaskTypeInfo(typeof(TObj));
+            field.TypeInfo = TaskApi.GenerateTaskTypeInfo(typeof(TObj), obj);
             m_TempFieldList.Add(field);
         }
         #endregion

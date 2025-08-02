@@ -35,7 +35,7 @@ namespace BbxCommon
         #endregion
 
         #region Export Task
-        internal static TaskExportTypeInfo GenerateTaskTypeInfo(Type type)
+        internal static TaskExportTypeInfo GenerateTaskTypeInfo(Type type, object obj = null)
         {
             var res = new TaskExportTypeInfo();
             if (type == typeof(bool))
@@ -93,6 +93,22 @@ namespace BbxCommon
             else if (type == typeof(TaskConnectPoint))
             {
                 res.TypeName = "TaskConnectPoint";
+                if (obj == null)
+                {
+                    DebugApi.LogError("You passed a null object to GenerateTaskTypeInfo for TaskConnectPoint. This is not expected!");
+                }
+                else
+                {
+                    switch ((obj as TaskConnectPoint).ConnectPointType)
+                    {
+                        case ETaskConnectPointType.Single:
+                            res.TypeName += ".Single";
+                            break;
+                        case ETaskConnectPointType.Multiple:
+                            res.TypeName += ".Multiple";
+                            break;
+                    }
+                }
             }
             else if (type.IsEnum)
             {
