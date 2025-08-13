@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://cg583i6ilt1el"]
+[gd_scene load_steps=16 format=3 uid="uid://cg583i6ilt1el"]
 
 [ext_resource type="Script" path="res://Scripts/EditorRoot.cs" id="1_e157r"]
 [ext_resource type="Script" path="res://Scripts/Common/Inspector/Inspector.cs" id="2_rhmro"]
@@ -12,8 +12,9 @@
 [ext_resource type="Script" path="res://addons/BbxCommon/BbxButton.cs" id="9_dmcw6"]
 [ext_resource type="PackedScene" uid="uid://63a5dib7y7e8" path="res://Scene/SettingsPanel.tscn" id="10_61wjl"]
 [ext_resource type="Script" path="res://Scripts/Common/FileLabel/FileLabelRoot.cs" id="10_dnkja"]
+[ext_resource type="PackedScene" uid="uid://86266vncjvcc" path="res://Scene/GraphEdit.tscn" id="10_iy1b0"]
 [ext_resource type="PackedScene" uid="uid://dbl81khnvruc8" path="res://Prefabs/FileLabelItem.tscn" id="11_bgggg"]
-[ext_resource type="PackedScene" uid="uid://drokc3gydcvn" path="res://Prefabs/TipsText.tscn" id="14_105l1"]
+[ext_resource type="PackedScene" path="res://Prefabs/TipsText.tscn" id="14_105l1"]
 
 [node name="Control" type="Control"]
 process_mode = 3
@@ -24,12 +25,13 @@ anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("TimelineRoot", "EmptyRoot", "BindContextOption", "SettingsPanelButton", "SaveButton", "SaveAsButton", "LoadButton")]
+[node name="EditorRoot" type="Control" parent="." node_paths=PackedStringArray("TimelineRoot", "GraphRoot", "EmptyRoot", "BindContextOption", "SettingsPanelButton", "SaveButton", "SaveAsButton", "LoadButton")]
 anchors_preset = 0
 offset_right = 1600.0
 offset_bottom = 900.0
 script = ExtResource("1_e157r")
 TimelineRoot = NodePath("TimelineRoot")
+GraphRoot = NodePath("GraphRoot")
 EmptyRoot = NodePath("EmptyRoot")
 BindContextOption = NodePath("TopMenu/BindContext/OptionButton")
 SettingsPanelButton = NodePath("TopMenu/SettingsPanelButton/Button")
@@ -37,7 +39,7 @@ SaveButton = NodePath("TopMenu/SaveButton/Button")
 SaveAsButton = NodePath("TopMenu/SaveAsButton/Button")
 LoadButton = NodePath("TopMenu/LoadButton/Button")
 
-[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldScrollContainer", "FieldItemRoot", "ButtonItemRoot", "Title")]
+[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -48,7 +50,6 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_rhmro")
 FieldPrefab = ExtResource("3_1cbrp")
-FieldScrollContainer = NodePath("ScrollContainer")
 FieldItemRoot = NodePath("ScrollContainer/FieldsRoot")
 ButtonPrefab = ExtResource("4_l3n08")
 ButtonItemRoot = NodePath("ButtonContainer")
@@ -303,6 +304,14 @@ text = "New Task"
 script = ExtResource("9_dmcw6")
 Hotkeys = [32]
 HotkeyGroup1 = [4194326, 67]
+
+[node name="GraphRoot" parent="EditorRoot" instance=ExtResource("10_iy1b0")]
+layout_mode = 0
+offset_left = 4.0
+offset_top = 107.0
+offset_right = 1148.0
+offset_bottom = 894.0
+scroll_offset = Vector2(-40, -135)
 
 [node name="TopMenu" type="Control" parent="EditorRoot"]
 layout_mode = 3

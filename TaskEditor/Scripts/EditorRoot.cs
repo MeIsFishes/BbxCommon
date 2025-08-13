@@ -10,6 +10,8 @@ namespace BbxCommon
 		[Export]
 		public TimelineRoot TimelineRoot;
 		[Export]
+		public TaskGraphManager GraphRoot;
+		[Export]
 		public Control EmptyRoot;
 		[Export]
 		public OptionButton BindContextOption;
@@ -72,12 +74,20 @@ namespace BbxCommon
 			{
 				EmptyRoot.Visible = true;
 				TimelineRoot.Visible = false;
+				GraphRoot.Visible = false;
 			}
 			else if (EditorModel.CurSaveTarget.IsTimeline)
 			{
                 EmptyRoot.Visible = false;
                 TimelineRoot.Visible = true;
+                GraphRoot.Visible = false;
                 BindContextOption.Select(EditorModel.CurSaveTarget.BindingContextType.TryRemoveStart("TaskContext"));
+			}
+			else if (EditorModel.CurSaveTarget.IsGraphNode)
+			{
+				EmptyRoot.Visible = false;
+				TimelineRoot.Visible = false;
+				GraphRoot.Visible = true;
 			}
 			else
 			{

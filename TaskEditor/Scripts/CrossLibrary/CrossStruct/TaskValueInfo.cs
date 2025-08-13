@@ -196,6 +196,21 @@ namespace BbxCommon
             FieldInfos.Add(fieldInfo);
         }
 
+        public void AddTaskConnectPoint(string fieldEnum, List<int> taskIds)
+        {
+            var fieldInfo = new TaskFieldInfo();
+            fieldInfo.FieldName = fieldEnum;
+            fieldInfo.ValueSource = ETaskFieldValueSource.Value;
+            var sb = new StringBuilder();
+            for (int i = 0; i < taskIds.Count; i++)
+            {
+                sb.Append(taskIds[i].ToString());
+                sb.Append(TaskExportCrossVariable.ListElementSplit);
+            }
+            fieldInfo.Value = sb.ToString();
+            FieldInfos.Add(fieldInfo);
+        }
+        
         public void AddFieldInfoFromBlackboard<TTaskField>(TTaskField taskFieldEnum, string key)
             where TTaskField : Enum
         {
