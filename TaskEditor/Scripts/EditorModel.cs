@@ -77,6 +77,48 @@ namespace BbxCommon
 		public List<TaskEditData> Conditions = new();
 		public List<TaskEditData> ExitConditions = new();
 	}
+
+	public partial class NodeLineEditData : TaskEditData,IEquatable<NodeLineEditData>
+	{
+		public string FromTask;
+		public int FromPort;
+		public string ToTask;
+		public int ToPort;
+
+		public NodeLineEditData(StringName fromTask, int fromPort, StringName toTask, int toPort)
+		{
+			FromTask = fromTask.ToString();
+			FromPort = fromPort;
+			ToTask = toTask.ToString();
+			ToPort = toPort;
+		}
+
+		public override int GetHashCode()
+		{
+			return (string.IsNullOrEmpty(FromTask) ? 0 : FromTask.GetHashCode()) + FromPort.GetHashCode() * 7 + (string.IsNullOrEmpty(ToTask) ? 0 : ToTask.GetHashCode()) + ToPort.GetHashCode() * 13 + 17;
+		}
+
+		public bool Equals(NodeLineEditData other)
+		{
+			if (other == null)
+			{
+				return false;
+			}
+			return FromTask == other.FromTask && FromPort == other.FromPort && ToTask == other.ToTask && ToPort == other.ToPort;
+		}
+	}
+	
+	public partial class NodeEditData : TaskEditData
+	{
+		public List<TaskEditData> EnterConditions = new();
+		public List<TaskEditData> Conditions = new();
+		public List<TaskEditData> ExitConditions = new();
+		public string Name;//需要保证唯一一个graph里
+		public string NodeType;//todo 预留 后续可以使用这个限制槽位之间的连接
+		public Vector2 Pos;//节点在graph中的位置
+	}
+
+
     #endregion
 
     /// <summary>
@@ -377,6 +419,9 @@ namespace BbxCommon
 		{
             private string m_BindingContextType;
 
+            public HashSet<NodeLineEditData> NodeLineEditDataSet = new();
+            public Dictionary<string, NodeEditData> NodeEditDataDictionary = new();
+            
             public string GetBindingContextType()
             {
                 return m_BindingContextType;
@@ -389,7 +434,110 @@ namespace BbxCommon
 
             public override void Save(string filePath)
 			{
+				try
+				{
+					// save editor file
+					if (filePath.IsNullOrEmpty() == false)
+					{
+						FilePath = filePath;
+					}
+					var currentTaskPath = FilePath;
+					var editorFilePath = currentTaskPath.TryRemoveEnd(".editor.json", ".json");
+					editorFilePath += ".editor.json";
+					JsonApi.Serialize(this, editorFilePath);
+					// build timeline root info
+					int taskId = 0;
+					var taskGroupInfo = new TaskGroupInfo();
+					var rootValueInfo = new TaskValueInfo();
+					rootValueInfo.FullTypeName = EditorDataStore.GetTaskInfo("TaskConnectPoint.Single").TaskFullTypeName;
+					taskGroupInfo.BindingContextFullType = BindingContextType;
+					taskGroupInfo.SetRootTaskId(taskId);
+					taskGroupInfo.TaskInfos[taskId++] = rootValueInfo;
+					var nameToIdMap = new Dictionary<string, int>();//记录名称和id的字典
+					// build task items
+					foreach (var nodeEditData in NodeEditDataDictionary.Values)
+					{
+						var itemValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(nodeEditData);
+						nameToIdMap.Add(nodeEditData.Name, taskId);
+						taskGroupInfo.TaskInfos[taskId++] = itemValueInfo;
+						foreach (var field in nodeEditData.Fields)
+						{
+							itemValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
+						}
+						// enter condition
+						foreach (var condition in nodeEditData.EnterConditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddEnterCondition(taskId++);
+						}
+						// condition
+						foreach (var condition in nodeEditData.Conditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddCondition(taskId++);
+						}
+						// exit condition
+						foreach (var condition in nodeEditData.ExitConditions)
+						{
+							var conditionValueInfo = TaskUtils.TaskEditDataToTaskValueInfo(condition);
+							taskGroupInfo.TaskInfos[taskId] = conditionValueInfo;
+							itemValueInfo.AddExitCondition(taskId++);
+						}
+					}
+					
+					// 根据连线信息生成每个task所连接的其他task信息
+					var taskToLinkTaskIdMap = new Dictionary<TaskValueInfo, List<int>>();
+					foreach (var lineEditData in NodeLineEditDataSet)
+					{
+						if (nameToIdMap.TryGetValue(lineEditData.FromTask, out var fromId) && nameToIdMap.TryGetValue(lineEditData.ToTask,out var toId))//根据节点名找taskid
+						{
+							if (taskGroupInfo.TaskInfos.TryGetValue(fromId, out var taskValueInfo))//根据taskid找taskinfo
+							{
+								if (!taskToLinkTaskIdMap.ContainsKey(taskValueInfo))
+								{
+									taskToLinkTaskIdMap.Add(taskValueInfo, new List<int>());
+								}
+								//记录该task对应的输出节点id,同时需要保证link节点的顺序和编辑时的 自上而下 顺序一致
+								//先根据toPort扩充linkList至当前toPort长度
+								var linkList = taskToLinkTaskIdMap[taskValueInfo];
+								var diffCount = lineEditData.ToPort - linkList.Count + 1;
+								if (diffCount > 0)
+								{
+									for (int i = 0; i < diffCount; i++)
+									{
+										linkList.Add(-1);//-1表示空槽位,临时占用,正常情况不会存在空槽位
+									}
+								}
+								//记录linkTask的id
+								taskToLinkTaskIdMap[taskValueInfo][lineEditData.ToPort] = toId;
+							}
+							else
+							{
+								DebugApi.LogError($"存在一个找不到输入task或输出task的连线: 输入节点id:{fromId} 输出节点id:{toId}");
+								continue;
+							}
+						}
+						else
+						{
+							DebugApi.LogError($"存在一个找不到输入节点的连线: 输入节点名:{lineEditData.FromTask}");
+							continue;
+						}
+					}
 
+					foreach (var pairForTaskLinkInfo in taskToLinkTaskIdMap)
+					{
+						pairForTaskLinkInfo.Key.AddTaskConnectPoint("LinkTaskIdList",pairForTaskLinkInfo.Value);//暂定LinkTaskIdList为字段名
+					}
+					
+					JsonApi.Serialize(taskGroupInfo, currentTaskPath);
+                    OpenAcceptDialog("Save Successfully!");
+                }
+				catch (Exception e)
+				{
+					OpenAcceptDialog("Error", e.Message);
+				}
 			}
 		}
         #endregion

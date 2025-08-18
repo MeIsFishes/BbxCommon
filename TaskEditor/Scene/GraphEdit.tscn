@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://86266vncjvcc"]
+
+[ext_resource type="Script" path="res://Scripts/TaskGraphEdit/TaskGraphManager.cs" id="1_74vtv"]
+[ext_resource type="PackedScene" uid="uid://o6stfui86x8k" path="res://Scene/BaseNode.tscn" id="2_pcbcj"]
+
+[node name="GraphEdit" type="GraphEdit"]
+offset_left = -35.0
+offset_top = 18.0
+offset_right = 1103.0
+offset_bottom = 669.0
+scroll_offset = Vector2(-40, -40)
+script = ExtResource("1_74vtv")
+BaseTaskScene = ExtResource("2_pcbcj")
+
+[node name="ContextMenu" type="PopupMenu" parent="."]
+auto_translate_mode = 1
