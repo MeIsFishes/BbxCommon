@@ -6,7 +6,7 @@ using Unity.Entities;
 using BbxCommon;
 using BbxCommon.Ui;
 
-public class UiLoadingController : UiControllerBase<UiLoadingView>, ILoadingProgress
+public class UiLoadingController : UiLoadingControllerBase<UiLoadingView>
 {
     protected override void OnUiInit()
     {
@@ -16,22 +16,9 @@ public class UiLoadingController : UiControllerBase<UiLoadingView>, ILoadingProg
     }
     
 
-    public void OnLoading(float process)
+    public override void OnLoading(float process)
     {
-        m_View.LoadingProgress.value += process;
-    }
-
-    public void SetVisible(bool v)
-    {
-        if (v)
-        {
-            Show();
-        }
-        else
-        {
-            Hide();
-        }
-        
+        m_View.LoadingProgress.value = process;
     }
     
 }

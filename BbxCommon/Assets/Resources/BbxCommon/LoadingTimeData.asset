@@ -12,5 +12,87 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a2708201abc46288e7e6c8bb78c783e, type: 3}
   m_Name: LoadingTimeData
   m_EditorClassIdentifier: 
-  dataDictionary:
-    m_Items: []
+  LoadingItemTimeDic:
+    m_Items:
+    - Key: Game Engine Stage.Load.Scene
+      Value: 122
+    - Key: Game Engine Stage.Load.UI
+      Value: 59
+    - Key: Game Engine Stage.Load.Data
+      Value: 70412
+    - Key: Global Stage.Load.InitSingletonComponent
+      Value: 1312
+    - Key: Global Stage.Load.DcgInteractingDataAsset
+      Value: 879
+    - Key: Global Stage.Load.Scene
+      Value: 530
+    - Key: Global Stage.Load.UI
+      Value: 34064
+    - Key: Global Stage.Load.Data
+      Value: 9
+    - Key: Global Stage.Load.BuildTestTask
+      Value: 14006
+    - Key: Global Stage.Load.BuildTestBtTask
+      Value: 27882
+    - Key: Global Stage.Load.InitCamera
+      Value: 1714
+    - Key: Global Stage.Load.BuildRandomPool
+      Value: 26463
+    - Key: Game Start Stage.Load.Scene
+      Value: 1
+    - Key: Game Start Stage.Load.UI
+      Value: 2819
+    - Key: Game Start Stage.Load.Data
+      Value: 8
+    - Key: Combat Stage.Load.UI
+      Value: 22858
+    - Key: MapStage.Load.MapInitData
+      Value: 3807
+    - Key: MapStage.Load.Scene
+      Value: 1
+    - Key: MapStage.Load.UI
+      Value: 35639
+    - Key: MapStage.Load.Data
+      Value: 7
+    - Key: Dungeon Stage.Load.InitPlayerAndCharacter
+      Value: 10076
+    - Key: Dungeon Stage.Load.Scene
+      Value: 98
+    - Key: Dungeon Stage.Load.UI
+      Value: 14692
+    - Key: Dungeon Stage.Load.Data
+      Value: 12
+    - Key: Dungeon Stage.Load.InitDungeon
+      Value: 3743
+    - Key: Combat Stage.Load.CombatStageInitPlayerData
+      Value: 12157
+    - Key: Combat Stage.Load.CombatStageInitCombatInfo
+      Value: 12371
+    - Key: Combat Stage.Load.Scene
+      Value: 4
+    - Key: Combat Stage.Load.Data
+      Value: 10
+    - Key: Combat Stage.Load.CombatStageBindUi
+      Value: 4538
+    - Key: Game Engine Stage.Load.InitReflectionAndResource
+      Value: 142341
+    - Key: Game Engine Stage.Load.Other
+      Value: 397
+    - Key: Global Stage.Load.Other
+      Value: 31
+    - Key: Game Start Stage.Load.Other
+      Value: 1
+    - Key: Game Start Stage.Unload
+      Value: 2818
+    - Key: Combat Stage.Unload
+      Value: 2
+    - Key: MapStage.Load.Other
+      Value: 5
+    - Key: MapStage.Unload
+      Value: 4468
+    - Key: Dungeon Stage.Load.Other
+      Value: 14
+    - Key: Combat Stage.Load.Other
+      Value: 1145
+    - Key: Global Stage.Load.Test
+      Value: 65

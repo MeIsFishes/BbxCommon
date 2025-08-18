@@ -49,6 +49,12 @@ namespace BbxCommon
             }
 
 #if UNITY_EDITOR
+            public static void SetDirtyAndSave(Object obj)
+            {
+                EditorUtility.SetDirty(obj);
+                AssetDatabase.SaveAssetIfDirty(obj);
+            }
+
             public static TAsset LoadOrCreateAsset<TAsset>(string path) where TAsset : ScriptableObject
             {
                 CreateDirectory(path);

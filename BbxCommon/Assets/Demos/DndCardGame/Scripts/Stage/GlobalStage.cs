@@ -32,36 +32,7 @@ namespace Dcg
         {
             void IStageLoad.Load(GameStage stage)
             {
-                // generate
-                var taskTest = TaskApi.CreateTaskInfo<TaskContextTest>("CodeTest", 0);
-                var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 5f);
-                timelineInfo.AddTimelineInfo(0f, 0f, 1);
-                timelineInfo.AddTimelineInfo(5f, 0f, 2);
-
-                var debugLogInfo1 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(1);
-                debugLogInfo1.AddFieldInfoFromContext(TaskNodeDebugLog.EField.Content, TaskContextTest.EField.DebugContent);
-                debugLogInfo1.AddEnterCondition(3); // EnterCondition blocks entering, there will be no output.
-
-                var debugLogInfo2 = taskTest.CreateTaskValueInfo<TaskNodeDebugLog>(2);
-                debugLogInfo2.AddFieldInfo(TaskNodeDebugLog.EField.Content, "5s later!");
-                debugLogInfo2.AddCondition(4);  // Normal Condition doesn't block entering. For the node output via OnEnter(), there will be output in console.
-
-                var greaterInfo1 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(3);
-                greaterInfo1.AddFieldInfoFromContext(TaskConditionGreaterThan5.EField.Num, TaskContextTest.EField.Num);
-
-                var greaterInfo2 = taskTest.CreateTaskValueInfo<TaskConditionGreaterThan5>(4);
-                greaterInfo2.AddFieldInfo(TaskConditionGreaterThan5.EField.Num, 1);
-
-                // run task
                 var context = ObjectPool<TaskContextTest>.Alloc();
-                context.DebugContent = "Task log succeeded!";
-                context.Num = 4;
-                context.SetBlackBoardLongValue("BlackLong", 123);
-                context.SetBlackBoardDoubleValue("BlackDouble", 456.123);
-                context.SetBlackBoardObjectValue("BlackObject", new List<int>()
-                {
-                    6,7,8
-                });
                 TaskApi.RunTask("Test", context);
                 context.CollectToPool();
             }
@@ -95,7 +66,6 @@ namespace Dcg
                 // 3: log2
                 var debugLogInfo2 = groupInfo.CreateTaskValueInfo<TaskNodeDebugLog>(3);
                 debugLogInfo2.AddFieldInfo(TaskNodeDebugLog.EField.Content, "step2");
-
 
                 TaskApi.RegisterTask("TestBt", groupInfo);
 

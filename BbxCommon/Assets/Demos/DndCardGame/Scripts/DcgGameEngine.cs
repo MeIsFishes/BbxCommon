@@ -19,11 +19,6 @@ namespace Dcg
         private GameStage m_CombatStage;
         private GameStage m_RewardStage;
 
-        protected override void InitSingletonComponents()
-        {
-            
-        }
-
         protected override void OnAwake()
         {
             UiScene = UiSceneWrapper.CreateUiScene<UiDungeonScene>();

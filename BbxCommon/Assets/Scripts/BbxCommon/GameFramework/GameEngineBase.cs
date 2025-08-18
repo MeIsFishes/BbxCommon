@@ -6,6 +6,10 @@ using Unity.Entities;
 using BbxCommon.Ui;
 using Cysharp.Threading.Tasks;
 using BbxCommon.Internal;
+using BbxCommon.Editor;
+using UnityEditor;
+using System.Diagnostics;
+using System.Security.Cryptography.X509Certificates;
 
 namespace BbxCommon
 {
@@ -17,7 +21,35 @@ namespace BbxCommon
     internal partial class GameEngineLateUpdateSystemGroup : ComponentSystemGroup { }
     #endregion
 
-    public abstract partial class GameEngineBase<TEngine> : MonoSingleton<TEngine> where TEngine : GameEngineBase<TEngine>
+    public interface IGameEngine
+    {
+        List<GameStage> GetEnabledGameStage();
+    }
+
+    internal static class GameEngineFacade
+    {
+        #region Loading Progress
+        public static float LoadingProgress => m_CurLoadingWeight / (float)m_TotalLoadingWeight;
+
+        private static long m_TotalLoadingWeight;
+        private static long m_CurLoadingWeight;
+
+        public static void SetTotalLoadingWeight(long weight)
+        {
+            m_TotalLoadingWeight = weight;
+            m_CurLoadingWeight = 0;
+        }
+
+        public static void SetLoadingWeight(long weight)
+        {
+            m_CurLoadingWeight += weight;
+            if (m_CurLoadingWeight > m_TotalLoadingWeight)
+                m_CurLoadingWeight = m_TotalLoadingWeight;
+        }
+        #endregion
+    }
+
+    public abstract partial class GameEngineBase<TEngine> : MonoSingleton<TEngine>, IGameEngine where TEngine : GameEngineBase<TEngine>
     {
         #region Wrappers
         public EngineUiSceneWp UiSceneWrapper;
@@ -63,12 +95,15 @@ namespace BbxCommon
             InitWrapper();
 
             OnAwakeEcsWorld();
-            OnAwakeReflectionAndResource();
             OnAwakeUiScene();
             OnAwakeStage();
 
             // call overridable OnAwake() after all datas are initialized
             OnAwake();
+
+#if UNITY_EDITOR
+            GameStageWindow.CurGameEngine = this;
+#endif
         }
 
         protected virtual void OnAwake() { }
@@ -80,7 +115,7 @@ namespace BbxCommon
 
         private void OnDestroy()
         {
-
+            GameStageWindow.CurGameEngine = null;
         }
         #endregion
 
@@ -89,7 +124,7 @@ namespace BbxCommon
 
         private GameObject m_UiSceneRoot;
         private Dictionary<Type, UiSceneBase> m_UiScenes = new Dictionary<Type, UiSceneBase>();
-        private Type m_LoadingType;
+        private UiControllerBase m_LoadingController;
 
         public T CreateUiScene<T>() where T : UiSceneBase
         {
@@ -147,10 +182,6 @@ namespace BbxCommon
         private World m_EcsWorld;
         private Entity m_SingletonEntity;
 
-        /// <summary>
-        /// You can initialize singleton components before <see cref="GameStage"/> loading.
-        /// </summary>
-        protected virtual void InitSingletonComponents() { }
 
         private void OnAwakeEcsWorld()
         {
@@ -160,36 +191,10 @@ namespace BbxCommon
             m_EcsWorld.CreateSystem<GameEngineLateUpdateSystemGroup>();
             m_SingletonEntity = EcsApi.CreateEntity();
             EcsDataManager.SetSingletonRawComponentEntity(m_SingletonEntity);
-            InitSingletonComponents();
         }
         #endregion
 
-        #region Reflection and Resource
-        private void OnAwakeReflectionAndResource()
-        {
-            // reflect types
-            foreach (var type in ReflectionApi.GetAllTypesEnumerator())
-            {
-                if (type.IsAbstract == false && type.IsSubclassOf(typeof(CsvDataBase)))
-                {
-                    var constructor = type.GetConstructor(Type.EmptyTypes);
-                    var csvObj = (CsvDataBase)constructor.Invoke(null);
-                    var dataGroup = csvObj.GetDataGroup();
-                    if (dataGroup != null)
-                    {
-                        if (ResourceApi.DataGroupCsvPairs.ContainsKey(dataGroup) == false)
-                            ResourceApi.DataGroupCsvPairs[dataGroup] = new();
-                        ResourceApi.DataGroupCsvPairs[dataGroup].Add(csvObj);
-                    }
-                }
-            }
-            // init resource
-            ResourceManager.Init();
-            DebugApi.Log(ResourceManager.ToString());
-        }
-        #endregion
-
-        #region Stage
+        #region GameStage
         private enum EOperateStage
         {
             Load,
@@ -208,9 +213,15 @@ namespace BbxCommon
             }
         }
 
-        private List<OperateStage> m_OperateStages = new List<OperateStage>();
+        private List<GameStage> m_EnabledStages = new();
+        private List<OperateStage> m_OperateStages = new();
 
-        public GameStage CreateStage(string stageName)
+        List<GameStage> IGameEngine.GetEnabledGameStage()
+        {
+            return m_EnabledStages;
+        }
+
+    public GameStage CreateStage(string stageName)
         {
             return new GameStage(stageName, m_EcsWorld);
         }
@@ -242,35 +253,47 @@ namespace BbxCommon
 
         private async void StartLoading()
         {
-            var loadUiCtrl = CreateLoadingUi();
-            IProgress<float> progress = null;
-            progress = Progress.Create<float>(x =>
+            m_LoadingController?.Show();
+            var loadingTimeData = DataApi.GetData<LoadingTimeData>();
+            if (loadingTimeData == null)
             {
-                loadUiCtrl?.OnLoading(x);
-            });
-            
+                loadingTimeData = ResourceApi.EditorOperation.LoadOrCreateAssetInResources<LoadingTimeData>(BbxVar.ExportLoadingTimeDataPath);
+            }
+            DataApi.SetData(loadingTimeData);
             SetStageLoadingWeight();
-            loadUiCtrl?.SetVisible(true);
-            
+            // unload stage
             for (int i = 0; i < m_OperateStages.Count; i++)
             {
                 if (m_OperateStages[i].OperateType == EOperateStage.Unload)
                 {
-                    m_OperateStages[i].Stage.UnloadStage();
+                    var stage = m_OperateStages[i].Stage;
+                    var key = stage.StageName + ".Unload";
+                    DebugApi.BeginSample(key);
+                    stage.UnloadStage();
+                    m_EnabledStages.Remove(stage);
+                    DebugApi.EndSample(key);
+                    GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+                    loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+                    await UniTask.NextFrame();
                 }
             }
-
-            
+            // load stage
             for (int i = 0; i < m_OperateStages.Count; i++)
             {
                 if (m_OperateStages[i].OperateType == EOperateStage.Load)
                 {
-                    await m_OperateStages[i].Stage.LoadStage(progress);
+                    await m_OperateStages[i].Stage.LoadStage();
+                    m_EnabledStages.Add(m_OperateStages[i].Stage);
                 }
             }
             
             m_OperateStages.Clear();
-            loadUiCtrl?.Close();
+            m_LoadingController?.Hide();
+#if UNITY_EDITOR
+            ResourceApi.EditorOperation.SetDirtyAndSave(loadingTimeData);
+#endif
         }
 
         private void SetStageLoadingWeight()
@@ -280,67 +303,37 @@ namespace BbxCommon
                 return;
             }
 
-            var loadingTime = DataApi.GetData<LoadingTimeData>();
-            if (loadingTime == null)
-            {
-                loadingTime = Resources.Load<LoadingTimeData>(BbxVar.ExportLoadingTimeDataPath);
-                DataApi.SetData(loadingTime);
-            }
-            
-            float totalLoadingTime = 0;
+            var loadingTimeData = DataApi.GetData<LoadingTimeData>();
+            long totalLoadingTime = 0;
             foreach (var operate in m_OperateStages)
             {
+                var stage = operate.Stage;
                 if (operate.OperateType == EOperateStage.Load)
                 {
-                    if (loadingTime.dataDictionary.TryGetValue(operate.Stage.StageName, out var stageTime))
+                    foreach (var pair in loadingTimeData.LoadingItemTimeDic)
                     {
-                        totalLoadingTime += stageTime;
-                    }
-                    else
-                    {
-                        totalLoadingTime += 1;
+                        if (pair.Key.StartsWith(stage.StageName + ".Load"))
+                            totalLoadingTime += pair.Value;
                     }
                 }
-                
-            }
-            
-            foreach (var operate in m_OperateStages)
-            {
-                if (operate.OperateType == EOperateStage.Load)
+                else if (operate.OperateType == EOperateStage.Unload)
                 {
-                    float weight;
-                    if (loadingTime.dataDictionary.TryGetValue(operate.Stage.StageName, out var stageTime))
+                    foreach (var pair in loadingTimeData.LoadingItemTimeDic)
                     {
-                        weight = stageTime / totalLoadingTime;
+                        if (pair.Key.StartsWith(stage.StageName + ".Unload"))
+                            totalLoadingTime += pair.Value;
                     }
-                    else
-                    {
-                        weight = 1 / totalLoadingTime;
-                    }
-                    operate.Stage.StageLoadingWeight = weight;
                 }
             }
-            
+            GameEngineFacade.SetTotalLoadingWeight(totalLoadingTime);
         }
         
-        public void SetLoadingUi<T>() where T :UiControllerBase,ILoadingProgress
+        public void SetLoadingUi<T>() where T : UiControllerBase
         {
-            m_LoadingType = typeof(T);
-        }
-
-        private ILoadingProgress CreateLoadingUi()
-        {
-            if (m_LoadingType == null)
-            {
-                return null;
-            }
-            
-            var uiGroupRoot = UiApi.GetUiGameEngineScene().GetUiGroupCanvas(EUiGameEngine.Loading).transform;
-            
-            var method = typeof(UiApi).GetMethod("OpenUiController",new Type[] { typeof(Transform) });
-            var controllerObj = method?.MakeGenericMethod(m_LoadingType).Invoke(null, new object[] { uiGroupRoot });
-            var uiControllerBase = controllerObj as UiControllerBase;
-            return uiControllerBase as ILoadingProgress;
+            if (m_LoadingController != null && m_LoadingController.GetType() == typeof(T))
+                return;
+            m_LoadingController?.Close();
+            m_LoadingController = UiApi.OpenUiController<T>(UiApi.GetUiGameEngineScene().GetUiGroupCanvas(EUiGameEngine.Loading).transform, false);
         }
         
         private void OnUpdateStage()
@@ -350,19 +343,6 @@ namespace BbxCommon
                 m_StageIsDirty = false;
                 StartLoading();
             }
-            // foreach (var operate in m_OperateStages)
-            // {
-            //     switch (operate.OperateType)
-            //     {
-            //         case EOperateStage.Load:
-            //             operate.Stage.LoadStage();
-            //             break;
-            //         case EOperateStage.Unload:
-            //             operate.Stage.UnloadStage();
-            //             break;
-            //     }
-            // }
-            // m_OperateStages.Clear();
         }
         #endregion
     }

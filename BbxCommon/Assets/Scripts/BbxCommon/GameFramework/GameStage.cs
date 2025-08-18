@@ -8,6 +8,8 @@ using BbxCommon.Ui;
 using BbxCommon.Internal;
 using Cysharp.Threading.Tasks;
 using Object = UnityEngine.Object;
+using System.Diagnostics;
+using static UnityEditor.Progress;
 
 namespace BbxCommon
 {
@@ -45,43 +47,63 @@ namespace BbxCommon
             m_EcsWorld = ecsWorld;
         }
 
-        // 2023.4.8:
-        // Keep core functions to be inernal instead of public virtual. That is for loading stage in GameEngine via Update().
-        // Also worrying about that is GameStage enough for development without extension?
-        internal async UniTask LoadStage(IProgress<float> progress)
+        internal async UniTask LoadStage()
         {
             if (m_Loaded)
                 return;
             if (AllParentsLoaded() == false)
                 return;
-            
-            float gameTimeMilliseconds = Time.time * 1000;
 
             m_Loaded = true;
             PreLoadStage?.Invoke();
-            await OnLoadStageLoad(progress);
+            // load
+            await OnLoadStageLoad();
+            // init StopWatch
+            var loadingTimeData = DataApi.GetData<LoadingTimeData>();
+            // scene
+            var key = StageName + ".Load.Scene";
+            DebugApi.BeginSample(key);
             OnLoadStageScene();
+            DebugApi.EndSample(key);
+            GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+            await UniTask.NextFrame();
+            // UI
+            key = StageName + ".Load.UI";
+            DebugApi.BeginSample(key);
             OnLoadStageUiScene();
+            DebugApi.EndSample(key);
+            GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+            await UniTask.NextFrame();
+            // data
+            key = StageName + ".Load.Data";
+            DebugApi.BeginSample(key);
             OnLoadStageData();
+            DebugApi.EndSample(key);
+            GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+            await UniTask.NextFrame();
+            // other
+            key = StageName + ".Load.Other";
+            DebugApi.BeginSample(key);
             OnLoadStageTick();
             OnLoadStageListener();
-            await OnLoadStageLateLoad(progress);
+            DebugApi.EndSample(key);
+            GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+            // late load
+            await OnLoadStageLateLoad();
+
             PostLoadStage?.Invoke();
-
-            if (m_StageLoadItems.Count + m_StageLateLoadItems.Count == 0)
-            {
-                progress?.Report(StageLoadingWeight);
-            }
-
-            var costTime = Time.time * 1000 - gameTimeMilliseconds;
-            if (costTime < 1)
-            {
-                costTime = 1f;
-            }
-            var loadingTime = DataApi.GetData<LoadingTimeData>();
-            loadingTime.dataDictionary[StageName] = costTime;
-            
-            await UniTask.NextFrame();
         }
         
         public float StageLoadingWeight = 1f;
@@ -243,22 +265,21 @@ namespace BbxCommon
             AddLoadItem(new T());
         }
 
-        protected async UniTask OnLoadStageLoad(IProgress<float> progress)
+        protected async UniTask OnLoadStageLoad()
         {
+            var loadingTimeData = DataApi.GetData<LoadingTimeData>();
             foreach (var item in m_StageLoadItems)
             {
-                var itemWeight = await AsyncLoadStageItem(item);
-                progress?.Report(itemWeight);
+                var key = StageName + ".Load." + item.GetType().Name;
+                DebugApi.BeginSample(key);
+                item.Load(this);
+                DebugApi.EndSample(key);
+                GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+                loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+                await UniTask.NextFrame();
             }
-            
-        }
-
-        private async UniTask<float> AsyncLoadStageItem(IStageLoad item)
-        {
-            var itemCount = m_StageLoadItems.Count + m_StageLateLoadItems.Count;
-            await UniTask.NextFrame();
-            item.Load(this);
-            return StageLoadingWeight / itemCount;
         }
         
         protected void OnUnloadStageLoad()
@@ -279,12 +300,20 @@ namespace BbxCommon
             AddLateLoadItem(new T());
         }
 
-        protected async UniTask OnLoadStageLateLoad(IProgress<float> progress)
+        protected async UniTask OnLoadStageLateLoad()
         {
+            var loadingTimeData = DataApi.GetData<LoadingTimeData>();
             foreach (var item in m_StageLateLoadItems)
             {
-                var itemWeight = await AsyncLoadStageItem(item);
-                progress?.Report(itemWeight);
+                var key = StageName + ".Load." + item.GetType().Name;
+                DebugApi.BeginSample(key);
+                item.Load(this);
+                DebugApi.EndSample(key);
+                GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
+#if UNITY_EDITOR
+                loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+#endif
+                await UniTask.NextFrame();
             }
         }
 

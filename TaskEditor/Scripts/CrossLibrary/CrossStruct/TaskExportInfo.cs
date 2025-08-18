@@ -55,8 +55,8 @@ namespace BbxCommon.Internal
         public TaskExportTypeInfo GenericType1;
         public TaskExportTypeInfo GenericType2;
 
-		public bool IsConnectPoint => TypeName.StartsWith("TaskConnectPoint");
-		public bool IsConnectPointSingle => TypeName == "TaskConnectPoint.Single";
+        public bool IsConnectPoint => TypeName.StartsWith("TaskConnectPoint");
+        public bool IsConnectPointSingle => TypeName == "TaskConnectPoint.Single";
         public bool IsConnectPointMultiple => TypeName == "TaskConnectPoint.Multiple";
 
         public TaskExportTypeInfo() { }

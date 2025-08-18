@@ -17,13 +17,9 @@ namespace Cin
             stage.AddUpdateSystem<PlayerMoveSystem>();
             stage.AddUpdateSystem<SyncCameraInfoSystem>();
             stage.AddUpdateSystem<FixedCameraMoveSystem>();
+            EcsApi.AddSingletonRawComponent<CameraDataSingletonRawComponent>();
 
             StageWrapper.LoadStage(stage);
-        }
-
-        protected override void InitSingletonComponents()
-        {
-            EcsApi.AddSingletonRawComponent<CameraDataSingletonRawComponent>();
         }
     }
 }

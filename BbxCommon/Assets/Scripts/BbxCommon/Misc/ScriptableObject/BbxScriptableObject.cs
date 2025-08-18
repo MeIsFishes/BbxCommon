@@ -16,9 +16,7 @@ namespace BbxCommon
             if (asset.LoadingType == ELoadingType.GroupedByName)
                 groupName = asset.GroupName;
             soAssets.SetAsset(groupName, path);
-            EditorUtility.SetDirty(soAssets);
-            AssetDatabase.TryGetGUIDAndLocalFileIdentifier(soAssets, out string guid, out long localId);
-            AssetDatabase.SaveAssetIfDirty(new GUID(guid));
+            ResourceApi.EditorOperation.SetDirtyAndSave(soAssets);
         }
 #endif
         #endregion

@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Text;
 
 namespace BbxCommon
@@ -327,6 +328,38 @@ namespace BbxCommon
 
         #region Dictionary
         /// <summary>
+        /// Get the value of the key, if not exist, add the key with default value.
+        /// </summary>
+        public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
+        {
+            if (dic.TryGetValue(key, out var existValue))
+            {
+                return existValue;
+            }
+            else
+            {
+                dic[key] = (TValue)Activator.CreateInstance(typeof(TValue));
+                return dic[key];
+            }
+        }
+
+        /// <summary>
+        /// Get the value of the key, if not exist, add the key with default value.
+        /// </summary>
+        public static void GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
+        {
+            if (dic.TryGetValue(key, out var existValue))
+            {
+                value = existValue;
+            }
+            else
+            {
+                dic[key] = (TValue)Activator.CreateInstance(typeof(TValue));
+                value = dic[key];
+            }
+        }
+
+        /// <summary>
         /// If don't have the item, return false, or remove and return true.
         /// </summary>
         public static bool TryRemove<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
@@ -598,6 +631,14 @@ namespace BbxCommon
         {
             return str.Split(m_LineSeparators, System.StringSplitOptions.RemoveEmptyEntries);
         }
+
+        public static string ModifyLength(this string str, int length, char fill = ' ')
+        {
+            if (str.Length > length)
+                return str;
+            var fillStr = new string(fill, length - str.Length);
+            return str + fillStr;
+        }
         #endregion
 
         #region StringBuilder
@@ -605,6 +646,28 @@ namespace BbxCommon
         {
             sb.Clear();
             SimplePool<StringBuilder>.Collect(sb);
+        }
+        #endregion
+
+        #region Stopwatch
+        public static long ElapsedSeconds(this Stopwatch stopwatch)
+        {
+            return stopwatch.ElapsedMilliseconds / 1000;
+        }
+
+        public static long ElapsedMs(this Stopwatch stopwatch)
+        {
+            return stopwatch.ElapsedMilliseconds;
+        }
+
+        public static long ElapsedUs(this Stopwatch stopwatch)
+        {
+            return (long)(stopwatch.ElapsedTicks * 1_000_000.0 / Stopwatch.Frequency);
+        }
+
+        public static long ElapsedNs(this Stopwatch stopwatch)
+        {
+            return (long)(stopwatch.ElapsedTicks * 1_000_000_000.0 / Stopwatch.Frequency);
         }
         #endregion
     }

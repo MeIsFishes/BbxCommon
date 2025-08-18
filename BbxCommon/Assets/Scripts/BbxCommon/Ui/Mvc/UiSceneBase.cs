@@ -78,7 +78,7 @@ namespace BbxCommon.Ui
                     data.ControllerType = data.UiView.GetControllerType();
                     data.ControllerTypeId = UiApi.GetUiControllerTypeId(data.UiView);
                 }    
-                var controller = UiApi.OpenUiController(data.UiView, data.ControllerTypeId, m_UiGroups[(TGroupKey)(object)data.UiGroup].transform);
+                var controller = UiApi.OpenUiController(data.UiView, data.ControllerTypeId, m_UiGroups[(TGroupKey)(object)data.UiGroup].transform, false);
                 data.CreatedController = controller;
                 var viewTransform = controller.View.transform as RectTransform;
                 viewTransform.localPosition = data.Position;

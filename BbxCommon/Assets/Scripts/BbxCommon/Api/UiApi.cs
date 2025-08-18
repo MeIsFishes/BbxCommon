@@ -1,3 +1,4 @@
+using System;
 using System.Reflection;
 using Unity.Entities;
 using UnityEditor;
@@ -72,7 +73,7 @@ namespace BbxCommon.Ui
             else
             {
                 // or create one from the GameObject
-                var uiGameObject = Object.Instantiate(sourceView.gameObject);
+                var uiGameObject = UnityEngine.Object.Instantiate(sourceView.gameObject);
                 uiGameObject.SetActive(false);
                 uiController = CreateUiControllerWithGameObject(uiGameObject);
             }
@@ -273,8 +274,7 @@ namespace BbxCommon.Ui
 #if UNITY_EDITOR
             var preLoadUiData = ResourceApi.EditorOperation.LoadOrCreateAssetInResources<PreLoadUiData>(BbxVar.ExportPreLoadUiPathInResources);
             preLoadUiData.SetUi(uiView);
-            EditorUtility.SetDirty(preLoadUiData);
-            AssetDatabase.SaveAssets();
+            ResourceApi.EditorOperation.SetDirtyAndSave(preLoadUiData);
 #endif
         }
         #endregion
