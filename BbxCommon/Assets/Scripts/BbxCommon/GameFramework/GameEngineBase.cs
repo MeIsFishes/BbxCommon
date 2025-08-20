@@ -268,13 +268,13 @@ namespace BbxCommon
                 {
                     var stage = m_OperateStages[i].Stage;
                     var key = stage.StageName + ".Unload";
-                    DebugApi.BeginSample(key);
+                    var sampler = DebugApi.BeginSample(key);
                     stage.UnloadStage();
                     m_EnabledStages.Remove(stage);
-                    DebugApi.EndSample(key);
+                    sampler.EndSample();
                     GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                    loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+                    loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
                     await UniTask.NextFrame();
                 }

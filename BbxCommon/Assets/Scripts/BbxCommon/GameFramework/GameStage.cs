@@ -62,43 +62,43 @@ namespace BbxCommon
             var loadingTimeData = DataApi.GetData<LoadingTimeData>();
             // scene
             var key = StageName + ".Load.Scene";
-            DebugApi.BeginSample(key);
+            var sampler = DebugApi.BeginSample(key);
             OnLoadStageScene();
-            DebugApi.EndSample(key);
+            sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
             await UniTask.NextFrame();
             // UI
             key = StageName + ".Load.UI";
-            DebugApi.BeginSample(key);
+            sampler = DebugApi.BeginSample(key);
             OnLoadStageUiScene();
-            DebugApi.EndSample(key);
+            sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
             await UniTask.NextFrame();
             // data
             key = StageName + ".Load.Data";
-            DebugApi.BeginSample(key);
+            sampler = DebugApi.BeginSample(key);
             OnLoadStageData();
-            DebugApi.EndSample(key);
+            sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
             await UniTask.NextFrame();
             // other
             key = StageName + ".Load.Other";
-            DebugApi.BeginSample(key);
+            sampler = DebugApi.BeginSample(key);
             OnLoadStageTick();
             OnLoadStageListener();
-            DebugApi.EndSample(key);
+            sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
             // late load
             await OnLoadStageLateLoad();
@@ -271,12 +271,12 @@ namespace BbxCommon
             foreach (var item in m_StageLoadItems)
             {
                 var key = StageName + ".Load." + item.GetType().Name;
-                DebugApi.BeginSample(key);
+                var sampler = DebugApi.BeginSample(key);
                 item.Load(this);
-                DebugApi.EndSample(key);
+                sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+                loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
                 await UniTask.NextFrame();
             }
@@ -306,12 +306,12 @@ namespace BbxCommon
             foreach (var item in m_StageLateLoadItems)
             {
                 var key = StageName + ".Load." + item.GetType().Name;
-                DebugApi.BeginSample(key);
+                var sampler = DebugApi.BeginSample(key);
                 item.Load(this);
-                DebugApi.EndSample(key);
+                sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.LoadingItemTimeDic[key] = DebugApi.GetProfilerTimeUs(key);
+                loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
 #endif
                 await UniTask.NextFrame();
             }
@@ -327,6 +327,7 @@ namespace BbxCommon
         #endregion
 
         #region StageTick
+        internal List<Type> SystemTypes = new();
         protected List<EcsSystemBase> m_UpdateSystems = new();
         protected List<EcsSystemBase> m_FixedUpdateSystems = new();
         protected List<EcsSystemBase> m_GameEngineEarlySystems = new();
@@ -336,24 +337,28 @@ namespace BbxCommon
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_UpdateSystems.Add(system);
+            SystemTypes.Add(typeof(T));
         }
 
         public void AddFixedUpdateSystem<T>() where T : EcsSystemBase, new()
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_FixedUpdateSystems.Add(system);
+            SystemTypes.Add(typeof(T));
         }
 
         internal void AddGameEngineEarlyUpdateSystem<T>() where T : EcsSystemBase, new()
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_GameEngineEarlySystems.Add(system);
+            SystemTypes.Add(typeof(T));
         }
 
         internal void AddGameEngineLateUpdateSystem<T>() where T : EcsSystemBase, new()
         {
             var system = m_EcsWorld.CreateSystemManaged<T>();
             m_GameEngineLateSystems.Add(system);
+            SystemTypes.Add(typeof(T));
         }
 
         private void OnLoadStageTick()

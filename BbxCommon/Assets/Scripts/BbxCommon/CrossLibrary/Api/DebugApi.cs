@@ -59,7 +59,7 @@ namespace BbxCommon
         #endregion
 
         #region Profiler
-        private class ProfilerData
+        public class ProfilerData
         {
             public string Key;
             public long TimeMs => m_Stopwatch.ElapsedMilliseconds;
@@ -85,9 +85,11 @@ namespace BbxCommon
 
         private static ProfilerData m_ProfilerRoot = new();
 
-        public static void BeginSample(string key)
+        public static ProfilerData BeginSample(string key)
         {
-            m_ProfilerRoot.GetData(key).BeginSample();
+            var data = m_ProfilerRoot.GetData(key);
+            data.BeginSample();
+            return data;
         }
 
         public static void EndSample(string key)

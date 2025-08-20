@@ -15,7 +15,9 @@ namespace BbxCommon
 
         protected override sealed void OnUpdate()
         {
+            var sampler = DebugApi.BeginSample(GetType().Name);
             OnSystemUpdate();
+            sampler.EndSample();
         }
 
         protected override sealed void OnDestroy()

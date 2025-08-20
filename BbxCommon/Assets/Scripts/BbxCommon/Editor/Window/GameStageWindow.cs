@@ -35,12 +35,37 @@ namespace BbxCommon.Editor
                 m_FoldoutDic[stage.StageName] = EditorGUILayout.Foldout(m_FoldoutDic.GetOrAdd(stage.StageName), stage.StageName);
                 if (m_FoldoutDic[stage.StageName])
                 {
-                    foreach (var pair in loadingTimeData.GetStageItemDic(stage.StageName))
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    m_FoldoutDic[stage.StageName + "Load Items"] = EditorGUILayout.Foldout(m_FoldoutDic.GetOrAdd(stage.StageName + "Load Items"), "Load Items");
+                    GUILayout.EndHorizontal();
+                    if (m_FoldoutDic[stage.StageName + "Load Items"])
                     {
-                        GUILayout.BeginHorizontal();
-                        GUILayout.Label("    " + pair.Key, GUILayout.Width(300));
-                        GUILayout.Label((pair.Value / 1000f).ToString() + "ms", GUILayout.Width(150));
-                        GUILayout.EndHorizontal();
+                        foreach (var pair in loadingTimeData.GetStageItemDic(stage.StageName))
+                        {
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(40);
+                            GUILayout.Label(pair.Key, GUILayout.Width(350));
+                            GUILayout.Label((pair.Value / 1000f).ToString() + "ms", GUILayout.Width(150));
+                            GUILayout.EndHorizontal();
+                        }
+                    }
+
+                    GUILayout.BeginHorizontal();
+                    GUILayout.Space(20);
+                    m_FoldoutDic[stage.StageName + "System"] = EditorGUILayout.Foldout(m_FoldoutDic.GetOrAdd(stage.StageName + "System"), "System");
+                    GUILayout.EndHorizontal();
+                    if (m_FoldoutDic[stage.StageName + "System"])
+                    {
+                        for (int i = 0; i < stage.SystemTypes.Count; i++)
+                        {
+                            var systemType = stage.SystemTypes[i];
+                            GUILayout.BeginHorizontal();
+                            GUILayout.Space(40);
+                            GUILayout.Label(systemType.Name, GUILayout.Width(350));
+                            GUILayout.Label((DebugApi.GetProfilerTimeUs(systemType.Name) / 1000f).ToString() + "ms", GUILayout.Width(150));
+                            GUILayout.EndHorizontal();
+                        }
                     }
                 }
             }
