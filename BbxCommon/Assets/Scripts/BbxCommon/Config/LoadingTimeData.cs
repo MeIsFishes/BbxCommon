@@ -10,6 +10,11 @@ namespace BbxCommon
         public SerializableDic <string, long> LoadingItemTimeDic = new();
         private Dictionary<string, Dictionary<string, long>> m_StageItemDic = new();
 
+        private void OnEnable()
+        {
+            RefreshStageItemDic();
+        }
+
         public long GetLoadingTime(string key)
         {
             if (LoadingItemTimeDic.TryGetValue(key, out long value))
@@ -19,13 +24,18 @@ namespace BbxCommon
             return 1;
         }
 
-        public void Refresh()
+        public void SetLoadingTime(string key, long time)
+        {
+            LoadingItemTimeDic[key] = time;
+        }
+
+        private void RefreshStageItemDic()
         {
             m_StageItemDic.Clear();
             foreach (var pair in LoadingItemTimeDic)
             {
                 var strs = pair.Key.Split('.');
-                m_StageItemDic.GetOrAdd(strs[0])[pair.Key.TryRemoveStart(strs[0] + ".")] = pair.Value;
+                m_StageItemDic.GetOrAdd(strs[0])[pair.Key] = pair.Value;
             }
         }
 

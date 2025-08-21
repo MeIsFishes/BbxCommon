@@ -179,10 +179,12 @@ namespace BbxCommon
 
         public bool TryRemove(TKey key)
         {
+            
+            bool removed = m_Dictionary.TryRemove(key);
 #if UNITY_EDITOR
-            RemoveFromList(key);
+            if (removed) RemoveFromList(key);
 #endif
-            return m_Dictionary.TryRemove(key);
+            return removed;
         }
 
         public bool TryRemove(TKey key, out TValue value)

@@ -67,7 +67,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
             await UniTask.NextFrame();
             // UI
@@ -77,7 +77,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
             await UniTask.NextFrame();
             // data
@@ -87,7 +87,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
             await UniTask.NextFrame();
             // other
@@ -98,14 +98,41 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
             // late load
             await OnLoadStageLateLoad();
 
             PostLoadStage?.Invoke();
+
+#if UNITY_EDITOR
+            // remove obseleted items data
+            var stageItems = loadingTimeData.GetStageItemDic(StageName);
+            var visitedItems = SimplePool<HashSet<string>>.Alloc();
+            visitedItems.Add(StageName + ".Load.Scene");
+            visitedItems.Add(StageName + ".Load.UI");
+            visitedItems.Add(StageName + ".Load.Data");
+            visitedItems.Add(StageName + ".Load.Other");
+            visitedItems.Add(StageName + ".Unload");
+            foreach (var item in m_StageLoadItems)
+            {
+                visitedItems.Add(StageName + ".Load." + item.GetType().Name);
+            }
+            foreach (var item in m_StageLateLoadItems)
+            {
+                visitedItems.Add(StageName + ".Load." + item.GetType().Name);
+            }
+            foreach (var pair in stageItems)
+            {
+                if (visitedItems.Contains(pair.Key) == false)
+                {
+                    loadingTimeData.LoadingItemTimeDic.TryRemove(pair.Key);
+                }
+            }
+            visitedItems.CollectToPool();
+#endif
         }
-        
+
         public float StageLoadingWeight = 1f;
         
         internal void UnloadStage()
@@ -276,7 +303,7 @@ namespace BbxCommon
                 sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+                loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
                 await UniTask.NextFrame();
             }
@@ -311,7 +338,7 @@ namespace BbxCommon
                 sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.LoadingItemTimeDic[key] = sampler.TimeUs;
+                loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
 #endif
                 await UniTask.NextFrame();
             }

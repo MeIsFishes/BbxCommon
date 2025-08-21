@@ -24,7 +24,6 @@ namespace BbxCommon.Editor
             if (CurGameEngine == null)
                 return;
             var loadingTimeData = DataApi.GetData<LoadingTimeData>();
-            loadingTimeData.Refresh();
             m_ScrollPos = GUILayout.BeginScrollView(m_ScrollPos, GUILayout.ExpandHeight(true));
             GUILayout.BeginVertical();
             // title
@@ -43,9 +42,11 @@ namespace BbxCommon.Editor
                     {
                         foreach (var pair in loadingTimeData.GetStageItemDic(stage.StageName))
                         {
+                            var strs = pair.Key.Split('.');
+                            var key = pair.Key.TryRemoveStart(strs[0] + ".");
                             GUILayout.BeginHorizontal();
                             GUILayout.Space(40);
-                            GUILayout.Label(pair.Key, GUILayout.Width(350));
+                            GUILayout.Label(key, GUILayout.Width(350));
                             GUILayout.Label((pair.Value / 1000f).ToString() + "ms", GUILayout.Width(150));
                             GUILayout.EndHorizontal();
                         }

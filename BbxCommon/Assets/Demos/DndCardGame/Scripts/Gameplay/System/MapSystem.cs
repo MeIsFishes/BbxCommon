@@ -11,6 +11,10 @@ namespace Dcg
     {
         protected override void OnSystemUpdate()
         {
+            // for test
+            var context = ObjectPool<TaskContextTest>.Alloc();
+            TaskApi.RunTask("Test", context);
+            context.CollectToPool();
         }
     }
 }

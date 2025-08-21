@@ -14,7 +14,6 @@ public class UiLoadingController : UiLoadingControllerBase<UiLoadingView>
         m_View.LoadingProgress.value = 0;
         Hide();
     }
-    
 
     public override void OnLoading(float process)
     {
