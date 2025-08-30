@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using BbxCommon.Internal;
 
 namespace BbxCommon
@@ -7,19 +8,22 @@ namespace BbxCommon
     public abstract class TaskContextBase : PooledObject
     {
         #region Interfaces
-        private bool m_Inited = false;
+        public int TypeId;
+        private bool m_Inited;
 
         internal void Init()
         {
-            if (m_Inited)
-                return;
+            if (m_Inited == false)
+            {
+                TypeId = ClassTypeId<TaskContextBase>.GetId(this.GetType());
+            }
             RegisterFields();
             m_Inited = true;
+            TaskDeserialiser.GetContextData(TypeId).Inited = true;
         }
         #endregion
 
         #region override
-
         public sealed override void OnAllocate()
         {
             OnContextAllocate();
@@ -248,27 +252,106 @@ namespace BbxCommon
         #region Register and Get Field
         private struct RegisteredField
         {
-            public object Value;
+            public TaskBridgeConstValue Value;
             public Type Type;
 
-            public RegisteredField(object value, Type type)
+            public RegisteredField(object value)
             {
-                Value = value;
-                Type = type;
+                Value = new();
+                Value.ObjectValue = value;
+                Type = value.GetType();
+            }
+
+            public RegisteredField(bool value)
+            {
+                Value = new();
+                Value.BoolValue = value;
+                Type = typeof(bool);
+            }
+
+            public RegisteredField(byte value)
+            {
+                Value = new();
+                Value.ByteValue = value;
+                Type = typeof(byte);
+            }
+
+            public RegisteredField(short value)
+            {
+                Value = new();
+                Value.ShortValue = value;
+                Type = typeof(short);
+            }
+
+            public RegisteredField(ushort value)
+            {
+                Value = new();
+                Value.UshortValue = value;
+                Type = typeof(ushort);
+            }
+
+            public RegisteredField(int value)
+            {
+                Value = new();
+                Value.IntValue = value;
+                Type = typeof(int);
+            }
+
+            public RegisteredField(uint value)
+            {
+                Value = new();
+                Value.UintValue = value;
+                Type = typeof(uint);
+            }
+
+            public RegisteredField(long value)
+            {
+                Value = new();
+                Value.LongValue = value;
+                Type = typeof(long);
+            }
+
+            public RegisteredField(ulong value)
+            {
+                Value = new();
+                Value.UlongValue = value;
+                Type = typeof(ulong);
+            }
+
+            public RegisteredField(float value)
+            {
+                Value = new();
+                Value.FloatValue = value;
+                Type = typeof(float);
+            }
+
+            public RegisteredField(double value)
+            {
+                Value = new();
+                Value.DoubleValue = value;
+                Type = typeof(double);
+            }
+
+            public RegisteredField(string value)
+            {
+                Value = new();
+                Value.StringValue = value;
+                Type = typeof(string);
             }
         }
-        private Dictionary<string, RegisteredField> m_Fields = new();
+
+        private List<RegisteredField> m_FieldList = new();
 
         internal TaskContextExportInfo GenerateExportInfo()
         {
             Init();
             var res = new TaskContextExportInfo();
             res.TaskContextTypeName = this.GetType().Name;
-            foreach (var pair in m_Fields)
+            foreach (var pair in TaskDeserialiser.GetContextData(TypeId).FieldTypeDic)
             {
                 var exportFieldInfo = new TaskExportFieldInfo();
                 exportFieldInfo.FieldName = pair.Key;
-                exportFieldInfo.TypeInfo = TaskApi.GenerateTaskTypeInfo(pair.Value.Type);
+                exportFieldInfo.TypeInfo = TaskApi.GenerateTaskTypeInfo(pair.Value);
                 res.FieldInfos.Add(exportFieldInfo);
             }
             return res;
@@ -276,62 +359,180 @@ namespace BbxCommon
 
         protected void RegisterBool<T>(T fieldEnum, bool value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(bool));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(bool);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
+        }
+
+        protected void RegisterByte<T>(T fieldEnum, byte value) where T : Enum
+        {
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(byte);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterShort<T>(T fieldEnum, short value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(short));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(short);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterUshort<T>(T fieldEnum, ushort value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(ushort));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(ushort);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterInt<T>(T fieldEnum, int value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(int));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(int);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterUint<T>(T fieldEnum, uint value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(uint));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(uint);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterLong<T>(T fieldEnum, long value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(long));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(long);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterUlong<T>(T fieldEnum, ulong value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(ulong));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(ulong);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterFloat<T>(T fieldEnum, float value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(float));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(float);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterDouble<T>(T fieldEnum, double value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(double));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(double);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterString<T>(T fieldEnum, string value) where T : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(string));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(string);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
         protected void RegisterObject<TEnum, TObject>(TEnum fieldEnum, TObject value) where TEnum : Enum
         {
-            m_Fields[fieldEnum.ToString()] = new RegisteredField(value, typeof(TObject));
+            var contextData = TaskDeserialiser.GetContextData(TypeId);
+            var enumValue = fieldEnum.GetHashCode();
+            if (m_FieldList.Count <= enumValue)
+                m_FieldList.ModifyCount(enumValue + 1);
+            if (contextData.Inited == false)
+            {
+                contextData.FieldTypeDic[fieldEnum.ToString()] = typeof(TEnum);
+                contextData.FieldStrIndexDic[fieldEnum.ToString()] = enumValue;
+            }
+            m_FieldList[enumValue] = new RegisteredField(value);
         }
 
-        internal object GetValue(string key)
+        internal TaskBridgeConstValue GetConstValue(int enumValue)
         {
-            return m_Fields[key].Value;
+            return m_FieldList[enumValue].Value;
+        }
+
+        internal int GetStrIndex(string str)
+        {
+            return TaskDeserialiser.GetContextData(TypeId).FieldStrIndexDic[str];
         }
         #endregion
     }

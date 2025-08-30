@@ -145,13 +145,11 @@ namespace BbxCommon
 
         /// <summary>
         /// Modify the <see cref="List{T}"/>'s capacity and count to fit the specific count, and fill up all the new-created slots.
-        /// The capacity will be set as required count * <paramref name="factor"/>, preparing for the upcoming elements.
         /// </summary>
-        public static void ModifyCount<T>(this List<T> list, int count, float factor = 1.5f)
+        public static void ModifyCount<T>(this List<T> list, int count, T fill = default(T))
         {
-            var fill = default(T);
-            while (list.Capacity <= count)
-                list.Capacity = Math.Max((int)(list.Capacity * factor), 8);    // default capacity is 0
+            if (list.Capacity <= count)
+                list.Capacity = count;
             if (count < list.Count)
             {
                 list.RemoveRange(count, list.Count - count);

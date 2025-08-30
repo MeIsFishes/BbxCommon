@@ -195,7 +195,7 @@ namespace BbxCommon
         {
             RegisterField(EField.Duration, Duration);
         }
-        public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
+        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             switch (fieldEnum)
             {

@@ -10,7 +10,7 @@ namespace BbxCommon.Internal
         Multiple,
     }
 
-    public class TaskConnectPoint : MonoBehaviour
+    public class TaskConnectPoint
     {
         public ETaskConnectPointType ConnectPointType = ETaskConnectPointType.Multiple;
         public List<TaskBase> Tasks = new();

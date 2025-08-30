@@ -21,7 +21,7 @@ public class #SCRIPT_NAME# : TaskDurationBase
         RegisterField(EField.IntValue, IntValue);
     }
 
-    protected override void ReadTaskFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
+    protected override void ReadTaskFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
     {
         switch (fieldEnum)
         {

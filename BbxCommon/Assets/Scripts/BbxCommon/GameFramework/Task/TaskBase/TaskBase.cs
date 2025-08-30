@@ -154,9 +154,9 @@ namespace BbxCommon
             res.Add(GetFieldEnumType());
         }
         protected abstract Type GetFieldEnumType();
-        public abstract void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context);
+        public abstract void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context);
 
-        protected T ReadValue<T>(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected T ReadValue<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             var res = default(T);
             switch (fieldInfo.ValueSource)
@@ -165,10 +165,10 @@ namespace BbxCommon
                     DebugApi.LogWarning("Task Value: Use other functions which meets the type required instead!");
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (T)context.GetValue(fieldInfo.Value);
+                    res = (T)context.GetConstValue(fieldInfo.ConstValue.IntValue).ObjectValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (T)context.GetBlackBoardObjectValue(fieldInfo.Value);
+                    res = (T)context.GetBlackBoardObjectValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             if (res == null)
@@ -178,263 +178,435 @@ namespace BbxCommon
         #endregion
 
         #region Base Type
-        protected bool ReadBool(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected bool ReadBool(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             bool res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (bool.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: bool, content: " + str);
+                        }
+                        fieldInfo.ConstValue.BoolValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (bool.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: bool, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.BoolValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (bool)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).BoolValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = context.GetBlackBoardLongValue(fieldInfo.Value) > 0;
+                    res = context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue) > 0;
                     break;
             }
             return res;
         }
 
-        protected short ReadShort(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected short ReadShort(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             short res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (short.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: short, content: " + str);
+                        }
+                        fieldInfo.ConstValue.ShortValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (short.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: short, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.ShortValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (short)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).ShortValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (short)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = (short)context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected ushort ReadUshort(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected ushort ReadUshort(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             ushort res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (ushort.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: ushort, content: " + str);
+                        }
+                        fieldInfo.ConstValue.UshortValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (ushort.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: ushort, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.UshortValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (ushort)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).UshortValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (ushort)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = (ushort)context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected int ReadInt(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected int ReadInt(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             int res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (int.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: int, content: " + str);
+                        }
+                        fieldInfo.ConstValue.IntValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (int.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: int, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.IntValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (int)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).IntValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (int)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = (int)context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected uint ReadUint(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected uint ReadUint(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             uint res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (uint.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: uint, content: " + str);
+                        }
+                        fieldInfo.ConstValue.UintValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (uint.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: uint, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.UintValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (uint)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).UintValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (uint)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = (uint)context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected long ReadLong(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected long ReadLong(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             long res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (long.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: long, content: " + str);
+                        }
+                        fieldInfo.ConstValue.LongValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (long.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: long, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.LongValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (long)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).LongValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected ulong ReadUlong(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected ulong ReadUlong(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             ulong res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (ulong.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: ulong, content: " + str);
+                        }
+                        fieldInfo.ConstValue.UlongValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (ulong.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: ulong, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.UlongValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (ulong)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).UlongValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (ulong)context.GetBlackBoardLongValue(fieldInfo.Value);
+                    res = (ulong)context.GetBlackBoardLongValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected float ReadFloat(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected float ReadFloat(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             float res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (float.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: float, content: " + str);
+                        }
+                        fieldInfo.ConstValue.FloatValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (float.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: float, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.FloatValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (float)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).FloatValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (float)context.GetBlackBoardDoubleValue(fieldInfo.Value);
+                    res = (float)context.GetBlackBoardDoubleValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected double ReadDouble(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected double ReadDouble(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             double res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (double.TryParse(str, out res) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: double, content: " + str);
+                        }
+                        fieldInfo.ConstValue.DoubleValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (double.TryParse(fieldInfo.Value, out res) == false)
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type: double, content: " + fieldInfo.Value);
-                    }
+                    res = fieldInfo.ConstValue.DoubleValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (double)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).DoubleValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = context.GetBlackBoardDoubleValue(fieldInfo.Value);
+                    res = context.GetBlackBoardDoubleValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected T ReadEnum<T>(TaskFieldInfo fieldInfo, TaskContextBase context) where T : Enum
+        protected T ReadEnum<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context) where T : Enum
         {
             T res = default;
+            // init
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (Enum.TryParse(typeof(T), str, out var obj) == false)
+                        {
+                            DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", fieldEnumValue: " + fieldInfo.FieldEnumValue +
+                                ", required type: " + typeof(T).Name + ", content: " + str);
+                        }
+                        fieldInfo.ConstValue.ObjectValue = (T)obj;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    if (Enum.TryParse(typeof(T), fieldInfo.Value, out var obj))
-                    {
-                        res = (T)obj;
-                    }
-                    else
-                    {
-                        DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                            ", required type:" + typeof(T).Name + ", content: " + fieldInfo.Value);
-                    }
+                    res = (T)fieldInfo.ConstValue.ObjectValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (T)context.GetValue(fieldInfo.Value);
+                    res = (T)context.GetConstValue(fieldInfo.ConstValue.IntValue).ObjectValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = context.GetBlackBoardValue<T>(fieldInfo.Value);
+                    res = context.GetBlackBoardValue<T>(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
         }
 
-        protected string ReadString(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected string ReadString(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
+            // init
             string res = default;
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    res = fieldInfo.Value;
+                    res = fieldInfo.ConstValue.StringValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res = (string)context.GetValue(fieldInfo.Value);
+                    res = context.GetConstValue(fieldInfo.ConstValue.IntValue).StringValue;
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res = (string)context.GetBlackBoardObjectValue(fieldInfo.Value);
+                    res = (string)context.GetBlackBoardObjectValue(fieldInfo.ConstValue.StringValue);
                     break;
             }
             return res;
@@ -442,184 +614,152 @@ namespace BbxCommon
         #endregion
 
         #region Special Type
-        protected List<T> ReadList<T>(TaskFieldInfo fieldInfo, TaskContextBase context, List<T> res)
+        protected List<T> ReadList<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context, List<T> res)
         {
             res ??= new List<T>();
             res.Clear();
+            // init
+            if (fieldInfo.Inited == false)
+            {
+                var str = fieldInfo.ConstValue.StringValue;
+                switch (fieldInfo.ValueSource)
+                {
+                    case ETaskFieldValueSource.Value:
+                        if (fieldInfo.ConstValue.StringValue.IsNullOrEmpty()) // default value
+                            return res;
+                        var elements = fieldInfo.ConstValue.StringValue.Split(TaskExportCrossVariable.ListElementSplit, StringSplitOptions.RemoveEmptyEntries);
+                        if (res is List<bool> boolList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (bool.TryParse(elements[i], out var val))
+                                {
+                                    boolList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<short> shortList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (short.TryParse(elements[i], out var val))
+                                {
+                                    shortList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<ushort> ushortList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (ushort.TryParse(elements[i], out var val))
+                                {
+                                    ushortList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<int> intList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (int.TryParse(elements[i], out var val))
+                                {
+                                    intList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<uint> uintList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (uint.TryParse(elements[i], out var val))
+                                {
+                                    uintList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<long> longList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (long.TryParse(elements[i], out var val))
+                                {
+                                    longList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<ulong> ulongList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (ulong.TryParse(elements[i], out var val))
+                                {
+                                    ulongList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<float> floatList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (float.TryParse(elements[i], out var val))
+                                {
+                                    floatList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<double> doubleList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (double.TryParse(elements[i], out var val))
+                                {
+                                    doubleList.Add(val);
+                                }
+                            }
+                        }
+                        else if (res is List<string> stringList)
+                        {
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                stringList.Add(elements[i]);
+                            }
+                        }
+                        else if (typeof(T).IsEnum)
+                        {
+                            var addMethod = res.GetType().GetMethod("Add");
+                            for (int i = 0; i < elements.Length; i++)
+                            {
+                                if (Enum.TryParse(typeof(T), elements[i], out var val))
+                                {
+                                    addMethod.Invoke(res, new object[] { val });
+                                }
+                            }
+                        }
+                        else
+                        {
+                            DebugApi.LogWarning("Task Value: Parse custom types for collections are currently not supported!");
+                        }
+                        fieldInfo.ConstValue.ObjectValue = res;
+                        break;
+                    case ETaskFieldValueSource.Context:
+                        fieldInfo.ConstValue.IntValue = context.GetStrIndex(fieldInfo.ConstValue.StringValue);
+                        break;
+                    case ETaskFieldValueSource.Blackboard:
+                        break;
+                }
+            }
+            // get value
             switch (fieldInfo.ValueSource)
             {
                 case ETaskFieldValueSource.Value:
-                    if (fieldInfo.Value.IsNullOrEmpty()) // default value
-                        return res;
-                    var elements = fieldInfo.Value.Split(TaskExportCrossVariable.ListElementSplit, StringSplitOptions.RemoveEmptyEntries);
-                    if (res is List<bool> boolList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (bool.TryParse(elements[i], out var val))
-                            {
-                                boolList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<bool>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<short> shortList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (short.TryParse(elements[i], out var val))
-                            {
-                                shortList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<short>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<ushort> ushortList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (ushort.TryParse(elements[i], out var val))
-                            {
-                                ushortList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<ushort>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<int> intList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (int.TryParse(elements[i], out var val))
-                            {
-                                intList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<int>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<uint> uintList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (uint.TryParse(elements[i], out var val))
-                            {
-                                uintList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<uint>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<long> longList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (long.TryParse(elements[i], out var val))
-                            {
-                                longList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<long>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<ulong> ulongList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (ulong.TryParse(elements[i], out var val))
-                            {
-                                ulongList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<ulong>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<float> floatList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (float.TryParse(elements[i], out var val))
-                            {
-                                floatList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<float>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<double> doubleList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (double.TryParse(elements[i], out var val))
-                            {
-                                doubleList.Add(val);
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<double>, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else if (res is List<string> stringList)
-                    {
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            stringList.Add(elements[i]);
-                        }
-                    }
-                    else if (typeof(T).IsEnum)
-                    {
-                        var addMethod = res.GetType().GetMethod("Add");
-                        for (int i = 0; i < elements.Length; i++)
-                        {
-                            if (Enum.TryParse(typeof(T), elements[i], out var val))
-                            {
-                                addMethod.Invoke(res, new object[] { val });
-                            }
-                            else
-                            {
-                                DebugApi.LogError("Task value parse failed! Task: " + this.GetType().Name + ", field: " + fieldInfo.FieldName +
-                                    ", required type: List<" + typeof(T).Name + ">, element content: " + elements[i]);
-                            }
-                        }
-                    }
-                    else
-                    {
-                        DebugApi.LogWarning("Task Value: Parse custom types for collections are currently not supported!");
-                    }
+                    res = (List<T>)fieldInfo.ConstValue.ObjectValue;
                     break;
                 case ETaskFieldValueSource.Context:
-                    res.AddList((List<T>)context.GetValue(fieldInfo.Value));
+                    res.AddList((List<T>)context.GetConstValue(fieldInfo.ConstValue.IntValue).ObjectValue);
                     break;
                 case ETaskFieldValueSource.Blackboard:
-                    res.AddList((List<T>)context.GetBlackBoardObjectValue(fieldInfo.Value));
+                    res.AddList((List<T>)context.GetBlackBoardObjectValue(fieldInfo.ConstValue.StringValue));
                     break;
             }
             return res;
@@ -637,7 +777,7 @@ namespace BbxCommon
         /// Read task refrences for child nodes. Most frequently used in low-level drive nodes, such as Sequence, Selector in
         /// behavior tree.
         /// </summary>
-        protected TaskConnectPoint ReadConnectPoint(TaskFieldInfo fieldInfo, TaskContextBase context)
+        protected TaskConnectPoint ReadConnectPoint(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             var res = new TaskConnectPoint();
             ReadList(fieldInfo, context, res.TaskRefrenceIds);

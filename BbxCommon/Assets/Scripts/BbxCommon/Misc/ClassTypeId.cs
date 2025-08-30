@@ -35,4 +35,29 @@ namespace BbxCommon
 
         public static int GetId() => Id;
     }
+
+    public static class ClassTypeId<TBase>
+    {
+        public static int GetId<TDerived>() where TDerived : TBase
+        {
+            return ClassTypeId<TBase, TDerived>.Id;
+        }
+
+        public static int GetId(Type type)
+        {
+            if (type.IsSubclassOf(typeof(TBase)) == false && type != typeof(TBase))
+            {
+                DebugApi.LogError("Type '"+ type.FullName + "is not derived from" + typeof(TBase).FullName + ".");
+                return -1;
+            }
+            var classDeclare = typeof(ClassTypeId<,>).MakeGenericType(typeof(TBase), type);
+            var method = classDeclare.GetMethod("GetId", Array.Empty<Type>());
+            return (int)method.Invoke(null, null);
+        }
+
+        public static int GetId(object obj)
+        {
+            return GetId(obj.GetType());
+        }
+    }
 }

@@ -32,7 +32,7 @@ namespace Dcg
             RegisterField(EField.JumpHeight, JumpHeight);
         }
 
-        public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
+        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             switch (fieldEnum)
             {

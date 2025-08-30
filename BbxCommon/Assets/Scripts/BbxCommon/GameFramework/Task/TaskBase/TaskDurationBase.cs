@@ -36,7 +36,7 @@ namespace BbxCommon
         }
         protected abstract void RegisterTaskFields();
 
-        public sealed override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
+        public sealed override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             switch (fieldEnum)
             {
@@ -49,7 +49,7 @@ namespace BbxCommon
             }
             ReadTaskFieldInfo(fieldEnum, fieldInfo, context);
         }
-        protected abstract void ReadTaskFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context);
+        protected abstract void ReadTaskFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context);
 
         public override void OnAllocate()
         {

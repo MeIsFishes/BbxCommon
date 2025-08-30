@@ -66,7 +66,7 @@ namespace BbxCommon
             m_CurrentIndex = 0;
         }
 
-        public override void ReadFieldInfo(int fieldEnum, TaskFieldInfo fieldInfo, TaskContextBase context)
+        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             switch (fieldEnum)
             {

@@ -13,23 +13,11 @@ namespace BbxCommon
         public static Entity CreateEntity(string group = "", EntityID entityID = new EntityID())
         {
             return EcsEntityManager.CreateEntity(entityID, group);
-            //EcsEntityManager.GetEntityByID(EcsEntityManager.CreateEntity(), out var entity);
-            //return entity;
-            // var entity = World.DefaultGameObjectInjectionWorld.EntityManager.CreateEntity();
-            // var ecsDataGroup = ObjectPool<EcsDataGroup>.Alloc();
-            // ecsDataGroup.Init(entity);
-            // EcsDataManager.CreateEcsDataGroup(entity, ecsDataGroup);
-            // return entity;
-            
         }
         
         public static void DestroyEntity(Entity entity)
         {
             EcsEntityManager.DestroyEntity(entity);
-            // entity.ClearHud();
-            // entity.GetGameObject().Destroy();
-            // EcsDataManager.DestroyEntity(entity);
-            // World.DefaultGameObjectInjectionWorld?.EntityManager.DestroyEntity(entity);
         }
         
         public static bool GetEntityByID(EntityID uniqueId, out Entity entity)

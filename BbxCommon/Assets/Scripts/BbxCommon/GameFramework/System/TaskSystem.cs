@@ -74,6 +74,7 @@ namespace BbxCommon
             }
             for (int i = finishInfos.Count - 1; i >= 0; i--)
             {
+                taskManager.RunningTasks[finishInfos[i].Index].Task.CollectToPool();
                 taskManager.RunningTasks.RemoveAt(finishInfos[i].Index);
             }
 

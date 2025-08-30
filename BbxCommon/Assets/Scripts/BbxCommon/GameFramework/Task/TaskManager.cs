@@ -30,11 +30,18 @@ namespace BbxCommon
         internal List<TaskBase> NewEnterTasks = new();
         internal List<RunningTaskInfo> RunningTasks = new();
 
-        private Dictionary<string, TaskGroupInfo> m_Tasks = new();
+        private Dictionary<string, TaskBridgeGroupInfo> m_Tasks = new();
+
+        internal void RegisterTask(string key, TaskBridgeGroupInfo value)
+        {
+            m_Tasks[key] = value;
+        }
 
         internal void RegisterTask(string key, TaskGroupInfo value)
         {
-            m_Tasks[key] = value;
+            var bridge = new TaskBridgeGroupInfo();
+            bridge.FromTaskGroupInfo(value);
+            m_Tasks[key] = bridge;
         }
 
         internal void RunTask(TaskBase task)
@@ -51,8 +58,10 @@ namespace BbxCommon
                 {
                     var jsonData = JsonMapper.ToObject(textAsset.text);
                     var readTaskGroupInfo = JsonApi.Deserialize<TaskGroupInfo>(jsonData);
-                    RegisterTask(key, readTaskGroupInfo);
-                    taskGroupInfo = readTaskGroupInfo;
+                    var bridge = new TaskBridgeGroupInfo();
+                    bridge.FromTaskGroupInfo(readTaskGroupInfo);
+                    RegisterTask(key, bridge);
+                    taskGroupInfo = bridge;
                 }
                 else
                 {
@@ -60,11 +69,10 @@ namespace BbxCommon
                     return;
                 }
             }
-            if (taskGroupInfo.BindingContextFullType != context.GetType().FullName &&
-                taskGroupInfo.BindingContextFullType != context.GetType().Name)
+            if (taskGroupInfo.BindingContextType != context.GetType())
             {
                 DebugApi.LogError("Context doesn't match! You pass in " + context.GetType().FullName + ", but the task " + key +
-                    " requires " + taskGroupInfo.BindingContextFullType);
+                    " requires " + taskGroupInfo.BindingContextType.Name);
                 return;
             }
             // generate tasks
@@ -149,28 +157,27 @@ namespace BbxCommon
         /// <summary>
         /// Deserialize only <see cref="TaskFieldInfo"/>.
         /// </summary>
-        private TaskBase DeserializeTask(TaskValueInfo taskValueInfo, TaskContextBase context)
+        private TaskBase DeserializeTask(TaskBridgeValueInfo taskValueInfo, TaskContextBase context)
         {
-            var type = ReflectionApi.GetType(taskValueInfo.FullTypeName);
-            if (type == null)
-            {
-                DebugApi.LogError("Invalid Task Type, FullTypeName = " + taskValueInfo.FullTypeName);
-                return null;
-            }
-            var task = Activator.CreateInstance(type) as TaskBase;
+            var task = ObjectPool.Alloc(taskValueInfo.TaskType) as TaskBase;
             for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
             {
                 var fieldInfo = taskValueInfo.FieldInfos[i];
-                var enumTypes = new List<Type>();
-                task.GetFieldEnumTypes(enumTypes);
-                foreach (var enumType in enumTypes)
+                if (fieldInfo.Inited == false)
                 {
-                    var ok = Enum.TryParse(enumType, fieldInfo.FieldName, out var enumValue);
-                    if (ok)
+                    var enumTypes = new List<Type>();
+                    task.GetFieldEnumTypes(enumTypes);
+                    foreach (var enumType in enumTypes)
                     {
-                        task.ReadFieldInfo(enumValue.GetHashCode(), fieldInfo, context);
-                        break;
+                        var ok = Enum.TryParse(enumType, fieldInfo.FieldName, out var enumValue);
+                        if (ok) fieldInfo.FieldEnumValue = (int)enumValue;
                     }
+                    task.ReadFieldInfo(fieldInfo.FieldEnumValue, fieldInfo, context);
+                    fieldInfo.Inited = true;
+                }
+                else
+                {
+                    task.ReadFieldInfo(fieldInfo.FieldEnumValue, fieldInfo, context);
                 }
             }
             return task;
