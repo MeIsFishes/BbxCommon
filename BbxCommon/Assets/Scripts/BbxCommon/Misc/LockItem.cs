@@ -55,7 +55,7 @@ namespace BbxCommon
             m_Generation = m_GenerationGenerator.GenerateId();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_Keys.Clear();
             m_Generation = 0;

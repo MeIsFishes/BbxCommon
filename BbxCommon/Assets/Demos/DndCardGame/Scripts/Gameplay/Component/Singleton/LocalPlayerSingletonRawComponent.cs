@@ -43,7 +43,7 @@ namespace Dcg
             DungeonEntities.Clear();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             DungeonEntities.Clear();
         }

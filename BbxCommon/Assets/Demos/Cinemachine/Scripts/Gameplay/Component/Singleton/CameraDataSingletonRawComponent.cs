@@ -23,7 +23,7 @@ namespace Cin
             CurCamera.SetValue(camera);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             CamerasInScene.Clear();
         }

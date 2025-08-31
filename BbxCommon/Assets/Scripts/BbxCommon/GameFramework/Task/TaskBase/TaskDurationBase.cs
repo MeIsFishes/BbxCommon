@@ -51,7 +51,7 @@ namespace BbxCommon
         }
         protected abstract void ReadTaskFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context);
 
-        public override void OnAllocate()
+        protected override void OnTaskCollect()
         {
             Duration = -1;
             Interval = -1;

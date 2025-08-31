@@ -28,7 +28,7 @@ namespace Dcg
             m_MessageHandler.Dispatch(uiEvent.GetHashCode(), this);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             Dices.CollectToPool();
             Chosen = false;

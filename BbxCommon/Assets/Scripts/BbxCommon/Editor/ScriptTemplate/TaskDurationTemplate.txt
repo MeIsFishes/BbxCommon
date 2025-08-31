@@ -31,12 +31,12 @@ public class #SCRIPT_NAME# : TaskDurationBase
         }
     }
 
-    public override void OnCollect()
+    protected override void OnCollect()
     {
         IntValue = 0;
     }
 
-    protected override void OnTaskEnter()
+    protected override void OnTaskCollect()
     {
         
     }

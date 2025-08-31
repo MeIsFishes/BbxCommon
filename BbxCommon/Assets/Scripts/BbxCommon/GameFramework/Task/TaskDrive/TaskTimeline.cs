@@ -60,10 +60,6 @@ namespace BbxCommon
 
         protected override void OnEnter()
         {
-            m_ElapsedTime = 0;
-            m_CurCheckIndex = 0;
-            m_RunningTaskIndexes.Clear();
-            RunningChildTaskInfos.Clear();
             StartTask(0);
         }
 
@@ -179,6 +175,16 @@ namespace BbxCommon
                 m_RunningTaskIndexes.Add(m_CurCheckIndex);
                 m_CurCheckIndex++;
             }
+        }
+
+        protected override void OnTaskCollect()
+        {
+            Duration = default;
+            m_ElapsedTime = default;
+            m_CurCheckIndex = default;
+            m_RunningTaskIndexes.Clear();
+            RunningChildTaskInfos.Clear();
+            m_TaskInfos.Clear();
         }
         #endregion
 

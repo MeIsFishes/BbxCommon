@@ -389,7 +389,7 @@ namespace BbxCommon.Container
             return null;
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             base.OnCollect();
             Parent = null;

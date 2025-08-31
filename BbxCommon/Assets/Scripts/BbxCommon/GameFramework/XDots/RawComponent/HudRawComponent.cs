@@ -36,7 +36,7 @@ namespace BbxCommon
                 HudControllers[i] = null;
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             HudControllers.Clear();
         }

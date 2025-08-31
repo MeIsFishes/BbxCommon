@@ -112,7 +112,7 @@ namespace BbxCommon
             }
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_RandomItems.Clear();
             m_ItemIndexes.Clear();

@@ -69,7 +69,9 @@ namespace BbxCommon
 
             public ProfilerData GetData(string key)
             {
-                return m_DataDic.GetOrAdd(key);
+                var data = m_DataDic.GetOrAdd(key);
+                data.Key = key;
+                return data;
             }
 
             public void BeginSample()
@@ -80,6 +82,16 @@ namespace BbxCommon
             public void EndSample()
             {
                 m_Stopwatch.Stop();
+            }
+
+            public void OutputTimeMs()
+            {
+                DebugApi.Log(Key + ": " + TimeMs + " ms");
+            }
+
+            public void OutputTimeUs()
+            {
+                DebugApi.Log(Key + ": " + TimeUs + " us");
             }
         }
 

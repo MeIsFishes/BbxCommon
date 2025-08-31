@@ -24,7 +24,7 @@ namespace Dcg
             RegisterField(EField.Content, Content);
         }
 
-        public override void OnCollect()
+        protected override void OnTaskCollect()
         {
             Content = string.Empty;
         }

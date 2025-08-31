@@ -60,14 +60,14 @@ namespace Dcg
             return result;
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             BaseDices = ObjectPool<DiceList>.Alloc();
             AbilityModifier = ObjectPool<DiceList>.Alloc();
             BuffModifier = ObjectPool<DiceList>.Alloc();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             BaseDices.CollectToPool();
             AbilityModifier.CollectToPool();

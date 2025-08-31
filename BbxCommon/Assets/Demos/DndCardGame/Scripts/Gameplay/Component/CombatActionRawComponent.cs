@@ -34,7 +34,7 @@ namespace Dcg
         /// </summary>
         public ListenableVariable<int> BonusActionVariable;
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             ActionVariable.MakeInvalid();
             BonusActionVariable.MakeInvalid();

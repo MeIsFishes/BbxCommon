@@ -30,7 +30,7 @@ namespace Dcg
             m_MessageHandler.Dispatch((int)EUiEvent.DeckRefresh);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_MessageHandler.ClearAndRelease();
             Dices.CollectAndClearElements();

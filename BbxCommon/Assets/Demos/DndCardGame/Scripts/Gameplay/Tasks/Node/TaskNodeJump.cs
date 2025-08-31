@@ -45,7 +45,7 @@ namespace Dcg
             }
         }
 
-        public override void OnCollect()
+        protected override void OnTaskCollect()
         {
             AttackerEntityId = EntityID.INVALID;
             JumpHeight = 0;

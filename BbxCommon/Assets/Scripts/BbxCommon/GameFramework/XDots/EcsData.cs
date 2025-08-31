@@ -29,7 +29,7 @@ namespace BbxCommon
             return Entity;
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             Active = true;
             RequestDeactive = false;
@@ -53,7 +53,7 @@ namespace BbxCommon
             Entity = entity;
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             base.OnCollect();
             Entity = Entity.Null;

@@ -59,9 +59,8 @@ namespace BbxCommon
             
         }
 
-        public override void OnCollect()
+        protected override void OnTaskCollect()
         {
-            base.OnCollect();
             Tasks = null;
             m_CurrentIndex = 0;
         }

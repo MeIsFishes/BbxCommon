@@ -71,7 +71,7 @@ namespace BbxCommon.Container
             Root.DestroyTree();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             base.OnCollect();
             DestroyTree();

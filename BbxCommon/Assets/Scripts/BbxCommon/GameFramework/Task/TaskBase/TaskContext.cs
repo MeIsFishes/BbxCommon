@@ -24,14 +24,14 @@ namespace BbxCommon
         #endregion
 
         #region override
-        public sealed override void OnAllocate()
+        protected sealed override void OnAllocate()
         {
             OnContextAllocate();
         }
 
         protected virtual void OnContextAllocate() { }
 
-        public sealed override void OnCollect()
+        protected sealed override void OnCollect()
         {
             OnContextCollect();
             m_blackBoardDoubleData.Clear();
@@ -39,7 +39,7 @@ namespace BbxCommon
             m_blackBoardObjectData.Clear();
         }
 
-        protected virtual void OnContextCollect(){}
+        protected virtual void OnContextCollect() { }
 
         #endregion
         

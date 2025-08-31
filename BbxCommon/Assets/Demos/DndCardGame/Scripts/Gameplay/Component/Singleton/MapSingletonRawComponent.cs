@@ -90,7 +90,7 @@ namespace Dcg
             m_MessageHandler.Dispatch((int)e, this);
         }
     
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_MessageHandler.RemoveAllListeners();
         }

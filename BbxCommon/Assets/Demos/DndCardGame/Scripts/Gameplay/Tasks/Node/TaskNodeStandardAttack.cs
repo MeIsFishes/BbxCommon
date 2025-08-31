@@ -103,7 +103,7 @@ namespace Dcg
             }
         }
 
-        public override void OnCollect()
+        protected override void OnTaskCollect()
         {
             // 清理或重置所有字段
             AttackerEntityId = EntityID.INVALID;

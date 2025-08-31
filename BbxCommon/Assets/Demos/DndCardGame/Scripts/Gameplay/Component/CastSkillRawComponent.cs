@@ -66,12 +66,12 @@ namespace Dcg
             return true;
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             SimplePool.Alloc(out WildDices);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             WildDices.CollectToPool();
         }

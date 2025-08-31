@@ -33,7 +33,7 @@ namespace Dcg
             }
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             RequestSpawnRoom = false;
         }

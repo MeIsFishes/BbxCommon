@@ -108,7 +108,7 @@ namespace BbxCommon
             Listeners.CollectToPool();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             ClearAndRelease();
         }

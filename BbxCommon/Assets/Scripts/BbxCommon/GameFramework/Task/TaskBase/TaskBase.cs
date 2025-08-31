@@ -144,6 +144,22 @@ namespace BbxCommon
         protected virtual void OnExit() { }
         protected virtual void OnSucceeded() { }
         protected virtual void OnFailed() { }
+
+        protected sealed override void OnAllocate()
+        {
+            OnTaskAllocate();
+        }
+
+        protected sealed override void OnCollect()
+        {
+            m_EnterCondition.Reset();
+            m_Conditions.Reset();
+            m_ExitConditions.Reset();
+            OnTaskCollect();
+        }
+
+        protected virtual void OnTaskAllocate() { }
+        protected virtual void OnTaskCollect() { }
         #endregion
 
         #region Read Field Info

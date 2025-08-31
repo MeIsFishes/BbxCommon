@@ -60,9 +60,8 @@ namespace BbxCommon
            
         }
 
-        public override void OnCollect()
+        protected override void OnTaskCollect()
         {
-            base.OnCollect();
             Tasks = null;
             LoopCount = -1;
         }

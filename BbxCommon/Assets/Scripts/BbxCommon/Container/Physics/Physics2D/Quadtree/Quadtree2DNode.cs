@@ -360,7 +360,7 @@ namespace BbxCommon.Container
             return (array | (1 << order)) != 0;
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             base.OnCollect();
             m_ColliderItemSet.Clear();

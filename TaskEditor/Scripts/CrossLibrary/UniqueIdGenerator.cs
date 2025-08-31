@@ -27,7 +27,7 @@ namespace BbxCommon
             m_Id = value;
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             m_Id = 0;
         }

@@ -61,12 +61,12 @@ namespace Dcg
         #endregion
 
         #region Common
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             m_LockItem = ObjectPool<LockItem>.Alloc();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_LockItem.CollectToPool();
             BlockedOperations.CollectAndClearElements();

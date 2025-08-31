@@ -82,13 +82,13 @@ namespace Dcg
             TakeDamageRequests.Add(request);
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             CauseDamageRequests = SimplePool<List<DamageRequest>>.Alloc();
             TakeDamageRequests = SimplePool<List<DamageRequest>>.Alloc();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             CauseDamageRequests.CollectAndClearElements(true);
             TakeDamageRequests.CollectAndClearElements(true);

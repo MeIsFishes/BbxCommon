@@ -21,13 +21,23 @@ namespace BbxCommon
                 return;
             }
 #endif
+            OnCollect();
             if (ObjectPoolBelongs != null)
                 ObjectPoolBelongs.Collect(this);
         }
 
-        public virtual void OnAllocate() { }
+        void IPooledObject.OnAllocate()
+        {
+            OnAllocate();
+        }
 
-        public virtual void OnCollect() { }
+        void IPooledObject.OnCollect()
+        {
+            OnCollect();
+        }
+
+        protected virtual void OnAllocate() { }
+        protected virtual void OnCollect() { }
     }
     #endregion
 

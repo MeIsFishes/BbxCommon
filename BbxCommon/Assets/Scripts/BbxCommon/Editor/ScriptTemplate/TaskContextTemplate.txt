@@ -21,7 +21,7 @@ public class #SCRIPT_NAME# : TaskContextBase
         RegisterInt(EField.IntValue, IntValue);
     }
 
-    public override void OnCollect()
+    public override void OnContextCollect()
     {
         IntValue = 0;
     }

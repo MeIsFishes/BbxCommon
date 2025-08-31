@@ -34,7 +34,7 @@ namespace BbxCommon
             return m_MessageQueue.TryDequeue(out message);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_MessageQueue.Clear();
         }

@@ -31,7 +31,7 @@ public class #SCRIPT_NAME# : TaskOnceBase
         }
     }
 
-    public override void OnCollect()
+    protected override void OnTaskCollect()
     {
         IntValue = 0;
     }

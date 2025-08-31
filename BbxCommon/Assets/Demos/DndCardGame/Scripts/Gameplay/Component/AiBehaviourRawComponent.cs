@@ -21,7 +21,7 @@ namespace Dcg
         public bool DidAction;
         public bool DidEndTurn;
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             ElapsedTime = 0;
         }

@@ -18,12 +18,12 @@ namespace Dcg
         /// </summary>
         public bool EnterCombat;
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             SimplePool.Alloc(out RoundOrder);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             RoundOrder.CollectToPool();
         }

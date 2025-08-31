@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace BbxCommon
 {
@@ -11,6 +12,7 @@ namespace BbxCommon
      * Remember to manage objects' life cycle yourself. */
     internal interface IObjectPoolHandler
     {
+        object AllocObj();
         void Collect(IPooledObject obj);
     }
 
@@ -19,6 +21,11 @@ namespace BbxCommon
     {
         private static UniqueIdGenerator m_IdGenerator = new UniqueIdGenerator();
         private static List<T> m_Pool = new List<T>();
+
+        internal static ObjectPool<T> GetPoolInstance()
+        {
+            return Instance;
+        }
 
         /// <summary>
         /// Allocate an object of given type from pool, and it will call OnAllocate().
@@ -32,8 +39,11 @@ namespace BbxCommon
                 obj = objectSet[objectSet.Count - 1];
                 objectSet.RemoveAt(objectSet.Count - 1);
             }
-            obj = new T();
-            obj.OnAllocate();
+            else
+            {
+                obj = new T();
+            }
+            (obj as IPooledObject).OnAllocate();
             obj.UniqueId = m_IdGenerator.GenerateId();
             obj.ObjectPoolBelongs = Instance;
             obj.IsCollected = false;
@@ -65,6 +75,11 @@ namespace BbxCommon
             }
         }
 
+        public object AllocObj()
+        {
+            return Alloc();
+        }
+
         /// <summary>
         /// Collect the pooled object.
         /// </summary>
@@ -94,6 +109,8 @@ namespace BbxCommon
     // a syntactic sugar class
     public static class ObjectPool
     {
+        private static Dictionary<Type, IObjectPoolHandler> m_ObjectPools = new();
+
         public static void Alloc<T>(out T obj) where T : PooledObject, new()
         {
             obj = ObjectPool<T>.Alloc();
@@ -113,6 +130,19 @@ namespace BbxCommon
             if (reference == null)
                 return ObjectPool<T>.Alloc();
             return reference;
+        }
+
+        public static object Alloc(Type type)
+        {
+            IObjectPoolHandler pool;
+            if (m_ObjectPools.TryGetValue(type, out pool) == false)
+            {
+                var classDeclare = typeof(ObjectPool<>).MakeGenericType(type);
+                var method = classDeclare.GetMethod("GetPoolInstance", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                pool = method.Invoke(null, null) as IObjectPoolHandler;
+                m_ObjectPools[type] = pool;
+            }
+            return pool.AllocObj();
         }
     }
 }

@@ -27,7 +27,7 @@ namespace Dcg
             Num = ReadInt(fieldInfo, context);
         }
 
-        public override void OnCollect()
+        protected override void OnConditionCollect()
         {
             Num = 0;
         }

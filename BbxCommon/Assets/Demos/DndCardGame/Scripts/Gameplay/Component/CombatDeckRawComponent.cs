@@ -95,7 +95,7 @@ namespace Dcg
             DispatchEvent(EUiEvent.DicesInDiscardRefresh);
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             ObjectPool.Alloc(out m_MessageHandler);
             SimplePool.Alloc(out DicesInDeck);
@@ -103,7 +103,7 @@ namespace Dcg
             SimplePool.Alloc(out DicesInDiscard);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             m_MessageHandler.ClearAndRelease();
             DicesInDeck.CollectAndClearElements();

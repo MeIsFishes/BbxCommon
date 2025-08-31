@@ -26,7 +26,7 @@ public class UiModelUserOption : UiModelBase
         TipsNeedShow = PlayerPrefs.GetInt("NeedShowTips", 0) == 1;
     }
 
-    public override void OnCollect()
+    protected override void OnCollect()
     {
         TipsNeedShowVariable.MakeInvalid();
     }

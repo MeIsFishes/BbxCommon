@@ -27,6 +27,11 @@ namespace BbxCommon
             }
         }
 
+        public static T GetInstance()
+        {
+            return Instance;
+        }
+
         public void InitSingleton()
         {
             OnSingletonInit();

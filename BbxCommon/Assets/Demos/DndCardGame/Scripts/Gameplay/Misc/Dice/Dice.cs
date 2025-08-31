@@ -73,12 +73,12 @@ namespace Dcg
             return null;
         }
 
-        public override void OnAllocate()
+        protected override void OnAllocate()
         {
             Affixes = SimplePool<List<DiceAffixBase>>.Alloc();
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             DiceType = EDiceType.D4;
             Affixes.CollectAndClearElements(true);

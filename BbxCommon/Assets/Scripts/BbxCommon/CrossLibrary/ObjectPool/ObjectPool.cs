@@ -43,7 +43,7 @@ namespace BbxCommon
             {
                 obj = new T();
             }
-            obj.OnAllocate();
+            (obj as IPooledObject).OnAllocate();
             obj.UniqueId = m_IdGenerator.GenerateId();
             obj.ObjectPoolBelongs = Instance;
             obj.IsCollected = false;

@@ -29,9 +29,17 @@ namespace BbxCommon
             }
             return ETaskRunState.Succeeded;
         }
+
         protected sealed override void OnExit()
         {
             OnConditionExit();
         }
+
+        protected sealed override void OnTaskCollect()
+        {
+            OnConditionCollect();
+        }
+
+        protected virtual void OnConditionCollect() { }
     }
 }

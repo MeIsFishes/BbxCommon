@@ -14,7 +14,7 @@ namespace Dcg
         public List<EDiceType> DamageDices = new();
         public EAbility Modifier;
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             AttackDices.Clear();
             DamageDices.Clear();

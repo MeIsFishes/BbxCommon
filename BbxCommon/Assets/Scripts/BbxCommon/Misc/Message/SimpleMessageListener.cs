@@ -14,7 +14,7 @@ namespace BbxCommon
             Callback?.Invoke(messageData);
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             Callback = null;
         }

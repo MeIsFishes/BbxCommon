@@ -50,7 +50,7 @@ namespace Dcg
             return m_Result;
         }
 
-        public override void OnCollect()
+        protected override void OnCollect()
         {
             Dices.CollectAndClearElements(true);
             m_Rolled = false;
