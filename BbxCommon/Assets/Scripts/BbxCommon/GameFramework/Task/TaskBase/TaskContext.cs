@@ -253,90 +253,65 @@ namespace BbxCommon
         private struct RegisteredField
         {
             public TaskBridgeConstValue Value;
-            public Type Type;
 
             public RegisteredField(object value)
             {
-                Value = new();
-                Value.ObjectValue = value;
-                Type = value.GetType();
+                Value = new() { ObjectValue = value };
             }
 
             public RegisteredField(bool value)
             {
-                Value = new();
-                Value.BoolValue = value;
-                Type = typeof(bool);
+                Value = new() { BoolValue = value };
             }
 
             public RegisteredField(byte value)
             {
-                Value = new();
-                Value.ByteValue = value;
-                Type = typeof(byte);
+                Value = new() { ByteValue = value };
             }
 
             public RegisteredField(short value)
             {
-                Value = new();
-                Value.ShortValue = value;
-                Type = typeof(short);
+                Value = new() { ShortValue = value };
             }
 
             public RegisteredField(ushort value)
             {
-                Value = new();
-                Value.UshortValue = value;
-                Type = typeof(ushort);
+                Value = new() { UshortValue = value };
             }
 
             public RegisteredField(int value)
             {
-                Value = new();
-                Value.IntValue = value;
-                Type = typeof(int);
+                Value = new() { IntValue = value };
             }
 
             public RegisteredField(uint value)
             {
-                Value = new();
-                Value.UintValue = value;
-                Type = typeof(uint);
+                Value = new() { UintValue = value };
             }
 
             public RegisteredField(long value)
             {
-                Value = new();
-                Value.LongValue = value;
-                Type = typeof(long);
+                Value = new() { LongValue = value };
             }
 
             public RegisteredField(ulong value)
             {
-                Value = new();
-                Value.UlongValue = value;
-                Type = typeof(ulong);
+                Value = new() { UlongValue = value };
             }
 
             public RegisteredField(float value)
             {
-                Value = new();
-                Value.FloatValue = value;
-                Type = typeof(float);
+                Value = new() { FloatValue = value };
             }
 
             public RegisteredField(double value)
             {
-                Value = new();
-                Value.DoubleValue = value;
-                Type = typeof(double);
+                Value = new() { DoubleValue = value };
             }
 
             public RegisteredField(string value)
             {
-                Value = new();
-                Value.StringValue = value;
-                Type = typeof(string);
+                Value = new() { StringValue = value };
             }
         }
 

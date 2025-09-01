@@ -328,22 +328,6 @@ namespace BbxCommon
         /// <summary>
         /// Get the value of the key, if not exist, add the key with default value.
         /// </summary>
-        public static TValue GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key)
-        {
-            if (dic.TryGetValue(key, out var existValue))
-            {
-                return existValue;
-            }
-            else
-            {
-                dic[key] = (TValue)Activator.CreateInstance(typeof(TValue));
-                return dic[key];
-            }
-        }
-
-        /// <summary>
-        /// Get the value of the key, if not exist, add the key with default value.
-        /// </summary>
         public static void GetOrAdd<TKey, TValue>(this Dictionary<TKey, TValue> dic, TKey key, out TValue value)
         {
             if (dic.TryGetValue(key, out var existValue))

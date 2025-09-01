@@ -24,7 +24,7 @@ namespace Dcg
                 castSkillComp.RequestCast = false;  // 重置请求
 
                 //攻击转为task
-                var taskTest = TaskApi.CreateTaskInfo<TaskContextCastSkill>("CastSkill", 0);
+                var taskTest = TaskApi.CreateTaskInfo<TaskContextCastSkill>(0);
                 var timelineInfo = taskTest.CreateTaskTimelineValueInfo(0, 0.5f);
                 timelineInfo.AddTimelineInfo(0f, 0.5f, 1);
                 timelineInfo.AddTimelineInfo(0.5f, 0f, 2);
@@ -35,10 +35,11 @@ namespace Dcg
                 jumpNode.AddFieldInfo(TaskNodeJump.EField.JumpHeight, 2f);
 
                 var StandardAttackNode = taskTest.CreateTaskValueInfo<TaskNodeStandardAttack>(2);
-
                 StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.AttackerEntityId, TaskContextCastSkill.EField.AttackerEntityId);
                 StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.TargetEntityId, TaskContextCastSkill.EField.TargetEntityId);
                 StandardAttackNode.AddFieldInfoFromContext(TaskNodeStandardAttack.EField.WildDiceList, TaskContextCastSkill.EField.WildDices);
+
+                TaskApi.RegisterTask("CastSkill", taskTest);
 
                 List<EDiceType> baseAttackDices = new();
                 List<EDiceType> baseDamageDices = new();

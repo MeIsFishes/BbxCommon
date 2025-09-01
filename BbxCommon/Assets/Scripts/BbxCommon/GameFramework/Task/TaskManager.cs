@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using BbxCommon.Internal;
 using LitJson;
+using Unity.Entities.UniversalDelegates;
 
 namespace BbxCommon
 {
@@ -76,81 +77,85 @@ namespace BbxCommon
             }
             // generate tasks
             context.Init();
-            var taskDic = SimplePool<Dictionary<int, TaskBase>>.Alloc();
-            foreach (var pair in taskGroupInfo.TaskInfos)
+            var taskList = SimplePool<List<TaskBase>>.Alloc();
+            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
             {
-                taskDic[pair.Key] = DeserializeTask(pair.Value, context);
+                taskList.Add(DeserializeTask(taskGroupInfo.TaskInfos[i], context));
             }
-            foreach (var pair in taskDic)
+            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
             {
-                pair.Value.InitConnectPoint(taskDic);
+                taskList[i].InitConnectPoint(taskList);
             }
             // read task reference
-            foreach (var pair in taskGroupInfo.TaskInfos)
+            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
             {
-                var task = taskDic[pair.Key];
-                var taskInfo = pair.Value;
+                var task = taskList[i];
+                var taskInfo = taskGroupInfo.TaskInfos[i];
                 // read timeline info
-                if (task is TaskTimeline taskTimeline)
+                if (taskInfo.IsTimeline == true && task is TaskTimeline taskTimeline)
                 {
-                    for (int i = 0; i < taskInfo.TimelineItemInfos.Count; i++)
+                    for (int j = 0; j < taskInfo.TimelineItemInfos.Count; j++)
                     {
-                        var timelineItemInfo = taskInfo.TimelineItemInfos[i];
-                        if (taskDic.TryGetValue(timelineItemInfo.Id, out var childTask) == false)
+                        var timelineItemInfo = taskInfo.TimelineItemInfos[j];
+                        var timelineItemIndex = timelineItemInfo.Id;
+                        if (timelineItemIndex < 0 || timelineItemIndex >= taskList.Count)
                         {
                             DebugApi.LogError("Timeline required child key not found! Id: " + timelineItemInfo.Id + ", task key: " + key);
                         }
-                        taskTimeline.ReadTimelineItem(timelineItemInfo, childTask);
+                        taskTimeline.ReadTimelineItem(timelineItemInfo, taskList[timelineItemIndex]);
                     }
-                    taskTimeline.SortItems();
                 }
                 // read conditions
-                for (int i = 0; i < taskInfo.EnterConditionReferences.Count; i++)
+                if (taskInfo.HasCondition)
                 {
-                    var taskRef = taskDic[taskInfo.EnterConditionReferences[i]];
-                    if (taskRef is TaskConditionBase condition)
+                    for (int j = 0; j < taskInfo.EnterConditionReferences.Count; j++)
                     {
-                        task.AddEnterCondition(condition);
+                        var taskRef = taskList[taskInfo.EnterConditionReferences[j]];
+                        if (taskRef is TaskConditionBase condition)
+                        {
+                            task.AddEnterCondition(condition);
+                        }
+                        else
+                        {
+                            DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.EnterConditionReferences[j] + ", task key: " + key);
+                        }
                     }
-                    else
+                    for (int j = 0; j < taskInfo.ConditionReferences.Count; j++)
                     {
-                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.EnterConditionReferences[i] + ", task key: " + key);
+                        var taskRef = taskList[taskInfo.ConditionReferences[j]];
+                        if (taskRef is TaskConditionBase condition)
+                        {
+                            task.AddCondition(condition);
+                        }
+                        else
+                        {
+                            DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ConditionReferences[j] + ", task key: " + key);
+                        }
                     }
-                }
-                for (int i = 0; i < taskInfo.ConditionReferences.Count; i++)
-                {
-                    var taskRef = taskDic[taskInfo.ConditionReferences[i]];
-                    if (taskRef is TaskConditionBase condition)
+                    for (int j = 0; j < taskInfo.ExitConditionReferences.Count; j++)
                     {
-                        task.AddCondition(condition);
-                    }
-                    else
-                    {
-                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ConditionReferences[i] + ", task key: " + key);
-                    }
-                }
-                for (int i = 0; i < taskInfo.ExitConditionReferences.Count; i++)
-                {
-                    var taskRef = taskDic[taskInfo.ExitConditionReferences[i]];
-                    if (taskRef is TaskConditionBase condition)
-                    {
-                        task.AddExitCondition(condition);
-                    }
-                    else
-                    {
-                        DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ExitConditionReferences[i] + ", task key: " + key);
+                        var taskRef = taskList[taskInfo.ExitConditionReferences[j]];
+                        if (taskRef is TaskConditionBase condition)
+                        {
+                            task.AddExitCondition(condition);
+                        }
+                        else
+                        {
+                            DebugApi.LogError("The task you require is not a TaskCondition! Id: " + taskInfo.ExitConditionReferences[j] + ", task key: " + key);
+                        }
                     }
                 }
             }
             // get root task and run
-            if (taskDic.TryGetValue(taskGroupInfo.RootTaskId, out var root) == false)
+            if (taskGroupInfo.RootTaskId < 0 || taskGroupInfo.RootTaskId >= taskList.Count)
             {
                 DebugApi.LogError("Cannot find root task! id: " + taskGroupInfo.RootTaskId + ", task key: " + key);
-                taskDic.CollectToPool();
+                taskList.CollectToPool();
                 return;
             }
+            var root = taskList[taskGroupInfo.RootTaskId];
             RunTask(root);
-            taskDic.CollectToPool();
+            taskList.CollectToPool();
         }
 
         /// <summary>

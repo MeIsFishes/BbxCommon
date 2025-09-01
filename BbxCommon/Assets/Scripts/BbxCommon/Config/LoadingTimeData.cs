@@ -35,7 +35,8 @@ namespace BbxCommon
             foreach (var pair in LoadingItemTimeDic)
             {
                 var strs = pair.Key.Split('.');
-                m_StageItemDic.GetOrAdd(strs[0])[pair.Key] = pair.Value;
+                m_StageItemDic.GetOrAdd(strs[0], out var items);
+                items[pair.Key] = pair.Value;
             }
         }
 

@@ -46,7 +46,6 @@ namespace BbxCommon
             (obj as IPooledObject).OnAllocate();
             obj.UniqueId = m_IdGenerator.GenerateId();
             obj.ObjectPoolBelongs = Instance;
-            obj.IsCollected = false;
             return obj;
         }
 
@@ -96,7 +95,6 @@ namespace BbxCommon
             m_Pool.Add(obj);
             obj.ObjectPoolBelongs = this;
             obj.UniqueId = m_IdGenerator.GenerateId();
-            obj.IsCollected = true;
         }
 
         void IObjectPoolHandler.Collect(IPooledObject obj)

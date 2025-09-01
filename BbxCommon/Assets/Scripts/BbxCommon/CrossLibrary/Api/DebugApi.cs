@@ -70,7 +70,7 @@ namespace BbxCommon
 
             public ProfilerData GetData(string key)
             {
-                var data = m_DataDic.GetOrAdd(key);
+                m_DataDic.GetOrAdd(key, out var data);
                 data.Key = key;
                 return data;
             }

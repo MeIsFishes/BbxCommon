@@ -37,14 +37,6 @@ namespace BbxCommon
             taskInfo.Task = task;
             m_TaskInfos.Add(taskInfo);
         }
-
-        /// <summary>
-        /// Order by <see cref="TaskInfo.StartTime"/> ascendingly. That means tasks' start time might be: 0, 0, 5, 10.
-        /// </summary>
-        internal void SortItems()
-        {
-            m_TaskInfos.Sort();
-        }
         #endregion
 
         #region Body

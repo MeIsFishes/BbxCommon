@@ -801,14 +801,16 @@ namespace BbxCommon
             return res;
         }
 
-        internal void InitConnectPoint(Dictionary<int, TaskBase> taskDic)
+        internal void InitConnectPoint(List<TaskBase> taskList)
         {
+            if (m_CachedConnectPoint.Count == 0)
+                return;
             for (int i = 0; i < m_CachedConnectPoint.Count; i++)
             {
                 var connectPoint = m_CachedConnectPoint[i];
                 for (int j = 0; j < connectPoint.TaskRefrenceIds.Count; j++)
                 {
-                    connectPoint.Tasks.Add(taskDic[connectPoint.TaskRefrenceIds[j]]);
+                    connectPoint.Tasks.Add(taskList[connectPoint.TaskRefrenceIds[j]]);
                 }
                 connectPoint.TaskRefrenceIds.Clear();
             }

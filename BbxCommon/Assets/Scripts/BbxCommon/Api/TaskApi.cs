@@ -24,12 +24,11 @@ namespace BbxCommon
         #endregion
 
         #region Create Task by Code
-        public static TaskGroupInfo CreateTaskInfo<T>(string key, int rootId) where T : TaskContextBase
+        public static TaskGroupInfo CreateTaskInfo<T>(int rootId) where T : TaskContextBase
         {
             var groupInfo = new TaskGroupInfo();
             groupInfo.BindingContextFullType = typeof(T).FullName;
             groupInfo.RootTaskId = rootId;
-            TaskManager.Instance.RegisterTask(key, groupInfo);
             return groupInfo;
         }
         #endregion

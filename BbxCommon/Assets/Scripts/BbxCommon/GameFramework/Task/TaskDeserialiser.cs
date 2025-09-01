@@ -103,7 +103,7 @@ namespace BbxCommon
         public ETaskFieldValueSource ValueSource;
         public TaskBridgeConstValue ConstValue;
 
-        public void FromTaskFieldInfo(TaskFieldInfo taskFieldInfo)
+        internal void FromTaskFieldInfo(TaskFieldInfo taskFieldInfo)
         {
             FieldName = taskFieldInfo.FieldName;
             ValueSource = taskFieldInfo.ValueSource;
@@ -115,12 +115,14 @@ namespace BbxCommon
     {
         public Type TaskType;
         public List<TaskBridgeFieldInfo> FieldInfos = new();  // Task fields
+        public bool HasCondition;
         public List<int> EnterConditionReferences = new();
         public List<int> ConditionReferences = new();
         public List<int> ExitConditionReferences = new();
+        public bool IsTimeline;
         public List<TaskTimelineItemInfo> TimelineItemInfos = new();    // TaskTimeline uses this struct
 
-        public void FromTaskValueInfo(TaskValueInfo taskValueInfo)
+        internal void FromTaskValueInfo(TaskValueInfo taskValueInfo, Dictionary<int, int> reorderedIndexDic)
         {
             TaskType = ReflectionApi.GetType(taskValueInfo.FullTypeName);
             FieldInfos = taskValueInfo.FieldInfos.ConvertAll((fieldInfo) =>
@@ -130,9 +132,37 @@ namespace BbxCommon
                 return bridgeFieldInfo;
             });
             EnterConditionReferences = new List<int>(taskValueInfo.EnterConditionReferences);
+            for (int i = 0; i < EnterConditionReferences.Count; i++)
+            {
+                HasCondition = true;
+                EnterConditionReferences[i] = reorderedIndexDic[EnterConditionReferences[i]];
+            }
             ConditionReferences = new List<int>(taskValueInfo.ConditionReferences);
+            for (int i = 0; i < ConditionReferences.Count; i++)
+            {
+                HasCondition = true;
+                ConditionReferences[i] = reorderedIndexDic[ConditionReferences[i]];
+            }
             ExitConditionReferences = new List<int>(taskValueInfo.ExitConditionReferences);
-            TimelineItemInfos = new List<TaskTimelineItemInfo>(taskValueInfo.TimelineItemInfos);
+            for (int i = 0; i < ExitConditionReferences.Count; i++)
+            {
+                HasCondition = true;
+                ExitConditionReferences[i] = reorderedIndexDic[ExitConditionReferences[i]];
+            }
+            for (int i = 0; i < taskValueInfo.TimelineItemInfos.Count; i++)
+            {
+                var info = new TaskTimelineItemInfo();
+                info.StartTime = taskValueInfo.TimelineItemInfos[i].StartTime;
+                info.Duration = taskValueInfo.TimelineItemInfos[i].Duration;
+                info.Id = reorderedIndexDic[taskValueInfo.TimelineItemInfos[i].Id];
+                TimelineItemInfos.Add(info);
+            }
+            // sort timeline items by start time
+            if (TimelineItemInfos.Count > 0)
+            {
+                IsTimeline = true;
+                TimelineItemInfos.Sort((a, b) => a.StartTime.CompareTo(b.StartTime));
+            }
         }
     }
 
@@ -140,19 +170,34 @@ namespace BbxCommon
     {
         public int RootTaskId;
         public Type BindingContextType;
-        public Dictionary<int, TaskBridgeValueInfo> TaskInfos;
+        public List<TaskBridgeValueInfo> TaskInfos;
 
         public void FromTaskGroupInfo(TaskGroupInfo taskGroupInfo)
         {
-            RootTaskId = taskGroupInfo.RootTaskId;
             BindingContextType = ReflectionApi.GetType(taskGroupInfo.BindingContextFullType);
-            TaskInfos = new Dictionary<int, TaskBridgeValueInfo>();
-            foreach (var kvp in taskGroupInfo.TaskInfos)
+            // re-order tasks, let them be in continuous index and can be hit through list
+            var tempIndexDic = SimplePool<Dictionary<int, int>>.Alloc();
+            var tempCurIndex = 0;
+            foreach (var pair in taskGroupInfo.TaskInfos)
+            {
+                if (tempIndexDic.ContainsKey(pair.Key) == false)
+                    tempIndexDic.Add(pair.Key, tempCurIndex++);
+            }
+            TaskInfos = new List<TaskBridgeValueInfo>(tempCurIndex);
+            TaskInfos.ModifyCount(tempCurIndex);
+            foreach (var pair in taskGroupInfo.TaskInfos)
             {
                 var bridgeValueInfo = new TaskBridgeValueInfo();
-                bridgeValueInfo.FromTaskValueInfo(kvp.Value);
-                TaskInfos.Add(kvp.Key, bridgeValueInfo);
+                bridgeValueInfo.FromTaskValueInfo(pair.Value, tempIndexDic);
+                var reorderedIndex = tempIndexDic[pair.Key];
+                TaskInfos[reorderedIndex] = bridgeValueInfo;
             }
+            if (tempIndexDic.ContainsKey(taskGroupInfo.RootTaskId) == false)
+            {
+                tempIndexDic.CollectToPool();
+            }
+            RootTaskId = tempIndexDic[taskGroupInfo.RootTaskId];
+            tempIndexDic.CollectToPool();
         }
     }
     #endregion

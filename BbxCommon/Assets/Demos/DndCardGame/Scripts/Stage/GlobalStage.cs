@@ -48,7 +48,7 @@ namespace Dcg
             void IStageLoad.Load(GameStage stage)
             {
                 // 1. 创建 TaskGroupInfo
-                var groupInfo = TaskApi.CreateTaskInfo<TaskContextTest>("CodeTest", 0);
+                var groupInfo = TaskApi.CreateTaskInfo<TaskContextTest>(0);
 
                 // 2. 创建 TaskValueInfo 节点
                 // 0: root
