@@ -64,6 +64,7 @@ namespace BbxCommon
             public string Key;
             public long TimeMs => m_Stopwatch.ElapsedMilliseconds;
             public long TimeUs => m_Stopwatch.ElapsedUs();
+            public long TimeNs => m_Stopwatch.ElapsedNs();
             private Dictionary<string, ProfilerData> m_DataDic = new();
             private Stopwatch m_Stopwatch = new();
 
@@ -93,9 +94,40 @@ namespace BbxCommon
             {
                 DebugApi.Log(Key + ": " + TimeUs + " us");
             }
+
+            public void OutputtTimeNs()
+            {
+                DebugApi.Log(Key + ": " + TimeNs + " ns");
+            }
+
+            public void EndSampleAndOutputTimeMs()
+            {
+                EndSample();
+                OutputTimeMs();
+            }
+
+            public void EndSampleAndOutputTimeUs()
+            {
+                EndSample();
+                OutputTimeUs();
+            }
+
+            public void EndSampleAndOutputTimeNs()
+            {
+                EndSample();
+                OutputtTimeNs();
+            }
         }
 
         private static ProfilerData m_ProfilerRoot = new();
+
+        /// <summary>
+        /// If you need to frequently use a sampler, consider saving the sampler to avoid repeated GetData calls.
+        /// </summary>
+        public static ProfilerData CreateSampler(string key)
+        {
+            return m_ProfilerRoot.GetData(key);
+        }
 
         public static ProfilerData BeginSample(string key)
         {
@@ -117,6 +149,11 @@ namespace BbxCommon
         public static long GetProfilerTimeUs(string key)
         {
             return m_ProfilerRoot.GetData(key).TimeUs;
+        }
+
+        public static long GetProfilerTimeNs(string key)
+        {
+            return m_ProfilerRoot.GetData(key).TimeNs;
         }
         #endregion
     }

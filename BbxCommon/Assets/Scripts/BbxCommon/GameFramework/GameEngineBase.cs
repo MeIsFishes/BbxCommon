@@ -274,7 +274,7 @@ namespace BbxCommon
                     sampler.EndSample();
                     GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                    loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+                    loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
                     await UniTask.NextFrame();
                 }

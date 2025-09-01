@@ -154,7 +154,7 @@ public partial class TaskGraphManager : GraphEdit
         }
     }
 
-    private GraphNode CreateTask(string title, Vector2 position, int slotCount = 0)
+    private GraphNode CreateTask(string title, Vector2 position)
     {
         var Task = BaseTaskScene.Instantiate<BaseGraphTask>();
         Task.Title = title;

@@ -78,7 +78,7 @@ namespace BbxCommon
 		public List<TaskEditData> ExitConditions = new();
 	}
 
-	public partial class NodeLineEditData : TaskEditData,IEquatable<NodeLineEditData>
+	public partial class NodeLineEditData : TaskEditData, IEquatable<NodeLineEditData>
 	{
 		public string FromTask;
 		public int FromPort;
@@ -117,8 +117,6 @@ namespace BbxCommon
 		public string NodeType;//todo 预留 后续可以使用这个限制槽位之间的连接
 		public Vector2 Pos;//节点在graph中的位置
 	}
-
-
     #endregion
 
     /// <summary>
@@ -445,7 +443,6 @@ namespace BbxCommon
 					var editorFilePath = currentTaskPath.TryRemoveEnd(".editor.json", ".json");
 					editorFilePath += ".editor.json";
 					JsonApi.Serialize(this, editorFilePath);
-					// build timeline root info
 					int taskId = 0;
 					var taskGroupInfo = new TaskGroupInfo();
 					var rootValueInfo = new TaskValueInfo();

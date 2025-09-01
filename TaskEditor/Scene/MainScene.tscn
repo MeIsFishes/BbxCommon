@@ -14,7 +14,7 @@
 [ext_resource type="Script" path="res://Scripts/Common/FileLabel/FileLabelRoot.cs" id="10_dnkja"]
 [ext_resource type="PackedScene" uid="uid://86266vncjvcc" path="res://Scene/GraphEdit.tscn" id="10_iy1b0"]
 [ext_resource type="PackedScene" uid="uid://dbl81khnvruc8" path="res://Prefabs/FileLabelItem.tscn" id="11_bgggg"]
-[ext_resource type="PackedScene" path="res://Prefabs/TipsText.tscn" id="14_105l1"]
+[ext_resource type="PackedScene" uid="uid://drokc3gydcvn" path="res://Prefabs/TipsText.tscn" id="14_105l1"]
 
 [node name="Control" type="Control"]
 process_mode = 3

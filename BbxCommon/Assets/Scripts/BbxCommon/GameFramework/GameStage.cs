@@ -67,7 +67,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+            loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
             await UniTask.NextFrame();
             // UI
@@ -77,7 +77,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+            loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
             await UniTask.NextFrame();
             // data
@@ -87,7 +87,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+            loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
             await UniTask.NextFrame();
             // other
@@ -98,7 +98,7 @@ namespace BbxCommon
             sampler.EndSample();
             GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-            loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+            loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
             // late load
             await OnLoadStageLateLoad();
@@ -303,7 +303,7 @@ namespace BbxCommon
                 sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+                loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
                 await UniTask.NextFrame();
             }
@@ -338,7 +338,7 @@ namespace BbxCommon
                 sampler.EndSample();
                 GameEngineFacade.SetLoadingWeight(loadingTimeData.GetLoadingTime(key));
 #if UNITY_EDITOR
-                loadingTimeData.SetLoadingTime(key, sampler.TimeUs);
+                loadingTimeData.SetLoadingTime(key, sampler.TimeNs);
 #endif
                 await UniTask.NextFrame();
             }

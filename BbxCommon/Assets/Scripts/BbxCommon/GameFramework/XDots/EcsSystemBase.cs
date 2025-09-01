@@ -8,16 +8,19 @@ namespace BbxCommon
     /// </summary>
     public abstract partial class EcsSystemBase : SystemBase
     {
+        private DebugApi.ProfilerData UpdateSampler;
+
         protected override sealed void OnCreate()
         {
+            UpdateSampler = DebugApi.CreateSampler(GetType().Name);
             OnSystemCreate();
         }
 
         protected override sealed void OnUpdate()
         {
-            var sampler = DebugApi.BeginSample(GetType().Name);
+            UpdateSampler.BeginSample();
             OnSystemUpdate();
-            sampler.EndSample();
+            UpdateSampler.EndSample();
         }
 
         protected override sealed void OnDestroy()

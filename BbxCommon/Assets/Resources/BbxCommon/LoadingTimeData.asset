@@ -15,45 +15,45 @@ MonoBehaviour:
   LoadingItemTimeDic:
     m_Items:
     - Key: Game Engine Stage.Load.Scene
-      Value: 111
+      Value: 118000
     - Key: Game Engine Stage.Load.UI
-      Value: 256
+      Value: 49900
     - Key: Game Engine Stage.Load.Data
-      Value: 40982
+      Value: 485103300
     - Key: Global Stage.Load.InitSingletonComponent
-      Value: 1385
+      Value: 7405700
     - Key: Global Stage.Load.DcgInteractingDataAsset
-      Value: 738
+      Value: 3489500
     - Key: Global Stage.Load.Scene
-      Value: 626
+      Value: 6423300
     - Key: Global Stage.Load.UI
-      Value: 20888
+      Value: 312364600
     - Key: Global Stage.Load.Data
-      Value: 8
+      Value: 7300
     - Key: Global Stage.Load.BuildTestTask
-      Value: 36408
+      Value: 40533100
     - Key: Global Stage.Load.BuildTestBtTask
-      Value: 5017
+      Value: 5213300
     - Key: Global Stage.Load.InitCamera
-      Value: 1723
+      Value: 1522200
     - Key: Global Stage.Load.BuildRandomPool
-      Value: 7815
+      Value: 6805900
     - Key: Game Start Stage.Load.Scene
-      Value: 0
+      Value: 700
     - Key: Game Start Stage.Load.UI
-      Value: 2617
+      Value: 8331900
     - Key: Game Start Stage.Load.Data
-      Value: 7
+      Value: 6500
     - Key: Combat Stage.Load.UI
       Value: 95145
     - Key: MapStage.Load.MapInitData
-      Value: 3775
+      Value: 3688000
     - Key: MapStage.Load.Scene
-      Value: 1
+      Value: 500
     - Key: MapStage.Load.UI
-      Value: 23254
+      Value: 71682500
     - Key: MapStage.Load.Data
-      Value: 9
+      Value: 8000
     - Key: Dungeon Stage.Load.InitPlayerAndCharacter
       Value: 33706
     - Key: Dungeon Stage.Load.Scene
@@ -75,17 +75,17 @@ MonoBehaviour:
     - Key: Combat Stage.Load.CombatStageBindUi
       Value: 10839
     - Key: Game Engine Stage.Load.InitReflectionAndResource
-      Value: 131086
+      Value: 464491300
     - Key: Game Engine Stage.Load.Other
-      Value: 436
+      Value: 2636700
     - Key: Global Stage.Load.Other
-      Value: 42
+      Value: 26700
     - Key: Game Start Stage.Load.Other
-      Value: 2
+      Value: 1400
     - Key: Combat Stage.Unload
-      Value: 2
+      Value: 1100
     - Key: MapStage.Load.Other
-      Value: 13
+      Value: 6400
     - Key: MapStage.Unload
       Value: 4149
     - Key: Dungeon Stage.Load.Other
@@ -93,4 +93,4 @@ MonoBehaviour:
     - Key: Combat Stage.Load.Other
       Value: 1503
     - Key: Game Start Stage.Unload
-      Value: 3031
+      Value: 2676900

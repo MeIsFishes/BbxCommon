@@ -47,7 +47,7 @@ namespace BbxCommon.Editor
                             GUILayout.BeginHorizontal();
                             GUILayout.Space(40);
                             GUILayout.Label(key, GUILayout.Width(350));
-                            GUILayout.Label((pair.Value / 1000f).ToString() + "ms", GUILayout.Width(150));
+                            GUILayout.Label((pair.Value / 1000000f).ToString() + "ms", GUILayout.Width(150));
                             GUILayout.EndHorizontal();
                         }
                     }
@@ -64,7 +64,7 @@ namespace BbxCommon.Editor
                             GUILayout.BeginHorizontal();
                             GUILayout.Space(40);
                             GUILayout.Label(systemType.Name, GUILayout.Width(350));
-                            GUILayout.Label((DebugApi.GetProfilerTimeUs(systemType.Name) / 1000f).ToString() + "ms", GUILayout.Width(150));
+                            GUILayout.Label((DebugApi.GetProfilerTimeNs(systemType.Name) / 1000000f).ToString() + "ms", GUILayout.Width(150));
                             GUILayout.EndHorizontal();
                         }
                     }
