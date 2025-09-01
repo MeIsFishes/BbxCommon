@@ -163,7 +163,7 @@ namespace BbxCommon
         /// </summary>
         private TaskBase DeserializeTask(TaskBridgeValueInfo taskValueInfo, TaskContextBase context)
         {
-            var task = ObjectPool.Alloc(taskValueInfo.TaskType) as TaskBase;
+            var task = TaskDeserialiser.GetTaskPool(taskValueInfo.TaskTypeId, taskValueInfo.TaskType).AllocObj() as TaskBase;
             for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
             {
                 var fieldInfo = taskValueInfo.FieldInfos[i];

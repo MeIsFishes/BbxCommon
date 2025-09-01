@@ -1,10 +1,6 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
-using UnityEngine;
-using UnityEngine.UIElements;
-using static BbxCommon.TaskBase;
 
 namespace BbxCommon
 {
@@ -57,6 +53,19 @@ namespace BbxCommon
             if (m_ContextDataList[typeId] == null)
                 m_ContextDataList[typeId] = new();
             return m_ContextDataList[typeId];
+        }
+        #endregion
+
+        #region Task
+        public static List<IObjectPoolHandler> TaskPools = new();
+
+        public static IObjectPoolHandler GetTaskPool(int typeId, Type type)
+        {
+            if (TaskPools.Count <= typeId)
+                TaskPools.ModifyCount(typeId + 1);
+            if (TaskPools[typeId] == null)
+                TaskPools[typeId] = ObjectPool.GetObjectPool(type);
+            return TaskPools[typeId];
         }
         #endregion
     }
@@ -114,6 +123,7 @@ namespace BbxCommon
     public class TaskBridgeValueInfo
     {
         public Type TaskType;
+        public int TaskTypeId;
         public List<TaskBridgeFieldInfo> FieldInfos = new();  // Task fields
         public bool HasCondition;
         public List<int> EnterConditionReferences = new();
@@ -125,6 +135,7 @@ namespace BbxCommon
         internal void FromTaskValueInfo(TaskValueInfo taskValueInfo, Dictionary<int, int> reorderedIndexDic)
         {
             TaskType = ReflectionApi.GetType(taskValueInfo.FullTypeName);
+            TaskTypeId = ClassTypeId<TaskBase>.GetId(TaskType);
             FieldInfos = taskValueInfo.FieldInfos.ConvertAll((fieldInfo) =>
             {
                 var bridgeFieldInfo = new TaskBridgeFieldInfo();

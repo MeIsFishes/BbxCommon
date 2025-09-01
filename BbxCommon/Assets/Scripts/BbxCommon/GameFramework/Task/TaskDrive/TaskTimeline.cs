@@ -176,6 +176,10 @@ namespace BbxCommon
             m_CurCheckIndex = default;
             m_RunningTaskIndexes.Clear();
             RunningChildTaskInfos.Clear();
+            for (int i = 0; i < m_TaskInfos.Count; i++)
+            {
+                m_TaskInfos[i].Task.CollectToPool();
+            }
             m_TaskInfos.Clear();
         }
         #endregion

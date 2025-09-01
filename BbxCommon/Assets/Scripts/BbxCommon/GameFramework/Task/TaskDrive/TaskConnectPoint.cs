@@ -18,6 +18,10 @@ namespace BbxCommon.Internal
 
         public void Reset()
         {
+            for (int i = 0; i < Tasks.Count; i++)
+            {
+                Tasks[i].CollectToPool();
+            }
             Tasks.Clear();
             TaskRefrenceIds.Clear();
         }

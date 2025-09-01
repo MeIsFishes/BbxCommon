@@ -10,7 +10,7 @@ namespace BbxCommon
      * a.CollectToPool();
      *
      * Remember to manage objects' life cycle yourself. */
-    internal interface IObjectPoolHandler
+    public interface IObjectPoolHandler
     {
         object AllocObj();
         void Collect(IPooledObject obj);
@@ -141,6 +141,18 @@ namespace BbxCommon
                 m_ObjectPools[type] = pool;
             }
             return pool.AllocObj();
+        }
+
+        public static IObjectPoolHandler GetObjectPool(Type type)
+        {
+            if (m_ObjectPools.TryGetValue(type, out var pool) == false)
+            {
+                var classDeclare = typeof(ObjectPool<>).MakeGenericType(type);
+                var method = classDeclare.GetMethod("GetPoolInstance", System.Reflection.BindingFlags.Static | System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.NonPublic);
+                pool = method.Invoke(null, null) as IObjectPoolHandler;
+                m_ObjectPools[type] = pool;
+            }
+            return pool;
         }
     }
 }
