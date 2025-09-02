@@ -11,24 +11,9 @@ public class #SCRIPT_NAME# : TaskDurationBase
         IntValue,
     }
 
-    protected override Type GetFieldEnumType()
-    {
-        return typeof(EField);
-    }
-
     protected override void RegisterTaskFields()
     {
-        RegisterField(EField.IntValue, IntValue);
-    }
-
-    protected override void ReadTaskFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-    {
-        switch (fieldEnum)
-        {
-            case (int)EField.IntValue:
-                IntValue = ReadInt(fieldInfo, context);
-                break;
-        }
+        RegisterField(EField.IntValue, IntValue, (fieldInfo, context) => { IntValue = ReadInt(fieldInfo, context); });
     }
 
     protected override void OnCollect()

@@ -66,30 +66,10 @@ namespace BbxCommon
             LoopCount = -1;
         }
 
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Tasks:
-                    Tasks = ReadConnectPoint(fieldInfo, context);
-                    break;
-                case (int)EField.LoopCount:
-                    LoopCount = ReadInt(fieldInfo, context);
-                    break;
-                default:
-                    break;
-            }
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.Tasks, Tasks);
-            RegisterField(EField.LoopCount, LoopCount);
-        }
-
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
+            RegisterField(EField.Tasks, Tasks, (fieldInfo, context) => { Tasks = ReadConnectPoint(fieldInfo, context); });
+            RegisterField(EField.LoopCount, LoopCount, (fieldInfo, context) => { LoopCount = ReadInt(fieldInfo, context); });
         }
     }
 }

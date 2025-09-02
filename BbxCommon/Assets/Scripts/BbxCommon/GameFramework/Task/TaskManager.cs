@@ -78,19 +78,28 @@ namespace BbxCommon
             // generate tasks
             context.Init(taskGroupInfo);
             var taskList = SimplePool<List<TaskBase>>.Alloc();
-            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
+            for (int i = 0; i < taskGroupInfo.TaskValueInfos.Count; i++)
             {
-                taskList.Add(DeserializeTask(taskGroupInfo.TaskInfos[i], context));
+                // deserialize tasks
+                var taskValueInfo = taskGroupInfo.TaskValueInfos[i];
+                var task = TaskDeserialiser.GetTaskPool(taskValueInfo.TaskTypeId, taskValueInfo.TaskType).AllocObj() as TaskBase;
+                for (int j = 0; j < taskValueInfo.FieldInfos.Count; j++)
+                {
+                    var fieldInfo = taskValueInfo.FieldInfos[j];
+                    task.ReadFieldInfo(fieldInfo.FieldEnumValue, fieldInfo, context);
+                    fieldInfo.Inited = true;
+                }
+                taskList.Add(task);
             }
-            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
+            for (int i = 0; i < taskGroupInfo.TaskValueInfos.Count; i++)
             {
                 taskList[i].InitConnectPoint(taskList);
             }
             // read task reference
-            for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
+            for (int i = 0; i < taskGroupInfo.TaskValueInfos.Count; i++)
             {
                 var task = taskList[i];
-                var taskInfo = taskGroupInfo.TaskInfos[i];
+                var taskInfo = taskGroupInfo.TaskValueInfos[i];
                 // read timeline info
                 if (taskInfo.IsTimeline == true && task is TaskTimeline taskTimeline)
                 {
@@ -156,35 +165,6 @@ namespace BbxCommon
             var root = taskList[taskGroupInfo.RootTaskId];
             RunTask(root);
             taskList.CollectToPool();
-        }
-
-        /// <summary>
-        /// Deserialize only <see cref="TaskFieldInfo"/>.
-        /// </summary>
-        private TaskBase DeserializeTask(TaskBridgeValueInfo taskValueInfo, TaskContextBase context)
-        {
-            var task = TaskDeserialiser.GetTaskPool(taskValueInfo.TaskTypeId, taskValueInfo.TaskType).AllocObj() as TaskBase;
-            for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
-            {
-                var fieldInfo = taskValueInfo.FieldInfos[i];
-                if (fieldInfo.Inited == false)
-                {
-                    var enumTypes = new List<Type>();
-                    task.GetFieldEnumTypes(enumTypes);
-                    foreach (var enumType in enumTypes)
-                    {
-                        var ok = Enum.TryParse(enumType, fieldInfo.FieldName, out var enumValue);
-                        if (ok) fieldInfo.FieldEnumValue = (int)enumValue;
-                    }
-                    task.ReadFieldInfo(fieldInfo.FieldEnumValue, fieldInfo, context);
-                    fieldInfo.Inited = true;
-                }
-                else
-                {
-                    task.ReadFieldInfo(fieldInfo.FieldEnumValue, fieldInfo, context);
-                }
-            }
-            return task;
         }
     }
 }

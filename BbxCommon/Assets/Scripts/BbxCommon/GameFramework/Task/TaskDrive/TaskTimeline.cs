@@ -189,22 +189,10 @@ namespace BbxCommon
         {
             Duration,
         }
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
+
         protected override void RegisterFields()
         {
-            RegisterField(EField.Duration, Duration);
-        }
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Duration:
-                    Duration = ReadFloat(fieldInfo, context);
-                    break;
-            }
+            RegisterField(EField.Duration, Duration, (fieldInfo, context) => { Duration = ReadFloat(fieldInfo, context); });
         }
         #endregion
     }

@@ -66,30 +66,10 @@ namespace BbxCommon
             Duration = 0f;
         }
 
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Tasks:
-                    Tasks = ReadConnectPoint(fieldInfo, context);
-                    break;
-                case (int)EField.Duration:
-                    Duration = ReadValue<float>(fieldInfo, context);
-                    break;
-                default:
-                    break;
-            }
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.Tasks, Tasks);
-            RegisterField(EField.Duration, Duration);
-        }
-
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
+            RegisterField(EField.Tasks, Tasks, (fieldInfo, context) => { Tasks = ReadConnectPoint(fieldInfo, context); });
+            RegisterField(EField.Duration, Duration, (fieldInfo, context) => { Duration = ReadValue<float>(fieldInfo, context); });
         }
     }
 }

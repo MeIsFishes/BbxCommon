@@ -21,28 +21,10 @@ namespace Dcg
             JumpHeight,
         }
 
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.AttackerEntityId, AttackerEntityId);
-            RegisterField(EField.JumpHeight, JumpHeight);
-        }
-
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.AttackerEntityId:
-                    AttackerEntityId = ReadValue<EntityID>(fieldInfo, context);
-                    break;
-                case (int)EField.JumpHeight:
-                    JumpHeight = ReadFloat(fieldInfo, context);
-                    break;
-            }
+            RegisterField(EField.AttackerEntityId, AttackerEntityId, (fieldInfo, context) => { AttackerEntityId = ReadValue<EntityID>(fieldInfo, context); });
+            RegisterField(EField.JumpHeight, JumpHeight, (fieldInfo, context) => { JumpHeight = ReadFloat(fieldInfo, context); });
         }
 
         protected override void OnTaskCollect()

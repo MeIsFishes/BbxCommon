@@ -12,19 +12,9 @@ namespace Dcg
             Num,
         }
 
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.Num, Num);
-        }
-
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            Num = ReadInt(fieldInfo, context);
+            RegisterField(EField.Num, Num, (fieldInfo, context) => { Num = ReadInt(fieldInfo, context); });
         }
 
         protected override void OnConditionCollect()

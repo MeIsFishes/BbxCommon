@@ -18,38 +18,17 @@ namespace BbxCommon
         #region Field Info
         public enum EDurationField
         {
-            Duration = 10000,
-            Interval = 10001,
-        }
-
-        public override void GetFieldEnumTypes(List<Type> res)
-        {
-            res.Add(typeof(EDurationField));
-            res.Add(GetFieldEnumType());
+            Duration,
+            Interval,
         }
 
         protected sealed override void RegisterFields()
         {
-            RegisterField(EDurationField.Duration, Duration);
-            RegisterField(EDurationField.Interval, Interval);
+            RegisterField(EDurationField.Duration, Duration, (fieldInfo, context) => { Duration = ReadFloat(fieldInfo, context); });
+            RegisterField(EDurationField.Interval, Interval, (fieldInfo, context) => { Interval = ReadFloat(fieldInfo, context); });
             RegisterTaskFields();
         }
         protected abstract void RegisterTaskFields();
-
-        public sealed override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EDurationField.Duration:
-                    Duration = ReadFloat(fieldInfo, context);
-                    break;
-                case (int)EDurationField.Interval:
-                    Interval = ReadFloat(fieldInfo, context);
-                    break;
-            }
-            ReadTaskFieldInfo(fieldEnum, fieldInfo, context);
-        }
-        protected abstract void ReadTaskFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context);
 
         protected override void OnTaskCollect()
         {

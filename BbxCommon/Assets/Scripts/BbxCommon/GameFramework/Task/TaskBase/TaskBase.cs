@@ -18,6 +18,7 @@ namespace BbxCommon
         #region Lifecycle
         public bool IsRunning { get; private set; }
 
+        private int m_TypeId;
         private bool m_RequiredStop = false;
         private bool m_BlockEnter = false;
 
@@ -27,6 +28,12 @@ namespace BbxCommon
         private TaskConnectPoint m_EnterCondition = new();
         private TaskConnectPoint m_Conditions = new();
         private TaskConnectPoint m_ExitConditions = new();
+
+        public TaskBase()
+        {
+            m_TypeId = TaskDeserialiser.GetTaskTypeId(GetType());
+            RegisterFields();
+        }
 
         public void Run()
         {
@@ -165,12 +172,10 @@ namespace BbxCommon
         #region Read Field Info
 
         #region Common
-        public virtual void GetFieldEnumTypes(List<Type> res)
+        public void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
-            res.Add(GetFieldEnumType());
+            m_RegisteredFieldList[fieldEnum].FieldCallback(fieldInfo, context);
         }
-        protected abstract Type GetFieldEnumType();
-        public abstract void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context);
 
         protected T ReadValue<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
@@ -831,15 +836,14 @@ namespace BbxCommon
         internal class RegisteredField
         {
             internal string Name;
-            internal int EnumValue;
             internal TaskExportTypeInfo TypeInfo;
+            internal Action<TaskBridgeFieldInfo, TaskContextBase> FieldCallback;
         }
 
-        private List<RegisteredField> m_TempFieldList;
+        private List<RegisteredField> m_RegisteredFieldList = new();
 
         internal TaskExportInfo GenerateExportInfo()
         {
-            m_TempFieldList = new();
             RegisterFields();
             var res = new TaskExportInfo();
             res.TaskTypeName = this.GetType().Name;
@@ -878,7 +882,7 @@ namespace BbxCommon
                 }
             }
             // fields
-            foreach (var field in m_TempFieldList)
+            foreach (var field in m_RegisteredFieldList)
             {
                 var exportFieldInfo = new TaskExportFieldInfo();
                 exportFieldInfo.FieldName = field.Name;
@@ -890,13 +894,18 @@ namespace BbxCommon
 
         protected abstract void RegisterFields();
 
-        protected void RegisterField<TEnum, TObj>(TEnum fieldEnum, TObj obj) where TEnum : Enum
+        protected void RegisterField<TEnum, TObj>(TEnum fieldEnum, TObj obj, Action<TaskBridgeFieldInfo, TaskContextBase> fieldCallback) where TEnum : Enum
         {
-            var field = new RegisteredField();
-            field.Name = fieldEnum.ToString();
-            field.EnumValue = fieldEnum.GetHashCode();
+            var fieldEnumString = fieldEnum.ToString();
+            var fieldEnumValue = TaskDeserialiser.GetTaskFieldEnum(m_TypeId, fieldEnumString);
+            if (m_RegisteredFieldList.Count < fieldEnumValue + 1)
+                m_RegisteredFieldList.ModifyCount(fieldEnumValue + 1);
+            if (m_RegisteredFieldList[fieldEnumValue] == null)
+                m_RegisteredFieldList[fieldEnumValue] = new();
+            var field = m_RegisteredFieldList[fieldEnumValue];
+            field.Name = fieldEnumString;
             field.TypeInfo = TaskApi.GenerateTaskTypeInfo(typeof(TObj), obj);
-            m_TempFieldList.Add(field);
+            field.FieldCallback = fieldCallback;
         }
         #endregion
     }

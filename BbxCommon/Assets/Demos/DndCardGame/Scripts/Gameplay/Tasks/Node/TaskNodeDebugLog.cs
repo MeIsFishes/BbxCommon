@@ -14,29 +14,14 @@ namespace Dcg
             Content,
         }
 
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.Content, Content);
+            RegisterField(EField.Content, Content, (fieldInfo, context) => { Content = ReadString(fieldInfo, context); });
         }
 
         protected override void OnTaskCollect()
         {
             Content = string.Empty;
-        }
-
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Content:
-                    Content = ReadString(fieldInfo, context);
-                    break;
-            }
         }
 
         protected override void OnEnter()

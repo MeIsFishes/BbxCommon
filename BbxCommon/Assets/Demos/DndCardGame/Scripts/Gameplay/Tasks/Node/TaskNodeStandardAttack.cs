@@ -41,66 +41,19 @@ namespace Dcg
             ACAbilityModifier
         }
 
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.AttackerEntityId, AttackerEntityId);
-            RegisterField(EField.TargetEntityId, TargetEntityId);
-            RegisterField(EField.BaseAttackDice, BaseAttackDiceList);
-            RegisterField(EField.BaseDamageDice, BaseDamageDiceList);
-            RegisterField(EField.AttackWildDiceIndexList, AttackWildDiceIndexList);
-            RegisterField(EField.DamageWildDiceIndexList, DamageWildDiceIndexList);
-            RegisterField(EField.WildDiceList, WildDiceList);
-            RegisterField(EField.AttackDamageType, AttackDamageType);
-            RegisterField(EField.AttackAbilityModifier, AttackAbilityModifier);
-            RegisterField(EField.DamageAbilityModifier, DamageAbilityModifier);
-            RegisterField(EField.ACAbilityModifier, ACAbilityModifier);
-        }
-
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.AttackerEntityId:
-                    AttackerEntityId = ReadValue<EntityID>(fieldInfo, context);
-                    break;
-                case (int)EField.TargetEntityId:
-                    TargetEntityId = ReadValue<EntityID>(fieldInfo, context);
-                    break;
-                case (int)EField.BaseAttackDice:
-                    BaseAttackDiceList = ReadList(fieldInfo, context, BaseAttackDiceList);
-                    break;
-                case (int)EField.BaseDamageDice:
-                    BaseDamageDiceList = ReadList(fieldInfo, context, BaseDamageDiceList);
-                    break;
-                case (int)EField.AttackWildDiceIndexList:
-                    AttackWildDiceIndexList = ReadList(fieldInfo, context, AttackWildDiceIndexList);
-                    break;
-                case (int)EField.DamageWildDiceIndexList:
-                    DamageWildDiceIndexList = ReadList(fieldInfo, context, DamageWildDiceIndexList);
-                    break;
-                case (int)EField.WildDiceList:
-                    WildDiceList = ReadList(fieldInfo, context, WildDiceList);
-                    break;
-                case (int)EField.AttackDamageType:
-                    AttackDamageType = ReadEnum<DamageType>(fieldInfo, context);
-                    break;
-                case (int)EField.AttackAbilityModifier:
-                    AttackAbilityModifier = ReadEnum<EAbility>(fieldInfo, context);
-                    break;
-                case (int)EField.DamageAbilityModifier:
-                    DamageAbilityModifier = ReadEnum<EAbility>(fieldInfo, context);
-                    break;
-                case (int)EField.ACAbilityModifier:
-                    ACAbilityModifier = ReadEnum<EAbility>(fieldInfo, context);
-                    break;
-                default:
-                    break;
-            }
+            RegisterField(EField.AttackerEntityId, AttackerEntityId, (fieldInfo, context) => { AttackerEntityId = ReadValue<EntityID>(fieldInfo, context); });
+            RegisterField(EField.TargetEntityId, TargetEntityId, (fieldInfo, context) => { TargetEntityId = ReadValue<EntityID>(fieldInfo, context); });
+            RegisterField(EField.BaseAttackDice, BaseAttackDiceList, (fieldInfo, context) => { BaseAttackDiceList = ReadList(fieldInfo, context, BaseAttackDiceList); });
+            RegisterField(EField.BaseDamageDice, BaseDamageDiceList, (fieldInfo, context) => { BaseDamageDiceList = ReadList(fieldInfo, context, BaseDamageDiceList); });
+            RegisterField(EField.AttackWildDiceIndexList, AttackWildDiceIndexList, (fieldInfo, context) => { AttackWildDiceIndexList = ReadList(fieldInfo, context, AttackWildDiceIndexList); });
+            RegisterField(EField.DamageWildDiceIndexList, DamageWildDiceIndexList, (fieldInfo, context) => { DamageWildDiceIndexList = ReadList(fieldInfo, context, DamageWildDiceIndexList); });
+            RegisterField(EField.WildDiceList, WildDiceList, (fieldInfo, context) => { WildDiceList = ReadList(fieldInfo, context, WildDiceList); });
+            RegisterField(EField.AttackDamageType, AttackDamageType, (fieldInfo, context) => { AttackDamageType = ReadEnum<DamageType>(fieldInfo, context); });
+            RegisterField(EField.AttackAbilityModifier, AttackAbilityModifier, (fieldInfo, context) => { AttackAbilityModifier = ReadEnum<EAbility>(fieldInfo, context); });
+            RegisterField(EField.DamageAbilityModifier, DamageAbilityModifier, (fieldInfo, context) => { DamageAbilityModifier = ReadEnum<EAbility>(fieldInfo, context); });
+            RegisterField(EField.ACAbilityModifier, ACAbilityModifier, (fieldInfo, context) => { ACAbilityModifier = ReadEnum<EAbility>(fieldInfo, context); });
         }
 
         protected override void OnTaskCollect()

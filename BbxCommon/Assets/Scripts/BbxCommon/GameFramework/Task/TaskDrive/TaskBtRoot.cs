@@ -46,26 +46,9 @@ namespace Dcg
             Tasks = null;
         }
 
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
-        }
-
         protected override void RegisterFields() 
         {
-            RegisterField(EField.Tasks, Tasks);
-        }
-
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Tasks:
-                    Tasks = ReadConnectPoint(fieldInfo, context);
-                    break;
-                default:
-                    break;
-            }
+            RegisterField(EField.Tasks, Tasks, (fieldInfo, context) => { Tasks = ReadConnectPoint(fieldInfo, context); });
         }
     }
 }

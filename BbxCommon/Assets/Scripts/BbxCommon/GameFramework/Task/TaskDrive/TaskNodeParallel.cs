@@ -52,26 +52,9 @@ namespace BbxCommon
             Tasks = null;
         }
 
-        public override void ReadFieldInfo(int fieldEnum, TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
-        {
-            switch (fieldEnum)
-            {
-                case (int)EField.Tasks:
-                    Tasks = ReadConnectPoint(fieldInfo, context);
-                    break;
-                default:
-                    break;
-            }
-        }
-
         protected override void RegisterFields()
         {
-            RegisterField(EField.Tasks, Tasks);
-        }
-
-        protected override Type GetFieldEnumType()
-        {
-            return typeof(EField);
+            RegisterField(EField.Tasks, Tasks, (fieldInfo, context) => { Tasks = ReadConnectPoint(fieldInfo, context); });
         }
     }
 }

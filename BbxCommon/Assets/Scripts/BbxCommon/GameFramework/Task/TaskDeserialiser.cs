@@ -6,7 +6,7 @@ namespace BbxCommon
 {
     internal static class TaskDeserialiser
     {
-        #region Context
+        #region Context Data
         public class ContextData
         {
             public bool Inited;
@@ -19,9 +19,14 @@ namespace BbxCommon
         public static ContextData GetContextData(int typeId)
         {
             if (m_ContextDataList.Count <= typeId)
+            {
                 m_ContextDataList.ModifyCount(typeId + 1);
-            if (m_ContextDataList[typeId] == null)
-                m_ContextDataList[typeId] = new();
+                for (int i = 0; i < m_ContextDataList.Count; i++)
+                {
+                    if (m_ContextDataList[i] == null)
+                        m_ContextDataList[i] = new();
+                }
+            }
             return m_ContextDataList[typeId];
         }
 
@@ -29,9 +34,14 @@ namespace BbxCommon
         {
             var typeId = ClassTypeId<TaskContextBase, TContext>.Id;
             if (m_ContextDataList.Count <= typeId)
+            {
                 m_ContextDataList.ModifyCount(typeId + 1);
-            if (m_ContextDataList[typeId] == null)
-                m_ContextDataList[typeId] = new();
+                for (int i = 0; i < m_ContextDataList.Count; i++)
+                {
+                    if (m_ContextDataList[i] == null)
+                        m_ContextDataList[i] = new();
+                }
+            }
             return m_ContextDataList[typeId];
         }
 
@@ -39,9 +49,14 @@ namespace BbxCommon
         {
             var typeId = ClassTypeId<TaskContextBase>.GetId(contextType);
             if (m_ContextDataList.Count <= typeId)
+            {
                 m_ContextDataList.ModifyCount(typeId + 1);
-            if (m_ContextDataList[typeId] == null)
-                m_ContextDataList[typeId] = new();
+                for (int i = 0; i < m_ContextDataList.Count; i++)
+                {
+                    if (m_ContextDataList[i] == null)
+                        m_ContextDataList[i] = new();
+                }
+            }
             return m_ContextDataList[typeId];
         }
 
@@ -49,14 +64,19 @@ namespace BbxCommon
         {
             var typeId = ClassTypeId<TaskContextBase>.GetId(context);
             if (m_ContextDataList.Count <= typeId)
+            {
                 m_ContextDataList.ModifyCount(typeId + 1);
-            if (m_ContextDataList[typeId] == null)
-                m_ContextDataList[typeId] = new();
+                for (int i = 0; i < m_ContextDataList.Count; i++)
+                {
+                    if (m_ContextDataList[i] == null)
+                        m_ContextDataList[i] = new();
+                }
+            }
             return m_ContextDataList[typeId];
         }
         #endregion
 
-        #region Task
+        #region Task Pool
         public static List<IObjectPoolHandler> TaskPools = new();
 
         public static IObjectPoolHandler GetTaskPool(int typeId, Type type)
@@ -66,6 +86,57 @@ namespace BbxCommon
             if (TaskPools[typeId] == null)
                 TaskPools[typeId] = ObjectPool.GetObjectPool(type);
             return TaskPools[typeId];
+        }
+        #endregion
+
+        #region Task Data
+        public class TaskData
+        {
+            public int CurEnumIndex;
+            public Dictionary<string, int> FieldNameEnumDic = new();
+        }
+
+        private static List<TaskData> m_TaskDataList = new();
+
+        public static int GetTaskFieldEnum(int typeId, string fieldName)
+        {
+            var taskData = GetTaskData(typeId);
+            if (taskData.FieldNameEnumDic.TryGetValue(fieldName, out var enumValue) == false)
+            {
+                enumValue = taskData.CurEnumIndex++;
+                taskData.FieldNameEnumDic.Add(fieldName, enumValue);
+                return enumValue;
+            }
+            return enumValue;
+        }
+
+        private static TaskData GetTaskData(int typeId)
+        {
+            if (m_TaskDataList.Count <= typeId)
+            {
+                m_TaskDataList.ModifyCount(typeId + 1);
+                for (int i = 0; i < m_TaskDataList.Count; i++)
+                {
+                    if (m_TaskDataList[i] == null)
+                        m_TaskDataList[i] = new();
+                }
+            }
+            return m_TaskDataList[typeId];
+        }
+        #endregion
+
+        #region Task Type ID
+        private static Dictionary<Type, int> m_TaskTypeIdDic = new();
+
+        public static int GetTaskTypeId(Type type)
+        {
+            if (m_TaskTypeIdDic.TryGetValue(type, out var typeId) == false)
+            {
+                typeId = ClassTypeId<TaskBase>.GetId(type);
+                m_TaskTypeIdDic[type] = typeId;
+                return typeId;
+            }
+            return typeId;
         }
         #endregion
     }
@@ -98,23 +169,22 @@ namespace BbxCommon
         public short ShortValue;
         [FieldOffset(0)]
         public ushort UshortValue;
-        [FieldOffset(16)]
+        [FieldOffset(8)]
         public object ObjectValue;
-        [FieldOffset(32)]
+        [FieldOffset(24)]
         public string StringValue;
     }
 
     public class TaskBridgeFieldInfo
     {
         public bool Inited;
-        public string FieldName;
         public int FieldEnumValue;
         public ETaskFieldValueSource ValueSource;
         public TaskBridgeConstValue ConstValue;
 
-        internal void FromTaskFieldInfo(TaskFieldInfo taskFieldInfo)
+        internal void FromTaskFieldInfo(TaskFieldInfo taskFieldInfo, int taskTypeId)
         {
-            FieldName = taskFieldInfo.FieldName;
+            FieldEnumValue = TaskDeserialiser.GetTaskFieldEnum(taskTypeId, taskFieldInfo.FieldName);
             ValueSource = taskFieldInfo.ValueSource;
             ConstValue.StringValue = taskFieldInfo.Value;
         }
@@ -139,7 +209,7 @@ namespace BbxCommon
             FieldInfos = taskValueInfo.FieldInfos.ConvertAll((fieldInfo) =>
             {
                 var bridgeFieldInfo = new TaskBridgeFieldInfo();
-                bridgeFieldInfo.FromTaskFieldInfo(fieldInfo);
+                bridgeFieldInfo.FromTaskFieldInfo(fieldInfo, TaskTypeId);
                 return bridgeFieldInfo;
             });
             EnterConditionReferences = new List<int>(taskValueInfo.EnterConditionReferences);
@@ -181,7 +251,7 @@ namespace BbxCommon
     {
         public int RootTaskId;
         public Type BindingContextType;
-        public List<TaskBridgeValueInfo> TaskInfos;
+        public List<TaskBridgeValueInfo> TaskValueInfos;
         public Dictionary<int, int> ReorderedIndexDic;
 
         public void FromTaskGroupInfo(TaskGroupInfo taskGroupInfo)
@@ -195,14 +265,14 @@ namespace BbxCommon
                 if (ReorderedIndexDic.ContainsKey(pair.Key) == false)
                     ReorderedIndexDic.Add(pair.Key, tempCurIndex++);
             }
-            TaskInfos = new List<TaskBridgeValueInfo>(tempCurIndex);
-            TaskInfos.ModifyCount(tempCurIndex);
+            TaskValueInfos = new List<TaskBridgeValueInfo>(tempCurIndex);
+            TaskValueInfos.ModifyCount(tempCurIndex);
             foreach (var pair in taskGroupInfo.TaskInfos)
             {
                 var bridgeValueInfo = new TaskBridgeValueInfo();
                 bridgeValueInfo.FromTaskValueInfo(pair.Value, ReorderedIndexDic);
                 var reorderedIndex = ReorderedIndexDic[pair.Key];
-                TaskInfos[reorderedIndex] = bridgeValueInfo;
+                TaskValueInfos[reorderedIndex] = bridgeValueInfo;
             }
             if (ReorderedIndexDic.ContainsKey(taskGroupInfo.RootTaskId) == false)
             {
