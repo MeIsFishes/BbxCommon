@@ -182,33 +182,33 @@ namespace BbxCommon
         public int RootTaskId;
         public Type BindingContextType;
         public List<TaskBridgeValueInfo> TaskInfos;
+        public Dictionary<int, int> ReorderedIndexDic;
 
         public void FromTaskGroupInfo(TaskGroupInfo taskGroupInfo)
         {
             BindingContextType = ReflectionApi.GetType(taskGroupInfo.BindingContextFullType);
             // re-order tasks, let them be in continuous index and can be hit through list
-            var tempIndexDic = SimplePool<Dictionary<int, int>>.Alloc();
+            ReorderedIndexDic = new(taskGroupInfo.TaskInfos.Count);
             var tempCurIndex = 0;
             foreach (var pair in taskGroupInfo.TaskInfos)
             {
-                if (tempIndexDic.ContainsKey(pair.Key) == false)
-                    tempIndexDic.Add(pair.Key, tempCurIndex++);
+                if (ReorderedIndexDic.ContainsKey(pair.Key) == false)
+                    ReorderedIndexDic.Add(pair.Key, tempCurIndex++);
             }
             TaskInfos = new List<TaskBridgeValueInfo>(tempCurIndex);
             TaskInfos.ModifyCount(tempCurIndex);
             foreach (var pair in taskGroupInfo.TaskInfos)
             {
                 var bridgeValueInfo = new TaskBridgeValueInfo();
-                bridgeValueInfo.FromTaskValueInfo(pair.Value, tempIndexDic);
-                var reorderedIndex = tempIndexDic[pair.Key];
+                bridgeValueInfo.FromTaskValueInfo(pair.Value, ReorderedIndexDic);
+                var reorderedIndex = ReorderedIndexDic[pair.Key];
                 TaskInfos[reorderedIndex] = bridgeValueInfo;
             }
-            if (tempIndexDic.ContainsKey(taskGroupInfo.RootTaskId) == false)
+            if (ReorderedIndexDic.ContainsKey(taskGroupInfo.RootTaskId) == false)
             {
-                tempIndexDic.CollectToPool();
+                ReorderedIndexDic.CollectToPool();
             }
-            RootTaskId = tempIndexDic[taskGroupInfo.RootTaskId];
-            tempIndexDic.CollectToPool();
+            RootTaskId = ReorderedIndexDic[taskGroupInfo.RootTaskId];
         }
     }
     #endregion

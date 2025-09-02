@@ -8,15 +8,17 @@ namespace BbxCommon
     public abstract class TaskContextBase : PooledObject
     {
         #region Interfaces
-        public int TypeId;
+        internal int TypeId;
+        internal TaskBridgeGroupInfo BindingTaskGroupInfo;
         private bool m_Inited;
 
-        internal void Init()
+        internal void Init(TaskBridgeGroupInfo taskGroupInfo)
         {
             if (m_Inited == false)
             {
                 TypeId = ClassTypeId<TaskContextBase>.GetId(this.GetType());
             }
+            BindingTaskGroupInfo = taskGroupInfo;
             RegisterFields();
             m_Inited = true;
             TaskDeserialiser.GetContextData(TypeId).Inited = true;
@@ -34,6 +36,7 @@ namespace BbxCommon
         protected sealed override void OnCollect()
         {
             OnContextCollect();
+            BindingTaskGroupInfo = null;
             m_blackBoardDoubleData.Clear();
             m_blackBoardLongData.Clear();
             m_blackBoardObjectData.Clear();
@@ -319,7 +322,7 @@ namespace BbxCommon
 
         internal TaskContextExportInfo GenerateExportInfo()
         {
-            Init();
+            RegisterFields();
             var res = new TaskContextExportInfo();
             res.TaskContextTypeName = this.GetType().Name;
             foreach (var pair in TaskDeserialiser.GetContextData(TypeId).FieldTypeDic)

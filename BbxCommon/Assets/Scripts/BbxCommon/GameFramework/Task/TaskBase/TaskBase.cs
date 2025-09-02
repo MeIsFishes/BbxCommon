@@ -630,7 +630,7 @@ namespace BbxCommon
         #endregion
 
         #region Special Type
-        protected List<T> ReadList<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context, List<T> res)
+        protected List<T> ReadList<T>(TaskBridgeFieldInfo fieldInfo, TaskContextBase context, List<T> res, bool isConnectPoint = false)
         {
             res ??= new List<T>();
             res.Clear();
@@ -681,6 +681,13 @@ namespace BbxCommon
                                 if (int.TryParse(elements[i], out var val))
                                 {
                                     intList.Add(val);
+                                }
+                            }
+                            if (isConnectPoint)
+                            {
+                                for (int i = 0; i < intList.Count; i++)
+                                {
+                                    intList[i] = context.BindingTaskGroupInfo.ReorderedIndexDic[intList[i]];
                                 }
                             }
                         }
@@ -796,7 +803,7 @@ namespace BbxCommon
         protected TaskConnectPoint ReadConnectPoint(TaskBridgeFieldInfo fieldInfo, TaskContextBase context)
         {
             var res = new TaskConnectPoint();
-            ReadList(fieldInfo, context, res.TaskRefrenceIds);
+            res.TaskRefrenceIds = ReadList(fieldInfo, context, res.TaskRefrenceIds, true);
             m_CachedConnectPoint.Add(res);
             return res;
         }

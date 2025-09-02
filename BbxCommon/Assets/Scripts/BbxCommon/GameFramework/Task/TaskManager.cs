@@ -76,7 +76,7 @@ namespace BbxCommon
                 return;
             }
             // generate tasks
-            context.Init();
+            context.Init(taskGroupInfo);
             var taskList = SimplePool<List<TaskBase>>.Alloc();
             for (int i = 0; i < taskGroupInfo.TaskInfos.Count; i++)
             {
