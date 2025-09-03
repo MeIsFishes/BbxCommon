@@ -195,6 +195,7 @@ namespace BbxCommon
         public Type TaskType;
         public int TaskTypeId;
         public List<TaskBridgeFieldInfo> FieldInfos = new();  // Task fields
+        public List<TaskBridgeFieldInfo> BlackboardFieldInfos = new(); // for values in blackboard may be changed dynamically, they should be set every time when task runs
         public bool HasCondition;
         public List<int> EnterConditionReferences = new();
         public List<int> ConditionReferences = new();
@@ -206,12 +207,15 @@ namespace BbxCommon
         {
             TaskType = ReflectionApi.GetType(taskValueInfo.FullTypeName);
             TaskTypeId = ClassTypeId<TaskBase>.GetId(TaskType);
-            FieldInfos = taskValueInfo.FieldInfos.ConvertAll((fieldInfo) =>
+            for (int i = 0; i < taskValueInfo.FieldInfos.Count; i++)
             {
                 var bridgeFieldInfo = new TaskBridgeFieldInfo();
-                bridgeFieldInfo.FromTaskFieldInfo(fieldInfo, TaskTypeId);
-                return bridgeFieldInfo;
-            });
+                bridgeFieldInfo.FromTaskFieldInfo(taskValueInfo.FieldInfos[i], TaskTypeId);
+                if (bridgeFieldInfo.ValueSource == ETaskFieldValueSource.Blackboard)
+                    BlackboardFieldInfos.Add(bridgeFieldInfo);
+                else
+                    FieldInfos.Add(bridgeFieldInfo);
+            }
             EnterConditionReferences = new List<int>(taskValueInfo.EnterConditionReferences);
             for (int i = 0; i < EnterConditionReferences.Count; i++)
             {

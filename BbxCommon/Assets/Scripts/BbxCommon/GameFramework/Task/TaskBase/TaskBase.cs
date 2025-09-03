@@ -17,6 +17,8 @@ namespace BbxCommon
     {
         #region Lifecycle
         public bool IsRunning { get; private set; }
+        internal TaskBridgeValueInfo TaskValueInfo;
+        internal TaskContextBase TaskContext;
 
         private int m_TypeId;
         private bool m_RequiredStop = false;
@@ -83,6 +85,10 @@ namespace BbxCommon
             for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
                 m_Conditions.Tasks[i].Enter();
+            }
+            for (int i = 0; i < TaskValueInfo.BlackboardFieldInfos.Count; i++)
+            {
+                ReadFieldInfo(TaskValueInfo.BlackboardFieldInfos[i].FieldEnumValue, TaskValueInfo.BlackboardFieldInfos[i], TaskContext);
             }
             OnEnter();
         }
@@ -162,6 +168,8 @@ namespace BbxCommon
             m_EnterCondition.Reset();
             m_Conditions.Reset();
             m_ExitConditions.Reset();
+            TaskValueInfo = null;
+            TaskContext = null;
             OnTaskCollect();
         }
 

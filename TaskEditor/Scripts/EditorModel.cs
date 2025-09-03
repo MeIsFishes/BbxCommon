@@ -374,10 +374,6 @@ namespace BbxCommon
 						itemInfo.StartTime = timelineItemEditData.StartTime;
 						itemInfo.Duration = timelineItemEditData.Duration;
 						timelineRootValueInfo.AddTimelineInfo(timelineItemEditData.StartTime, timelineItemEditData.Duration, itemInfo.Id);
-						foreach (var field in timelineItemEditData.Fields)
-						{
-							itemValueInfo.AddFieldInfo(field.FieldName, field.ValueSource, field.Value);
-						}
 						// enter condition
 						foreach (var condition in timelineItemEditData.EnterConditions)
 						{

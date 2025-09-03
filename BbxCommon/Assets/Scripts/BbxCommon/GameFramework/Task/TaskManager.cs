@@ -83,6 +83,8 @@ namespace BbxCommon
                 // deserialize tasks
                 var taskValueInfo = taskGroupInfo.TaskValueInfos[i];
                 var task = TaskDeserialiser.GetTaskPool(taskValueInfo.TaskTypeId, taskValueInfo.TaskType).AllocObj() as TaskBase;
+                task.TaskValueInfo = taskValueInfo;
+                task.TaskContext = context;
                 for (int j = 0; j < taskValueInfo.FieldInfos.Count; j++)
                 {
                     var fieldInfo = taskValueInfo.FieldInfos[j];

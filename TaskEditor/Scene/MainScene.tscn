@@ -39,7 +39,7 @@ SaveButton = NodePath("TopMenu/SaveButton/Button")
 SaveAsButton = NodePath("TopMenu/SaveAsButton/Button")
 LoadButton = NodePath("TopMenu/LoadButton/Button")
 
-[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldItemRoot", "ButtonItemRoot", "Title")]
+[node name="Inspector" type="Control" parent="EditorRoot" node_paths=PackedStringArray("FieldScrollContainer", "FieldItemRoot", "ButtonItemRoot", "Title")]
 layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
@@ -50,6 +50,7 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("2_rhmro")
 FieldPrefab = ExtResource("3_1cbrp")
+FieldScrollContainer = NodePath("ScrollContainer")
 FieldItemRoot = NodePath("ScrollContainer/FieldsRoot")
 ButtonPrefab = ExtResource("4_l3n08")
 ButtonItemRoot = NodePath("ButtonContainer")
