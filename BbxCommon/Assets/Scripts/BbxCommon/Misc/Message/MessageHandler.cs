@@ -76,7 +76,7 @@ namespace BbxCommon
         {
             if (Listeners.TryGetValue(messageKey, out var set) == false)
             {
-                set = SimplePool<HashSet<IMessageListener<TMessageKey>>>.Alloc();
+                set = new();
                 Listeners[messageKey] = set;
             }
             set.Add(listener);

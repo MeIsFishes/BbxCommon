@@ -19,8 +19,6 @@ namespace BbxCommon
 #elif GODOT
             GD.Print(args);
 #endif
-            Console.WriteLine("DebugApi.Log: ");
-            Console.Write(args);
         }
 
         public static void LogWarning(object args)
@@ -30,8 +28,6 @@ namespace BbxCommon
 #elif GODOT
             GD.PushWarning(args);
 #endif
-            Console.WriteLine("DebugApi.LogWarning: ");
-            Console.Write(args);
         }
 
         public static void LogError(object args)
@@ -41,8 +37,6 @@ namespace BbxCommon
 #elif GODOT
             GD.PushError(args);
 #endif
-            Console.WriteLine("DebugApi.LogError: ");
-            Console.Write(args);
         }
 
         public static void LogException(Exception e)
@@ -52,9 +46,6 @@ namespace BbxCommon
 #elif GODOT
             GD.PushError(e);
 #endif
-
-            Console.WriteLine("DebugApi.LogException: ");
-            Console.Write(e);
         }
         #endregion
 

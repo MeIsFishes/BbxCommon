@@ -407,6 +407,7 @@ namespace BbxCommon.Ui
                             if (ButtonDic.ContainsValue(button) == false)
                                 ButtonDic[button.gameObject.name] = button;
                         }
+                        deletedKey.CollectToPool();
                     }
                     break;
                 case EStoreButtonsWith.Index:
@@ -429,6 +430,7 @@ namespace BbxCommon.Ui
                             if (ButtonList.Contains(button) == false)
                                 ButtonList.Add(button);
                         }
+                        deletedIndex.CollectToPool();
                     }
                     break;
             }

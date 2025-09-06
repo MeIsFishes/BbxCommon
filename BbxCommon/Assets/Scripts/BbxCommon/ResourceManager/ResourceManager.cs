@@ -269,7 +269,7 @@ namespace BbxCommon.Internal
 
         internal static List<TextAsset> LoadTextAssets(string key)
         {
-            var res = SimplePool<List<TextAsset>>.Alloc();
+            var res = new List<TextAsset>();
             if (m_FileDic.TryGetValue(key, out var fileInfo))
             {
                 for (int i = 0; i < fileInfo.Count; i++)

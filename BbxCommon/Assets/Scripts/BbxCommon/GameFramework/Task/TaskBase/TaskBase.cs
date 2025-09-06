@@ -16,13 +16,11 @@ namespace BbxCommon
     public abstract class TaskBase : PooledObject
     {
         #region Lifecycle
-        public bool IsRunning { get; private set; }
         internal TaskBridgeValueInfo TaskValueInfo;
         internal TaskContextBase TaskContext;
 
         private int m_TypeId;
-        private bool m_RequiredStop = false;
-        private bool m_BlockEnter = false;
+        private ETaskRunState m_State;
 
         // EnterCondition: Check once when task executes Enter().
         // Condition: Check every frame. If failed, the task will be stopped and return failed.
@@ -42,14 +40,6 @@ namespace BbxCommon
             TaskManager.Instance.RunTask(this);
         }
 
-        /// <summary>
-        /// Force the task to stop and return <see cref="ETaskRunState.Succeeded"/>.
-        /// </summary>
-        public void Stop()
-        {
-            m_RequiredStop = true;
-        }
-
         public void AddEnterCondition(TaskConditionBase condition)
         {
             m_EnterCondition.Tasks.Add(condition);
@@ -67,9 +57,7 @@ namespace BbxCommon
 
         internal void Enter()
         {
-            IsRunning = true;
-            m_RequiredStop = false;
-            m_BlockEnter = false;
+            m_State = ETaskRunState.Running;
             for (int i = 0; i < m_EnterCondition.Tasks.Count; i++)
             {
                 var condition = m_EnterCondition.Tasks[i];
@@ -78,7 +66,7 @@ namespace BbxCommon
                 condition.Exit();
                 if (state == ETaskRunState.Failed)
                 {
-                    m_BlockEnter = true;
+                    m_State = ETaskRunState.Failed;
                     return;
                 }
             }
@@ -103,7 +91,7 @@ namespace BbxCommon
                 condition.Exit();
                 if (state == ETaskRunState.Failed)
                 {
-                    m_BlockEnter = true;
+                    m_State = ETaskRunState.Failed;
                     return false;
                 }
             }
@@ -112,14 +100,13 @@ namespace BbxCommon
 
         internal ETaskRunState Update(float deltaTime)
         {
-            if (m_RequiredStop)
-                return ETaskRunState.Succeeded;
-            if (m_BlockEnter)
-                return ETaskRunState.Failed;
+            if (m_State == ETaskRunState.Succeeded || m_State == ETaskRunState.Failed)
+                return m_State;
             for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
                 if (m_Conditions.Tasks[i].Update(deltaTime) == ETaskRunState.Failed)
                 {
+                    m_State = ETaskRunState.Failed;
                     return ETaskRunState.Failed;
                 }
             }
@@ -127,6 +114,7 @@ namespace BbxCommon
             {
                 if (m_ExitConditions.Tasks[i].Update(deltaTime) == ETaskRunState.Succeeded)
                 {
+                    m_State = ETaskRunState.Succeeded;
                     return ETaskRunState.Succeeded;
                 }
             }
@@ -135,9 +123,6 @@ namespace BbxCommon
 
         internal void Exit()
         {
-            IsRunning = false;
-            if (m_BlockEnter)
-                return;
             for (int i = 0; i < m_Conditions.Tasks.Count; i++)
             {
                 m_Conditions.Tasks[i].Exit();
@@ -145,6 +130,15 @@ namespace BbxCommon
             for (int i = 0; i < m_ExitConditions.Tasks.Count; i++)
             {
                 m_ExitConditions.Tasks[i].Exit();
+            }
+            if (m_State == ETaskRunState.Failed)
+            {
+                OnNodeFailed();
+            }
+            else
+            {
+                m_State = ETaskRunState.Succeeded;
+                OnNodeSucceeded();
             }
             OnExit();
         }

@@ -6,12 +6,6 @@ namespace BbxCommon
     [DisableAutoCreation]
     internal partial class TaskSystem : EcsMixSystemBase
     {
-        internal struct TaskFinishInfo
-        {
-            public int Index;
-            public bool Succeeded;
-        }
-
         // A new-entered task will execute OnEnter(), and then execute OnUpdate(deltaTime) once with deltaTime = 0, and turn to normal next frame.
         protected override void OnSystemUpdate()
         {
@@ -29,7 +23,7 @@ namespace BbxCommon
             taskManager.NewEnterTasks.Clear();
 
             // update
-            var finishInfos = SimplePool<List<TaskFinishInfo>>.Alloc();
+            var finishedTaskIndex = SimplePool<List<int>>.Alloc();
             for (int i = 0; i < taskManager.RunningTasks.Count; i++)
             {
                 var taskInfo = taskManager.RunningTasks[i];
@@ -44,42 +38,25 @@ namespace BbxCommon
                         taskState = taskInfo.Task.Update(TimeApi.DeltaTime);
                         break;
                 }
-                var finishInfo = new TaskFinishInfo();
-                switch (taskState)
-                {
-                    case ETaskRunState.Succeeded:
-                        finishInfo.Index = i;
-                        finishInfo.Succeeded = true;
-                        finishInfos.Add(finishInfo);
-                        break;
-                    case ETaskRunState.Failed:
-                        finishInfo.Index = i;
-                        finishInfo.Succeeded = false;
-                        finishInfos.Add(finishInfo);
-                        break;
-                }
+                if (taskState == ETaskRunState.Succeeded || taskState == ETaskRunState.Failed)
+                    finishedTaskIndex.Add(i);
             }
 
             // exit
             // Since in some extreme cases, running order may cause bugs, we promise that tasks always run in the order of adding.
-            for (int i = 0; i < finishInfos.Count; i++)
+            for (int i = 0; i < finishedTaskIndex.Count; i++)
             {
-                var finishInfo = finishInfos[i];
-                var taskInfo = taskManager.RunningTasks[finishInfo.Index];
-                if (finishInfo.Succeeded)
-                    taskInfo.Task.OnNodeSucceeded();
-                else
-                    taskInfo.Task.OnNodeFailed();
+                var taskInfo = taskManager.RunningTasks[finishedTaskIndex[i]];
                 taskInfo.Task.Exit();
             }
-            for (int i = finishInfos.Count - 1; i >= 0; i--)
+            for (int i = finishedTaskIndex.Count - 1; i >= 0; i--)
             {
-                taskManager.RunningTasks[finishInfos[i].Index].Task.CollectToPool();
-                taskManager.RunningTasks.RemoveAt(finishInfos[i].Index);
+                taskManager.RunningTasks[finishedTaskIndex[i]].Task.CollectToPool();
+                taskManager.RunningTasks.RemoveAt(finishedTaskIndex[i]);
             }
 
             // collect collections
-            finishInfos.CollectToPool();
+            finishedTaskIndex.CollectToPool();
         }
     }
 }

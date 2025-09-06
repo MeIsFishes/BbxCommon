@@ -12,6 +12,7 @@ namespace BbxCommon
         {
             public float StartTime;
             public float EndTime;
+            public float LastUpdateTime;
             public TaskBase Task;
 
             public int CompareTo(TaskInfo target)
@@ -48,7 +49,6 @@ namespace BbxCommon
         private float m_ElapsedTime;
         private int m_CurCheckIndex;    // for check which tasks should run
         private List<int> m_RunningTaskIndexes = new();
-        internal List<TaskManager.RunningTaskInfo> RunningChildTaskInfos = new();
 
         protected override void OnEnter()
         {
@@ -69,101 +69,60 @@ namespace BbxCommon
                 if (m_ElapsedTime >= Duration)
                     return ETaskRunState.Succeeded;
             }
-
             return ETaskRunState.Running;
         }
 
         private void UpdateChild()
         {
-            var finishInfos = SimplePool<List<TaskSystem.TaskFinishInfo>>.Alloc();
-            for (int i = 0; i < RunningChildTaskInfos.Count; i++)
+            // update tasks
+            var finishedIndexes = SimplePool<List<int>>.Alloc();
+            for (int i = 0; i < m_RunningTaskIndexes.Count; i++)
             {
-                var taskInfo = RunningChildTaskInfos[i];
-                var taskState = ETaskRunState.Running;
-                // check if task should stop
-                var finishedIndexes = SimplePool<List<int>>.Alloc();
-                for (int k = 0; k < m_RunningTaskIndexes.Count; k++)
+                var index = m_RunningTaskIndexes[i];
+                var taskInfo = m_TaskInfos[index];
+                if (taskInfo.EndTime < m_ElapsedTime)
                 {
-                    var taskTimelineInfo = m_TaskInfos[m_RunningTaskIndexes[k]];
-                    if (taskTimelineInfo.EndTime < m_ElapsedTime)
-                    {
-                        taskTimelineInfo.Task.Stop();
-                    }
+                    taskInfo.Task.Update(taskInfo.EndTime - taskInfo.LastUpdateTime);
+                    finishedIndexes.Add(i);
                 }
-                for (int k = finishedIndexes.Count - 1; k >= 0; k--)
+                else
                 {
-                    m_RunningTaskIndexes.RemoveAt(finishedIndexes[k]);
-                }
-                finishedIndexes.CollectToPool();
-
-                switch (taskInfo.State)
-                {
-                    case TaskManager.ERunningTaskState.NewEnter:
-                        taskState = taskInfo.Task.Update(0);
-                        RunningChildTaskInfos[i] =
-                            new TaskManager.RunningTaskInfo(taskInfo.Task, TaskManager.ERunningTaskState.Keep);
-                        break;
-                    case TaskManager.ERunningTaskState.Keep:
-                        taskState = taskInfo.Task.Update(TimeApi.DeltaTime);
-                        break;
-                }
-
-                var finishInfo = new TaskSystem.TaskFinishInfo();
-                switch (taskState)
-                {
-                    case ETaskRunState.Succeeded:
-                        finishInfo.Index = i;
-                        finishInfo.Succeeded = true;
-                        finishInfos.Add(finishInfo);
-                        break;
-                    case ETaskRunState.Failed:
-                        finishInfo.Index = i;
-                        finishInfo.Succeeded = false;
-                        finishInfos.Add(finishInfo);
-                        break;
+                    var taskState = taskInfo.Task.Update(m_ElapsedTime - taskInfo.LastUpdateTime);
+                    taskInfo.LastUpdateTime = m_ElapsedTime;
+                    // add finished
+                    if (taskState == ETaskRunState.Succeeded || taskState == ETaskRunState.Failed)
+                        finishedIndexes.Add(index);
                 }
             }
 
             // exit
-            // Since in some extreme cases, running order may cause bugs, we promise that tasks always run in the order of adding.
-            for (int i = 0; i < finishInfos.Count; i++)
+            // Since in some extreme cases, running order may causes bugs, we promise that tasks always run in the order of adding.
+            for (int i = 0; i < finishedIndexes.Count; i++)
             {
-                var finishInfo = finishInfos[i];
-                var taskInfo = RunningChildTaskInfos[finishInfo.Index];
-                if (finishInfo.Succeeded)
-                    taskInfo.Task.OnNodeSucceeded();
-                else
-                    taskInfo.Task.OnNodeFailed();
+                var taskInfo = m_TaskInfos[finishedIndexes[i]];
                 taskInfo.Task.Exit();
             }
 
-            for (int i = finishInfos.Count - 1; i >= 0; i--)
-            {
-                RunningChildTaskInfos.RemoveAt(finishInfos[i].Index);
-            }
-
             // collect collections
-            finishInfos.CollectToPool();
+            finishedIndexes.CollectToPool();
         }
 
         protected override void OnExit()
         {
             for (int i = 0; i < m_RunningTaskIndexes.Count; i++)
             {
-                m_TaskInfos[m_RunningTaskIndexes[i]].Task.Stop();
+                m_TaskInfos[m_RunningTaskIndexes[i]].Task.Exit();
             }
-            // execute exit of child tasks
-            UpdateChild();
         }
 
         private void StartTask(float cutOffTime)
         {
             while (m_CurCheckIndex < m_TaskInfos.Count && m_TaskInfos[m_CurCheckIndex].StartTime <= cutOffTime)
             {
-                var task = m_TaskInfos[m_CurCheckIndex].Task;
+                var taskInfo = m_TaskInfos[m_CurCheckIndex];
+                var task = taskInfo.Task;
+                taskInfo.LastUpdateTime = 0;
                 task.Enter();
-                RunningChildTaskInfos.Add(new TaskManager.RunningTaskInfo(task, TaskManager.ERunningTaskState.NewEnter));
-                
                 m_RunningTaskIndexes.Add(m_CurCheckIndex);
                 m_CurCheckIndex++;
             }
@@ -175,7 +134,6 @@ namespace BbxCommon
             m_ElapsedTime = default;
             m_CurCheckIndex = default;
             m_RunningTaskIndexes.Clear();
-            RunningChildTaskInfos.Clear();
             for (int i = 0; i < m_TaskInfos.Count; i++)
             {
                 m_TaskInfos[i].Task.CollectToPool();

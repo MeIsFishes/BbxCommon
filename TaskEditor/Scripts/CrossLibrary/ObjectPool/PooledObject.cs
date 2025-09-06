@@ -7,20 +7,12 @@ namespace BbxCommon
     {
         internal IObjectPoolHandler ObjectPoolBelongs;
         internal ulong UniqueId;
-        internal bool IsCollected;
 
         /// <summary>
         /// Call OnCollect() and tell the object pool this object is ready to be reuse.
         /// </summary>
         public void CollectToPool()
         {
-#if UNITY_EDITOR
-            if (IsCollected == true)
-            {
-                DebugApi.LogError("The object has been collected!");
-                return;
-            }
-#endif
             OnCollect();
             if (ObjectPoolBelongs != null)
                 ObjectPoolBelongs.Collect(this);

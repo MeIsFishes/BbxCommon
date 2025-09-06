@@ -74,7 +74,7 @@ namespace BbxCommon
                         set.Add(interactor);
                     else
                     {
-                        set = SimplePool<HashSet<Interactor>>.Alloc();
+                        set = new();
                         set.Add(interactor);
                         m_Interactors[flag] = set;
                     }

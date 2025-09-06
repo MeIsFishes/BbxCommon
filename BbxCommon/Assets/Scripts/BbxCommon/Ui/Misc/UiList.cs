@@ -508,6 +508,7 @@ namespace BbxCommon.Ui
                 m_UiItems[m_InTranslationItemIndexes[translationEndIndexs[i]]] = item;
                 m_InTranslationItemIndexes.UnorderedRemoveAt(translationEndIndexs[i]);
             }
+            translationEndIndexs.CollectToPool();
         }
         #endregion
     }
